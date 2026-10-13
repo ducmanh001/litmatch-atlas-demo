@@ -1,0 +1,743 @@
+{
+ "contractFile": "libs/common-dtos/src/lib/realtime-events.ts",
+ "channelPrefix": "realtime:user:",
+ "events": [
+  {
+   "key": "SoulMessage",
+   "name": "soul.message",
+   "doc": "Message chat ẩn danh mới trong phòng Soul Match.",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 36,
+   "quote": "SoulMessage: 'soul.message'",
+   "payloadType": "SoulMessageEventData",
+   "payloadDef": "export interface SoulMessageEventData {\n  sessionId: string;\n  messageId: string;\n  /** Đã tính per-recipient ở core-api — KHÔNG bao giờ chứa userId đối phương (ẩn danh). */\n  senderRole: 'me' | 'partner';\n  content: string;\n  sentAt: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+     "line": 206,
+     "module": "soul-match",
+     "function": "sendMessage",
+     "quote": "event: RealtimeEvents.SoulMessage,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/soul-match/components/soul-chat-phase-view.tsx",
+     "line": 71,
+     "module": "web",
+     "function": "SoulChatPhaseView",
+     "quote": "useRealtimeEvent<SoulMessageEventData>(RealtimeEvents.SoulMessage, (data) => {"
+    }
+   ]
+  },
+  {
+   "key": "SoulMatched",
+   "name": "soul.matched",
+   "doc": "Cả 2 cùng \"Thích\" — đã match, profile unlock.",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 38,
+   "quote": "SoulMatched: 'soul.matched'",
+   "payloadType": "SoulMatchedEventData",
+   "payloadDef": "export interface SoulMatchedEventData {\n  sessionId: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+     "line": 393,
+     "module": "soul-match",
+     "function": "rate",
+     "quote": "event: RealtimeEvents.SoulMatched,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/soul-match/components/soul-chat-phase-view.tsx",
+     "line": 78,
+     "module": "web",
+     "function": "SoulChatPhaseView",
+     "quote": "useRealtimeEvent<SoulMatchedEventData>(RealtimeEvents.SoulMatched, (data) => {"
+    }
+   ]
+  },
+  {
+   "key": "SoulEnded",
+   "name": "soul.ended",
+   "doc": "Một thành viên rời Soul Match — client phải đóng phòng ẩn danh ngay.",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 40,
+   "quote": "SoulEnded: 'soul.ended'",
+   "payloadType": "SoulEndedEventData",
+   "payloadDef": "export interface SoulEndedEventData {\n  sessionId: string;\n  /** member_left — không chứa userId để giữ nguyên ẩn danh. */\n  reason: 'member_left';\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+     "line": 107,
+     "module": "soul-match",
+     "function": "endSession",
+     "quote": "event: RealtimeEvents.SoulEnded,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/soul-match/components/soul-chat-phase-view.tsx",
+     "line": 85,
+     "module": "web",
+     "function": "SoulChatPhaseView",
+     "quote": "useRealtimeEvent<SoulEndedEventData>(RealtimeEvents.SoulEnded, (data) => {"
+    }
+   ]
+  },
+  {
+   "key": "MatchMatched",
+   "name": "match.matched",
+   "doc": "Ticket được ghép cặp — chờ 2 bên confirm.",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 42,
+   "quote": "MatchMatched: 'match.matched'",
+   "payloadType": "MatchMatchedEventData",
+   "payloadDef": "export interface MatchMatchedEventData {\n  ticketId: string;\n  sessionId: string;\n}",
+   "producers": [],
+   "consumers": []
+  },
+  {
+   "key": "MatchConfirmed",
+   "name": "match.confirmed",
+   "doc": "Cả 2 đã confirm — session bắt đầu.",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 44,
+   "quote": "MatchConfirmed: 'match.confirmed'",
+   "payloadType": "MatchConfirmedEventData",
+   "payloadDef": "export interface MatchConfirmedEventData {\n  ticketId: string;\n  sessionId: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+     "line": 374,
+     "module": "matching",
+     "function": "tryPair",
+     "quote": "event: RealtimeEvents.MatchConfirmed,"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 399,
+     "module": "matching",
+     "function": "confirmTicket",
+     "quote": "event: RealtimeEvents.MatchConfirmed,"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+     "line": 411,
+     "module": "matching",
+     "function": "acceptInvite",
+     "quote": "event: RealtimeEvents.MatchConfirmed,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/matching/components/queue-status-panel.tsx",
+     "line": 103,
+     "module": "web",
+     "function": "QueueStatusPanel",
+     "quote": "RealtimeEvents.MatchConfirmed,"
+    }
+   ]
+  },
+  {
+   "key": "CallEnded",
+   "name": "call.ended",
+   "doc": "Voice call kết thúc (mọi lý do — kể cả server tự end hết free window).",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 46,
+   "quote": "CallEnded: 'call.ended'",
+   "payloadType": "CallEndedEventData",
+   "payloadDef": "export interface CallEndedEventData {\n  callId: string;\n  matchSessionId: string | null;\n  /** completed | free_limit | insufficient_balance | pending_timeout (calling-service.md § 1). */\n  reason: string;\n  durationSeconds: number;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/calling/calling.service.ts",
+     "line": 700,
+     "module": "calling",
+     "function": "cleanupEndedCall",
+     "quote": "event: RealtimeEvents.CallEnded,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/friend-chat/components/friend-call-room.tsx",
+     "line": 94,
+     "module": "web",
+     "function": "FriendCallRoom",
+     "quote": "useRealtimeEvent<CallEndedEventData>(RealtimeEvents.CallEnded, (data) => {"
+    },
+    {
+     "file": "apps/web/src/features/voice-match/components/voice-call-room.tsx",
+     "line": 200,
+     "module": "web",
+     "function": "VoiceCallRoom",
+     "quote": "useRealtimeEvent<CallEndedEventData>(RealtimeEvents.CallEnded, (data) => {"
+    }
+   ]
+  },
+  {
+   "key": "FriendMessage",
+   "name": "friend.message",
+   "doc": "Message mới trong chat 1-1 lâu dài giữa 2 bạn (khác chat ẩn danh Soul Match).",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 48,
+   "quote": "FriendMessage: 'friend.message'",
+   "payloadType": "FriendMessageEventData",
+   "payloadDef": "export interface FriendMessageEventData {\n  conversationId: string;\n  messageId: string;\n  /** KHÔNG ẩn danh (2 bên đã unlock profile khi thành bạn) — khác SoulMessageEventData. */\n  senderUserId: string;\n  content: string;\n  /** NULL cho message thường — set khi reply story/video share (docs/services/feed-service.md § 8). */\n  attachment: { kind: string; payload: Record<string, unknown> } | null;\n  sentAt: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/friend/friend.service.ts",
+     "line": 413,
+     "module": "friend",
+     "function": "sendMessage",
+     "quote": "event: RealtimeEvents.FriendMessage,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/friend-chat/components/conversation-thread.tsx",
+     "line": 65,
+     "module": "web",
+     "function": "ConversationThread",
+     "quote": "RealtimeEvents.FriendMessage,"
+    },
+    {
+     "file": "apps/web/src/features/notification/components/realtime-notification-bridge.tsx",
+     "line": 54,
+     "module": "web",
+     "function": "RealtimeNotificationBridge",
+     "quote": "RealtimeEvents.FriendMessage,"
+    }
+   ]
+  },
+  {
+   "key": "FriendStreakIncreased",
+   "name": "friend.streak.increased",
+   "doc": "Streak vừa tăng và chạm mốc milestone (STREAK_MILESTONE_DAYS) — không bắn cho ngày thường.",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 50,
+   "quote": "FriendStreakIncreased: 'friend.streak.increased'",
+   "payloadType": "FriendStreakIncreasedEventData",
+   "payloadDef": "export interface FriendStreakIncreasedEventData {\n  conversationId: string;\n  currentStreak: number;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/friend/friend.service.ts",
+     "line": 394,
+     "module": "friend",
+     "function": "sendMessage",
+     "quote": "event: RealtimeEvents.FriendStreakIncreased,"
+    }
+   ],
+   "consumers": []
+  },
+  {
+   "key": "FriendStreakAtRisk",
+   "name": "friend.streak.at_risk",
+   "doc": "Cron cảnh báo streak sắp mất (chưa nhắn hôm nay, qua mốc giờ cảnh báo) — không ghi streak.",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 52,
+   "quote": "FriendStreakAtRisk: 'friend.streak.at_risk'",
+   "payloadType": "FriendStreakAtRiskEventData",
+   "payloadDef": "export interface FriendStreakAtRiskEventData {\n  conversationId: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/friend/jobs/streak-warning.job.ts",
+     "line": 94,
+     "module": "friend",
+     "function": "warnOne",
+     "quote": "event: RealtimeEvents.FriendStreakAtRisk,"
+    }
+   ],
+   "consumers": []
+  },
+  {
+   "key": "PartyMemberJoined",
+   "name": "party.member.joined",
+   "doc": "Member vào/ra Party Room (fanout cho member active còn lại trong phòng).",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 54,
+   "quote": "PartyMemberJoined: 'party.member.joined'",
+   "payloadType": "PartyMemberJoinedEventData",
+   "payloadDef": "export interface PartyMemberJoinedEventData {\n  roomId: string;\n  userId: string;\n  /** host | speaker | audience (party-room-service.md § 2). */\n  role: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 328,
+     "module": "party-room",
+     "function": "joinRoom",
+     "quote": "event: RealtimeEvents.PartyMemberJoined,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/party-room/components/party-stage.tsx",
+     "line": 103,
+     "module": "web",
+     "function": "PartyStage",
+     "quote": "RealtimeEvents.PartyMemberJoined,"
+    }
+   ]
+  },
+  {
+   "key": "PartyMemberLeft",
+   "name": "party.member.left",
+   "doc": null,
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 55,
+   "quote": "PartyMemberLeft: 'party.member.left'",
+   "payloadType": "PartyMemberLeftEventData",
+   "payloadDef": "export interface PartyMemberLeftEventData {\n  roomId: string;\n  userId: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 411,
+     "module": "party-room",
+     "function": "leaveRoom",
+     "quote": "event: RealtimeEvents.PartyMemberLeft,"
+    },
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 928,
+     "module": "party-room",
+     "function": "finalizeDisconnectedMember",
+     "quote": "event: RealtimeEvents.PartyMemberLeft,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/party-room/components/party-stage.tsx",
+     "line": 109,
+     "module": "web",
+     "function": "PartyStage",
+     "quote": "RealtimeEvents.PartyMemberLeft,"
+    }
+   ]
+  },
+  {
+   "key": "PartyMemberDisconnected",
+   "name": "party.member.disconnected",
+   "doc": "Member rớt mạng ngoài ý muốn; vẫn active trong grace period để reconnect.",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 57,
+   "quote": "PartyMemberDisconnected: 'party.member.disconnected'",
+   "payloadType": "PartyMemberDisconnectedEventData",
+   "payloadDef": "export interface PartyMemberDisconnectedEventData {\n  roomId: string;\n  userId: string;\n  disconnectedAt: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 1231,
+     "module": "party-room",
+     "function": "handleParticipantLeft",
+     "quote": "event: RealtimeEvents.PartyMemberDisconnected,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/party-room/components/party-stage.tsx",
+     "line": 115,
+     "module": "web",
+     "function": "PartyStage",
+     "quote": "RealtimeEvents.PartyMemberDisconnected,"
+    }
+   ]
+  },
+  {
+   "key": "PartyMemberReconnected",
+   "name": "party.member.reconnected",
+   "doc": "Member reconnect trước khi grace hết.",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 59,
+   "quote": "PartyMemberReconnected: 'party.member.reconnected'",
+   "payloadType": "PartyMemberReconnectedEventData",
+   "payloadDef": "export interface PartyMemberReconnectedEventData {\n  roomId: string;\n  userId: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 346,
+     "module": "party-room",
+     "function": "joinRoom",
+     "quote": "event: RealtimeEvents.PartyMemberReconnected,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/party-room/components/party-stage.tsx",
+     "line": 121,
+     "module": "web",
+     "function": "PartyStage",
+     "quote": "RealtimeEvents.PartyMemberReconnected,"
+    }
+   ]
+  },
+  {
+   "key": "PartyRoleChanged",
+   "name": "party.role.changed",
+   "doc": "Host cấp/thu quyền speaker — grant SFU đã đổi xong ở server trước khi publish.",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 61,
+   "quote": "PartyRoleChanged: 'party.role.changed'",
+   "payloadType": "PartyRoleChangedEventData",
+   "payloadDef": "export interface PartyRoleChangedEventData {\n  roomId: string;\n  userId: string;\n  role: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 494,
+     "module": "party-room",
+     "function": "changeRole",
+     "quote": "event: RealtimeEvents.PartyRoleChanged,"
+    },
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 667,
+     "module": "party-room",
+     "function": "publishRoleChanged",
+     "quote": "event: RealtimeEvents.PartyRoleChanged,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/party-room/components/party-stage.tsx",
+     "line": 127,
+     "module": "web",
+     "function": "PartyStage",
+     "quote": "RealtimeEvents.PartyRoleChanged,"
+    }
+   ]
+  },
+  {
+   "key": "PartySpeakerInviteReceived",
+   "name": "party.speaker.invite.received",
+   "doc": "Host gửi lời mời speaker — chỉ fanout tới audience được mời.",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 63,
+   "quote": "PartySpeakerInviteReceived: 'party.speaker.invite.received'",
+   "payloadType": "PartySpeakerInviteReceivedEventData",
+   "payloadDef": "export interface PartySpeakerInviteReceivedEventData {\n  roomId: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 560,
+     "module": "party-room",
+     "function": "inviteSpeaker",
+     "quote": "event: RealtimeEvents.PartySpeakerInviteReceived,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/party-room/components/party-stage.tsx",
+     "line": 133,
+     "module": "web",
+     "function": "PartyStage",
+     "quote": "RealtimeEvents.PartySpeakerInviteReceived,"
+    }
+   ]
+  },
+  {
+   "key": "PartyRoomClosed",
+   "name": "party.room.closed",
+   "doc": "Phòng đóng (host rời, hết member, sweeper) — client phải rời UI phòng.",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 65,
+   "quote": "PartyRoomClosed: 'party.room.closed'",
+   "payloadType": "PartyRoomClosedEventData",
+   "payloadDef": "export interface PartyRoomClosedEventData {\n  roomId: string;\n  /** host_left | empty | swept (party-room-service.md § 4). */\n  reason: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 1053,
+     "module": "party-room",
+     "function": "closeRoomById",
+     "quote": "event: RealtimeEvents.PartyRoomClosed,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/party-room/components/party-stage.tsx",
+     "line": 139,
+     "module": "web",
+     "function": "PartyStage",
+     "quote": "RealtimeEvents.PartyRoomClosed,"
+    }
+   ]
+  },
+  {
+   "key": "PartyHostDisconnected",
+   "name": "party.host.disconnected",
+   "doc": "Host rớt kết nối NGOÀI Ý MUỐN (webhook participant_left) — phòng CHƯA đóng, đang trong grace chờ host tự kết nối lại (party-room-service.md § 4). Chỉ gợi ý refetch sớm, REST poll `GET /party/rooms/:id` (field `hostDisconnectedAt`) vẫn là nguồn sự thật.",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 71,
+   "quote": "PartyHostDisconnected: 'party.host.disconnected'",
+   "payloadType": "PartyHostDisconnectedEventData",
+   "payloadDef": "export interface PartyHostDisconnectedEventData {\n  roomId: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 1295,
+     "module": "party-room",
+     "function": "markHostDisconnected",
+     "quote": "event: RealtimeEvents.PartyHostDisconnected,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/party-room/components/party-stage.tsx",
+     "line": 166,
+     "module": "web",
+     "function": "PartyStage",
+     "quote": "RealtimeEvents.PartyHostDisconnected,"
+    }
+   ]
+  },
+  {
+   "key": "PartyHostReconnected",
+   "name": "party.host.reconnected",
+   "doc": "Host đã kết nối lại trong lúc grace — huỷ lịch đóng phòng.",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 73,
+   "quote": "PartyHostReconnected: 'party.host.reconnected'",
+   "payloadType": "PartyHostReconnectedEventData",
+   "payloadDef": "export interface PartyHostReconnectedEventData {\n  roomId: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 340,
+     "module": "party-room",
+     "function": "joinRoom",
+     "quote": "event: RealtimeEvents.PartyHostReconnected,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/party-room/components/party-stage.tsx",
+     "line": 172,
+     "module": "web",
+     "function": "PartyStage",
+     "quote": "RealtimeEvents.PartyHostReconnected,"
+    }
+   ]
+  },
+  {
+   "key": "PartyCommentCreated",
+   "name": "party.comment.created",
+   "doc": "Comment mới trong Party Room — publish sau khi comment commit.",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 75,
+   "quote": "PartyCommentCreated: 'party.comment.created'",
+   "payloadType": "PartyCommentCreatedEventData",
+   "payloadDef": "export interface PartyCommentCreatedEventData {\n  roomId: string;\n  commentId: string;\n  senderUserId: string;\n  content: string;\n  sentAt: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 825,
+     "module": "party-room",
+     "function": "sendComment",
+     "quote": "event: RealtimeEvents.PartyCommentCreated,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/party-room/components/party-chat.tsx",
+     "line": 76,
+     "module": "web",
+     "function": "PartyChat",
+     "quote": "RealtimeEvents.PartyCommentCreated,"
+    }
+   ]
+  },
+  {
+   "key": "GiftSent",
+   "name": "gift.sent",
+   "doc": "Quà tặng trong Party Room — publish SAU khi transaction tiền commit (docs/10 § Gift).",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 77,
+   "quote": "GiftSent: 'gift.sent'",
+   "payloadType": "GiftSentEventData",
+   "payloadDef": "export interface GiftSentEventData {\n  roomId: string;\n  giftEventId: string;\n  giftCode: string;\n  senderUserId: string;\n  receiverUserId: string;\n  priceDiamond: number;\n  /** PTS người nhận thực nhận (0 nếu receiver là guest — docs/06 § Gift). */\n  pointsAwarded: number;\n  sentAt: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/gift/gift.service.ts",
+     "line": 481,
+     "module": "gift",
+     "function": "publishGiftSent",
+     "quote": "event: RealtimeEvents.GiftSent,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/party-room/components/party-stage.tsx",
+     "line": 177,
+     "module": "web",
+     "function": "PartyStage",
+     "quote": "useRealtimeEvent<GiftSentEventData>(RealtimeEvents.GiftSent, (data) => {"
+    }
+   ]
+  },
+  {
+   "key": "MovieSessionStarted",
+   "name": "movie.session.started",
+   "doc": "Movie Match: phiên xem chung mới được tạo (docs/services/movie-match-service.md § 5).",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 79,
+   "quote": "MovieSessionStarted: 'movie.session.started'",
+   "payloadType": "MovieSessionStartedEventData",
+   "payloadDef": "export interface MovieSessionStartedEventData {\n  sessionId: string;\n  videoUrl: string;\n  /** Người gọi POST /movie-match/sessions — cả 2 bên đã là bạn nên lộ userId là AN TOÀN (không ẩn danh). */\n  initiatorUserId: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+     "line": 173,
+     "module": "movie-match",
+     "function": "createSession",
+     "quote": "event: RealtimeEvents.MovieSessionStarted,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/app/(app)/movie-match/page.tsx",
+     "line": 31,
+     "module": "web",
+     "function": "MovieMatchPage",
+     "quote": "RealtimeEvents.MovieSessionStarted,"
+    }
+   ]
+  },
+  {
+   "key": "MovieStateChanged",
+   "name": "movie.state.changed",
+   "doc": "Movie Match: playback state đổi (vị trí/play-pause) — last-write-wins, không lock.",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 81,
+   "quote": "MovieStateChanged: 'movie.state.changed'",
+   "payloadType": "MovieStateChangedEventData",
+   "payloadDef": "export interface MovieStateChangedEventData {\n  sessionId: string;\n  videoUrl: string;\n  positionSeconds: number;\n  isPlaying: boolean;\n  /** ISO string — server timestamp, client nội suy vị trí hiện tại khi isPlaying=true. */\n  positionUpdatedAt: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+     "line": 221,
+     "module": "movie-match",
+     "function": "updateState",
+     "quote": "event: RealtimeEvents.MovieStateChanged,"
+    },
+    {
+     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+     "line": 845,
+     "module": "movie-match",
+     "function": "publishAnonPlayback",
+     "quote": "event: RealtimeEvents.MovieStateChanged,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/movie-match/components/anon-match-view.tsx",
+     "line": 423,
+     "module": "web",
+     "function": "AnonMatchView",
+     "quote": "RealtimeEvents.MovieStateChanged,"
+    },
+    {
+     "file": "apps/web/src/features/movie-match/components/movie-session-view.tsx",
+     "line": 52,
+     "module": "web",
+     "function": "MovieSessionView",
+     "quote": "RealtimeEvents.MovieStateChanged,"
+    }
+   ]
+  },
+  {
+   "key": "MovieSessionEnded",
+   "name": "movie.session.ended",
+   "doc": "Movie Match: phiên xem chung kết thúc (chủ động rời — chưa có nhánh hết hạn tự động).",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 83,
+   "quote": "MovieSessionEnded: 'movie.session.ended'",
+   "payloadType": "MovieSessionEndedEventData",
+   "payloadDef": "export interface MovieSessionEndedEventData {\n  sessionId: string;\n  /** left | replaced (movie-match-service.md § 3, § 5). */\n  reason: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+     "line": 271,
+     "module": "movie-match",
+     "function": "endSession",
+     "quote": "event: RealtimeEvents.MovieSessionEnded,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/movie-match/components/movie-session-view.tsx",
+     "line": 58,
+     "module": "web",
+     "function": "MovieSessionView",
+     "quote": "RealtimeEvents.MovieSessionEnded,"
+    }
+   ]
+  },
+  {
+   "key": "MovieReactionSent",
+   "name": "movie.reaction.sent",
+   "doc": "Movie Match ẩn danh: reaction emoji nổi trên video — hiệu ứng ephemeral, KHÔNG persist, KHÔNG kèm userId (2 bên chưa lộ danh tính). Client miss event chỉ mất hiệu ứng.",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 88,
+   "quote": "MovieReactionSent: 'movie.reaction.sent'",
+   "payloadType": "MovieReactionSentEventData",
+   "payloadDef": "export interface MovieReactionSentEventData {\n  sessionId: string;\n  emoji: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+     "line": 632,
+     "module": "movie-match",
+     "function": "sendAnonReaction",
+     "quote": "event: RealtimeEvents.MovieReactionSent,"
+    }
+   ],
+   "consumers": [
+    {
+     "file": "apps/web/src/features/movie-match/components/anon-match-view.tsx",
+     "line": 202,
+     "module": "web",
+     "function": "WatchingState",
+     "quote": "RealtimeEvents.MovieReactionSent,"
+    }
+   ]
+  },
+  {
+   "key": "MiniGameSessionStarted",
+   "name": "minigame.session.started",
+   "doc": "Mini Game: ván oẳn tù tì mới được tạo (docs/services/mini-game-service.md § 5).",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 90,
+   "quote": "MiniGameSessionStarted: 'minigame.session.started'",
+   "payloadType": "MiniGameSessionStartedEventData",
+   "payloadDef": "export interface MiniGameSessionStartedEventData {\n  sessionId: string;\n  gameType: string;\n  /** Người gọi POST /mini-game/sessions — cả 2 bên đã là bạn nên lộ userId là AN TOÀN. */\n  initiatorUserId: string;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
+     "line": 121,
+     "module": "mini-game",
+     "function": "createSession",
+     "quote": "event: RealtimeEvents.MiniGameSessionStarted,"
+    }
+   ],
+   "consumers": []
+  },
+  {
+   "key": "MiniGameSessionResolved",
+   "name": "minigame.session.resolved",
+   "doc": "Mini Game: ván oẳn tù tì đã resolve — publish SAU KHI CẢ HAI đã nộp move (docs/services/ mini-game-service.md § 3, § 5). KHÔNG có event trung gian kiểu \"1 bên đã nộp move\" — chỉ 1 event duy nhất kèm CẢ HAI move, để tránh channel side khác suy luận được ai nộp trước/sau.",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 96,
+   "quote": "MiniGameSessionResolved: 'minigame.session.resolved'",
+   "payloadType": "MiniGameSessionResolvedEventData",
+   "payloadDef": "export interface MiniGameSessionResolvedEventData {\n  sessionId: string;\n  /** rock | paper | scissors — của userLowId. Chỉ publish khi CẢ HAI đã nộp (đã resolve). */\n  lowMove: string;\n  /** rock | paper | scissors — của userHighId. */\n  highMove: string;\n  /** userId thắng — null nếu hoà. */\n  winnerUserId: string | null;\n}",
+   "producers": [
+    {
+     "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
+     "line": 227,
+     "module": "mini-game",
+     "function": "submitMove",
+     "quote": "event: RealtimeEvents.MiniGameSessionResolved,"
+    }
+   ],
+   "consumers": []
+  }
+ ],
+ "payloadTypesWithoutEvent": []
+}

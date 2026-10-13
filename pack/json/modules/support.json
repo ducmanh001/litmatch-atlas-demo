@@ -1,0 +1,84 @@
+{
+ "id": "support",
+ "kind": "core-api module",
+ "dir": "apps/core-api/src/modules/support",
+ "mapAnchor": "svc-support",
+ "role": "Sở hữu bảng support_tickets: người dùng gửi phản hồi/yêu cầu hỗ trợ (idempotent) và xem lại phiếu của mình; vòng đời trạng thái open -> in_progress -> resolved -> closed. Không có endpoint cho staff: staff xử lý qua module admin gọi vào SupportService, và support không gửi thông báo hay realtime khi staff trả lời.",
+ "tagline": "Phiếu hỗ trợ và vòng đời xử lý",
+ "owns": [
+  "bảng support_tickets (userId, category, message, status, staffResponse, idempotencyKey)",
+  "unique uq_support_ticket_user_idempotency (userId, idempotencyKey)"
+ ],
+ "tables": [
+  {
+   "name": "support_tickets",
+   "columns": 9,
+   "otherModules": []
+  }
+ ],
+ "tablesTouchedOfOthers": [],
+ "endpoints": {
+  "total": 2,
+  "public": 0,
+  "adminOnly": 0,
+  "idempotent": 1,
+  "webhooks": 0,
+  "explicitThrottle": 0
+ },
+ "endpointPaths": [
+  "/support"
+ ],
+ "realtimeProduced": [],
+ "jobs": [],
+ "redisCallSites": 0,
+ "redisOps": [],
+ "envVars": [],
+ "errorGroups": [
+  "SupportErrors"
+ ],
+ "errorCodes": 4,
+ "errorCodesUnused": 0,
+ "tests": {
+  "unit": 1,
+  "integration": 0
+ },
+ "docs": {
+  "path": null,
+  "lastChanged": null,
+  "commitsSince": null
+ },
+ "features": [
+  {
+   "id": "support-tickets",
+   "title": "Idempotent support tickets with customer tracking and staff workflow",
+   "status": "implemented"
+  }
+ ],
+ "churn": {
+  "commits": 2,
+  "recent": 0,
+  "fixes": 0,
+  "last": "2026-07-27"
+ },
+ "issues": [],
+ "mapCollaborators": [
+  {
+   "with": "postgres",
+   "kind": "infra",
+   "mechanism": "shared-db",
+   "direction": "out"
+  },
+  {
+   "with": "admin",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "web",
+   "kind": "client",
+   "mechanism": "http",
+   "direction": "in"
+  }
+ ]
+}

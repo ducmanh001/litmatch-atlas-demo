@@ -1,0 +1,214 @@
+{
+ "id": "safety",
+ "kind": "core-api module",
+ "dir": "apps/core-api/src/modules/safety",
+ "mapAnchor": "svc-safety",
+ "role": "Sở hữu log append-only Report/Block, trust-score penalty chống vote-kick và các câu hỏi đồng bộ 'hai người này có được thấy/ghép/nhắn nhau không' (isBlocked, getBlockedUserIds, getHiddenUserIds, canPair). KHÔNG sở hữu ban tài khoản (UserStatus.Banned nằm ở User/Admin), không sở hữu video/feed (module gọi tự validate target) và không áp penalty lên hàng đợi matching (Matching tự đọc trustScore).",
+ "tagline": "Report, block và luật ẩn người dùng",
+ "owns": [
+  "bảng reports (append-only; chỉ cột status pending|resolved|dismissed được sửa bởi moderator; targetType user|video)",
+  "bảng blocks (log action blocked|unblocked; trạng thái = dòng mới nhất theo cặp)",
+  "unique index uq_reports_video_reporter (1 người report 1 video 1 lần)"
+ ],
+ "tables": [
+  {
+   "name": "blocks",
+   "columns": 5,
+   "otherModules": []
+  },
+  {
+   "name": "reports",
+   "columns": 10,
+   "otherModules": []
+  }
+ ],
+ "tablesTouchedOfOthers": [
+  {
+   "table": "users",
+   "owner": "user",
+   "ops": {
+    "module": "safety",
+    "read": 1,
+    "write": 0,
+    "lock": 1,
+    "vias": [
+     "repository",
+     "repository(lock option)"
+    ],
+    "samples": [
+     {
+      "file": "apps/core-api/src/modules/safety/safety.service.ts",
+      "line": 87,
+      "op": "lock",
+      "via": "repository(lock option)",
+      "quote": "manager.getRepository(User).findOne({ where: { id: targetUserId }, lock: { mode: 'pessimistic_write' }, })"
+     }
+    ]
+   }
+  }
+ ],
+ "endpoints": {
+  "total": 4,
+  "public": 0,
+  "adminOnly": 0,
+  "idempotent": 0,
+  "webhooks": 0,
+  "explicitThrottle": 1
+ },
+ "endpointPaths": [
+  "/safety"
+ ],
+ "realtimeProduced": [],
+ "jobs": [],
+ "redisCallSites": 0,
+ "redisOps": [],
+ "envVars": [
+  {
+   "name": "SAFETY_REPORT_COOLDOWN_DAYS",
+   "file": "apps/core-api/src/modules/safety/safety.service.ts",
+   "line": 68,
+   "quote": "const pairCooldownDays = this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "7",
+   "required": false
+  },
+  {
+   "name": "SAFETY_TRUST_PENALTY_PER_REPORT",
+   "file": "apps/core-api/src/modules/safety/safety.service.ts",
+   "line": 72,
+   "quote": "const penaltyPerReport = this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "5",
+   "required": false
+  },
+  {
+   "name": "SAFETY_TRUST_PENALTY_DAILY_CAP",
+   "file": "apps/core-api/src/modules/safety/safety.service.ts",
+   "line": 76,
+   "quote": "const dailyCap = this.config.getOrThrow('SAFETY_TRUST_PENALTY_DAILY_CAP', {",
+   "class": "other",
+   "default": "20",
+   "required": false
+  },
+  {
+   "name": "SAFETY_TRUST_SCORE_FLOOR",
+   "file": "apps/core-api/src/modules/safety/safety.service.ts",
+   "line": 79,
+   "quote": "const floor = this.config.getOrThrow('SAFETY_TRUST_SCORE_FLOOR', {",
+   "class": "other",
+   "default": "0",
+   "required": false
+  },
+  {
+   "name": "SAFETY_REMATCH_COOLDOWN_DAYS",
+   "file": "apps/core-api/src/modules/safety/safety.service.ts",
+   "line": 297,
+   "quote": "const cooldownDays = this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "30",
+   "required": false
+  }
+ ],
+ "errorGroups": [
+  "SafetyErrors"
+ ],
+ "errorCodes": 3,
+ "errorCodesUnused": 0,
+ "tests": {
+  "unit": 1,
+  "integration": 0
+ },
+ "docs": {
+  "path": "docs/services/safety-service.md",
+  "lastChanged": "2026-07-28",
+  "commitsSince": 1
+ },
+ "features": [
+  {
+   "id": "safety",
+   "title": "Report, block and trust-safety decisions",
+   "status": "implemented"
+  }
+ ],
+ "churn": {
+  "commits": 8,
+  "recent": 0,
+  "fixes": 1,
+  "last": "2026-08-14"
+ },
+ "issues": [],
+ "mapCollaborators": [
+  {
+   "with": "user",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "user",
+   "kind": "service",
+   "mechanism": "shared-db",
+   "direction": "out"
+  },
+  {
+   "with": "postgres",
+   "kind": "infra",
+   "mechanism": "shared-db",
+   "direction": "out"
+  },
+  {
+   "with": "admin",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "discovery",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "feed",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "friend",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "matching",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "mood",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "movie-match",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "palm-match",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "short-video",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  }
+ ]
+}

@@ -1,0 +1,1666 @@
+{
+ "calls": 123,
+ "endpointsWithClient": 115,
+ "endpointsTotal": 196,
+ "noClient": [
+  {
+   "service": "app-shell",
+   "http": "GET",
+   "path": "/health",
+   "summary": "Liveness check tương thích endpoint cũ"
+  },
+  {
+   "service": "app-shell",
+   "http": "GET",
+   "path": "/health/live",
+   "summary": "Liveness: process đang chạy, không gọi dependency"
+  },
+  {
+   "service": "app-shell",
+   "http": "GET",
+   "path": "/health/ready",
+   "summary": "Readiness: Postgres và Redis sẵn sàng nhận traffic"
+  },
+  {
+   "service": "admin",
+   "http": "GET",
+   "path": "/api/v1/admin/users/{id}",
+   "summary": "Xem profile nội bộ user (status + role) — chỉ admin/moderator"
+  },
+  {
+   "service": "admin",
+   "http": "POST",
+   "path": "/api/v1/admin/videos/{id}/remove",
+   "summary": "Gỡ thủ công video published → removed (bổ sung cho auto-hide theo ngưỡng report) — audit log"
+  },
+  {
+   "service": "admin",
+   "http": "PATCH",
+   "path": "/api/v1/admin/support/tickets/{id}",
+   "summary": "Cập nhật trạng thái/phản hồi support — atomic audit log"
+  },
+  {
+   "service": "admin",
+   "http": "GET",
+   "path": "/api/v1/admin/economy/users/{userId}/transactions",
+   "summary": "Lịch sử giao dịch của user — cursor pagination, actor-scoped (chưa thấy giao dịch nhận quà)"
+  },
+  {
+   "service": "admin",
+   "http": "POST",
+   "path": "/api/v1/admin/economy/transactions/{id}/refund",
+   "summary": "Hoàn tiền thủ công 1 giao dịch — bút toán đảo, audit log, không sửa/xoá giao dịch gốc"
+  },
+  {
+   "service": "admin",
+   "http": "GET",
+   "path": "/api/v1/admin/config/economy-catalog",
+   "summary": "Catalog IAP/VIP gồm cả item inactive — chỉ admin"
+  },
+  {
+   "service": "admin",
+   "http": "PATCH",
+   "path": "/api/v1/admin/config/iap-products/{productId}",
+   "summary": "Bật/tắt IAP product — chỉ admin, có audit"
+  },
+  {
+   "service": "admin",
+   "http": "PATCH",
+   "path": "/api/v1/admin/config/vip-plans/{id}",
+   "summary": "Bật/tắt VIP plan — chỉ admin, có audit"
+  },
+  {
+   "service": "admin",
+   "http": "POST",
+   "path": "/api/v1/admin/notifications/broadcast",
+   "summary": "Gửi thông báo in-app + push best-effort theo audience — chỉ admin"
+  },
+  {
+   "service": "auth",
+   "http": "POST",
+   "path": "/api/v1/auth/refresh",
+   "summary": "Đổi refresh token (cookie httpOnly) lấy cặp token mới (rotation, phát hiện reuse) — cần header X-CSRF-Token (ADR 0007)"
+  },
+  {
+   "service": "auth",
+   "http": "POST",
+   "path": "/api/v1/auth/logout",
+   "summary": "Thu hồi refresh token, xoá cookie — cần header X-CSRF-Token (ADR 0007)"
+  },
+  {
+   "service": "auth",
+   "http": "POST",
+   "path": "/api/v1/auth/upgrade/otp",
+   "summary": "Gắn phone đã xác minh vào guest hiện tại, giữ nguyên userId"
+  },
+  {
+   "service": "auth",
+   "http": "POST",
+   "path": "/api/v1/auth/upgrade/social",
+   "summary": "Gắn social identity vào guest hiện tại, giữ nguyên userId"
+  },
+  {
+   "service": "auth",
+   "http": "GET",
+   "path": "/api/v1/auth/search-by-phone",
+   "summary": "Tìm hồ sơ bằng số điện thoại khi chủ hồ sơ cho phép"
+  },
+  {
+   "service": "avatar",
+   "http": "GET",
+   "path": "/api/v1/avatar/users/{userId}",
+   "summary": "Xem avatar người khác — public, không cần bạn bè"
+  },
+  {
+   "service": "calling",
+   "http": "POST",
+   "path": "/api/v1/calling/match-sessions/{matchSessionId}/join",
+   "summary": "Tạo/lấy call của voice session đã confirmed + mint LiveKit token (re-join hợp lệ khi chưa ended)"
+  },
+  {
+   "service": "calling",
+   "http": "POST",
+   "path": "/api/v1/calling/friends/{friendUserId}/join",
+   "summary": "Mở/lấy voice call lâu dài khi hai bên follow nhau"
+  },
+  {
+   "service": "calling",
+   "http": "POST",
+   "path": "/api/v1/calling/match-sessions/{matchSessionId}/end",
+   "summary": "Rời Voice Match — đóng call nếu đã tạo và luôn kết thúc session để có thể tìm lượt mới"
+  },
+  {
+   "service": "economy",
+   "http": "GET",
+   "path": "/api/v1/economy/payos/orders/{orderId}",
+   "summary": "Trạng thái nạp payOS từ server; return URL/browser không phải bằng chứng thanh toán"
+  },
+  {
+   "service": "economy",
+   "http": "GET",
+   "path": "/api/v1/economy/transactions",
+   "summary": "Lịch sử giao dịch — cursor pagination"
+  },
+  {
+   "service": "feed",
+   "http": "POST",
+   "path": "/api/v1/stories",
+   "summary": "Đăng story — hết hạn sau STORY_TTL_HOURS, guest bị chặn"
+  },
+  {
+   "service": "feed",
+   "http": "GET",
+   "path": "/api/v1/stories/ring",
+   "summary": "Story còn hạn của mình + bạn bè (Ring stories: chỉ bạn bè + mình)"
+  },
+  {
+   "service": "feed",
+   "http": "GET",
+   "path": "/api/v1/stories/{storyId}",
+   "summary": "Xem 1 story — ghi seen-state (trừ tự xem mình), 404 nếu hết hạn/bị block/audience không cho phép"
+  },
+  {
+   "service": "feed",
+   "http": "GET",
+   "path": "/api/v1/stories/{storyId}/viewers",
+   "summary": "Danh sách người đã xem — chỉ tác giả, lọc block hiện tại lúc đọc"
+  },
+  {
+   "service": "feed",
+   "http": "POST",
+   "path": "/api/v1/stories/{storyId}/reply",
+   "summary": "Trả lời story → gửi DM cho tác giả (chỉ bạn bè), snapshot mediaUrl vào attachment"
+  },
+  {
+   "service": "feed",
+   "http": "DELETE",
+   "path": "/api/v1/feed/comments/{commentId}",
+   "summary": "Xoá mềm comment — chỉ tác giả"
+  },
+  {
+   "service": "friend",
+   "http": "GET",
+   "path": "/api/v1/profiles/{profileUserId}/follow-counts",
+   "summary": "Số người theo dõi và đang theo dõi của một profile (gồm cả chính mình)"
+  },
+  {
+   "service": "friend",
+   "http": "GET",
+   "path": "/api/v1/profiles/{profileUserId}/actions",
+   "summary": "Trạng thái follow và quyền nhắn tin từ profile"
+  },
+  {
+   "service": "friend",
+   "http": "POST",
+   "path": "/api/v1/profiles/{profileUserId}/follow",
+   "summary": "Theo dõi một profile"
+  },
+  {
+   "service": "friend",
+   "http": "DELETE",
+   "path": "/api/v1/profiles/{profileUserId}/follow",
+   "summary": "Bỏ theo dõi một profile"
+  },
+  {
+   "service": "friend",
+   "http": "POST",
+   "path": "/api/v1/profiles/{profileUserId}/conversation",
+   "summary": "Mở chat trực tiếp từ profile; có thể yêu cầu tặng quà nếu profile quá hot"
+  },
+  {
+   "service": "friend",
+   "http": "GET",
+   "path": "/api/v1/friends/{friendUserId}/conversation",
+   "summary": "Conversation với 1 profile đã mở chat — nhảy thẳng từ profile sang chat"
+  },
+  {
+   "service": "friend",
+   "http": "GET",
+   "path": "/api/v1/conversations/{id}/streak",
+   "summary": "Streak trò chuyện — derive khi đọc, chưa có streak nào trả current=0"
+  },
+  {
+   "service": "gift",
+   "http": "POST",
+   "path": "/api/v1/profiles/{profileUserId}/gifts",
+   "summary": "Tặng quà để mở chat trực tiếp từ profile — ledger, GiftEvent và conversation atomic"
+  },
+  {
+   "service": "matching",
+   "http": "GET",
+   "path": "/api/v1/matching/invites/{id}",
+   "summary": "Chi tiết 1 lời mời — chỉ inviter/invitee xem được"
+  },
+  {
+   "service": "matching",
+   "http": "POST",
+   "path": "/api/v1/matching/invites/{id}/decline",
+   "summary": "Từ chối lời mời — chỉ invitee"
+  },
+  {
+   "service": "matching",
+   "http": "POST",
+   "path": "/api/v1/matching/invites/{id}/cancel",
+   "summary": "Huỷ lời mời đã gửi — chỉ inviter, trước khi có phản hồi"
+  },
+  {
+   "service": "matching",
+   "http": "POST",
+   "path": "/api/v1/matching/tickets/{id}/confirm",
+   "summary": "Tương thích session pending_confirm cũ — flow mới được xác nhận ngay khi ghép"
+  },
+  {
+   "service": "matching",
+   "http": "POST",
+   "path": "/api/v1/matching/tickets/{id}/speedup",
+   "summary": "Trả diamond để ưu tiên trong hàng đợi — rate limit theo giờ, chặn TRƯỚC khi trừ tiền"
+  },
+  {
+   "service": "media",
+   "http": "POST",
+   "path": "/api/v1/media/images/upload-intent",
+   "summary": "Xin presigned URL upload ảnh — body binary không đi qua core-api"
+  },
+  {
+   "service": "mini-game",
+   "http": "POST",
+   "path": "/api/v1/mini-game/sessions",
+   "summary": "Tạo ván oẳn tù tì với 1 bạn — idempotent (trả lại ván cũ nếu đang chờ move đúng cặp)"
+  },
+  {
+   "service": "mini-game",
+   "http": "POST",
+   "path": "/api/v1/mini-game/sessions/{id}/moves",
+   "summary": "Nộp move — chỉ nộp được 1 lần, không đổi lại được; resolve khi cả 2 đã nộp"
+  },
+  {
+   "service": "mini-game",
+   "http": "POST",
+   "path": "/api/v1/mini-game/sessions/{id}/cancel",
+   "summary": "Huỷ ván đang chờ move — chỉ 1 trong 2 participant"
+  },
+  {
+   "service": "mini-game",
+   "http": "GET",
+   "path": "/api/v1/mini-game/sessions/{id}",
+   "summary": "State hiện tại — poll fallback cho realtime; không lộ move đối phương trước khi resolved"
+  },
+  {
+   "service": "mood",
+   "http": "GET",
+   "path": "/api/v1/mood/presets",
+   "summary": "Catalog mood preset đang bật"
+  },
+  {
+   "service": "mood",
+   "http": "GET",
+   "path": "/api/v1/mood/status/me",
+   "summary": "Mood hiện tại của chính mình"
+  },
+  {
+   "service": "mood",
+   "http": "GET",
+   "path": "/api/v1/mood/status/{userId}",
+   "summary": "Mood công khai của 1 user — ẩn nếu có block 2 chiều (docs/services/mood-service.md § 3)"
+  },
+  {
+   "service": "mood",
+   "http": "POST",
+   "path": "/api/v1/mood/status",
+   "summary": "Set mood theo preset — auto-approve (W1 preset-only)"
+  },
+  {
+   "service": "mood",
+   "http": "DELETE",
+   "path": "/api/v1/mood/status",
+   "summary": "Tắt mood hiện tại"
+  },
+  {
+   "service": "movie-match",
+   "http": "PATCH",
+   "path": "/api/v1/movie-match/sessions/{id}/state",
+   "summary": "Cập nhật playback state (last-write-wins, không lock) — publish cho bên còn lại"
+  },
+  {
+   "service": "movie-match",
+   "http": "POST",
+   "path": "/api/v1/movie-match/sessions/{id}/end",
+   "summary": "Kết thúc phiên xem chung — chỉ 1 trong 2 participant"
+  },
+  {
+   "service": "movie-match",
+   "http": "PATCH",
+   "path": "/api/v1/movie-match/anon/sessions/{id}/state",
+   "summary": "Playback update phiên ẩn danh — chỉ khi đang xem"
+  },
+  {
+   "service": "movie-match",
+   "http": "POST",
+   "path": "/api/v1/movie-match/anon/sessions/{id}/finish",
+   "summary": "\"Kết thúc\" phần xem chung — mở phase rating cho cả hai, idempotent"
+  },
+  {
+   "service": "movie-match",
+   "http": "POST",
+   "path": "/api/v1/movie-match/anon/sessions/{id}/rating",
+   "summary": "Chốt like/boring/rude một lần; mutual-like mở Friendship"
+  },
+  {
+   "service": "movie-match",
+   "http": "POST",
+   "path": "/api/v1/movie-match/anon/sessions/{id}/messages",
+   "summary": "Chat ẩn danh trong phiên — sender là vai trò tương đối"
+  },
+  {
+   "service": "movie-match",
+   "http": "GET",
+   "path": "/api/v1/movie-match/anon/sessions/{id}/messages",
+   "summary": "List chat phiên ẩn danh (cursor theo seq)"
+  },
+  {
+   "service": "palm-match",
+   "http": "GET",
+   "path": "/api/v1/palm-match/reading",
+   "summary": "Nội dung bói toán giải trí — deterministic theo user + category + ngày server (guest dùng được)"
+  },
+  {
+   "service": "palm-match",
+   "http": "POST",
+   "path": "/api/v1/palm-match/sessions/{id}/flip",
+   "summary": "Lật lá của chính caller — idempotent"
+  },
+  {
+   "service": "palm-match",
+   "http": "POST",
+   "path": "/api/v1/palm-match/sessions/{id}/rating",
+   "summary": "Chốt like/skip một lần; mutual-like mở Friendship"
+  },
+  {
+   "service": "party-room",
+   "http": "POST",
+   "path": "/api/v1/party/rooms/{id}/members/{userId}/role",
+   "summary": "Host cấp/thu quyền speaker — cap speaker enforce dưới lock phòng, grant SFU đổi ngay"
+  },
+  {
+   "service": "party-room",
+   "http": "POST",
+   "path": "/api/v1/party/rooms/{id}/members/{userId}/speaker-invite",
+   "summary": "Host gửi lời mời audience lên speaker"
+  },
+  {
+   "service": "party-room",
+   "http": "POST",
+   "path": "/api/v1/party/rooms/{id}/speaker-invite/accept",
+   "summary": "Audience đồng ý lời mời lên speaker"
+  },
+  {
+   "service": "party-room",
+   "http": "POST",
+   "path": "/api/v1/party/rooms/{id}/speaker-invite/decline",
+   "summary": "Audience từ chối lời mời lên speaker"
+  },
+  {
+   "service": "safety",
+   "http": "DELETE",
+   "path": "/api/v1/safety/blocks/{targetUserId}",
+   "summary": "Unblock 1 user — idempotent"
+  },
+  {
+   "service": "safety",
+   "http": "GET",
+   "path": "/api/v1/safety/blocks/{targetUserId}",
+   "summary": "Đang có block chính mình → target hay không"
+  },
+  {
+   "service": "short-video",
+   "http": "POST",
+   "path": "/api/v1/videos/upload-intent",
+   "summary": "Xin URL upload presigned — body video KHÔNG gửi qua endpoint này, upload thẳng lên storage"
+  },
+  {
+   "service": "short-video",
+   "http": "POST",
+   "path": "/api/v1/videos/{id}/finalize",
+   "summary": "Báo đã upload xong — chuyển sang processing rồi transcode"
+  },
+  {
+   "service": "short-video",
+   "http": "GET",
+   "path": "/api/v1/videos/{id}",
+   "summary": "Chi tiết 1 video — tác giả xem được mọi status, người khác chỉ published"
+  },
+  {
+   "service": "short-video",
+   "http": "DELETE",
+   "path": "/api/v1/videos/{id}/comments/{commentId}",
+   "summary": "Xoá bình luận — tác giả comment hoặc tác giả video"
+  },
+  {
+   "service": "soul-match",
+   "http": "GET",
+   "path": "/api/v1/soul-match/sessions/{id}/messages",
+   "summary": "List message ẩn danh (cursor) — khoá khi phòng đã đóng"
+  },
+  {
+   "service": "soul-match",
+   "http": "POST",
+   "path": "/api/v1/soul-match/sessions/{id}/messages",
+   "summary": "Gửi message ẩn danh — chỉ khi phòng đang mở chat (server enforce giờ)"
+  },
+  {
+   "service": "soul-match",
+   "http": "POST",
+   "path": "/api/v1/soul-match/sessions/{id}/rating",
+   "summary": "Đánh giá đối phương (rude|boring|like) — immutable; cả 2 like → thành bạn + unlock profile"
+  },
+  {
+   "service": "soul-match",
+   "http": "GET",
+   "path": "/api/v1/soul-match/sessions/{id}/partner",
+   "summary": "Profile đối phương — 403 khi chưa match (Friendship là nguồn sự thật unlock)"
+  }
+ ],
+ "callsToUnknownEndpoints": [],
+ "clientsByEndpoint": {
+  "GET /api/v1/capabilities": [
+   {
+    "app": "web",
+    "file": "apps/web/src/shared/capabilities/api.ts",
+    "line": 24,
+    "quote": "const response = await apiClient.GET('/api/v1/capabilities');"
+   },
+   {
+    "app": "admin",
+    "file": "apps/admin/src/shared/capabilities/api.ts",
+    "line": 24,
+    "quote": "const response = await apiClient.GET('/api/v1/capabilities');"
+   }
+  ],
+  "GET /api/v1/admin/dashboard": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/dashboard/api.ts",
+    "line": 17,
+    "quote": "const response = await apiClient.GET('/api/v1/admin/dashboard');"
+   }
+  ],
+  "GET /api/v1/admin/users": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/users/api.ts",
+    "line": 27,
+    "quote": "const res = await apiClient.GET('/api/v1/admin/users', {"
+   }
+  ],
+  "POST /api/v1/admin/users/:p/ban": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/users/api.ts",
+    "line": 49,
+    "quote": "const res = await apiClient.POST('/api/v1/admin/users/{id}/ban', {"
+   }
+  ],
+  "POST /api/v1/admin/users/:p/unban": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/users/api.ts",
+    "line": 62,
+    "quote": "const res = await apiClient.POST('/api/v1/admin/users/{id}/unban', {"
+   }
+  ],
+  "GET /api/v1/admin/reports": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/moderation/api.ts",
+    "line": 25,
+    "quote": "const res = await apiClient.GET('/api/v1/admin/reports', {"
+   }
+  ],
+  "POST /api/v1/admin/reports/:p/resolve": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/moderation/api.ts",
+    "line": 44,
+    "quote": "const res = await apiClient.POST('/api/v1/admin/reports/{id}/resolve', {"
+   }
+  ],
+  "POST /api/v1/admin/reports/:p/dismiss": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/moderation/api.ts",
+    "line": 58,
+    "quote": "const res = await apiClient.POST('/api/v1/admin/reports/{id}/dismiss', {"
+   }
+  ],
+  "GET /api/v1/admin/videos/pending": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/moderation/videos-api.ts",
+    "line": 25,
+    "quote": "const res = await apiClient.GET('/api/v1/admin/videos/pending', {"
+   }
+  ],
+  "GET /api/v1/admin/videos/published": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/moderation/videos-api.ts",
+    "line": 38,
+    "quote": "const response = await apiClient.GET('/api/v1/admin/videos/published', {"
+   }
+  ],
+  "POST /api/v1/admin/videos/:p/approve": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/moderation/videos-api.ts",
+    "line": 51,
+    "quote": "const res = await apiClient.POST('/api/v1/admin/videos/{id}/approve', {"
+   }
+  ],
+  "POST /api/v1/admin/videos/:p/reject": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/moderation/videos-api.ts",
+    "line": 65,
+    "quote": "const res = await apiClient.POST('/api/v1/admin/videos/{id}/reject', {"
+   }
+  ],
+  "POST /api/v1/admin/rooms/:p/close": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/rooms/api.ts",
+    "line": 53,
+    "quote": "const response = await apiClient.POST('/api/v1/admin/rooms/{id}/close', {"
+   }
+  ],
+  "GET /api/v1/admin/rooms": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/rooms/api.ts",
+    "line": 40,
+    "quote": "const response = await apiClient.GET('/api/v1/admin/rooms', {"
+   }
+  ],
+  "GET /api/v1/admin/support/tickets": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/moderation/support-api.ts",
+    "line": 21,
+    "quote": "const response = await apiClient.GET('/api/v1/admin/support/tickets', {"
+   }
+  ],
+  "GET /api/v1/admin/gifts": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/gifts/api.ts",
+    "line": 19,
+    "quote": "const res = await apiClient.GET('/api/v1/admin/gifts');"
+   }
+  ],
+  "POST /api/v1/admin/gifts": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/gifts/api.ts",
+    "line": 30,
+    "quote": "const res = await apiClient.POST('/api/v1/admin/gifts', { body: input });"
+   }
+  ],
+  "PATCH /api/v1/admin/gifts/:p": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/gifts/api.ts",
+    "line": 41,
+    "quote": "const res = await apiClient.PATCH('/api/v1/admin/gifts/{id}', {"
+   }
+  ],
+  "GET /api/v1/admin/economy/wallet/:p": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/economy/api.ts",
+    "line": 25,
+    "quote": "const res = await apiClient.GET('/api/v1/admin/economy/wallet/{userId}', {"
+   }
+  ],
+  "GET /api/v1/admin/permissions": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/permissions/api.ts",
+    "line": 20,
+    "quote": "const response = await apiClient.GET('/api/v1/admin/permissions');"
+   }
+  ],
+  "PATCH /api/v1/admin/permissions/:p/:p": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/permissions/api.ts",
+    "line": 34,
+    "quote": "await apiClient.PATCH('/api/v1/admin/permissions/{role}/{permission}', {"
+   }
+  ],
+  "GET /api/v1/admin/staff": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/permissions/api.ts",
+    "line": 50,
+    "quote": "const response = await apiClient.GET('/api/v1/admin/staff');"
+   }
+  ],
+  "PATCH /api/v1/admin/staff/:p/role": [
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/permissions/api.ts",
+    "line": 63,
+    "quote": "const response = await apiClient.PATCH('/api/v1/admin/staff/{id}/role', {"
+   }
+  ],
+  "POST /api/v1/auth/guest": [
+   {
+    "app": "web",
+    "file": "apps/web/src/shared/auth/login-form.tsx",
+    "line": 250,
+    "quote": "const res = await apiClient.POST('/api/v1/auth/guest', {"
+   }
+  ],
+  "POST /api/v1/auth/otp/request": [
+   {
+    "app": "web",
+    "file": "apps/web/src/shared/auth/login-form.tsx",
+    "line": 195,
+    "quote": "const res = await apiClient.POST('/api/v1/auth/otp/request', {"
+   },
+   {
+    "app": "admin",
+    "file": "apps/admin/src/shared/auth/login-page.tsx",
+    "line": 90,
+    "quote": "const res = await apiClient.POST('/api/v1/auth/otp/request', {"
+   }
+  ],
+  "POST /api/v1/auth/otp/verify": [
+   {
+    "app": "web",
+    "file": "apps/web/src/shared/auth/login-form.tsx",
+    "line": 235,
+    "quote": "const res = await apiClient.POST('/api/v1/auth/otp/verify', {"
+   },
+   {
+    "app": "admin",
+    "file": "apps/admin/src/shared/auth/login-page.tsx",
+    "line": 111,
+    "quote": "const res = await apiClient.POST('/api/v1/auth/otp/verify', {"
+   }
+  ],
+  "POST /api/v1/auth/social": [
+   {
+    "app": "web",
+    "file": "apps/web/src/shared/auth/login-form.tsx",
+    "line": 279,
+    "quote": "const res = await apiClient.POST('/api/v1/auth/social', {"
+   },
+   {
+    "app": "admin",
+    "file": "apps/admin/src/shared/auth/login-page.tsx",
+    "line": 134,
+    "quote": "const res = await apiClient.POST('/api/v1/auth/social', {"
+   }
+  ],
+  "GET /api/v1/avatar/catalog": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/avatar/api.ts",
+    "line": 32,
+    "quote": "const res = await apiClient.GET('/api/v1/avatar/catalog');"
+   }
+  ],
+  "GET /api/v1/avatar/me/items": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/avatar/api.ts",
+    "line": 44,
+    "quote": "const res = await apiClient.GET('/api/v1/avatar/me/items');"
+   }
+  ],
+  "POST /api/v1/avatar/items/:p/claim": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/avatar/api.ts",
+    "line": 55,
+    "quote": "await apiClient.POST('/api/v1/avatar/items/{assetId}/claim', {"
+   }
+  ],
+  "POST /api/v1/avatar/items/:p/buy": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/avatar/api.ts",
+    "line": 70,
+    "quote": "const res = await apiClient.POST('/api/v1/avatar/items/{assetId}/buy', {"
+   }
+  ],
+  "PUT /api/v1/avatar/me/equip": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/avatar/api.ts",
+    "line": 90,
+    "quote": "const res = await apiClient.PUT('/api/v1/avatar/me/equip', {"
+   }
+  ],
+  "GET /api/v1/avatar/me": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/avatar/api.ts",
+    "line": 22,
+    "quote": "const res = await apiClient.GET('/api/v1/avatar/me');"
+   }
+  ],
+  "GET /api/v1/calling/calls/:p": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/voice-match/api.ts",
+    "line": 74,
+    "quote": "const res = await apiClient.GET('/api/v1/calling/calls/{id}', {"
+   }
+  ],
+  "POST /api/v1/calling/calls/:p/end": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/voice-match/api.ts",
+    "line": 91,
+    "quote": "const res = await apiClient.POST('/api/v1/calling/calls/{id}/end', {"
+   }
+  ],
+  "POST /api/v1/calling/calls/:p/like": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/voice-match/api.ts",
+    "line": 126,
+    "quote": "const res = await apiClient.POST('/api/v1/calling/calls/{id}/like', {"
+   }
+  ],
+  "GET /api/v1/discovery/browse": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/discovery/api.ts",
+    "line": 40,
+    "quote": "const res = await apiClient.GET('/api/v1/discovery/browse', {"
+   }
+  ],
+  "PUT /api/v1/discovery/nearby/location": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/discovery/api.ts",
+    "line": 92,
+    "quote": "await apiClient.PUT('/api/v1/discovery/nearby/location', {"
+   }
+  ],
+  "PUT /api/v1/discovery/nearby/visible": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/discovery/api.ts",
+    "line": 78,
+    "quote": "await apiClient.PUT('/api/v1/discovery/nearby/visible', {"
+   }
+  ],
+  "GET /api/v1/discovery/nearby": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/discovery/api.ts",
+    "line": 61,
+    "quote": "const res = await apiClient.GET('/api/v1/discovery/nearby', {"
+   }
+  ],
+  "GET /api/v1/economy/wallet": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/wallet/api.ts",
+    "line": 23,
+    "quote": "const res = await apiClient.GET('/api/v1/economy/wallet');"
+   }
+  ],
+  "GET /api/v1/economy/iap/products": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/wallet/api.ts",
+    "line": 33,
+    "quote": "const res = await apiClient.GET('/api/v1/economy/iap/products');"
+   }
+  ],
+  "GET /api/v1/economy/payos/packages": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/wallet/api.ts",
+    "line": 45,
+    "quote": "const res = await apiClient.GET('/api/v1/economy/payos/packages');"
+   }
+  ],
+  "POST /api/v1/economy/payos/orders": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/wallet/api.ts",
+    "line": 74,
+    "quote": "const res = await apiClient.POST('/api/v1/economy/payos/orders', {"
+   }
+  ],
+  "GET /api/v1/economy/vip/plans": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/wallet/api.ts",
+    "line": 89,
+    "quote": "const res = await apiClient.GET('/api/v1/economy/vip/plans');"
+   }
+  ],
+  "POST /api/v1/economy/iap/verify": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/wallet/api.ts",
+    "line": 122,
+    "quote": "const res = await apiClient.POST('/api/v1/economy/iap/verify', {"
+   }
+  ],
+  "POST /api/v1/economy/vip/purchase": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/wallet/api.ts",
+    "line": 100,
+    "quote": "const res = await apiClient.POST('/api/v1/economy/vip/purchase', {"
+   }
+  ],
+  "POST /api/v1/feed/posts": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/feed/api.ts",
+    "line": 70,
+    "quote": "const res = await apiClient.POST('/api/v1/feed/posts', {"
+   }
+  ],
+  "GET /api/v1/feed/posts": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/feed/api.ts",
+    "line": 33,
+    "quote": "const res = await apiClient.GET('/api/v1/feed/posts', {"
+   }
+  ],
+  "GET /api/v1/feed/users/:p/posts": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/feed/api.ts",
+    "line": 51,
+    "quote": "const res = await apiClient.GET('/api/v1/feed/users/{userId}/posts', {"
+   }
+  ],
+  "GET /api/v1/feed/posts/:p": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/feed/api.ts",
+    "line": 112,
+    "quote": "const res = await apiClient.GET('/api/v1/feed/posts/{postId}', {"
+   }
+  ],
+  "DELETE /api/v1/feed/posts/:p": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/feed/api.ts",
+    "line": 86,
+    "quote": "await apiClient.DELETE('/api/v1/feed/posts/{postId}', {"
+   }
+  ],
+  "POST /api/v1/feed/posts/:p/comments": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/feed/api.ts",
+    "line": 141,
+    "quote": "const res = await apiClient.POST('/api/v1/feed/posts/{postId}/comments', {"
+   }
+  ],
+  "GET /api/v1/feed/posts/:p/comments": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/feed/api.ts",
+    "line": 124,
+    "quote": "const res = await apiClient.GET('/api/v1/feed/posts/{postId}/comments', {"
+   }
+  ],
+  "POST /api/v1/feed/posts/:p/reactions": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/feed/api.ts",
+    "line": 176,
+    "quote": "? await apiClient.POST('/api/v1/feed/posts/{postId}/reactions', {"
+   }
+  ],
+  "DELETE /api/v1/feed/posts/:p/reactions": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/feed/api.ts",
+    "line": 179,
+    "quote": ": await apiClient.DELETE('/api/v1/feed/posts/{postId}/reactions', {"
+   }
+  ],
+  "GET /api/v1/feed/posts/:p/reactions": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/feed/api.ts",
+    "line": 163,
+    "quote": "const res = await apiClient.GET('/api/v1/feed/posts/{postId}/reactions', {"
+   }
+  ],
+  "GET /api/v1/profiles/:p/followers": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/profile/api.ts",
+    "line": 56,
+    "quote": "? await apiClient.GET('/api/v1/profiles/{profileUserId}/followers', {"
+   }
+  ],
+  "GET /api/v1/profiles/:p/following": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/profile/api.ts",
+    "line": 59,
+    "quote": ": await apiClient.GET('/api/v1/profiles/{profileUserId}/following', {"
+   }
+  ],
+  "GET /api/v1/friends": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/friend-chat/api.ts",
+    "line": 35,
+    "quote": "const res = await apiClient.GET('/api/v1/friends');"
+   }
+  ],
+  "GET /api/v1/friends/connections": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/friend-chat/api.ts",
+    "line": 49,
+    "quote": "const res = await apiClient.GET('/api/v1/friends/connections');"
+   }
+  ],
+  "GET /api/v1/conversations/:p/messages": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/friend-chat/api.ts",
+    "line": 91,
+    "quote": "const res = await apiClient.GET('/api/v1/conversations/{id}/messages', {"
+   }
+  ],
+  "POST /api/v1/conversations/:p/read": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/friend-chat/api.ts",
+    "line": 140,
+    "quote": "const res = await apiClient.POST('/api/v1/conversations/{id}/read', {"
+   }
+  ],
+  "POST /api/v1/conversations/:p/mute": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/friend-chat/api.ts",
+    "line": 158,
+    "quote": "const res = await apiClient.POST('/api/v1/conversations/{id}/mute', {"
+   }
+  ],
+  "POST /api/v1/conversations/:p/messages": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/friend-chat/api.ts",
+    "line": 115,
+    "quote": "const res = await apiClient.POST('/api/v1/conversations/{id}/messages', {"
+   }
+  ],
+  "GET /api/v1/gifts": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/party-room/api.ts",
+    "line": 287,
+    "quote": "const res = await apiClient.GET('/api/v1/gifts');"
+   },
+   {
+    "app": "web",
+    "file": "apps/web/src/features/profile/api.ts",
+    "line": 100,
+    "quote": "const response = await apiClient.GET('/api/v1/gifts');"
+   }
+  ],
+  "POST /api/v1/party/rooms/:p/gifts": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/party-room/api.ts",
+    "line": 301,
+    "quote": "const res = await apiClient.POST('/api/v1/party/rooms/{roomId}/gifts', {"
+   }
+  ],
+  "POST /api/v1/videos/:p/gifts": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/short-video/api.ts",
+    "line": 55,
+    "quote": "const res = await apiClient.POST('/api/v1/videos/{videoId}/gifts', {"
+   }
+  ],
+  "POST /api/v1/matching/invites": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/matching/invite-api.ts",
+    "line": 22,
+    "quote": "const res = await apiClient.POST('/api/v1/matching/invites', {"
+   }
+  ],
+  "GET /api/v1/matching/invites": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/matching/invite-api.ts",
+    "line": 35,
+    "quote": "const res = await apiClient.GET('/api/v1/matching/invites');"
+   }
+  ],
+  "POST /api/v1/matching/invites/:p/accept": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/matching/invite-api.ts",
+    "line": 45,
+    "quote": "const res = await apiClient.POST('/api/v1/matching/invites/{id}/accept', {"
+   }
+  ],
+  "POST /api/v1/matching/tickets": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/matching/api.ts",
+    "line": 47,
+    "quote": "const res = await apiClient.POST('/api/v1/matching/tickets', {"
+   }
+  ],
+  "GET /api/v1/matching/tickets/current": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/matching/api.ts",
+    "line": 67,
+    "quote": "const res = await apiClient.GET('/api/v1/matching/tickets/current');"
+   }
+  ],
+  "GET /api/v1/matching/tickets/:p": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/matching/api.ts",
+    "line": 80,
+    "quote": "const res = await apiClient.GET('/api/v1/matching/tickets/{id}', {"
+   }
+  ],
+  "DELETE /api/v1/matching/tickets/:p": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/matching/api.ts",
+    "line": 98,
+    "quote": "const res = await apiClient.DELETE('/api/v1/matching/tickets/{id}', {"
+   }
+  ],
+  "POST /api/v1/movie-match/sessions": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/movie-match/api.ts",
+    "line": 26,
+    "quote": "const res = await apiClient.POST('/api/v1/movie-match/sessions', {"
+   }
+  ],
+  "GET /api/v1/movie-match/sessions/:p": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/movie-match/api.ts",
+    "line": 39,
+    "quote": "const res = await apiClient.GET('/api/v1/movie-match/sessions/{id}', {"
+   }
+  ],
+  "POST /api/v1/movie-match/anon/queue": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/movie-match/anon-api.ts",
+    "line": 63,
+    "quote": "const response = await apiClient.POST('/api/v1/movie-match/anon/queue');"
+   }
+  ],
+  "GET /api/v1/movie-match/anon/current": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/movie-match/anon-api.ts",
+    "line": 38,
+    "quote": "const response = await apiClient.GET('/api/v1/movie-match/anon/current');"
+   }
+  ],
+  "DELETE /api/v1/movie-match/anon/current": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/movie-match/anon-api.ts",
+    "line": 70,
+    "quote": "const response = await apiClient.DELETE('/api/v1/movie-match/anon/current');"
+   }
+  ],
+  "POST /api/v1/movie-match/anon/sessions/:p/reactions": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/movie-match/anon-api.ts",
+    "line": 160,
+    "quote": "await apiClient.POST('/api/v1/movie-match/anon/sessions/{id}/reactions', {"
+   }
+  ],
+  "GET /api/v1/notifications": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/notification/api.ts",
+    "line": 63,
+    "quote": "const res = await apiClient.GET('/api/v1/notifications', {"
+   }
+  ],
+  "GET /api/v1/notifications/unread-count": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/notification/api.ts",
+    "line": 51,
+    "quote": "const res = await apiClient.GET('/api/v1/notifications/unread-count');"
+   }
+  ],
+  "POST /api/v1/notifications/web-push/subscription": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/notification/api.ts",
+    "line": 34,
+    "quote": "await apiClient.POST('/api/v1/notifications/web-push/subscription', {"
+   }
+  ],
+  "DELETE /api/v1/notifications/web-push/subscription": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/notification/api.ts",
+    "line": 42,
+    "quote": "await apiClient.DELETE('/api/v1/notifications/web-push/subscription', {"
+   }
+  ],
+  "POST /api/v1/notifications/:p/read": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/notification/api.ts",
+    "line": 82,
+    "quote": "await apiClient.POST('/api/v1/notifications/{notificationId}/read', {"
+   }
+  ],
+  "POST /api/v1/palm-match/queue": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/palm-match/api.ts",
+    "line": 52,
+    "quote": "const response = await apiClient.POST('/api/v1/palm-match/queue');"
+   }
+  ],
+  "GET /api/v1/palm-match/current": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/palm-match/api.ts",
+    "line": 27,
+    "quote": "const response = await apiClient.GET('/api/v1/palm-match/current');"
+   }
+  ],
+  "DELETE /api/v1/palm-match/current": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/palm-match/api.ts",
+    "line": 84,
+    "quote": "const response = await apiClient.DELETE('/api/v1/palm-match/current');"
+   }
+  ],
+  "POST /api/v1/party/rooms": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/party-room/api.ts",
+    "line": 90,
+    "quote": "const res = await apiClient.POST('/api/v1/party/rooms', {"
+   }
+  ],
+  "GET /api/v1/party/rooms": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/party-room/api.ts",
+    "line": 66,
+    "quote": "const res = await apiClient.GET('/api/v1/party/rooms', {"
+   },
+   {
+    "app": "admin",
+    "file": "apps/admin/src/features/rooms/api.ts",
+    "line": 27,
+    "quote": "const res = await apiClient.GET('/api/v1/party/rooms', {"
+   }
+  ],
+  "GET /api/v1/party/rooms/:p": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/party-room/api.ts",
+    "line": 107,
+    "quote": "const res = await apiClient.GET('/api/v1/party/rooms/{id}', {"
+   }
+  ],
+  "GET /api/v1/party/rooms/:p/comments": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/party-room/api.ts",
+    "line": 157,
+    "quote": "const res = await apiClient.GET('/api/v1/party/rooms/{id}/comments', {"
+   }
+  ],
+  "POST /api/v1/party/rooms/:p/comments": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/party-room/api.ts",
+    "line": 176,
+    "quote": "const res = await apiClient.POST('/api/v1/party/rooms/{id}/comments', {"
+   }
+  ],
+  "POST /api/v1/party/rooms/:p/join": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/party-room/api.ts",
+    "line": 124,
+    "quote": "const res = await apiClient.POST('/api/v1/party/rooms/{id}/join', {"
+   }
+  ],
+  "POST /api/v1/party/rooms/:p/leave": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/party-room/api.ts",
+    "line": 192,
+    "quote": "await apiClient.POST('/api/v1/party/rooms/{id}/leave', {"
+   }
+  ],
+  "POST /api/v1/safety/reports": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/friend-chat/api.ts",
+    "line": 195,
+    "quote": "const response = await apiClient.POST('/api/v1/safety/reports', {"
+   }
+  ],
+  "POST /api/v1/safety/blocks/:p": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/friend-chat/api.ts",
+    "line": 181,
+    "quote": "await apiClient.POST('/api/v1/safety/blocks/{targetUserId}', {"
+   }
+  ],
+  "GET /api/v1/videos": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/short-video/api.ts",
+    "line": 34,
+    "quote": "const res = await apiClient.GET('/api/v1/videos', {"
+   }
+  ],
+  "POST /api/v1/videos/:p/report": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/short-video/api.ts",
+    "line": 148,
+    "quote": "await apiClient.POST('/api/v1/videos/{id}/report', {"
+   }
+  ],
+  "POST /api/v1/videos/:p/views": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/short-video/api.ts",
+    "line": 137,
+    "quote": "await apiClient.POST('/api/v1/videos/{id}/views', {"
+   }
+  ],
+  "POST /api/v1/videos/:p/reactions": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/short-video/api.ts",
+    "line": 112,
+    "quote": "? await apiClient.POST('/api/v1/videos/{id}/reactions', {"
+   }
+  ],
+  "DELETE /api/v1/videos/:p/reactions": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/short-video/api.ts",
+    "line": 115,
+    "quote": ": await apiClient.DELETE('/api/v1/videos/{id}/reactions', {"
+   }
+  ],
+  "POST /api/v1/videos/:p/comments": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/short-video/api.ts",
+    "line": 92,
+    "quote": "const res = await apiClient.POST('/api/v1/videos/{id}/comments', {"
+   }
+  ],
+  "GET /api/v1/videos/:p/comments": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/short-video/api.ts",
+    "line": 74,
+    "quote": "const res = await apiClient.GET('/api/v1/videos/{id}/comments', {"
+   }
+  ],
+  "GET /api/v1/soul-match/sessions/:p": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/soul-match/api.ts",
+    "line": 38,
+    "quote": "const res = await apiClient.GET('/api/v1/soul-match/sessions/{id}', {"
+   }
+  ],
+  "POST /api/v1/soul-match/sessions/:p/end": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/soul-match/api.ts",
+    "line": 126,
+    "quote": "await apiClient.POST('/api/v1/soul-match/sessions/{id}/end', {"
+   }
+  ],
+  "POST /api/v1/support/tickets": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/support/api.ts",
+    "line": 35,
+    "quote": "const response = await apiClient.POST('/api/v1/support/tickets', {"
+   }
+  ],
+  "GET /api/v1/support/tickets/me": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/support/api.ts",
+    "line": 19,
+    "quote": "const response = await apiClient.GET('/api/v1/support/tickets/me', {"
+   }
+  ],
+  "GET /api/v1/users/me": [
+   {
+    "app": "web",
+    "file": "apps/web/src/shared/auth/use-current-user.ts",
+    "line": 20,
+    "quote": "const res = await apiClient.GET('/api/v1/users/me');"
+   }
+  ],
+  "PATCH /api/v1/users/me": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/profile/api.ts",
+    "line": 190,
+    "quote": "const res = await apiClient.PATCH('/api/v1/users/me', { body: input });"
+   }
+  ],
+  "GET /api/v1/users/me/privacy": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/privacy/api.ts",
+    "line": 20,
+    "quote": "const response = await apiClient.GET('/api/v1/users/me/privacy');"
+   }
+  ],
+  "PUT /api/v1/users/me/privacy": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/privacy/api.ts",
+    "line": 31,
+    "quote": "const response = await apiClient.PUT('/api/v1/users/me/privacy', {"
+   }
+  ],
+  "GET /api/v1/users/:p/presence": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/profile/api.ts",
+    "line": 177,
+    "quote": "const response = await apiClient.GET('/api/v1/users/{id}/presence', {"
+   }
+  ],
+  "GET /api/v1/users/:p": [
+   {
+    "app": "web",
+    "file": "apps/web/src/features/friend-chat/api.ts",
+    "line": 76,
+    "quote": "const res = await apiClient.GET('/api/v1/users/{id}', {"
+   },
+   {
+    "app": "web",
+    "file": "apps/web/src/features/party-room/api.ts",
+    "line": 322,
+    "quote": "const res = await apiClient.GET('/api/v1/users/{id}', {"
+   },
+   {
+    "app": "web",
+    "file": "apps/web/src/features/profile/api.ts",
+    "line": 74,
+    "quote": "const response = await apiClient.GET('/api/v1/users/{id}', {"
+   }
+  ]
+ },
+ "webPages": [
+  {
+   "app": "web",
+   "route": "/chat/:friendUserId/call",
+   "file": "apps/web/src/app/(app)/chat/[friendUserId]/call/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/chat/:friendUserId",
+   "file": "apps/web/src/app/(app)/chat/[friendUserId]/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/discovery",
+   "file": "apps/web/src/app/(app)/discovery/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/feed",
+   "file": "apps/web/src/app/(app)/feed/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/feed/:postId",
+   "file": "apps/web/src/app/(app)/feed/[postId]/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/friends",
+   "file": "apps/web/src/app/(app)/friends/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/home",
+   "file": "apps/web/src/app/(app)/home/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/matching",
+   "file": "apps/web/src/app/(app)/matching/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/matching/soul/:sessionId",
+   "file": "apps/web/src/app/(app)/matching/soul/[sessionId]/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/matching/voice/:sessionId",
+   "file": "apps/web/src/app/(app)/matching/voice/[sessionId]/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/messages",
+   "file": "apps/web/src/app/(app)/messages/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/more",
+   "file": "apps/web/src/app/(app)/more/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/movie-match",
+   "file": "apps/web/src/app/(app)/movie-match/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/movie-match/:sessionId",
+   "file": "apps/web/src/app/(app)/movie-match/[sessionId]/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/palm-match",
+   "file": "apps/web/src/app/(app)/palm-match/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/party",
+   "file": "apps/web/src/app/(app)/party/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/party/:roomId",
+   "file": "apps/web/src/app/(app)/party/[roomId]/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/profile/edit",
+   "file": "apps/web/src/app/(app)/profile/edit/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/profile",
+   "file": "apps/web/src/app/(app)/profile/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/users/:id/followers",
+   "file": "apps/web/src/app/(app)/users/[id]/followers/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/users/:id/following",
+   "file": "apps/web/src/app/(app)/users/[id]/following/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/users/:id",
+   "file": "apps/web/src/app/(app)/users/[id]/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/video",
+   "file": "apps/web/src/app/(app)/video/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/wallet",
+   "file": "apps/web/src/app/(app)/wallet/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/about",
+   "file": "apps/web/src/app/(public)/about/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/community-guidelines",
+   "file": "apps/web/src/app/(public)/community-guidelines/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/contact",
+   "file": "apps/web/src/app/(public)/contact/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/cookies",
+   "file": "apps/web/src/app/(public)/cookies/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/features",
+   "file": "apps/web/src/app/(public)/features/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/help",
+   "file": "apps/web/src/app/(public)/help/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/how-it-works",
+   "file": "apps/web/src/app/(public)/how-it-works/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/",
+   "file": "apps/web/src/app/(public)/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/privacy",
+   "file": "apps/web/src/app/(public)/privacy/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/privacy-policy",
+   "file": "apps/web/src/app/(public)/privacy-policy/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/terms",
+   "file": "apps/web/src/app/(public)/terms/page.tsx"
+  },
+  {
+   "app": "web",
+   "route": "/login",
+   "file": "apps/web/src/app/login/page.tsx"
+  }
+ ],
+ "adminRoutes": [
+  {
+   "app": "admin",
+   "route": "/login",
+   "file": "apps/admin/src/app/router.tsx",
+   "line": 17
+  },
+  {
+   "app": "admin",
+   "route": "users",
+   "file": "apps/admin/src/app/router.tsx",
+   "line": 39
+  },
+  {
+   "app": "admin",
+   "route": "moderation",
+   "file": "apps/admin/src/app/router.tsx",
+   "line": 47
+  },
+  {
+   "app": "admin",
+   "route": "gifts",
+   "file": "apps/admin/src/app/router.tsx",
+   "line": 55
+  },
+  {
+   "app": "admin",
+   "route": "economy",
+   "file": "apps/admin/src/app/router.tsx",
+   "line": 63
+  },
+  {
+   "app": "admin",
+   "route": "rooms",
+   "file": "apps/admin/src/app/router.tsx",
+   "line": 71
+  },
+  {
+   "app": "admin",
+   "route": "config",
+   "file": "apps/admin/src/app/router.tsx",
+   "line": 79
+  },
+  {
+   "app": "admin",
+   "route": "permissions",
+   "file": "apps/admin/src/app/router.tsx",
+   "line": 87
+  }
+ ]
+}

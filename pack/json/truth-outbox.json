@@ -1,0 +1,46 @@
+{
+ "writers": [
+  {
+   "file": "apps/core-api/src/modules/economy/economy.service.ts",
+   "line": 429,
+   "module": "economy",
+   "fields": {
+    "topic": "ECONOMY_EVENTS_TOPIC",
+    "eventType": "'economy.vip.purchased'",
+    "payload": "{ version: 1, userId, planId, tier: plan.tier, vipExpiresAt: newExpiry.toISOString(), }"
+   },
+   "quote": "manager.create(OutboxEvent, {"
+  },
+  {
+   "file": "apps/core-api/src/modules/economy/economy.service.ts",
+   "line": 648,
+   "module": "economy",
+   "fields": {
+    "topic": "ECONOMY_EVENTS_TOPIC",
+    "eventType": "'economy.gift.sent'",
+    "payload": "{ version: 1, transactionId: txn.id, senderUserId, receiverUserId, priceDiamond: price.toString(), pointsAwarded: points.toString(), ...metadata, }"
+   },
+   "quote": "manager.create(OutboxEvent, {"
+  },
+  {
+   "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+   "line": 478,
+   "module": "economy",
+   "fields": {
+    "topic": "ECONOMY_EVENTS_TOPIC",
+    "eventType": "outboxEventTypeOverride ?? (balanceDelta > 0n ? 'economy.diamond.credited' : 'economy.diamond.debited')",
+    "payload": "{ version: 1, transactionId: txn.id, transactionType: txn.type, userId, amount: (balanceDelta > 0n ? balanceDelta : -balanceDelta ).toString(), }"
+   },
+   "quote": "manager.create(OutboxEvent, {"
+  }
+ ],
+ "topics": [
+  {
+   "name": "ECONOMY_EVENTS_TOPIC",
+   "value": "litmatch.economy.events",
+   "file": "apps/core-api/src/modules/economy/economy.constants.ts",
+   "line": 11,
+   "quote": "ECONOMY_EVENTS_TOPIC = 'litmatch.economy.events'"
+  }
+ ]
+}

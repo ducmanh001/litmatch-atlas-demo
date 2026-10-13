@@ -1,0 +1,216 @@
+{
+ "id": "user",
+ "kind": "core-api module",
+ "dir": "apps/core-api/src/modules/user",
+ "mapAnchor": "svc-user",
+ "role": "Sở hữu bảng users (hồ sơ, status, role, isGuest, trustScore) và user_privacy_settings; cung cấp UserService/PrivacySettingsService/PublicProfileDto cho gần như mọi module khác. Không sở hữu danh tính đăng nhập (auth), không biết khái niệm block/report (safety) và không tự ghi presence (signaling-gateway ghi, user chỉ đọc).",
+ "tagline": "Hồ sơ người dùng, quyền riêng tư, trạng thái",
+ "owns": [
+  "bảng users (nickname, gender, birthDate, region, interests, seeking*, trustScore, status, isGuest, role)",
+  "bảng user_privacy_settings (searchableByPhone, hideProfile, showOnlineStatus)",
+  "đọc Redis ZSET presence realtimePresenceKey(userId) (do signaling-gateway ghi)"
+ ],
+ "tables": [
+  {
+   "name": "user_privacy_settings",
+   "columns": 5,
+   "otherModules": [
+    "discovery",
+    "feed"
+   ]
+  },
+  {
+   "name": "users",
+   "columns": 16,
+   "otherModules": [
+    "auth",
+    "friend",
+    "matching",
+    "safety"
+   ]
+  }
+ ],
+ "tablesTouchedOfOthers": [],
+ "endpoints": {
+  "total": 6,
+  "public": 0,
+  "adminOnly": 0,
+  "idempotent": 0,
+  "webhooks": 0,
+  "explicitThrottle": 0
+ },
+ "endpointPaths": [
+  "/users"
+ ],
+ "realtimeProduced": [],
+ "jobs": [],
+ "redisCallSites": 2,
+ "redisOps": [
+  "zremrangebyscore",
+  "zcard"
+ ],
+ "envVars": [
+  {
+   "name": "REDIS_URL",
+   "file": "apps/core-api/src/modules/user/redis/user-redis.provider.ts",
+   "line": 15,
+   "quote": "createCoreRedisClient(config.getOrThrow('REDIS_URL', { infer: true })),",
+   "class": "endpoint",
+   "default": "redis://localhost:6379",
+   "required": false
+  },
+  {
+   "name": "USER_DEFAULT_AVATAR_ID",
+   "file": "apps/core-api/src/modules/user/user.service.ts",
+   "line": 78,
+   "quote": "avatarId: this.config.getOrThrow('USER_DEFAULT_AVATAR_ID', {",
+   "class": "other",
+   "default": "default-01",
+   "required": false
+  }
+ ],
+ "errorGroups": [
+  "UserErrors"
+ ],
+ "errorCodes": 3,
+ "errorCodesUnused": 0,
+ "tests": {
+  "unit": 4,
+  "integration": 0
+ },
+ "docs": {
+  "path": null,
+  "lastChanged": null,
+  "commitsSince": null
+ },
+ "features": [
+  {
+   "id": "user-profile-open-entry",
+   "title": "Optional profile birth date without an age-based access gate",
+   "status": "implemented"
+  }
+ ],
+ "churn": {
+  "commits": 13,
+  "recent": 0,
+  "fixes": 0,
+  "last": "2026-08-12"
+ },
+ "issues": [],
+ "mapCollaborators": [
+  {
+   "with": "redis",
+   "kind": "infra",
+   "mechanism": "redis-state",
+   "direction": "out"
+  },
+  {
+   "with": "postgres",
+   "kind": "infra",
+   "mechanism": "shared-db",
+   "direction": "out"
+  },
+  {
+   "with": "admin",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "auth",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "calling",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "discovery",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "feed",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "friend",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "gift",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "matching",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "party-room",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "safety",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "short-video",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "soul-match",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "signaling-gateway",
+   "kind": "service",
+   "mechanism": "redis-state",
+   "direction": "both"
+  },
+  {
+   "with": "auth",
+   "kind": "service",
+   "mechanism": "shared-db",
+   "direction": "in"
+  },
+  {
+   "with": "safety",
+   "kind": "service",
+   "mechanism": "shared-db",
+   "direction": "in"
+  },
+  {
+   "with": "friend",
+   "kind": "service",
+   "mechanism": "shared-db",
+   "direction": "in"
+  },
+  {
+   "with": "matching",
+   "kind": "service",
+   "mechanism": "shared-db",
+   "direction": "in"
+  }
+ ]
+}

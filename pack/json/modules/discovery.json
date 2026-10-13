@@ -1,0 +1,222 @@
+{
+ "id": "discovery",
+ "kind": "core-api module",
+ "dir": "apps/core-api/src/modules/discovery",
+ "mapAnchor": "svc-discovery",
+ "role": "Sở hữu user_locations (toạ độ đã quantize ~500m) và discovery_settings (opt-in nearbyVisible), cộng logic browse/nearby: ghép bộ lọc, loại block/report, jitter khoảng cách, rate limit. Không sở hữu bảng users/privacy (module user), không sở hữu block/report (safety), không có logic mời Voice/Soul Match (matching).",
+ "tagline": "Duyệt người dùng và Nearby ẩn vị trí",
+ "owns": [
+  "bảng user_locations (latQuantized, lonQuantized, updatedAt)",
+  "bảng discovery_settings (nearbyVisible mặc định false)",
+  "Redis counter discovery:location-update:count:{userId} và discovery:nearby-query:count:{userId} (TTL 3600s)"
+ ],
+ "tables": [
+  {
+   "name": "discovery_settings",
+   "columns": 2,
+   "otherModules": []
+  },
+  {
+   "name": "user_locations",
+   "columns": 4,
+   "otherModules": []
+  }
+ ],
+ "tablesTouchedOfOthers": [
+  {
+   "table": "user_privacy_settings",
+   "owner": "user",
+   "ops": {
+    "module": "discovery",
+    "read": 1,
+    "write": 0,
+    "lock": 0,
+    "vias": [
+     "raw-sql"
+    ],
+    "samples": [
+     {
+      "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+      "line": 315,
+      "op": "read",
+      "via": "raw-sql",
+      "quote": "LEFT JOIN user_privacy_settings ups ON ups.user_id = ul.user_id WHERE ds.nearby_visible"
+     }
+    ]
+   }
+  }
+ ],
+ "endpoints": {
+  "total": 4,
+  "public": 0,
+  "adminOnly": 0,
+  "idempotent": 0,
+  "webhooks": 0,
+  "explicitThrottle": 0
+ },
+ "endpointPaths": [
+  "/discovery"
+ ],
+ "realtimeProduced": [],
+ "jobs": [],
+ "redisCallSites": 0,
+ "redisOps": [],
+ "envVars": [
+  {
+   "name": "DISCOVERY_GUEST_VISIBLE",
+   "file": "apps/core-api/src/modules/discovery/discovery.service.ts",
+   "line": 58,
+   "quote": "excludeGuests: !this.config.getOrThrow('DISCOVERY_GUEST_VISIBLE', {",
+   "class": "other",
+   "default": "false",
+   "required": false
+  },
+  {
+   "name": "DISCOVERY_AGE_BUCKETS",
+   "file": "apps/core-api/src/modules/discovery/discovery.service.ts",
+   "line": 99,
+   "quote": "const boundaries = this.config",
+   "class": "other",
+   "default": "18,25,31,41",
+   "required": false
+  },
+  {
+   "name": "DISCOVERY_LOCATION_UPDATE_RATE_LIMIT_PER_HOUR",
+   "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+   "line": 79,
+   "quote": "this.config.getOrThrow('DISCOVERY_LOCATION_UPDATE_RATE_LIMIT_PER_HOUR', {",
+   "class": "tuning",
+   "default": "12",
+   "required": false
+  },
+  {
+   "name": "DISCOVERY_LOCATION_QUANTIZE_DEGREES",
+   "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+   "line": 92,
+   "quote": "const step = this.config.getOrThrow('DISCOVERY_LOCATION_QUANTIZE_DEGREES', {",
+   "class": "other",
+   "default": "0.0045",
+   "required": false
+  },
+  {
+   "name": "DISCOVERY_NEARBY_QUERY_RATE_LIMIT_PER_HOUR",
+   "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+   "line": 131,
+   "quote": "this.config.getOrThrow('DISCOVERY_NEARBY_QUERY_RATE_LIMIT_PER_HOUR', {",
+   "class": "tuning",
+   "default": "30",
+   "required": false
+  },
+  {
+   "name": "DISCOVERY_LOCATION_FRESHNESS_HOURS",
+   "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+   "line": 158,
+   "quote": "const freshnessHours = this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "24",
+   "required": false
+  },
+  {
+   "name": "DISCOVERY_NEARBY_RADIUS_KM",
+   "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+   "line": 171,
+   "quote": "const radiusKm = this.config.getOrThrow('DISCOVERY_NEARBY_RADIUS_KM', {",
+   "class": "other",
+   "default": "20",
+   "required": false
+  },
+  {
+   "name": "DISCOVERY_DISTANCE_BUCKETS_KM",
+   "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+   "line": 205,
+   "quote": "const distanceBucketsCsv = this.config.getOrThrow(",
+   "class": "other",
+   "default": "1,3,5,10,20",
+   "required": false
+  },
+  {
+   "name": "DISCOVERY_NEARBY_CANDIDATE_CAP",
+   "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+   "line": 305,
+   "quote": "const cap = this.config.getOrThrow('DISCOVERY_NEARBY_CANDIDATE_CAP', {",
+   "class": "other",
+   "default": "500",
+   "required": false
+  },
+  {
+   "name": "REDIS_URL",
+   "file": "apps/core-api/src/modules/discovery/redis/discovery-redis.provider.ts",
+   "line": 24,
+   "quote": "createCoreRedisClient(config.getOrThrow('REDIS_URL', { infer: true })),",
+   "class": "endpoint",
+   "default": "redis://localhost:6379",
+   "required": false
+  }
+ ],
+ "errorGroups": [
+  "DiscoveryErrors"
+ ],
+ "errorCodes": 7,
+ "errorCodesUnused": 0,
+ "tests": {
+  "unit": 3,
+  "integration": 1
+ },
+ "docs": {
+  "path": "docs/services/discovery-service.md",
+  "lastChanged": "2026-08-19",
+  "commitsSince": 0
+ },
+ "features": [
+  {
+   "id": "avatar-discovery-mood",
+   "title": "Avatar, discovery/nearby and mood",
+   "status": "implemented"
+  }
+ ],
+ "churn": {
+  "commits": 5,
+  "recent": 0,
+  "fixes": 0,
+  "last": "2026-08-01"
+ },
+ "issues": [],
+ "mapCollaborators": [
+  {
+   "with": "safety",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "user",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "redis",
+   "kind": "infra",
+   "mechanism": "redis-state",
+   "direction": "out"
+  },
+  {
+   "with": "postgres",
+   "kind": "infra",
+   "mechanism": "shared-db",
+   "direction": "out"
+  },
+  {
+   "with": "user",
+   "kind": "service",
+   "mechanism": "shared-db",
+   "direction": "out"
+  },
+  {
+   "with": "web",
+   "kind": "client",
+   "mechanism": "http",
+   "direction": "in"
+  }
+ ]
+}

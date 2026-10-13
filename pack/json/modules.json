@@ -1,0 +1,5972 @@
+{
+ "generatedAt": "2026-10-10",
+ "churnSince": "2026-09-10",
+ "units": [
+  {
+   "id": "admin",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/admin",
+   "mapAnchor": "svc-admin",
+   "role": "AdminModule là lớp điều phối back-office cho apps/admin: kiểm quyền (role + permission theo bảng admin_role_permissions), gọi đúng service của module sở hữu dữ liệu và ghi admin_audit_logs CÙNG transaction với hành động. Nó chỉ sở hữu ma trận quyền; KHÔNG sở hữu user/ví/ledger/video/phòng/report/ticket/gift/notification và không tự ghi vào bảng của họ.",
+   "tagline": "API back-office: RBAC, audit, điều phối module",
+   "owns": [
+    "bảng admin_role_permissions (role x permission -> enabled)",
+    "điều phối ghi bảng admin_audit_logs qua common/audit (bảng thuộc AuditModule, append-only bằng DB trigger)"
+   ],
+   "tables": [
+    {
+     "name": "admin_role_permissions",
+     "columns": 4,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [],
+   "endpoints": {
+    "total": 31,
+    "public": 0,
+    "adminOnly": 31,
+    "idempotent": 0,
+    "webhooks": 0,
+    "explicitThrottle": 0
+   },
+   "endpointPaths": [
+    "/admin"
+   ],
+   "realtimeProduced": [],
+   "jobs": [],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [],
+   "errorGroups": [
+    "AdminErrors"
+   ],
+   "errorCodes": 6,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 2,
+    "integration": 1
+   },
+   "docs": {
+    "path": null,
+    "lastChanged": null,
+    "commitsSince": null
+   },
+   "features": [
+    {
+     "id": "runtime-capabilities",
+     "title": "Server-derived runtime availability contract for frontend providers",
+     "status": "implemented"
+    },
+    {
+     "id": "support-tickets",
+     "title": "Idempotent support tickets with customer tracking and staff workflow",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 9,
+    "recent": 0,
+    "fixes": 0,
+    "last": "2026-08-12"
+   },
+   "issues": [],
+   "mapCollaborators": [
+    {
+     "with": "economy",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "gift",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "notification",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "party-room",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "safety",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "short-video",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "support",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "user",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "admin-console",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "in"
+    },
+    {
+     "with": "kafka",
+     "kind": "infra",
+     "mechanism": "kafka",
+     "direction": "out"
+    }
+   ]
+  },
+  {
+   "id": "auth",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/auth",
+   "mapAnchor": "svc-auth",
+   "role": "Sở hữu danh tính đăng nhập (auth_identities), OTP điện thoại, refresh-token family và việc ký access token JWT / guest device token. Không sở hữu hồ sơ user (module user), không gửi SMS thật và không tự verify token ở các route khác (JwtAuthGuard global làm việc đó).",
+   "tagline": "Đăng nhập, phiên refresh và nâng cấp guest",
+   "owns": [
+    "bảng auth_identities (provider, providerUid -> userId, unique)",
+    "bảng phone_otps (codeHash HMAC, attemptCount, consumedAt)",
+    "bảng refresh_tokens (tokenHash SHA-256, familyId, rotatedAt, revokedAt)",
+    "cookie httpOnly refresh_token + csrf_token, guest device token"
+   ],
+   "tables": [
+    {
+     "name": "auth_identities",
+     "columns": 5,
+     "otherModules": []
+    },
+    {
+     "name": "phone_otps",
+     "columns": 7,
+     "otherModules": []
+    },
+    {
+     "name": "refresh_tokens",
+     "columns": 8,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [
+    {
+     "table": "users",
+     "owner": "user",
+     "ops": {
+      "module": "auth",
+      "read": 1,
+      "write": 3,
+      "lock": 1,
+      "vias": [
+       "manager",
+       "manager(lock option)",
+       "manager.save(instance)",
+       "querybuilder"
+      ],
+      "samples": [
+       {
+        "file": "apps/core-api/src/modules/auth/auth.service.ts",
+        "line": 225,
+        "op": "lock",
+        "via": "manager(lock option)",
+        "quote": "manager.findOne(User, { where: { id: userId }, lock: { mode: 'pessimistic_write' }, })"
+       },
+       {
+        "file": "apps/core-api/src/modules/auth/auth.service.ts",
+        "line": 286,
+        "op": "write",
+        "via": "manager",
+        "quote": "manager.update( User, { id: userId, isGuest: true }, { isGuest: false }, )"
+       },
+       {
+        "file": "apps/core-api/src/modules/auth/auth.service.ts",
+        "line": 265,
+        "op": "write",
+        "via": "manager.save(instance)",
+        "quote": "manager.save(user)"
+       }
+      ]
+     }
+    }
+   ],
+   "endpoints": {
+    "total": 9,
+    "public": 6,
+    "adminOnly": 0,
+    "idempotent": 0,
+    "webhooks": 0,
+    "explicitThrottle": 7
+   },
+   "endpointPaths": [
+    "/auth"
+   ],
+   "realtimeProduced": [],
+   "jobs": [],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [
+    {
+     "name": "NODE_ENV",
+     "file": "apps/core-api/src/modules/auth/auth.controller.ts",
+     "line": 142,
+     "quote": "this.config.get('NODE_ENV', { infer: true }) === 'production',",
+     "class": null,
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "AUTH_CROSS_ORIGIN_DEV",
+     "file": "apps/core-api/src/modules/auth/auth.controller.ts",
+     "line": 143,
+     "quote": "this.config.get('AUTH_CROSS_ORIGIN_DEV', { infer: true }) === true,",
+     "class": "endpoint",
+     "default": "false",
+     "required": false
+    },
+    {
+     "name": "AUTH_COOKIE_SAME_SITE",
+     "file": "apps/core-api/src/modules/auth/auth.controller.ts",
+     "line": 144,
+     "quote": "this.config.getOrThrow('AUTH_COOKIE_SAME_SITE', { infer: true }),",
+     "class": "switch",
+     "default": "strict",
+     "required": false
+    },
+    {
+     "name": "AUTH_REFRESH_TTL_DAYS",
+     "file": "apps/core-api/src/modules/auth/auth.controller.ts",
+     "line": 163,
+     "quote": "ttlDays: this.config.getOrThrow('AUTH_REFRESH_TTL_DAYS', { infer: true }),",
+     "class": "tuning",
+     "default": "30",
+     "required": false
+    },
+    {
+     "name": "JWT_SECRET",
+     "file": "apps/core-api/src/modules/auth/auth.module.ts",
+     "line": 32,
+     "quote": "secret: config.getOrThrow('JWT_SECRET', { infer: true }),",
+     "class": "secret",
+     "default": null,
+     "required": true
+    },
+    {
+     "name": "AUTH_PHONE_OTP_ENABLED",
+     "file": "apps/core-api/src/modules/auth/auth.service.ts",
+     "line": 323,
+     "quote": "if (this.config.getOrThrow('AUTH_PHONE_OTP_ENABLED', { infer: true }))",
+     "class": "switch",
+     "default": "true",
+     "required": false
+    },
+    {
+     "name": "AUTH_GUEST_DEVICE_TOKEN_TTL_DAYS",
+     "file": "apps/core-api/src/modules/auth/services/guest-device-token.service.ts",
+     "line": 39,
+     "quote": "expiresIn: `${this.config.getOrThrow('AUTH_GUEST_DEVICE_TOKEN_TTL_DAYS', { infer: true })}d`,",
+     "class": "secret",
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "AUTH_GUEST_DEVICE_TOKEN_SECRET",
+     "file": "apps/core-api/src/modules/auth/services/guest-device-token.service.ts",
+     "line": 78,
+     "quote": "return this.config.getOrThrow('AUTH_GUEST_DEVICE_TOKEN_SECRET', {",
+     "class": "secret",
+     "default": null,
+     "required": true
+    },
+    {
+     "name": "AUTH_OTP_REQUESTS_PER_HOUR",
+     "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
+     "line": 28,
+     "quote": "const perHour = this.config.getOrThrow('AUTH_OTP_REQUESTS_PER_HOUR', {",
+     "class": "tuning",
+     "default": "5",
+     "required": false
+    },
+    {
+     "name": "AUTH_OTP_TTL_SECONDS",
+     "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
+     "line": 44,
+     "quote": "const ttlSeconds = this.config.getOrThrow('AUTH_OTP_TTL_SECONDS', {",
+     "class": "tuning",
+     "default": "300",
+     "required": false
+    },
+    {
+     "name": "AUTH_OTP_MAX_ATTEMPTS",
+     "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
+     "line": 86,
+     "quote": "const maxAttempts = this.config.getOrThrow('AUTH_OTP_MAX_ATTEMPTS', {",
+     "class": "tuning",
+     "default": "5",
+     "required": false
+    },
+    {
+     "name": "AUTH_OTP_PEPPER",
+     "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
+     "line": 134,
+     "quote": "const pepper = this.config.getOrThrow('AUTH_OTP_PEPPER', { infer: true });",
+     "class": "secret",
+     "default": null,
+     "required": true
+    },
+    {
+     "name": "AUTH_FACEBOOK_APP_ID",
+     "file": "apps/core-api/src/modules/auth/services/social-verifier.ts",
+     "line": 93,
+     "quote": "const appId = this.config.getOrThrow('AUTH_FACEBOOK_APP_ID', {",
+     "class": "other",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "AUTH_FACEBOOK_APP_SECRET",
+     "file": "apps/core-api/src/modules/auth/services/social-verifier.ts",
+     "line": 96,
+     "quote": "const appSecret = this.config.getOrThrow('AUTH_FACEBOOK_APP_SECRET', {",
+     "class": "secret",
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "JWT_ACCESS_TTL_SECONDS",
+     "file": "apps/core-api/src/modules/auth/services/token.service.ts",
+     "line": 38,
+     "quote": "const expiresIn = this.config.getOrThrow('JWT_ACCESS_TTL_SECONDS', {",
+     "class": "tuning",
+     "default": "900",
+     "required": false
+    }
+   ],
+   "errorGroups": [
+    "AuthErrors"
+   ],
+   "errorCodes": 14,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 7,
+    "integration": 0
+   },
+   "docs": {
+    "path": null,
+    "lastChanged": null,
+    "commitsSince": null
+   },
+   "features": [
+    {
+     "id": "auth-session",
+     "title": "Guest, OTP, social login, identity upgrade and rotating browser sessions",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 18,
+    "recent": 0,
+    "fixes": 1,
+    "last": "2026-08-12"
+   },
+   "issues": [
+    {
+     "id": "P018",
+     "title": "JWT access token trùng nhau khi cấp trong cùng giây (LRN-010)",
+     "status": "fixed",
+     "tier": "A"
+    }
+   ],
+   "mapCollaborators": [
+    {
+     "with": "user",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "user",
+     "kind": "service",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "matching",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "signaling-gateway",
+     "kind": "service",
+     "mechanism": "config",
+     "direction": "out"
+    },
+    {
+     "with": "external:google",
+     "kind": "external",
+     "mechanism": "sdk",
+     "direction": "out"
+    },
+    {
+     "with": "external:apple",
+     "kind": "external",
+     "mechanism": "sdk",
+     "direction": "out"
+    },
+    {
+     "with": "external:facebook",
+     "kind": "external",
+     "mechanism": "http",
+     "direction": "out"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "in"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "out"
+    }
+   ]
+  },
+  {
+   "id": "avatar",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/avatar",
+   "mapAnchor": "svc-avatar",
+   "role": "Sở hữu catalog layer avatar (avatar_assets, giá là DATA), quyền sở hữu item (user_avatar_items) và cấu hình đang trang bị (user_avatar_configs, 5 slot). Mua item trả phí là việc của Economy (Avatar chỉ gọi spendDiamond), Avatar không ghi ví/sổ cái và không đụng User.avatarId.",
+   "tagline": "Catalog, sở hữu và trang bị avatar",
+   "owns": [
+    "bảng avatar_assets (slot, code, imageUrl, zIndex, priceDiamond, active)",
+    "bảng user_avatar_items (unique userId+avatarAssetId = nguồn sự thật 'đã sở hữu')",
+    "bảng user_avatar_configs (1 dòng/user, 5 cột asset id đang trang bị, lazy-init)"
+   ],
+   "tables": [
+    {
+     "name": "avatar_assets",
+     "columns": 9,
+     "otherModules": []
+    },
+    {
+     "name": "user_avatar_configs",
+     "columns": 7,
+     "otherModules": []
+    },
+    {
+     "name": "user_avatar_items",
+     "columns": 4,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [],
+   "endpoints": {
+    "total": 7,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 1,
+    "webhooks": 0,
+    "explicitThrottle": 0
+   },
+   "endpointPaths": [
+    "/avatar"
+   ],
+   "realtimeProduced": [],
+   "jobs": [],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [],
+   "errorGroups": [
+    "AvatarErrors"
+   ],
+   "errorCodes": 5,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 1,
+    "integration": 1
+   },
+   "docs": {
+    "path": "docs/services/avatar-service.md",
+    "lastChanged": "2026-07-13",
+    "commitsSince": 5
+   },
+   "features": [
+    {
+     "id": "avatar-discovery-mood",
+     "title": "Avatar, discovery/nearby and mood",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 6,
+    "recent": 0,
+    "fixes": 0,
+    "last": "2026-08-12"
+   },
+   "issues": [],
+   "mapCollaborators": [
+    {
+     "with": "economy",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "both"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "config",
+     "direction": "in"
+    }
+   ]
+  },
+  {
+   "id": "calling",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/calling",
+   "mapAnchor": "svc-calling",
+   "role": "Sở hữu CallSession (pending/active/ended), VoiceMatchReaction, token join LiveKit và bộ đếm thời gian Voice Match enforce ở server (7 phút, pending timeout, reconnect grace). KHÔNG sở hữu MatchSession (Matching ghi), Friendship (Friend ghi), cũng không chạy SFU (media-server) và không có export cho module khác gọi vào.",
+   "tagline": "Vòng đời CallSession voice 2 người trên LiveKit",
+   "owns": [
+    "bảng call_sessions (status, roomName, joinedA/BAt, startedAt, reconnectStartedAt, endReason, durationSeconds, callKind)",
+    "bảng voice_match_reactions (unique callId + raterUserId)",
+    "room LiveKit tên call-{callSessionId} (tạo ngầm khi participant đầu tiên vào, xoá khi end)"
+   ],
+   "tables": [
+    {
+     "name": "call_sessions",
+     "columns": 19,
+     "otherModules": []
+    },
+    {
+     "name": "voice_match_reactions",
+     "columns": 4,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [],
+   "endpoints": {
+    "total": 7,
+    "public": 1,
+    "adminOnly": 0,
+    "idempotent": 0,
+    "webhooks": 1,
+    "explicitThrottle": 2
+   },
+   "endpointPaths": [
+    "/calling"
+   ],
+   "realtimeProduced": [
+    "call.ended"
+   ],
+   "jobs": [
+    {
+     "class": "CallTickerService",
+     "jobName": "TICKER_JOB",
+     "intervalMs": "this.config.getOrThrow('CALLING_TICKER_INTERVAL_MS', { infer: true, })"
+    }
+   ],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [
+    {
+     "name": "CALLING_FREE_CALL_SECONDS",
+     "file": "apps/core-api/src/modules/calling/calling.service.ts",
+     "line": 94,
+     "quote": "return this.config.getOrThrow('CALLING_FREE_CALL_SECONDS', { infer: true });",
+     "class": "tuning",
+     "default": "420",
+     "required": false
+    },
+    {
+     "name": "CALLING_TOKEN_TTL_SECONDS",
+     "file": "apps/core-api/src/modules/calling/calling.service.ts",
+     "line": 194,
+     "quote": "this.config.getOrThrow('CALLING_TOKEN_TTL_SECONDS', { infer: true }),",
+     "class": "secret",
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "LIVEKIT_URL",
+     "file": "apps/core-api/src/modules/calling/calling.service.ts",
+     "line": 574,
+     "quote": "const defaultUrl = this.config.getOrThrow('LIVEKIT_URL', { infer: true });",
+     "class": "endpoint",
+     "default": "ws://localhost:7880",
+     "required": false
+    },
+    {
+     "name": "LIVEKIT_REGION_URLS",
+     "file": "apps/core-api/src/modules/calling/calling.service.ts",
+     "line": 575,
+     "quote": "const regionUrls = this.config.getOrThrow('LIVEKIT_REGION_URLS', {",
+     "class": "other",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "CALLING_TICKER_INTERVAL_MS",
+     "file": "apps/core-api/src/modules/calling/jobs/call-ticker.service.ts",
+     "line": 51,
+     "quote": "intervalMs: this.config.getOrThrow('CALLING_TICKER_INTERVAL_MS', {",
+     "class": "tuning",
+     "default": "1000",
+     "required": false
+    },
+    {
+     "name": "CALLING_PENDING_TIMEOUT_SECONDS",
+     "file": "apps/core-api/src/modules/calling/jobs/call-ticker.service.ts",
+     "line": 78,
+     "quote": "const timeoutSeconds = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "60",
+     "required": false
+    },
+    {
+     "name": "CALLING_RECONNECT_WINDOW_SECONDS",
+     "file": "apps/core-api/src/modules/calling/jobs/call-ticker.service.ts",
+     "line": 95,
+     "quote": "const reconnectSeconds = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "30",
+     "required": false
+    },
+    {
+     "name": "REDIS_URL",
+     "file": "apps/core-api/src/modules/calling/redis/calling-redis.provider.ts",
+     "line": 14,
+     "quote": "createCoreRedisClient(config.getOrThrow('REDIS_URL', { infer: true })),",
+     "class": "endpoint",
+     "default": "redis://localhost:6379",
+     "required": false
+    }
+   ],
+   "errorGroups": [
+    "CallingErrors"
+   ],
+   "errorCodes": 6,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 3,
+    "integration": 1
+   },
+   "docs": {
+    "path": "docs/services/calling-service.md",
+    "lastChanged": "2026-08-20",
+    "commitsSince": 0
+   },
+   "features": [
+    {
+     "id": "calling",
+     "title": "Voice-call lifecycle and settlement",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 20,
+    "recent": 0,
+    "fixes": 1,
+    "last": "2026-08-20"
+   },
+   "issues": [
+    {
+     "id": "P071",
+     "title": "Cổng gọi điện có thể bypass sau khi block (bắt được khi tự review)",
+     "status": "fixed",
+     "tier": "A"
+    }
+   ],
+   "mapCollaborators": [
+    {
+     "with": "friend",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "matching",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "user",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "media-server",
+     "kind": "service",
+     "mechanism": "sdk",
+     "direction": "out"
+    },
+    {
+     "with": "signaling-gateway",
+     "kind": "service",
+     "mechanism": "redis-pubsub",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "media-server",
+     "kind": "service",
+     "mechanism": "webhook",
+     "direction": "in"
+    },
+    {
+     "with": "media-server",
+     "kind": "service",
+     "mechanism": "config",
+     "direction": "both"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "sdk",
+     "direction": "both"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "in"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "socket",
+     "direction": "out"
+    }
+   ]
+  },
+  {
+   "id": "discovery",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/discovery",
+   "mapAnchor": "svc-discovery",
+   "role": "Sở hữu user_locations (toạ độ đã quantize ~500m) và discovery_settings (opt-in nearbyVisible), cộng logic browse/nearby: ghép bộ lọc, loại block/report, jitter khoảng cách, rate limit. Không sở hữu bảng users/privacy (module user), không sở hữu block/report (safety), không có logic mời Voice/Soul Match (matching).",
+   "tagline": "Duyệt người dùng và Nearby ẩn vị trí",
+   "owns": [
+    "bảng user_locations (latQuantized, lonQuantized, updatedAt)",
+    "bảng discovery_settings (nearbyVisible mặc định false)",
+    "Redis counter discovery:location-update:count:{userId} và discovery:nearby-query:count:{userId} (TTL 3600s)"
+   ],
+   "tables": [
+    {
+     "name": "discovery_settings",
+     "columns": 2,
+     "otherModules": []
+    },
+    {
+     "name": "user_locations",
+     "columns": 4,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [
+    {
+     "table": "user_privacy_settings",
+     "owner": "user",
+     "ops": {
+      "module": "discovery",
+      "read": 1,
+      "write": 0,
+      "lock": 0,
+      "vias": [
+       "raw-sql"
+      ],
+      "samples": [
+       {
+        "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+        "line": 315,
+        "op": "read",
+        "via": "raw-sql",
+        "quote": "LEFT JOIN user_privacy_settings ups ON ups.user_id = ul.user_id WHERE ds.nearby_visible"
+       }
+      ]
+     }
+    }
+   ],
+   "endpoints": {
+    "total": 4,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 0,
+    "webhooks": 0,
+    "explicitThrottle": 0
+   },
+   "endpointPaths": [
+    "/discovery"
+   ],
+   "realtimeProduced": [],
+   "jobs": [],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [
+    {
+     "name": "DISCOVERY_GUEST_VISIBLE",
+     "file": "apps/core-api/src/modules/discovery/discovery.service.ts",
+     "line": 58,
+     "quote": "excludeGuests: !this.config.getOrThrow('DISCOVERY_GUEST_VISIBLE', {",
+     "class": "other",
+     "default": "false",
+     "required": false
+    },
+    {
+     "name": "DISCOVERY_AGE_BUCKETS",
+     "file": "apps/core-api/src/modules/discovery/discovery.service.ts",
+     "line": 99,
+     "quote": "const boundaries = this.config",
+     "class": "other",
+     "default": "18,25,31,41",
+     "required": false
+    },
+    {
+     "name": "DISCOVERY_LOCATION_UPDATE_RATE_LIMIT_PER_HOUR",
+     "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+     "line": 79,
+     "quote": "this.config.getOrThrow('DISCOVERY_LOCATION_UPDATE_RATE_LIMIT_PER_HOUR', {",
+     "class": "tuning",
+     "default": "12",
+     "required": false
+    },
+    {
+     "name": "DISCOVERY_LOCATION_QUANTIZE_DEGREES",
+     "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+     "line": 92,
+     "quote": "const step = this.config.getOrThrow('DISCOVERY_LOCATION_QUANTIZE_DEGREES', {",
+     "class": "other",
+     "default": "0.0045",
+     "required": false
+    },
+    {
+     "name": "DISCOVERY_NEARBY_QUERY_RATE_LIMIT_PER_HOUR",
+     "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+     "line": 131,
+     "quote": "this.config.getOrThrow('DISCOVERY_NEARBY_QUERY_RATE_LIMIT_PER_HOUR', {",
+     "class": "tuning",
+     "default": "30",
+     "required": false
+    },
+    {
+     "name": "DISCOVERY_LOCATION_FRESHNESS_HOURS",
+     "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+     "line": 158,
+     "quote": "const freshnessHours = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "24",
+     "required": false
+    },
+    {
+     "name": "DISCOVERY_NEARBY_RADIUS_KM",
+     "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+     "line": 171,
+     "quote": "const radiusKm = this.config.getOrThrow('DISCOVERY_NEARBY_RADIUS_KM', {",
+     "class": "other",
+     "default": "20",
+     "required": false
+    },
+    {
+     "name": "DISCOVERY_DISTANCE_BUCKETS_KM",
+     "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+     "line": 205,
+     "quote": "const distanceBucketsCsv = this.config.getOrThrow(",
+     "class": "other",
+     "default": "1,3,5,10,20",
+     "required": false
+    },
+    {
+     "name": "DISCOVERY_NEARBY_CANDIDATE_CAP",
+     "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+     "line": 305,
+     "quote": "const cap = this.config.getOrThrow('DISCOVERY_NEARBY_CANDIDATE_CAP', {",
+     "class": "other",
+     "default": "500",
+     "required": false
+    },
+    {
+     "name": "REDIS_URL",
+     "file": "apps/core-api/src/modules/discovery/redis/discovery-redis.provider.ts",
+     "line": 24,
+     "quote": "createCoreRedisClient(config.getOrThrow('REDIS_URL', { infer: true })),",
+     "class": "endpoint",
+     "default": "redis://localhost:6379",
+     "required": false
+    }
+   ],
+   "errorGroups": [
+    "DiscoveryErrors"
+   ],
+   "errorCodes": 7,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 3,
+    "integration": 1
+   },
+   "docs": {
+    "path": "docs/services/discovery-service.md",
+    "lastChanged": "2026-08-19",
+    "commitsSince": 0
+   },
+   "features": [
+    {
+     "id": "avatar-discovery-mood",
+     "title": "Avatar, discovery/nearby and mood",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 5,
+    "recent": 0,
+    "fixes": 0,
+    "last": "2026-08-01"
+   },
+   "issues": [],
+   "mapCollaborators": [
+    {
+     "with": "safety",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "user",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "redis",
+     "kind": "infra",
+     "mechanism": "redis-state",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "user",
+     "kind": "service",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "in"
+    }
+   ]
+  },
+  {
+   "id": "economy",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/economy",
+   "mapAnchor": "svc-economy",
+   "role": "Sở hữu sổ cái double-entry append-only (ledger_entries), snapshot ví wallets, catalog IAP/VIP/payOS, receipt và order nạp tiền; LedgerService là writer duy nhất vào ledger/wallet cho cả hệ thống. Không sở hữu hiệu ứng nghiệp vụ của nơi tiêu diamond (boost hàng đợi, ghi GiftEvent, cấp item avatar) và không phát realtime; các module khác chỉ gọi qua EconomyService trong index.ts.",
+   "tagline": "Sổ cái kép, ví diamond, VIP, nạp tiền",
+   "owns": [
+    "bảng ledger_accounts, transactions (idempotency_key unique), ledger_entries (trigger chặn UPDATE/DELETE), wallets (snapshot balance/earnings/VIP)",
+    "bảng iap_products, iap_receipts, vip_plans, payos_packages, payos_payment_orders",
+    "bảng outbox_events (relay -> Kafka topic litmatch.economy.events)",
+    "advisory lock Postgres cho job đối soát (clusterSingleton)"
+   ],
+   "tables": [
+    {
+     "name": "iap_products",
+     "columns": 5,
+     "otherModules": []
+    },
+    {
+     "name": "iap_receipts",
+     "columns": 11,
+     "otherModules": []
+    },
+    {
+     "name": "ledger_accounts",
+     "columns": 5,
+     "otherModules": []
+    },
+    {
+     "name": "ledger_entries",
+     "columns": 7,
+     "otherModules": []
+    },
+    {
+     "name": "outbox_events",
+     "columns": 9,
+     "otherModules": []
+    },
+    {
+     "name": "payos_packages",
+     "columns": 5,
+     "otherModules": []
+    },
+    {
+     "name": "payos_payment_orders",
+     "columns": 17,
+     "otherModules": []
+    },
+    {
+     "name": "transactions",
+     "columns": 9,
+     "otherModules": []
+    },
+    {
+     "name": "vip_plans",
+     "columns": 6,
+     "otherModules": []
+    },
+    {
+     "name": "wallets",
+     "columns": 6,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [],
+   "endpoints": {
+    "total": 12,
+    "public": 3,
+    "adminOnly": 0,
+    "idempotent": 2,
+    "webhooks": 3,
+    "explicitThrottle": 5
+   },
+   "endpointPaths": [
+    "/economy"
+   ],
+   "realtimeProduced": [],
+   "jobs": [
+    {
+     "class": "IapRefundPollService",
+     "jobName": "JOB",
+     "intervalMs": "this.config.getOrThrow('ECONOMY_REFUND_POLL_INTERVAL_MS', { infer: true, })"
+    },
+    {
+     "class": "OutboxRelayService",
+     "jobName": "RELAY_JOB",
+     "intervalMs": "this.config.getOrThrow('ECONOMY_OUTBOX_RELAY_INTERVAL_MS', { infer: true, })"
+    },
+    {
+     "class": "ReconciliationService",
+     "jobName": "JOB_FAST",
+     "intervalMs": "this.config.getOrThrow( 'ECONOMY_RECONCILIATION_FAST_INTERVAL_MS', { infer: true }, )"
+    },
+    {
+     "class": "ReconciliationService",
+     "jobName": "JOB_DEEP",
+     "intervalMs": "this.config.getOrThrow('ECONOMY_RECONCILIATION_INTERVAL_MS', { infer: true, })"
+    }
+   ],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [
+    {
+     "name": "ECONOMY_APPLE_SHARED_SECRET",
+     "file": "apps/core-api/src/modules/economy/clients/apple-receipt-api.adapter.ts",
+     "line": 42,
+     "quote": "const sharedSecret = this.config.getOrThrow('ECONOMY_APPLE_SHARED_SECRET', {",
+     "class": "secret",
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "ECONOMY_APPLE_ISSUER_ID",
+     "file": "apps/core-api/src/modules/economy/clients/apple-server-api.ts",
+     "line": 18,
+     "quote": "const issuerId = config.getOrThrow('ECONOMY_APPLE_ISSUER_ID', {",
+     "class": "other",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_APPLE_KEY_ID",
+     "file": "apps/core-api/src/modules/economy/clients/apple-server-api.ts",
+     "line": 21,
+     "quote": "const keyId = config.getOrThrow('ECONOMY_APPLE_KEY_ID', { infer: true });",
+     "class": "other",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_APPLE_BUNDLE_ID",
+     "file": "apps/core-api/src/modules/economy/clients/apple-server-api.ts",
+     "line": 22,
+     "quote": "const bundleId = config.getOrThrow('ECONOMY_APPLE_BUNDLE_ID', {",
+     "class": "other",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_APPLE_PRIVATE_KEY",
+     "file": "apps/core-api/src/modules/economy/clients/apple-server-api.ts",
+     "line": 25,
+     "quote": "const privateKeyPem = config",
+     "class": "secret",
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "ECONOMY_APPLE_SERVER_API_ENV",
+     "file": "apps/core-api/src/modules/economy/clients/apple-server-api.ts",
+     "line": 41,
+     "quote": "return config.getOrThrow('ECONOMY_APPLE_SERVER_API_ENV', { infer: true }) ===",
+     "class": "switch",
+     "default": "sandbox",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_GOOGLE_PACKAGE_NAME",
+     "file": "apps/core-api/src/modules/economy/clients/google-play-receipt-api.adapter.ts",
+     "line": 34,
+     "quote": "const packageName = this.config.getOrThrow(",
+     "class": "other",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_GOOGLE_SA_EMAIL",
+     "file": "apps/core-api/src/modules/economy/clients/google-service-account.ts",
+     "line": 16,
+     "quote": "const email = config.getOrThrow('ECONOMY_GOOGLE_SA_EMAIL', { infer: true });",
+     "class": "other",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_GOOGLE_SA_PRIVATE_KEY",
+     "file": "apps/core-api/src/modules/economy/clients/google-service-account.ts",
+     "line": 17,
+     "quote": "const privateKeyPem = config",
+     "class": "secret",
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "ECONOMY_STORE_HTTP_TIMEOUT_MS",
+     "file": "apps/core-api/src/modules/economy/clients/store-api-http.ts",
+     "line": 10,
+     "quote": "config.getOrThrow('ECONOMY_STORE_HTTP_TIMEOUT_MS', { infer: true }),",
+     "class": "tuning",
+     "default": "10000",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_IAP_VERIFIER",
+     "file": "apps/core-api/src/modules/economy/economy.module.ts",
+     "line": 115,
+     "quote": "const provider = config.getOrThrow('ECONOMY_IAP_VERIFIER', {",
+     "class": "switch",
+     "default": "dev",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_APPLE_WEBHOOK_VERIFIER",
+     "file": "apps/core-api/src/modules/economy/economy.module.ts",
+     "line": 137,
+     "quote": "config.getOrThrow('ECONOMY_APPLE_WEBHOOK_VERIFIER', { infer: true }) ===",
+     "class": "switch",
+     "default": "store",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_GOOGLE_RTDN_VERIFIER",
+     "file": "apps/core-api/src/modules/economy/economy.module.ts",
+     "line": 152,
+     "quote": "config.getOrThrow('ECONOMY_GOOGLE_RTDN_VERIFIER', { infer: true }) ===",
+     "class": "switch",
+     "default": "store",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_REFUND_POLL_ENABLED",
+     "file": "apps/core-api/src/modules/economy/jobs/iap-refund-poll.service.ts",
+     "line": 64,
+     "quote": "if (!this.config.getOrThrow('ECONOMY_REFUND_POLL_ENABLED', { infer: true }))",
+     "class": "switch",
+     "default": "false",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_REFUND_POLL_INTERVAL_MS",
+     "file": "apps/core-api/src/modules/economy/jobs/iap-refund-poll.service.ts",
+     "line": 68,
+     "quote": "intervalMs: this.config.getOrThrow('ECONOMY_REFUND_POLL_INTERVAL_MS', {",
+     "class": "tuning",
+     "default": "3600000",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_REFUND_POLL_WINDOW_DAYS",
+     "file": "apps/core-api/src/modules/economy/jobs/iap-refund-poll.service.ts",
+     "line": 82,
+     "quote": "const windowDays = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "60",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_OUTBOX_RELAY_ENABLED",
+     "file": "apps/core-api/src/modules/economy/jobs/outbox-relay.service.ts",
+     "line": 44,
+     "quote": "!this.config.getOrThrow('ECONOMY_OUTBOX_RELAY_ENABLED', { infer: true })",
+     "class": "switch",
+     "default": "false",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_OUTBOX_RELAY_INTERVAL_MS",
+     "file": "apps/core-api/src/modules/economy/jobs/outbox-relay.service.ts",
+     "line": 50,
+     "quote": "intervalMs: this.config.getOrThrow('ECONOMY_OUTBOX_RELAY_INTERVAL_MS', {",
+     "class": "tuning",
+     "default": "2000",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_OUTBOX_MAX_ATTEMPTS",
+     "file": "apps/core-api/src/modules/economy/jobs/outbox-relay.service.ts",
+     "line": 110,
+     "quote": "return this.config.getOrThrow('ECONOMY_OUTBOX_MAX_ATTEMPTS', {",
+     "class": "tuning",
+     "default": "5",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_RECONCILIATION_ENABLED",
+     "file": "apps/core-api/src/modules/economy/jobs/reconciliation.service.ts",
+     "line": 82,
+     "quote": "!this.config.getOrThrow('ECONOMY_RECONCILIATION_ENABLED', { infer: true })",
+     "class": "switch",
+     "default": "true",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_RECONCILIATION_FAST_INTERVAL_MS",
+     "file": "apps/core-api/src/modules/economy/jobs/reconciliation.service.ts",
+     "line": 87,
+     "quote": "intervalMs: this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "60000",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_RECONCILIATION_INTERVAL_MS",
+     "file": "apps/core-api/src/modules/economy/jobs/reconciliation.service.ts",
+     "line": 98,
+     "quote": "intervalMs: this.config.getOrThrow('ECONOMY_RECONCILIATION_INTERVAL_MS', {",
+     "class": "tuning",
+     "default": "300000",
+     "required": false
+    },
+    {
+     "name": "NODE_ENV",
+     "file": "apps/core-api/src/modules/economy/ports/iap-verifier.ts",
+     "line": 64,
+     "quote": "this.config.get('NODE_ENV', { infer: true }) === 'production' &&",
+     "class": null,
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "ECONOMY_APPLE_ROOT_CA_PEM",
+     "file": "apps/core-api/src/modules/economy/ports/notification-verifier.ts",
+     "line": 119,
+     "quote": "const trustedRootPem = this.config",
+     "class": "secret",
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "ECONOMY_GOOGLE_RTDN_AUDIENCE",
+     "file": "apps/core-api/src/modules/economy/ports/notification-verifier.ts",
+     "line": 243,
+     "quote": "const audience = this.config.getOrThrow('ECONOMY_GOOGLE_RTDN_AUDIENCE', {",
+     "class": "other",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_GOOGLE_RTDN_SERVICE_ACCOUNT_EMAIL",
+     "file": "apps/core-api/src/modules/economy/ports/notification-verifier.ts",
+     "line": 246,
+     "quote": "const expectedEmail = this.config.getOrThrow(",
+     "class": "other",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "PAYOS_API_BASE_URL",
+     "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
+     "line": 75,
+     "quote": "const baseUrl = this.config.getOrThrow('PAYOS_API_BASE_URL', {",
+     "class": "endpoint",
+     "default": "https://api-merchant.payos.vn",
+     "required": false
+    },
+    {
+     "name": "PAYOS_HTTP_TIMEOUT_MS",
+     "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
+     "line": 102,
+     "quote": "this.config.getOrThrow('PAYOS_HTTP_TIMEOUT_MS', { infer: true }),",
+     "class": "tuning",
+     "default": "10000",
+     "required": false
+    },
+    {
+     "name": "PAYOS_CLIENT_ID",
+     "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
+     "line": 181,
+     "quote": "const clientId = this.config.getOrThrow('PAYOS_CLIENT_ID', { infer: true });",
+     "class": "other",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "PAYOS_API_KEY",
+     "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
+     "line": 182,
+     "quote": "const apiKey = this.config.getOrThrow('PAYOS_API_KEY', { infer: true });",
+     "class": "secret",
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "PAYOS_CHECKSUM_KEY",
+     "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
+     "line": 183,
+     "quote": "const checksumKey = this.config.getOrThrow('PAYOS_CHECKSUM_KEY', {",
+     "class": "secret",
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "PAYOS_ORDER_EXPIRES_SECONDS",
+     "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+     "line": 102,
+     "quote": "this.config.getOrThrow('PAYOS_ORDER_EXPIRES_SECONDS', {",
+     "class": "tuning",
+     "default": "900",
+     "required": false
+    },
+    {
+     "name": "PAYOS_WEB_WALLET_URL",
+     "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+     "line": 268,
+     "quote": "this.config.getOrThrow('PAYOS_WEB_WALLET_URL', { infer: true });",
+     "class": "endpoint",
+     "default": "",
+     "required": false
+    }
+   ],
+   "errorGroups": [
+    "EconomyErrors"
+   ],
+   "errorCodes": 19,
+   "errorCodesUnused": 3,
+   "tests": {
+    "unit": 7,
+    "integration": 1
+   },
+   "docs": {
+    "path": "docs/services/economy-service.md",
+    "lastChanged": "2026-10-09",
+    "commitsSince": 0
+   },
+   "features": [
+    {
+     "id": "economy-ledger",
+     "title": "Wallet, IAP catalog, VIP and double-entry ledger",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 30,
+    "recent": 0,
+    "fixes": 4,
+    "last": "2026-08-13"
+   },
+   "issues": [
+    {
+     "id": "P094",
+     "title": "Giới hạn đã biết: advisory lock Palm/Movie Match, outbox chưa có consumer/retention",
+     "status": "open",
+     "tier": "B"
+    },
+    {
+     "id": "P001",
+     "title": "Guard ledger chặn nhầm bút toán đảo (refund/chargeback)",
+     "status": "fixed",
+     "tier": "A"
+    },
+    {
+     "id": "P006",
+     "title": "Swagger thiếu cursor pagination → client sinh kiểu never",
+     "status": "fixed",
+     "tier": "A"
+    },
+    {
+     "id": "P087",
+     "title": "Bỏ qua kiểm bundleId Apple khi env rỗng",
+     "status": "fixed",
+     "tier": "A"
+    }
+   ],
+   "mapCollaborators": [
+    {
+     "with": "kafka",
+     "kind": "infra",
+     "mechanism": "kafka",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "admin",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "avatar",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "gift",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "matching",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "external:apple",
+     "kind": "external",
+     "mechanism": "http",
+     "direction": "out"
+    },
+    {
+     "with": "external:apple",
+     "kind": "external",
+     "mechanism": "webhook",
+     "direction": "in"
+    },
+    {
+     "with": "external:google-play",
+     "kind": "external",
+     "mechanism": "http",
+     "direction": "out"
+    },
+    {
+     "with": "external:google-play",
+     "kind": "external",
+     "mechanism": "webhook",
+     "direction": "in"
+    },
+    {
+     "with": "external:payos",
+     "kind": "external",
+     "mechanism": "http",
+     "direction": "out"
+    },
+    {
+     "with": "external:payos",
+     "kind": "external",
+     "mechanism": "webhook",
+     "direction": "in"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "both"
+    }
+   ]
+  },
+  {
+   "id": "feed",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/feed",
+   "mapAnchor": "svc-feed",
+   "role": "Sở hữu Post/Comment/Reaction (feed công khai toàn cục, không fanout) và Story/StoryView (ephemeral, hết hạn lọc lúc đọc). KHÔNG sở hữu quan hệ bạn bè/block/privacy/ảnh/notification: mọi quyết định xem được hay không đều hỏi module chủ qua DI; Feed không có inbound caller nào.",
+   "tagline": "Bài đăng, bình luận, thả tim và Stories 24h",
+   "owns": [
+    "bảng posts (likeCount/commentCount denormalized, audience, deletedAt)",
+    "bảng comments, reactions (unique postId+userId)",
+    "bảng stories, story_views (unique storyId+viewerId)"
+   ],
+   "tables": [
+    {
+     "name": "comments",
+     "columns": 7,
+     "otherModules": []
+    },
+    {
+     "name": "posts",
+     "columns": 11,
+     "otherModules": []
+    },
+    {
+     "name": "reactions",
+     "columns": 4,
+     "otherModules": []
+    },
+    {
+     "name": "stories",
+     "columns": 8,
+     "otherModules": []
+    },
+    {
+     "name": "story_views",
+     "columns": 4,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [
+    {
+     "table": "user_privacy_settings",
+     "owner": "user",
+     "ops": {
+      "module": "feed",
+      "read": 1,
+      "write": 0,
+      "lock": 0,
+      "vias": [
+       "raw-sql"
+      ],
+      "samples": [
+       {
+        "file": "apps/core-api/src/modules/feed/feed.service.ts",
+        "line": 110,
+        "op": "read",
+        "via": "raw-sql",
+        "quote": "(SELECT 1 FROM user_privacy_settings ups WHERE ups.user_id = p.author_user_id AND ups.hide_profile ="
+       }
+      ]
+     }
+    }
+   ],
+   "endpoints": {
+    "total": 16,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 3,
+    "webhooks": 0,
+    "explicitThrottle": 0
+   },
+   "endpointPaths": [
+    "/stories",
+    "/feed"
+   ],
+   "realtimeProduced": [],
+   "jobs": [
+    {
+     "class": "StorySweeperService",
+     "jobName": "STORY_SWEEPER_JOB",
+     "intervalMs": "this.config.getOrThrow('STORY_SWEEPER_INTERVAL_MS', { infer: true, })"
+    }
+   ],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [
+    {
+     "name": "STORY_SWEEPER_INTERVAL_MS",
+     "file": "apps/core-api/src/modules/feed/jobs/story-sweeper.service.ts",
+     "line": 42,
+     "quote": "intervalMs: this.config.getOrThrow('STORY_SWEEPER_INTERVAL_MS', {",
+     "class": "tuning",
+     "default": "3600000",
+     "required": false
+    },
+    {
+     "name": "STORY_TTL_HOURS",
+     "file": "apps/core-api/src/modules/feed/services/story.service.ts",
+     "line": 56,
+     "quote": "const ttlHours = this.config.getOrThrow('STORY_TTL_HOURS', {",
+     "class": "tuning",
+     "default": "24",
+     "required": false
+    }
+   ],
+   "errorGroups": [
+    "FeedErrors"
+   ],
+   "errorCodes": 9,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 2,
+    "integration": 1
+   },
+   "docs": {
+    "path": "docs/services/feed-service.md",
+    "lastChanged": "2026-08-12",
+    "commitsSince": 1
+   },
+   "features": [
+    {
+     "id": "feed-stories",
+     "title": "Feed, reactions, comments and expiring stories",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 13,
+    "recent": 0,
+    "fixes": 3,
+    "last": "2026-08-14"
+   },
+   "issues": [
+    {
+     "id": "P006",
+     "title": "Swagger thiếu cursor pagination → client sinh kiểu never",
+     "status": "fixed",
+     "tier": "A"
+    }
+   ],
+   "mapCollaborators": [
+    {
+     "with": "friend",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "media",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "notification",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "safety",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "user",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "in"
+    }
+   ]
+  },
+  {
+   "id": "friend",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/friend",
+   "mapAnchor": "svc-friend",
+   "role": "Sở hữu Friendship, Conversation/Message chat 1-1 lâu dài, trạng thái đọc/mute theo thành viên, ConversationStreak (sub-service nội bộ), ProfileFollow và ProfileChatContact (cổng first-contact của chat trực tiếp từ profile). KHÔNG sở hữu User/profile, block (Safety), ví/ledger (Economy), notification hay hạ tầng realtime; các flow match (Soul/Voice/Movie/Palm) chỉ tạo bạn qua FriendService.ensureFriendship.",
+   "tagline": "Bạn bè, chat 1-1, streak, follow và mở chat từ profile",
+   "owns": [
+    "bảng friendships, conversations, messages (append-only, cursor seq, idempotency_key unique)",
+    "bảng conversation_member_states (last_read_at, muted_at), conversation_streaks",
+    "bảng profile_follows, profile_chat_contacts (first_contact_date UTC)",
+    "job friend-streak-warning (advisory lock litmatch:cluster-job:friend-streak-warning)"
+   ],
+   "tables": [
+    {
+     "name": "conversation_member_states",
+     "columns": 4,
+     "otherModules": []
+    },
+    {
+     "name": "conversation_streaks",
+     "columns": 8,
+     "otherModules": []
+    },
+    {
+     "name": "conversations",
+     "columns": 6,
+     "otherModules": []
+    },
+    {
+     "name": "friendships",
+     "columns": 6,
+     "otherModules": []
+    },
+    {
+     "name": "messages",
+     "columns": 8,
+     "otherModules": []
+    },
+    {
+     "name": "profile_chat_contacts",
+     "columns": 6,
+     "otherModules": []
+    },
+    {
+     "name": "profile_follows",
+     "columns": 7,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [
+    {
+     "table": "users",
+     "owner": "user",
+     "ops": {
+      "module": "friend",
+      "read": 3,
+      "write": 0,
+      "lock": 1,
+      "vias": [
+       "manager",
+       "manager(lock option)",
+       "querybuilder",
+       "raw-sql"
+      ],
+      "samples": [
+       {
+        "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+        "line": 221,
+        "op": "read",
+        "via": "raw-sql",
+        "quote": ") c JOIN users u ON u.id = c.partner_id AND u.status = $2 WHERE c.partner_id <> ALL($3::"
+       },
+       {
+        "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+        "line": 325,
+        "op": "read",
+        "via": "querybuilder",
+        "quote": "this.followRepo .createQueryBuilder('follow') .innerJoin(User, 'other', `other.id = follow.${otherColumn}`)"
+       },
+       {
+        "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+        "line": 467,
+        "op": "lock",
+        "via": "manager(lock option)",
+        "quote": "manager.findOne(User, { where: { id: profileUserId }, lock: { mode: 'pessimistic_write' }, })"
+       }
+      ]
+     }
+    }
+   ],
+   "endpoints": {
+    "total": 15,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 1,
+    "webhooks": 0,
+    "explicitThrottle": 0
+   },
+   "endpointPaths": [
+    "/profiles",
+    "/friends",
+    "/conversations"
+   ],
+   "realtimeProduced": [
+    "friend.message",
+    "friend.streak.increased",
+    "friend.streak.at_risk"
+   ],
+   "jobs": [
+    {
+     "class": "StreakWarningJob",
+     "jobName": "STREAK_WARNING_JOB",
+     "intervalMs": "this.config.getOrThrow('STREAK_WARNING_CHECK_INTERVAL_MS', { infer: true, })"
+    }
+   ],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [
+    {
+     "name": "FRIEND_MESSAGE_MAX_LENGTH",
+     "file": "apps/core-api/src/modules/friend/friend.service.ts",
+     "line": 355,
+     "quote": "const maxLength = this.config.getOrThrow('FRIEND_MESSAGE_MAX_LENGTH', {",
+     "class": "tuning",
+     "default": "2000",
+     "required": false
+    },
+    {
+     "name": "STREAK_WARNING_CHECK_INTERVAL_MS",
+     "file": "apps/core-api/src/modules/friend/jobs/streak-warning.job.ts",
+     "line": 56,
+     "quote": "intervalMs: this.config.getOrThrow('STREAK_WARNING_CHECK_INTERVAL_MS', {",
+     "class": "tuning",
+     "default": "3600000",
+     "required": false
+    },
+    {
+     "name": "REDIS_URL",
+     "file": "apps/core-api/src/modules/friend/redis/friend-redis.provider.ts",
+     "line": 14,
+     "quote": "createCoreRedisClient(config.getOrThrow('REDIS_URL', { infer: true })),",
+     "class": "endpoint",
+     "default": "redis://localhost:6379",
+     "required": false
+    },
+    {
+     "name": "PROFILE_DIRECT_MESSAGE_DAILY_FIRST_CHAT_THRESHOLD",
+     "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+     "line": 572,
+     "quote": "return this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "10",
+     "required": false
+    },
+    {
+     "name": "STREAK_WARNING_HOURS",
+     "file": "apps/core-api/src/modules/friend/services/streak.service.ts",
+     "line": 134,
+     "quote": "const warningHour = this.config.getOrThrow('STREAK_WARNING_HOURS', {",
+     "class": "tuning",
+     "default": "20",
+     "required": false
+    },
+    {
+     "name": "STREAK_MILESTONE_DAYS",
+     "file": "apps/core-api/src/modules/friend/services/streak.service.ts",
+     "line": 165,
+     "quote": "return this.config",
+     "class": "tuning",
+     "default": "3,7,14,30,50,100",
+     "required": false
+    }
+   ],
+   "errorGroups": [
+    "FriendErrors",
+    "ProfileSocialErrors"
+   ],
+   "errorCodes": 9,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 4,
+    "integration": 1
+   },
+   "docs": {
+    "path": "docs/services/friend-service.md",
+    "lastChanged": "2026-10-10",
+    "commitsSince": 0
+   },
+   "features": [
+    {
+     "id": "friend-chat-streak",
+     "title": "Friendship, direct chat and streak",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 20,
+    "recent": 1,
+    "fixes": 2,
+    "last": "2026-10-10"
+   },
+   "issues": [
+    {
+     "id": "P006",
+     "title": "Swagger thiếu cursor pagination → client sinh kiểu never",
+     "status": "fixed",
+     "tier": "A"
+    }
+   ],
+   "mapCollaborators": [
+    {
+     "with": "media",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "notification",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "safety",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "user",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "user",
+     "kind": "service",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "signaling-gateway",
+     "kind": "service",
+     "mechanism": "redis-pubsub",
+     "direction": "out"
+    },
+    {
+     "with": "redis",
+     "kind": "infra",
+     "mechanism": "redis-state",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "calling",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "feed",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "gift",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "mini-game",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "movie-match",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "palm-match",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "short-video",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "soul-match",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "socket",
+     "direction": "both"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "in"
+    }
+   ]
+  },
+  {
+   "id": "gift",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/gift",
+   "mapAnchor": "svc-gift",
+   "role": "Sở hữu catalog quà (bảng gifts, giá là DATA) và GiftEvent (gift_events) cho 3 ngữ cảnh tặng: phòng Party, tác giả video, mở chat từ profile; tính tỉ lệ PTS và điều phối side effect quanh giao dịch. KHÔNG sở hữu sổ cái/ví (Economy ghi LedgerEntry), không sở hữu Conversation/membership phòng/video/notification (mỗi module đó tự ghi).",
+   "tagline": "Catalog quà và luồng tặng quà",
+   "owns": [
+    "bảng gifts (catalog: code, priceDiamond, sortOrder, active)",
+    "bảng gift_events (1 event ↔ 1 transaction_id, đúng 1 context room_id|video_id|profile_user_id)",
+    "ioredis client riêng GIFT_REDIS chỉ để publish gift.sent"
+   ],
+   "tables": [
+    {
+     "name": "gift_events",
+     "columns": 12,
+     "otherModules": []
+    },
+    {
+     "name": "gifts",
+     "columns": 8,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [],
+   "endpoints": {
+    "total": 4,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 3,
+    "webhooks": 0,
+    "explicitThrottle": 3
+   },
+   "endpointPaths": [
+    "/gifts",
+    "/party",
+    "/videos",
+    "/profiles"
+   ],
+   "realtimeProduced": [
+    "gift.sent"
+   ],
+   "jobs": [],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [
+    {
+     "name": "GIFT_POINTS_RATE_PERCENT",
+     "file": "apps/core-api/src/modules/gift/gift.service.ts",
+     "line": 202,
+     "quote": "const ratePercent = this.config.getOrThrow('GIFT_POINTS_RATE_PERCENT', {",
+     "class": "other",
+     "default": "40",
+     "required": false
+    },
+    {
+     "name": "REDIS_URL",
+     "file": "apps/core-api/src/modules/gift/redis/gift-redis.provider.ts",
+     "line": 14,
+     "quote": "createCoreRedisClient(config.getOrThrow('REDIS_URL', { infer: true })),",
+     "class": "endpoint",
+     "default": "redis://localhost:6379",
+     "required": false
+    }
+   ],
+   "errorGroups": [
+    "GiftErrors"
+   ],
+   "errorCodes": 5,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 0,
+    "integration": 1
+   },
+   "docs": {
+    "path": "docs/services/gift-service.md",
+    "lastChanged": "2026-08-19",
+    "commitsSince": 0
+   },
+   "features": [
+    {
+     "id": "gift",
+     "title": "Party-room gifts through Economy",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 16,
+    "recent": 0,
+    "fixes": 0,
+    "last": "2026-08-19"
+   },
+   "issues": [],
+   "mapCollaborators": [
+    {
+     "with": "economy",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "friend",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "notification",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "party-room",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "short-video",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "user",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "signaling-gateway",
+     "kind": "service",
+     "mechanism": "redis-pubsub",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "admin",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "both"
+    }
+   ]
+  },
+  {
+   "id": "matching",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/matching",
+   "mapAnchor": "svc-matching",
+   "role": "Sở hữu vòng đời MatchTicket (queued→confirmed|expired|cancelled), hàng đợi Redis sharded + matcher worker, MatchInvite (mời có chủ đích) và MatchSession là bản ghi duy nhất của một cặp đã ghép; là nơi DUY NHẤT ghi match_sessions. KHÔNG sở hữu ví/ledger (Economy), block/report (Safety), hồ sơ (User), chat Soul (Soul Match) hay call LiveKit (Calling).",
+   "tagline": "Hàng đợi ghép cặp, ticket, invite, MatchSession",
+   "owns": [
+    "bảng match_tickets (partial unique uq_match_tickets_active_user: 1 user 1 ticket queued/matched)",
+    "bảng match_sessions (nguồn sự thật của cặp đã ghép, Soul/Voice)",
+    "bảng match_invites (partial unique pending theo cặp)",
+    "bảng match_daily_quotas + guest_match_quotas (quota miễn phí theo ngày UTC, guest theo HMAC user/device/IP)",
+    "Redis ZSET matching:queue:{matchType}:{region}:{ageBand} + SET matching:shards:active",
+    "Redis rate-limit key lời mời mỗi giờ"
+   ],
+   "tables": [
+    {
+     "name": "guest_match_quotas",
+     "columns": 4,
+     "otherModules": []
+    },
+    {
+     "name": "match_daily_quotas",
+     "columns": 5,
+     "otherModules": []
+    },
+    {
+     "name": "match_invites",
+     "columns": 10,
+     "otherModules": []
+    },
+    {
+     "name": "match_sessions",
+     "columns": 12,
+     "otherModules": [
+      "soul-match"
+     ]
+    },
+    {
+     "name": "match_tickets",
+     "columns": 15,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [
+    {
+     "table": "users",
+     "owner": "user",
+     "ops": {
+      "module": "matching",
+      "read": 3,
+      "write": 0,
+      "lock": 1,
+      "vias": [
+       "manager",
+       "manager(lock option)"
+      ],
+      "samples": [
+       {
+        "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+        "line": 246,
+        "op": "read",
+        "via": "manager",
+        "quote": "manager.find(User, { where: { id: In(userIds) } })"
+       },
+       {
+        "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+        "line": 53,
+        "op": "lock",
+        "via": "manager(lock option)",
+        "quote": "manager.findOneOrFail(User, { where: { id: userId }, lock: { mode: 'pessimistic_write' }, })"
+       },
+       {
+        "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+        "line": 336,
+        "op": "read",
+        "via": "manager",
+        "quote": "manager.find(User, { where: { id: In([invite.inviterUserId, invite.inviteeUserId]) }, })"
+       }
+      ]
+     }
+    }
+   ],
+   "endpoints": {
+    "total": 12,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 2,
+    "webhooks": 0,
+    "explicitThrottle": 2
+   },
+   "endpointPaths": [
+    "/matching"
+   ],
+   "realtimeProduced": [
+    "match.confirmed"
+   ],
+   "jobs": [
+    {
+     "class": "InviteSweeperService",
+     "jobName": "INVITE_SWEEPER_JOB",
+     "intervalMs": "this.config.getOrThrow( 'MATCHING_INVITE_SWEEPER_INTERVAL_MS', { infer: true, }, )"
+    },
+    {
+     "class": "MatcherWorkerService",
+     "jobName": "MATCHER_JOB",
+     "intervalMs": "this.config.getOrThrow('MATCHING_MATCHER_INTERVAL_MS', { infer: true, })"
+    },
+    {
+     "class": "TicketSweeperService",
+     "jobName": "SWEEPER_JOB",
+     "intervalMs": "this.config.getOrThrow('MATCHING_SWEEPER_INTERVAL_MS', { infer: true, })"
+    }
+   ],
+   "redisCallSites": 7,
+   "redisOps": [
+    "zadd",
+    "zrem",
+    "zpopmin",
+    "smembers",
+    "sadd",
+    "srem",
+    "zcard"
+   ],
+   "envVars": [
+    {
+     "name": "MATCHING_INVITE_SWEEPER_INTERVAL_MS",
+     "file": "apps/core-api/src/modules/matching/jobs/invite-sweeper.service.ts",
+     "line": 42,
+     "quote": "intervalMs: this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "60000",
+     "required": false
+    },
+    {
+     "name": "MATCHING_MATCHER_INTERVAL_MS",
+     "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+     "line": 102,
+     "quote": "intervalMs: this.config.getOrThrow('MATCHING_MATCHER_INTERVAL_MS', {",
+     "class": "tuning",
+     "default": "10000",
+     "required": false
+    },
+    {
+     "name": "MATCHING_MATCHER_BATCH_SIZE",
+     "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+     "line": 194,
+     "quote": "const batchSize = this.config.getOrThrow('MATCHING_MATCHER_BATCH_SIZE', {",
+     "class": "tuning",
+     "default": "20",
+     "required": false
+    },
+    {
+     "name": "MATCHING_SWEEPER_INTERVAL_MS",
+     "file": "apps/core-api/src/modules/matching/jobs/ticket-sweeper.service.ts",
+     "line": 65,
+     "quote": "intervalMs: this.config.getOrThrow('MATCHING_SWEEPER_INTERVAL_MS', {",
+     "class": "tuning",
+     "default": "5000",
+     "required": false
+    },
+    {
+     "name": "MATCHING_QUEUE_MAX_WAIT_SECONDS",
+     "file": "apps/core-api/src/modules/matching/jobs/ticket-sweeper.service.ts",
+     "line": 100,
+     "quote": "const maxWaitSeconds = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "120",
+     "required": false
+    },
+    {
+     "name": "MATCHING_CONFIRM_TIMEOUT_SECONDS",
+     "file": "apps/core-api/src/modules/matching/jobs/ticket-sweeper.service.ts",
+     "line": 142,
+     "quote": "const timeoutSeconds = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "15",
+     "required": false
+    },
+    {
+     "name": "MATCHING_SPEEDUP_PRICE_DIAMOND",
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 258,
+     "quote": "return this.config.getOrThrow('MATCHING_SPEEDUP_PRICE_DIAMOND', {",
+     "class": "other",
+     "default": "50",
+     "required": false
+    },
+    {
+     "name": "MATCHING_SVIP_SPEEDUP_PRICE_DIAMOND",
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 266,
+     "quote": "return this.config.getOrThrow('MATCHING_SVIP_SPEEDUP_PRICE_DIAMOND', {",
+     "class": "other",
+     "default": "30",
+     "required": false
+    },
+    {
+     "name": "MATCHING_VIP_SPEEDUP_PRICE_DIAMOND",
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 270,
+     "quote": "return this.config.getOrThrow('MATCHING_VIP_SPEEDUP_PRICE_DIAMOND', {",
+     "class": "other",
+     "default": "40",
+     "required": false
+    },
+    {
+     "name": "MATCHING_EXTRA_SOUL_PRICE_DIAMOND",
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 278,
+     "quote": "? this.config.getOrThrow('MATCHING_EXTRA_SOUL_PRICE_DIAMOND', {",
+     "class": "other",
+     "default": "20",
+     "required": false
+    },
+    {
+     "name": "MATCHING_EXTRA_VOICE_PRICE_DIAMOND",
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 281,
+     "quote": ": this.config.getOrThrow('MATCHING_EXTRA_VOICE_PRICE_DIAMOND', {",
+     "class": "other",
+     "default": "40",
+     "required": false
+    },
+    {
+     "name": "MATCHING_PRIORITY_BOOST_MS",
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 443,
+     "quote": "const boostMs = this.config.getOrThrow('MATCHING_PRIORITY_BOOST_MS', {",
+     "class": "tuning",
+     "default": "300000",
+     "required": false
+    },
+    {
+     "name": "MATCHING_AGE_BAND_SIZE",
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 670,
+     "quote": "const bandSize = this.config.getOrThrow('MATCHING_AGE_BAND_SIZE', {",
+     "class": "tuning",
+     "default": "5",
+     "required": false
+    },
+    {
+     "name": "MATCHING_TRUST_PENALTY_MS_PER_POINT",
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 681,
+     "quote": "const perPoint = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "2000",
+     "required": false
+    },
+    {
+     "name": "MATCHING_TRUST_PENALTY_MAX_MS",
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 685,
+     "quote": "const maxMs = this.config.getOrThrow('MATCHING_TRUST_PENALTY_MAX_MS', {",
+     "class": "tuning",
+     "default": "120000",
+     "required": false
+    },
+    {
+     "name": "REDIS_URL",
+     "file": "apps/core-api/src/modules/matching/redis/matching-redis.provider.ts",
+     "line": 58,
+     "quote": "createCoreRedisClient(config.getOrThrow('REDIS_URL', { infer: true })),",
+     "class": "endpoint",
+     "default": "redis://localhost:6379",
+     "required": false
+    },
+    {
+     "name": "MATCHING_GUEST_DAILY_LIMIT",
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 105,
+     "quote": "const limit = this.config.getOrThrow('MATCHING_GUEST_DAILY_LIMIT', {",
+     "class": "tuning",
+     "default": "3",
+     "required": false
+    },
+    {
+     "name": "MATCHING_SVIP_DAILY_SOUL_LIMIT",
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 207,
+     "quote": "? this.config.getOrThrow('MATCHING_SVIP_DAILY_SOUL_LIMIT', {",
+     "class": "tuning",
+     "default": "60",
+     "required": false
+    },
+    {
+     "name": "MATCHING_SVIP_DAILY_VOICE_LIMIT",
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 210,
+     "quote": ": this.config.getOrThrow('MATCHING_SVIP_DAILY_VOICE_LIMIT', {",
+     "class": "tuning",
+     "default": "40",
+     "required": false
+    },
+    {
+     "name": "MATCHING_VIP_DAILY_SOUL_LIMIT",
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 216,
+     "quote": "? this.config.getOrThrow('MATCHING_VIP_DAILY_SOUL_LIMIT', {",
+     "class": "tuning",
+     "default": "30",
+     "required": false
+    },
+    {
+     "name": "MATCHING_VIP_DAILY_VOICE_LIMIT",
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 219,
+     "quote": ": this.config.getOrThrow('MATCHING_VIP_DAILY_VOICE_LIMIT', {",
+     "class": "tuning",
+     "default": "20",
+     "required": false
+    },
+    {
+     "name": "MATCHING_DAILY_SOUL_LIMIT",
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 224,
+     "quote": "? this.config.getOrThrow('MATCHING_DAILY_SOUL_LIMIT', { infer: true })",
+     "class": "tuning",
+     "default": "10",
+     "required": false
+    },
+    {
+     "name": "MATCHING_DAILY_VOICE_LIMIT",
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 225,
+     "quote": ": this.config.getOrThrow('MATCHING_DAILY_VOICE_LIMIT', { infer: true });",
+     "class": "tuning",
+     "default": "10",
+     "required": false
+    },
+    {
+     "name": "MATCHING_GUEST_QUOTA_PEPPER",
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 231,
+     "quote": "this.config.getOrThrow('MATCHING_GUEST_QUOTA_PEPPER', { infer: true }),",
+     "class": "secret",
+     "default": null,
+     "required": true
+    },
+    {
+     "name": "MATCHING_INVITE_RATE_LIMIT_PER_HOUR",
+     "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+     "line": 105,
+     "quote": "const maxPerHour = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "10",
+     "required": false
+    },
+    {
+     "name": "MATCHING_INVITE_TTL_SECONDS",
+     "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+     "line": 124,
+     "quote": "const ttlSeconds = this.config.getOrThrow('MATCHING_INVITE_TTL_SECONDS', {",
+     "class": "tuning",
+     "default": "3600",
+     "required": false
+    }
+   ],
+   "errorGroups": [
+    "MatchingErrors"
+   ],
+   "errorCodes": 20,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 6,
+    "integration": 1
+   },
+   "docs": {
+    "path": "docs/services/matching-service.md",
+    "lastChanged": "2026-08-13",
+    "commitsSince": 0
+   },
+   "features": [
+    {
+     "id": "matching",
+     "title": "Queue ticket, pairing, guest quota and paid speed-up",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 24,
+    "recent": 0,
+    "fixes": 1,
+    "last": "2026-08-13"
+   },
+   "issues": [],
+   "mapCollaborators": [
+    {
+     "with": "auth",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "economy",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "notification",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "safety",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "user",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "user",
+     "kind": "service",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "signaling-gateway",
+     "kind": "service",
+     "mechanism": "redis-pubsub",
+     "direction": "out"
+    },
+    {
+     "with": "redis",
+     "kind": "infra",
+     "mechanism": "redis-state",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "calling",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "soul-match",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "in"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "socket",
+     "direction": "out"
+    }
+   ]
+  },
+  {
+   "id": "media",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/media",
+   "mapAnchor": "svc-media",
+   "role": "Cấp presigned PUT URL để client upload ảnh thẳng lên object storage và là nơi DUY NHẤT xác nhận asset hợp lệ (đúng chủ, đúng purpose, đã upload, MIME/size khớp magic bytes) trước khi Feed/Friend lưu URL ảnh. Không nhận body binary, không phải LiveKit media-server, không xử lý video (Short Video có VideoStoragePort riêng).",
+   "tagline": "Presigned upload ảnh, xác thực asset",
+   "owns": [
+    "bảng image_assets (ownerUserId, status pending/ready, purpose, contentType, sizeBytes, storageKey)",
+    "object key quarantine rồi key final bất biến trên S3/R2/MinIO"
+   ],
+   "tables": [
+    {
+     "name": "image_assets",
+     "columns": 9,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [],
+   "endpoints": {
+    "total": 1,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 0,
+    "webhooks": 0,
+    "explicitThrottle": 0
+   },
+   "endpointPaths": [
+    "/media"
+   ],
+   "realtimeProduced": [],
+   "jobs": [],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [
+    {
+     "name": "MEDIA_STORAGE_PROVIDER",
+     "file": "apps/core-api/src/modules/media/media.module.ts",
+     "line": 26,
+     "quote": "const provider = config.getOrThrow('MEDIA_STORAGE_PROVIDER', {",
+     "class": "switch",
+     "default": "dev",
+     "required": false
+    },
+    {
+     "name": "MEDIA_IMAGE_MAX_BYTES",
+     "file": "apps/core-api/src/modules/media/media.service.ts",
+     "line": 43,
+     "quote": "const maxBytes = this.config.getOrThrow('MEDIA_IMAGE_MAX_BYTES', {",
+     "class": "tuning",
+     "default": "10 * 1024 * 1024",
+     "required": false
+    },
+    {
+     "name": "MEDIA_ALLOWED_IMAGE_TYPES",
+     "file": "apps/core-api/src/modules/media/media.service.ts",
+     "line": 211,
+     "quote": "const allowed = this.config",
+     "class": "other",
+     "default": "image/jpeg,image/png,image/webp,image/gif",
+     "required": false
+    },
+    {
+     "name": "NODE_ENV",
+     "file": "apps/core-api/src/modules/media/ports/dev-image-storage.provider.ts",
+     "line": 16,
+     "quote": "if (this.config.get('NODE_ENV', { infer: true }) === 'production') {",
+     "class": null,
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "MEDIA_R2_ACCOUNT_ID",
+     "file": "apps/core-api/src/modules/media/ports/r2-image-storage.provider.ts",
+     "line": 11,
+     "quote": "const accountId = config.getOrThrow('MEDIA_R2_ACCOUNT_ID', {",
+     "class": "other",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "MEDIA_R2_BUCKET",
+     "file": "apps/core-api/src/modules/media/ports/r2-image-storage.provider.ts",
+     "line": 14,
+     "quote": "const bucket = config.getOrThrow('MEDIA_R2_BUCKET', { infer: true });",
+     "class": "other",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "MEDIA_R2_ACCESS_KEY_ID",
+     "file": "apps/core-api/src/modules/media/ports/r2-image-storage.provider.ts",
+     "line": 15,
+     "quote": "const accessKeyId = config.getOrThrow('MEDIA_R2_ACCESS_KEY_ID', {",
+     "class": "other",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "MEDIA_R2_SECRET_ACCESS_KEY",
+     "file": "apps/core-api/src/modules/media/ports/r2-image-storage.provider.ts",
+     "line": 18,
+     "quote": "const secretAccessKey = config.getOrThrow('MEDIA_R2_SECRET_ACCESS_KEY', {",
+     "class": "secret",
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "MEDIA_PUBLIC_BASE_URL",
+     "file": "apps/core-api/src/modules/media/ports/r2-image-storage.provider.ts",
+     "line": 21,
+     "quote": "const publicBaseUrl = config.getOrThrow('MEDIA_PUBLIC_BASE_URL', {",
+     "class": "endpoint",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "MEDIA_UPLOAD_URL_TTL_SECONDS",
+     "file": "apps/core-api/src/modules/media/ports/r2-image-storage.provider.ts",
+     "line": 45,
+     "quote": "uploadUrlTtlSeconds: config.getOrThrow('MEDIA_UPLOAD_URL_TTL_SECONDS', {",
+     "class": "tuning",
+     "default": "900",
+     "required": false
+    },
+    {
+     "name": "AWS_S3_ENDPOINT",
+     "file": "apps/core-api/src/modules/media/ports/s3-image-storage.provider.ts",
+     "line": 32,
+     "quote": "const endpoint = config.getOrThrow('AWS_S3_ENDPOINT', { infer: true });",
+     "class": "endpoint",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "AWS_REGION",
+     "file": "apps/core-api/src/modules/media/ports/s3-image-storage.provider.ts",
+     "line": 35,
+     "quote": "region: config.getOrThrow('AWS_REGION', { infer: true }),",
+     "class": "other",
+     "default": "us-east-1",
+     "required": false
+    },
+    {
+     "name": "AWS_S3_BUCKET",
+     "file": "apps/core-api/src/modules/media/ports/s3-image-storage.provider.ts",
+     "line": 37,
+     "quote": "bucket: config.getOrThrow('AWS_S3_BUCKET', { infer: true }),",
+     "class": "other",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "AWS_ACCESS_KEY_ID",
+     "file": "apps/core-api/src/modules/media/ports/s3-image-storage.provider.ts",
+     "line": 38,
+     "quote": "accessKeyId: config.getOrThrow('AWS_ACCESS_KEY_ID', { infer: true }),",
+     "class": "other",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "AWS_SECRET_ACCESS_KEY",
+     "file": "apps/core-api/src/modules/media/ports/s3-image-storage.provider.ts",
+     "line": 39,
+     "quote": "secretAccessKey: config.getOrThrow('AWS_SECRET_ACCESS_KEY', {",
+     "class": "secret",
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "AWS_S3_FORCE_PATH_STYLE",
+     "file": "apps/core-api/src/modules/media/ports/s3-image-storage.provider.ts",
+     "line": 42,
+     "quote": "forcePathStyle: config.getOrThrow('AWS_S3_FORCE_PATH_STYLE', {",
+     "class": "other",
+     "default": "false",
+     "required": false
+    }
+   ],
+   "errorGroups": [
+    "MediaErrors"
+   ],
+   "errorCodes": 5,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 2,
+    "integration": 0
+   },
+   "docs": {
+    "path": "docs/services/media-service.md",
+    "lastChanged": "2026-08-12",
+    "commitsSince": 0
+   },
+   "features": [],
+   "churn": {
+    "commits": 1,
+    "recent": 0,
+    "fixes": 0,
+    "last": "2026-08-12"
+   },
+   "issues": [],
+   "mapCollaborators": [
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "feed",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "friend",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "external:object-storage",
+     "kind": "external",
+     "mechanism": "sdk",
+     "direction": "out"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "in"
+    }
+   ]
+  },
+  {
+   "id": "mini-game",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/mini-game",
+   "mapAnchor": "svc-mini-game",
+   "role": "Sở hữu phiên oẳn tù tì giữa 2 người đã là bạn (mini_game_sessions + bảng participant giữ bất biến 1 ván chờ move/user) và logic thắng thua. Không sở hữu quan hệ bạn bè (Friend), không chạm Economy, không tích hợp tin nhắn chat; chỉ publish 2 event realtime sau khi commit.",
+   "tagline": "Oẳn tù tì 2 người giữa bạn bè, move ẩn",
+   "owns": [
+    "mini_game_sessions (userLowId/userHighId canonical, lowMove/highMove, status, winnerUserId)",
+    "mini_game_active_participants (PK userId: 1 user chỉ có 1 ván waiting_moves)",
+    "ioredis client riêng MINI_GAME_REDIS (chỉ để publish realtime)"
+   ],
+   "tables": [
+    {
+     "name": "mini_game_active_participants",
+     "columns": 2,
+     "otherModules": []
+    },
+    {
+     "name": "mini_game_sessions",
+     "columns": 11,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [],
+   "endpoints": {
+    "total": 4,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 0,
+    "webhooks": 0,
+    "explicitThrottle": 0
+   },
+   "endpointPaths": [
+    "/mini-game"
+   ],
+   "realtimeProduced": [
+    "minigame.session.started",
+    "minigame.session.resolved"
+   ],
+   "jobs": [],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [
+    {
+     "name": "REDIS_URL",
+     "file": "apps/core-api/src/modules/mini-game/redis/mini-game-redis.provider.ts",
+     "line": 14,
+     "quote": "createCoreRedisClient(config.getOrThrow('REDIS_URL', { infer: true })),",
+     "class": "endpoint",
+     "default": "redis://localhost:6379",
+     "required": false
+    }
+   ],
+   "errorGroups": [
+    "MiniGameErrors"
+   ],
+   "errorCodes": 5,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 1,
+    "integration": 1
+   },
+   "docs": {
+    "path": "docs/services/mini-game-service.md",
+    "lastChanged": "2026-10-09",
+    "commitsSince": 0
+   },
+   "features": [
+    {
+     "id": "mini-game",
+     "title": "Two-player rock-paper-scissors mini game",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 7,
+    "recent": 1,
+    "fixes": 1,
+    "last": "2026-10-09"
+   },
+   "issues": [
+    {
+     "id": "P090",
+     "title": "Huỷ ván mini-game ghi đè ván đã resolved",
+     "status": "fixed",
+     "tier": "A"
+    }
+   ],
+   "mapCollaborators": [
+    {
+     "with": "friend",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "signaling-gateway",
+     "kind": "service",
+     "mechanism": "redis-pubsub",
+     "direction": "out"
+    },
+    {
+     "with": "redis",
+     "kind": "infra",
+     "mechanism": "redis-pubsub",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    }
+   ]
+  },
+  {
+   "id": "mood",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/mood",
+   "mapAnchor": "svc-mood",
+   "role": "Sở hữu catalog mood_presets và log append-only mood_status_events (set/clear), suy ra mood hiện tại lúc đọc dựa trên dòng mới nhất và expiresAt. Không sở hữu block/report (Safety), không có free-text/moderation, không phát realtime và không có job dọn.",
+   "tagline": "Trạng thái tâm trạng preset, hết hạn theo TTL",
+   "owns": [
+    "mood_presets (code unique, label, emoji, active, sortOrder)",
+    "mood_status_events (append-only; idempotencyKey unique; kind set|clear)"
+   ],
+   "tables": [
+    {
+     "name": "mood_presets",
+     "columns": 6,
+     "otherModules": []
+    },
+    {
+     "name": "mood_status_events",
+     "columns": 7,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [],
+   "endpoints": {
+    "total": 5,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 2,
+    "webhooks": 0,
+    "explicitThrottle": 0
+   },
+   "endpointPaths": [
+    "/mood"
+   ],
+   "realtimeProduced": [],
+   "jobs": [],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [
+    {
+     "name": "MOOD_STATUS_TTL_HOURS",
+     "file": "apps/core-api/src/modules/mood/mood.service.ts",
+     "line": 76,
+     "quote": "const ttlHours = this.config.getOrThrow('MOOD_STATUS_TTL_HOURS', {",
+     "class": "tuning",
+     "default": "24",
+     "required": false
+    }
+   ],
+   "errorGroups": [
+    "MoodErrors"
+   ],
+   "errorCodes": 1,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 1,
+    "integration": 1
+   },
+   "docs": {
+    "path": "docs/services/mood-service.md",
+    "lastChanged": "2026-07-17",
+    "commitsSince": 0
+   },
+   "features": [
+    {
+     "id": "avatar-discovery-mood",
+     "title": "Avatar, discovery/nearby and mood",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 1,
+    "recent": 0,
+    "fixes": 0,
+    "last": "2026-07-17"
+   },
+   "issues": [],
+   "mapCollaborators": [
+    {
+     "with": "safety",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    }
+   ]
+  },
+  {
+   "id": "movie-match",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/movie-match",
+   "mapAnchor": "svc-movie-match",
+   "role": "Sở hữu phiên xem chung 2 người (friend mode: 2 bạn tự chọn URL YouTube; anonymous mode: hàng đợi ghép người lạ, server chọn video, chat + rating, chỉ mutual-like mới mở Friendship) và là nguồn sự thật duy nhất của playback state. KHÔNG stream/proxy video (client tự phát từ URL), KHÔNG có SFU/LiveKit hay tiền, KHÔNG sở hữu quan hệ bạn (Friend) hay block/report (Safety).",
+   "tagline": "Phiên xem chung 2 người, playback state",
+   "owns": [
+    "bảng movie_sessions (cặp canonical low/high, videoUrl, positionSeconds, isPlaying, positionUpdatedAt, status, mode friend|anonymous, expiresAt, watchEndedAt, low/highRating, outcome)",
+    "bảng movie_session_active_participants (PK user_id: 1 user chỉ có 1 phiên active, ghi/xoá cùng transaction với movie_sessions.status)",
+    "bảng movie_match_queue_entries (PK user_id: hàng chờ ghép ẩn danh riêng của module, không dùng queue của Matching)",
+    "bảng movie_session_messages (chat ẩn danh append-only, idempotency_key UNIQUE dạng movie:msg:{userId}:{key}, cursor theo seq)",
+    "Postgres advisory lock 'litmatch:movie-match:pairing' (tuần tự hoá matcher ẩn danh)",
+    "client ioredis riêng MOVIE_MATCH_REDIS chỉ để PUBLISH realtime:user:{userId}; module không lưu key nào trong Redis"
+   ],
+   "tables": [
+    {
+     "name": "movie_match_queue_entries",
+     "columns": 2,
+     "otherModules": []
+    },
+    {
+     "name": "movie_session_active_participants",
+     "columns": 2,
+     "otherModules": []
+    },
+    {
+     "name": "movie_session_messages",
+     "columns": 7,
+     "otherModules": []
+    },
+    {
+     "name": "movie_sessions",
+     "columns": 18,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [],
+   "endpoints": {
+    "total": 13,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 1,
+    "webhooks": 0,
+    "explicitThrottle": 1
+   },
+   "endpointPaths": [
+    "/movie-match"
+   ],
+   "realtimeProduced": [
+    "movie.session.started",
+    "movie.state.changed",
+    "movie.session.ended",
+    "movie.reaction.sent"
+   ],
+   "jobs": [],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [
+    {
+     "name": "MOVIE_MATCH_QUEUE_MAX_WAIT_SECONDS",
+     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+     "line": 302,
+     "quote": "const maxWaitSeconds = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "120",
+     "required": false
+    },
+    {
+     "name": "MOVIE_MATCH_MESSAGE_MAX_LENGTH",
+     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+     "line": 539,
+     "quote": "const maxLength = this.config.getOrThrow('MOVIE_MATCH_MESSAGE_MAX_LENGTH', {",
+     "class": "tuning",
+     "default": "500",
+     "required": false
+    },
+    {
+     "name": "MOVIE_MATCH_ANON_VIDEO_URLS",
+     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+     "line": 690,
+     "quote": "const pool = this.config",
+     "class": "other",
+     "default": " 'https://www.youtube.com/watch?v=aqz-KE-bpKQ,https://www.youtube.com/watch?v=eRsGyueVLvQ', ",
+     "required": false
+    },
+    {
+     "name": "MOVIE_MATCH_ANON_DURATION_SECONDS",
+     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+     "line": 705,
+     "quote": "const durationSeconds = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "1080",
+     "required": false
+    },
+    {
+     "name": "MOVIE_MATCH_URL_MAX_LENGTH",
+     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+     "line": 902,
+     "quote": "const maxLength = this.config.getOrThrow('MOVIE_MATCH_URL_MAX_LENGTH', {",
+     "class": "tuning",
+     "default": "2048",
+     "required": false
+    },
+    {
+     "name": "MOVIE_MATCH_ALLOWED_VIDEO_HOSTS",
+     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+     "line": 933,
+     "quote": "const allowedHosts = this.config",
+     "class": "other",
+     "default": "youtube.com,youtu.be",
+     "required": false
+    },
+    {
+     "name": "REDIS_URL",
+     "file": "apps/core-api/src/modules/movie-match/redis/movie-match-redis.provider.ts",
+     "line": 14,
+     "quote": "createCoreRedisClient(config.getOrThrow('REDIS_URL', { infer: true })),",
+     "class": "endpoint",
+     "default": "redis://localhost:6379",
+     "required": false
+    }
+   ],
+   "errorGroups": [
+    "MovieMatchErrors"
+   ],
+   "errorCodes": 11,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 1,
+    "integration": 1
+   },
+   "docs": {
+    "path": "docs/services/movie-match-service.md",
+    "lastChanged": "2026-10-09",
+    "commitsSince": 0
+   },
+   "features": [
+    {
+     "id": "movie-match",
+     "title": "Shared video playback and anonymous movie match",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 6,
+    "recent": 0,
+    "fixes": 0,
+    "last": "2026-08-13"
+   },
+   "issues": [
+    {
+     "id": "P094",
+     "title": "Giới hạn đã biết: advisory lock Palm/Movie Match, outbox chưa có consumer/retention",
+     "status": "open",
+     "tier": "B"
+    }
+   ],
+   "mapCollaborators": [
+    {
+     "with": "friend",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "safety",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "signaling-gateway",
+     "kind": "service",
+     "mechanism": "redis-pubsub",
+     "direction": "out"
+    },
+    {
+     "with": "redis",
+     "kind": "infra",
+     "mechanism": "redis-pubsub",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "in"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "socket",
+     "direction": "out"
+    },
+    {
+     "with": "external:youtube",
+     "kind": "external",
+     "mechanism": "config",
+     "direction": "both"
+    }
+   ]
+  },
+  {
+   "id": "notification",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/notification",
+   "mapAnchor": "svc-notification",
+   "role": "Sở hữu bảng notifications (in-app, cursor theo seq) và web_push_subscriptions; là điểm duy nhất các module nghiệp vụ gọi để ghi thông báo (createWithManager/create) rồi đẩy push best-effort (sendPush). Không sở hữu nội dung hiển thị (payload tối thiểu, client tự render), không có realtime event riêng và không publish Redis.",
+   "tagline": "Thông báo in-app và Web Push",
+   "owns": [
+    "bảng notifications (userId, type, payload jsonb, readAt, seq)",
+    "bảng web_push_subscriptions (endpoint unique, p256dh, auth)"
+   ],
+   "tables": [
+    {
+     "name": "notifications",
+     "columns": 7,
+     "otherModules": []
+    },
+    {
+     "name": "web_push_subscriptions",
+     "columns": 7,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [],
+   "endpoints": {
+    "total": 5,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 0,
+    "webhooks": 0,
+    "explicitThrottle": 0
+   },
+   "endpointPaths": [
+    "/notifications"
+   ],
+   "realtimeProduced": [],
+   "jobs": [],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [],
+   "errorGroups": [
+    "NotificationErrors"
+   ],
+   "errorCodes": 2,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 2,
+    "integration": 0
+   },
+   "docs": {
+    "path": "docs/services/notification-service.md",
+    "lastChanged": "2026-08-20",
+    "commitsSince": 0
+   },
+   "features": [
+    {
+     "id": "notification",
+     "title": "In-process notification dispatch with isolated push and analytics adapters",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 7,
+    "recent": 0,
+    "fixes": 1,
+    "last": "2026-08-20"
+   },
+   "issues": [
+    {
+     "id": "P006",
+     "title": "Swagger thiếu cursor pagination → client sinh kiểu never",
+     "status": "fixed",
+     "tier": "A"
+    }
+   ],
+   "mapCollaborators": [
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "admin",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "feed",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "friend",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "gift",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "matching",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "external:web-push",
+     "kind": "external",
+     "mechanism": "sdk",
+     "direction": "out"
+    },
+    {
+     "with": "external:fcm",
+     "kind": "external",
+     "mechanism": "http",
+     "direction": "out"
+    },
+    {
+     "with": "external:apns",
+     "kind": "external",
+     "mechanism": "http",
+     "direction": "out"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "sdk",
+     "direction": "both"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "in"
+    }
+   ]
+  },
+  {
+   "id": "palm-match",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/palm-match",
+   "mapAnchor": "svc-palm-match",
+   "role": "Sở hữu hàng đợi ghép cặp ẩn danh Palm Match, phiên 2 người (lật bài, độ hợp, đánh giá like/skip) và kho nội dung bói palm_reading_templates. Không sở hữu quan hệ bạn bè/Conversation (Friend tạo), không sở hữu block/report (Safety quyết định), không chạm Economy và không phát realtime.",
+   "tagline": "Ghép đôi ẩn danh theo hàng đợi, bói bài",
+   "owns": [
+    "palm_match_sessions (snapshot dấu hiệu, độ hợp, fortune, rating, outcome, expiresAt)",
+    "palm_match_queue_entries (hàng đợi, PK userId)",
+    "palm_match_active_participants (PK userId: 1 user chỉ ở 1 phiên active)",
+    "palm_reading_templates (catalog nội dung bói)",
+    "advisory lock Postgres 'litmatch:palm-match:pairing'"
+   ],
+   "tables": [
+    {
+     "name": "palm_match_active_participants",
+     "columns": 3,
+     "otherModules": []
+    },
+    {
+     "name": "palm_match_queue_entries",
+     "columns": 2,
+     "otherModules": []
+    },
+    {
+     "name": "palm_match_sessions",
+     "columns": 17,
+     "otherModules": []
+    },
+    {
+     "name": "palm_reading_templates",
+     "columns": 4,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [],
+   "endpoints": {
+    "total": 6,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 0,
+    "webhooks": 0,
+    "explicitThrottle": 0
+   },
+   "endpointPaths": [
+    "/palm-match"
+   ],
+   "realtimeProduced": [],
+   "jobs": [],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [
+    {
+     "name": "PALM_MATCH_QUEUE_MAX_WAIT_SECONDS",
+     "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+     "line": 122,
+     "quote": "const queueMaxWaitSeconds = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "120",
+     "required": false
+    },
+    {
+     "name": "PALM_MATCH_SESSION_DURATION_SECONDS",
+     "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+     "line": 356,
+     "quote": "const durationSeconds = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "300",
+     "required": false
+    },
+    {
+     "name": "PALM_MATCH_TARGET_NAME_MAX_LENGTH",
+     "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+     "line": 534,
+     "quote": "const maxLength = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "50",
+     "required": false
+    }
+   ],
+   "errorGroups": [
+    "PalmMatchErrors"
+   ],
+   "errorCodes": 6,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 1,
+    "integration": 1
+   },
+   "docs": {
+    "path": "docs/services/palm-match-service.md",
+    "lastChanged": "2026-10-09",
+    "commitsSince": 0
+   },
+   "features": [
+    {
+     "id": "palm-match",
+     "title": "Deterministic palm reading and anonymous palm match",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 3,
+    "recent": 0,
+    "fixes": 0,
+    "last": "2026-08-13"
+   },
+   "issues": [
+    {
+     "id": "P094",
+     "title": "Giới hạn đã biết: advisory lock Palm/Movie Match, outbox chưa có consumer/retention",
+     "status": "open",
+     "tier": "B"
+    }
+   ],
+   "mapCollaborators": [
+    {
+     "with": "friend",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "safety",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "in"
+    }
+   ]
+  },
+  {
+   "id": "party-room",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/party-room",
+   "mapAnchor": "svc-party-room",
+   "role": "Sở hữu phòng party (party_rooms), membership theo dòng, comment append-only, lời mời speaker và vòng đời phòng (host rời/rớt, sweeper, grace reconnect). Quyền publish audio được enforce ở LiveKit SFU qua token/updateParticipant; KHÔNG sở hữu hồ sơ user (User), ví/quà (Gift/Economy) và không phải media-server.",
+   "tagline": "Phòng audio nhiều người, role và grace rớt mạng",
+   "owns": [
+    "bảng party_rooms (speaker_limit + livekit_url snapshot lúc tạo, host_disconnected_at, close_reason)",
+    "bảng party_room_members (partial unique: 1 membership active/(room,user) và 1 phòng active/user)",
+    "bảng party_room_comments (append-only, unique idempotency_key)",
+    "LiveKit room tên party-{roomId} (tạo/xoá tường minh qua port)"
+   ],
+   "tables": [
+    {
+     "name": "party_room_comments",
+     "columns": 7,
+     "otherModules": []
+    },
+    {
+     "name": "party_room_members",
+     "columns": 10,
+     "otherModules": []
+    },
+    {
+     "name": "party_rooms",
+     "columns": 12,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [],
+   "endpoints": {
+    "total": 12,
+    "public": 1,
+    "adminOnly": 0,
+    "idempotent": 1,
+    "webhooks": 1,
+    "explicitThrottle": 3
+   },
+   "endpointPaths": [
+    "/party"
+   ],
+   "realtimeProduced": [
+    "party.member.joined",
+    "party.member.left",
+    "party.member.disconnected",
+    "party.member.reconnected",
+    "party.role.changed",
+    "party.speaker.invite.received",
+    "party.room.closed",
+    "party.host.disconnected",
+    "party.host.reconnected",
+    "party.comment.created"
+   ],
+   "jobs": [
+    {
+     "class": "PartyRoomSweeperService",
+     "jobName": "SWEEPER_JOB",
+     "intervalMs": "this.config.getOrThrow('PARTY_SWEEPER_INTERVAL_MS', { infer: true, })"
+    },
+    {
+     "class": "PartyRoomSweeperService",
+     "jobName": "HOST_GRACE_JOB",
+     "intervalMs": "this.config.getOrThrow('PARTY_HOST_GRACE_CHECK_INTERVAL_MS', { infer: true, })"
+    }
+   ],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [
+    {
+     "name": "PARTY_SWEEPER_INTERVAL_MS",
+     "file": "apps/core-api/src/modules/party-room/jobs/party-room-sweeper.service.ts",
+     "line": 64,
+     "quote": "intervalMs: this.config.getOrThrow('PARTY_SWEEPER_INTERVAL_MS', {",
+     "class": "tuning",
+     "default": "30000",
+     "required": false
+    },
+    {
+     "name": "PARTY_HOST_GRACE_CHECK_INTERVAL_MS",
+     "file": "apps/core-api/src/modules/party-room/jobs/party-room-sweeper.service.ts",
+     "line": 75,
+     "quote": "intervalMs: this.config.getOrThrow('PARTY_HOST_GRACE_CHECK_INTERVAL_MS', {",
+     "class": "tuning",
+     "default": "5000",
+     "required": false
+    },
+    {
+     "name": "PARTY_HOST_DISCONNECT_GRACE_SECONDS",
+     "file": "apps/core-api/src/modules/party-room/jobs/party-room-sweeper.service.ts",
+     "line": 112,
+     "quote": "const graceSeconds = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "15",
+     "required": false
+    },
+    {
+     "name": "PARTY_MEMBER_DISCONNECT_GRACE_SECONDS",
+     "file": "apps/core-api/src/modules/party-room/jobs/party-room-sweeper.service.ts",
+     "line": 147,
+     "quote": "const graceSeconds = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "15",
+     "required": false
+    },
+    {
+     "name": "PARTY_STALE_ROOM_SECONDS",
+     "file": "apps/core-api/src/modules/party-room/jobs/party-room-sweeper.service.ts",
+     "line": 180,
+     "quote": "const staleSeconds = this.config.getOrThrow('PARTY_STALE_ROOM_SECONDS', {",
+     "class": "tuning",
+     "default": "120",
+     "required": false
+    },
+    {
+     "name": "PARTY_TITLE_MAX_LENGTH",
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 144,
+     "quote": "const maxLen = this.config.getOrThrow('PARTY_TITLE_MAX_LENGTH', {",
+     "class": "tuning",
+     "default": "100",
+     "required": false
+    },
+    {
+     "name": "PARTY_MAX_SPEAKERS",
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 171,
+     "quote": "speakerLimit: this.config.getOrThrow('PARTY_MAX_SPEAKERS', {",
+     "class": "tuning",
+     "default": "8",
+     "required": false
+    },
+    {
+     "name": "PARTY_MAX_MEMBERS",
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 204,
+     "quote": "maxParticipants: this.config.getOrThrow('PARTY_MAX_MEMBERS', {",
+     "class": "tuning",
+     "default": "100",
+     "required": false
+    },
+    {
+     "name": "PARTY_EMPTY_ROOM_TIMEOUT_SECONDS",
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 207,
+     "quote": "emptyTimeoutSeconds: this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "300",
+     "required": false
+    },
+    {
+     "name": "PARTY_COMMENT_MAX_LENGTH",
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 781,
+     "quote": "const maxLength = this.config.getOrThrow('PARTY_COMMENT_MAX_LENGTH', {",
+     "class": "tuning",
+     "default": "300",
+     "required": false
+    },
+    {
+     "name": "LIVEKIT_URL",
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 1150,
+     "quote": "const defaultUrl = this.config.getOrThrow('LIVEKIT_URL', { infer: true });",
+     "class": "endpoint",
+     "default": "ws://localhost:7880",
+     "required": false
+    },
+    {
+     "name": "LIVEKIT_REGION_URLS",
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 1151,
+     "quote": "const regionUrls = this.config.getOrThrow('LIVEKIT_REGION_URLS', {",
+     "class": "other",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "PARTY_TOKEN_TTL_SECONDS",
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 1309,
+     "quote": "this.config.getOrThrow('PARTY_TOKEN_TTL_SECONDS', { infer: true }),",
+     "class": "secret",
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "REDIS_URL",
+     "file": "apps/core-api/src/modules/party-room/redis/party-redis.provider.ts",
+     "line": 14,
+     "quote": "createCoreRedisClient(config.getOrThrow('REDIS_URL', { infer: true })),",
+     "class": "endpoint",
+     "default": "redis://localhost:6379",
+     "required": false
+    }
+   ],
+   "errorGroups": [
+    "PartyRoomErrors"
+   ],
+   "errorCodes": 17,
+   "errorCodesUnused": 1,
+   "tests": {
+    "unit": 1,
+    "integration": 1
+   },
+   "docs": {
+    "path": "docs/services/party-room-service.md",
+    "lastChanged": "2026-08-14",
+    "commitsSince": 0
+   },
+   "features": [
+    {
+     "id": "party-room",
+     "title": "Party-room lifecycle, LiveKit token and member roles",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 18,
+    "recent": 0,
+    "fixes": 3,
+    "last": "2026-08-14"
+   },
+   "issues": [
+    {
+     "id": "P006",
+     "title": "Swagger thiếu cursor pagination → client sinh kiểu never",
+     "status": "fixed",
+     "tier": "A"
+    }
+   ],
+   "mapCollaborators": [
+    {
+     "with": "user",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "media-server",
+     "kind": "service",
+     "mechanism": "sdk",
+     "direction": "out"
+    },
+    {
+     "with": "signaling-gateway",
+     "kind": "service",
+     "mechanism": "redis-pubsub",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "admin",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "gift",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "media-server",
+     "kind": "service",
+     "mechanism": "webhook",
+     "direction": "in"
+    },
+    {
+     "with": "media-server",
+     "kind": "service",
+     "mechanism": "config",
+     "direction": "both"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "sdk",
+     "direction": "out"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "out"
+    }
+   ]
+  },
+  {
+   "id": "safety",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/safety",
+   "mapAnchor": "svc-safety",
+   "role": "Sở hữu log append-only Report/Block, trust-score penalty chống vote-kick và các câu hỏi đồng bộ 'hai người này có được thấy/ghép/nhắn nhau không' (isBlocked, getBlockedUserIds, getHiddenUserIds, canPair). KHÔNG sở hữu ban tài khoản (UserStatus.Banned nằm ở User/Admin), không sở hữu video/feed (module gọi tự validate target) và không áp penalty lên hàng đợi matching (Matching tự đọc trustScore).",
+   "tagline": "Report, block và luật ẩn người dùng",
+   "owns": [
+    "bảng reports (append-only; chỉ cột status pending|resolved|dismissed được sửa bởi moderator; targetType user|video)",
+    "bảng blocks (log action blocked|unblocked; trạng thái = dòng mới nhất theo cặp)",
+    "unique index uq_reports_video_reporter (1 người report 1 video 1 lần)"
+   ],
+   "tables": [
+    {
+     "name": "blocks",
+     "columns": 5,
+     "otherModules": []
+    },
+    {
+     "name": "reports",
+     "columns": 10,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [
+    {
+     "table": "users",
+     "owner": "user",
+     "ops": {
+      "module": "safety",
+      "read": 1,
+      "write": 0,
+      "lock": 1,
+      "vias": [
+       "repository",
+       "repository(lock option)"
+      ],
+      "samples": [
+       {
+        "file": "apps/core-api/src/modules/safety/safety.service.ts",
+        "line": 87,
+        "op": "lock",
+        "via": "repository(lock option)",
+        "quote": "manager.getRepository(User).findOne({ where: { id: targetUserId }, lock: { mode: 'pessimistic_write' }, })"
+       }
+      ]
+     }
+    }
+   ],
+   "endpoints": {
+    "total": 4,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 0,
+    "webhooks": 0,
+    "explicitThrottle": 1
+   },
+   "endpointPaths": [
+    "/safety"
+   ],
+   "realtimeProduced": [],
+   "jobs": [],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [
+    {
+     "name": "SAFETY_REPORT_COOLDOWN_DAYS",
+     "file": "apps/core-api/src/modules/safety/safety.service.ts",
+     "line": 68,
+     "quote": "const pairCooldownDays = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "7",
+     "required": false
+    },
+    {
+     "name": "SAFETY_TRUST_PENALTY_PER_REPORT",
+     "file": "apps/core-api/src/modules/safety/safety.service.ts",
+     "line": 72,
+     "quote": "const penaltyPerReport = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "5",
+     "required": false
+    },
+    {
+     "name": "SAFETY_TRUST_PENALTY_DAILY_CAP",
+     "file": "apps/core-api/src/modules/safety/safety.service.ts",
+     "line": 76,
+     "quote": "const dailyCap = this.config.getOrThrow('SAFETY_TRUST_PENALTY_DAILY_CAP', {",
+     "class": "other",
+     "default": "20",
+     "required": false
+    },
+    {
+     "name": "SAFETY_TRUST_SCORE_FLOOR",
+     "file": "apps/core-api/src/modules/safety/safety.service.ts",
+     "line": 79,
+     "quote": "const floor = this.config.getOrThrow('SAFETY_TRUST_SCORE_FLOOR', {",
+     "class": "other",
+     "default": "0",
+     "required": false
+    },
+    {
+     "name": "SAFETY_REMATCH_COOLDOWN_DAYS",
+     "file": "apps/core-api/src/modules/safety/safety.service.ts",
+     "line": 297,
+     "quote": "const cooldownDays = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "30",
+     "required": false
+    }
+   ],
+   "errorGroups": [
+    "SafetyErrors"
+   ],
+   "errorCodes": 3,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 1,
+    "integration": 0
+   },
+   "docs": {
+    "path": "docs/services/safety-service.md",
+    "lastChanged": "2026-07-28",
+    "commitsSince": 1
+   },
+   "features": [
+    {
+     "id": "safety",
+     "title": "Report, block and trust-safety decisions",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 8,
+    "recent": 0,
+    "fixes": 1,
+    "last": "2026-08-14"
+   },
+   "issues": [],
+   "mapCollaborators": [
+    {
+     "with": "user",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "user",
+     "kind": "service",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "admin",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "discovery",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "feed",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "friend",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "matching",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "mood",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "movie-match",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "palm-match",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "short-video",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    }
+   ]
+  },
+  {
+   "id": "short-video",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/short-video",
+   "mapAnchor": "svc-short-video",
+   "role": "Sở hữu vòng đời Video (uploading -> processing -> pending_review|published -> removed|rejected|failed), view/reaction/comment và ranking v1. Upload đi qua VideoStoragePort/VideoTranscodePort RIÊNG của module (KHÔNG dùng module Media); không sở hữu graph bạn bè, report/trust (Safety), hồ sơ tác giả (User) hay tiền quà tặng (Gift/Economy).",
+   "tagline": "Video ngắn: upload, duyệt, xem, tim, bình luận",
+   "owns": [
+    "bảng videos (status, storageKey, rankScore, viewCount/likeCount/commentCount)",
+    "bảng video_views (unique videoId+viewerId, qualified), video_reactions, video_comments",
+    "cờ VIDEO_UPLOAD_ENABLED / VIDEO_MODERATION_MODE (pre|post)"
+   ],
+   "tables": [
+    {
+     "name": "video_comments",
+     "columns": 7,
+     "otherModules": []
+    },
+    {
+     "name": "video_reactions",
+     "columns": 4,
+     "otherModules": []
+    },
+    {
+     "name": "video_views",
+     "columns": 6,
+     "otherModules": []
+    },
+    {
+     "name": "videos",
+     "columns": 16,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [],
+   "endpoints": {
+    "total": 11,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 1,
+    "webhooks": 0,
+    "explicitThrottle": 0
+   },
+   "endpointPaths": [
+    "/videos"
+   ],
+   "realtimeProduced": [],
+   "jobs": [
+    {
+     "class": "VideoRankingService",
+     "jobName": "VIDEO_RANKING_JOB",
+     "intervalMs": "this.config.getOrThrow('VIDEO_RANKING_JOB_INTERVAL_MS', { infer: true, })"
+    },
+    {
+     "class": "VideoSweeperService",
+     "jobName": "VIDEO_SWEEPER_JOB",
+     "intervalMs": "this.config.getOrThrow('VIDEO_SWEEPER_INTERVAL_MS', { infer: true, })"
+    }
+   ],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [
+    {
+     "name": "VIDEO_RANKING_JOB_INTERVAL_MS",
+     "file": "apps/core-api/src/modules/short-video/jobs/video-ranking.service.ts",
+     "line": 43,
+     "quote": "intervalMs: this.config.getOrThrow('VIDEO_RANKING_JOB_INTERVAL_MS', {",
+     "class": "tuning",
+     "default": "1800000",
+     "required": false
+    },
+    {
+     "name": "VIDEO_RANK_WEIGHT_VIEW",
+     "file": "apps/core-api/src/modules/short-video/jobs/video-ranking.service.ts",
+     "line": 61,
+     "quote": "const weightView = this.config.getOrThrow('VIDEO_RANK_WEIGHT_VIEW', {",
+     "class": "other",
+     "default": "1",
+     "required": false
+    },
+    {
+     "name": "VIDEO_RANK_WEIGHT_LIKE",
+     "file": "apps/core-api/src/modules/short-video/jobs/video-ranking.service.ts",
+     "line": 64,
+     "quote": "const weightLike = this.config.getOrThrow('VIDEO_RANK_WEIGHT_LIKE', {",
+     "class": "other",
+     "default": "3",
+     "required": false
+    },
+    {
+     "name": "VIDEO_RANK_WEIGHT_COMMENT",
+     "file": "apps/core-api/src/modules/short-video/jobs/video-ranking.service.ts",
+     "line": 67,
+     "quote": "const weightComment = this.config.getOrThrow(",
+     "class": "other",
+     "default": "5",
+     "required": false
+    },
+    {
+     "name": "VIDEO_RANK_TIME_DECAY_HOURS",
+     "file": "apps/core-api/src/modules/short-video/jobs/video-ranking.service.ts",
+     "line": 71,
+     "quote": "const decayHours = this.config.getOrThrow('VIDEO_RANK_TIME_DECAY_HOURS', {",
+     "class": "tuning",
+     "default": "48",
+     "required": false
+    },
+    {
+     "name": "VIDEO_SWEEPER_INTERVAL_MS",
+     "file": "apps/core-api/src/modules/short-video/jobs/video-sweeper.service.ts",
+     "line": 47,
+     "quote": "intervalMs: this.config.getOrThrow('VIDEO_SWEEPER_INTERVAL_MS', {",
+     "class": "tuning",
+     "default": "3600000",
+     "required": false
+    },
+    {
+     "name": "VIDEO_UPLOAD_TIMEOUT_SECONDS",
+     "file": "apps/core-api/src/modules/short-video/jobs/video-sweeper.service.ts",
+     "line": 65,
+     "quote": "const timeoutSeconds = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "3600",
+     "required": false
+    },
+    {
+     "name": "NODE_ENV",
+     "file": "apps/core-api/src/modules/short-video/ports/dev-video-storage.adapter.ts",
+     "line": 50,
+     "quote": "if (this.config.get('NODE_ENV', { infer: true }) === 'production') {",
+     "class": null,
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "VIDEO_UPLOAD_ENABLED",
+     "file": "apps/core-api/src/modules/short-video/ports/video-provider.factory.ts",
+     "line": 19,
+     "quote": "config.getOrThrow('VIDEO_UPLOAD_ENABLED', { infer: true })",
+     "class": "switch",
+     "default": "false",
+     "required": false
+    },
+    {
+     "name": "VIDEO_CAPTION_MAX_LENGTH",
+     "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+     "line": 64,
+     "quote": "const captionMaxLength = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "500",
+     "required": false
+    },
+    {
+     "name": "VIDEO_MODERATION_MODE",
+     "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+     "line": 143,
+     "quote": "const moderationMode = this.config.getOrThrow('VIDEO_MODERATION_MODE', {",
+     "class": "switch",
+     "default": "pre",
+     "required": false
+    },
+    {
+     "name": "VIDEO_QUALIFIED_VIEW_MIN_MS",
+     "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+     "line": 262,
+     "quote": "const qualifiedMinMs = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "3000",
+     "required": false
+    },
+    {
+     "name": "VIDEO_REPORT_AUTOHIDE_THRESHOLD",
+     "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+     "line": 496,
+     "quote": "const threshold = this.config.getOrThrow(",
+     "class": "tuning",
+     "default": "5",
+     "required": false
+    }
+   ],
+   "errorGroups": [
+    "ShortVideoErrors"
+   ],
+   "errorCodes": 7,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 3,
+    "integration": 1
+   },
+   "docs": {
+    "path": "docs/services/short-video-service.md",
+    "lastChanged": "2026-10-09",
+    "commitsSince": 0
+   },
+   "features": [
+    {
+     "id": "short-video",
+     "title": "Short-video lifecycle, moderation and derived ranking",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 10,
+    "recent": 2,
+    "fixes": 3,
+    "last": "2026-10-09"
+   },
+   "issues": [
+    {
+     "id": "P088",
+     "title": "View count video cộng đôi khi đồng thời",
+     "status": "fixed",
+     "tier": "A"
+    },
+    {
+     "id": "P089",
+     "title": "Sweeper video lỗi bị đói (lặp 200 hàng cũ nhất)",
+     "status": "fixed",
+     "tier": "A"
+    },
+    {
+     "id": "P108",
+     "title": "Replay upload-intent cấp lại URL sau khi video đã published/failed",
+     "status": "fixed",
+     "tier": "A"
+    }
+   ],
+   "mapCollaborators": [
+    {
+     "with": "friend",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "safety",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "user",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "admin",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "gift",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "external:object-storage",
+     "kind": "external",
+     "mechanism": "sdk",
+     "direction": "out"
+    },
+    {
+     "with": "external:video-transcode",
+     "kind": "external",
+     "mechanism": "sdk",
+     "direction": "out"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "in"
+    },
+    {
+     "with": "admin-console",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "in"
+    }
+   ]
+  },
+  {
+   "id": "soul-match",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/soul-match",
+   "mapAnchor": "svc-soul-match",
+   "role": "Sở hữu phòng chat ẩn danh ngắn sau khi Matching ghép cặp: tin nhắn (append-only), rating 2 chiều rude|boring|like (bất biến) và quyết định 'cả hai like → mở Friendship + unlock profile'. KHÔNG sở hữu MatchSession (Matching ghi), Friendship/Conversation (Friend ghi), hồ sơ người dùng (User) và không có entity phòng riêng: phase chatting/rating/closed được derive từ giờ server.",
+   "tagline": "Phòng chat ẩn danh, rating, mutual-like",
+   "owns": [
+    "bảng soul_chat_messages (append-only, seq bigint identity cho cursor, idempotency_key unique, FK tới match_sessions và users)",
+    "bảng soul_match_ratings (bất biến, unique (session_id, rater_user_id))",
+    "không giữ key Redis nào: chỉ PUBLISH lên channel realtime:user:{userId}"
+   ],
+   "tables": [
+    {
+     "name": "soul_chat_messages",
+     "columns": 7,
+     "otherModules": []
+    },
+    {
+     "name": "soul_match_ratings",
+     "columns": 5,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [
+    {
+     "table": "match_sessions",
+     "owner": "matching",
+     "ops": {
+      "module": "soul-match",
+      "read": 2,
+      "write": 0,
+      "lock": 2,
+      "vias": [
+       "manager",
+       "manager(lock option)"
+      ],
+      "samples": [
+       {
+        "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+        "line": 163,
+        "op": "lock",
+        "via": "manager(lock option)",
+        "quote": "manager.findOne(MatchSession, { where: { id: sessionId }, lock: { mode: 'pessimistic_write' }, })"
+       },
+       {
+        "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+        "line": 311,
+        "op": "lock",
+        "via": "manager(lock option)",
+        "quote": "manager.findOne(MatchSession, { where: { id: sessionId }, lock: { mode: 'pessimistic_write' }, })"
+       }
+      ]
+     }
+    }
+   ],
+   "endpoints": {
+    "total": 6,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 1,
+    "webhooks": 0,
+    "explicitThrottle": 1
+   },
+   "endpointPaths": [
+    "/soul-match"
+   ],
+   "realtimeProduced": [
+    "soul.message",
+    "soul.matched",
+    "soul.ended"
+   ],
+   "jobs": [],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [
+    {
+     "name": "REDIS_URL",
+     "file": "apps/core-api/src/modules/soul-match/redis/soul-match-redis.provider.ts",
+     "line": 14,
+     "quote": "createCoreRedisClient(config.getOrThrow('REDIS_URL', { infer: true })),",
+     "class": "endpoint",
+     "default": "redis://localhost:6379",
+     "required": false
+    },
+    {
+     "name": "SOUL_CHAT_MESSAGE_MAX_LENGTH",
+     "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+     "line": 146,
+     "quote": "const maxLength = this.config.getOrThrow('SOUL_CHAT_MESSAGE_MAX_LENGTH', {",
+     "class": "tuning",
+     "default": "500",
+     "required": false
+    },
+    {
+     "name": "SOUL_CHAT_DURATION_SECONDS",
+     "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+     "line": 466,
+     "quote": "const chatSeconds = this.config.getOrThrow('SOUL_CHAT_DURATION_SECONDS', {",
+     "class": "tuning",
+     "default": "150",
+     "required": false
+    },
+    {
+     "name": "SOUL_RATING_WINDOW_SECONDS",
+     "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+     "line": 469,
+     "quote": "const ratingSeconds = this.config.getOrThrow('SOUL_RATING_WINDOW_SECONDS', {",
+     "class": "tuning",
+     "default": "120",
+     "required": false
+    }
+   ],
+   "errorGroups": [
+    "SoulMatchErrors"
+   ],
+   "errorCodes": 9,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 1,
+    "integration": 1
+   },
+   "docs": {
+    "path": "docs/services/soul-match-service.md",
+    "lastChanged": "2026-08-01",
+    "commitsSince": 2
+   },
+   "features": [
+    {
+     "id": "soul-match",
+     "title": "Anonymous text match, rating and friendship unlock",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 17,
+    "recent": 0,
+    "fixes": 2,
+    "last": "2026-08-13"
+   },
+   "issues": [
+    {
+     "id": "P006",
+     "title": "Swagger thiếu cursor pagination → client sinh kiểu never",
+     "status": "fixed",
+     "tier": "A"
+    }
+   ],
+   "mapCollaborators": [
+    {
+     "with": "matching",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "matching",
+     "kind": "service",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "friend",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "user",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "out"
+    },
+    {
+     "with": "signaling-gateway",
+     "kind": "service",
+     "mechanism": "redis-pubsub",
+     "direction": "out"
+    },
+    {
+     "with": "redis",
+     "kind": "infra",
+     "mechanism": "redis-pubsub",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "in"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "socket",
+     "direction": "out"
+    }
+   ]
+  },
+  {
+   "id": "support",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/support",
+   "mapAnchor": "svc-support",
+   "role": "Sở hữu bảng support_tickets: người dùng gửi phản hồi/yêu cầu hỗ trợ (idempotent) và xem lại phiếu của mình; vòng đời trạng thái open -> in_progress -> resolved -> closed. Không có endpoint cho staff: staff xử lý qua module admin gọi vào SupportService, và support không gửi thông báo hay realtime khi staff trả lời.",
+   "tagline": "Phiếu hỗ trợ và vòng đời xử lý",
+   "owns": [
+    "bảng support_tickets (userId, category, message, status, staffResponse, idempotencyKey)",
+    "unique uq_support_ticket_user_idempotency (userId, idempotencyKey)"
+   ],
+   "tables": [
+    {
+     "name": "support_tickets",
+     "columns": 9,
+     "otherModules": []
+    }
+   ],
+   "tablesTouchedOfOthers": [],
+   "endpoints": {
+    "total": 2,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 1,
+    "webhooks": 0,
+    "explicitThrottle": 0
+   },
+   "endpointPaths": [
+    "/support"
+   ],
+   "realtimeProduced": [],
+   "jobs": [],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [],
+   "errorGroups": [
+    "SupportErrors"
+   ],
+   "errorCodes": 4,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 1,
+    "integration": 0
+   },
+   "docs": {
+    "path": null,
+    "lastChanged": null,
+    "commitsSince": null
+   },
+   "features": [
+    {
+     "id": "support-tickets",
+     "title": "Idempotent support tickets with customer tracking and staff workflow",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 2,
+    "recent": 0,
+    "fixes": 0,
+    "last": "2026-07-27"
+   },
+   "issues": [],
+   "mapCollaborators": [
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "admin",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "in"
+    }
+   ]
+  },
+  {
+   "id": "user",
+   "kind": "core-api module",
+   "dir": "apps/core-api/src/modules/user",
+   "mapAnchor": "svc-user",
+   "role": "Sở hữu bảng users (hồ sơ, status, role, isGuest, trustScore) và user_privacy_settings; cung cấp UserService/PrivacySettingsService/PublicProfileDto cho gần như mọi module khác. Không sở hữu danh tính đăng nhập (auth), không biết khái niệm block/report (safety) và không tự ghi presence (signaling-gateway ghi, user chỉ đọc).",
+   "tagline": "Hồ sơ người dùng, quyền riêng tư, trạng thái",
+   "owns": [
+    "bảng users (nickname, gender, birthDate, region, interests, seeking*, trustScore, status, isGuest, role)",
+    "bảng user_privacy_settings (searchableByPhone, hideProfile, showOnlineStatus)",
+    "đọc Redis ZSET presence realtimePresenceKey(userId) (do signaling-gateway ghi)"
+   ],
+   "tables": [
+    {
+     "name": "user_privacy_settings",
+     "columns": 5,
+     "otherModules": [
+      "discovery",
+      "feed"
+     ]
+    },
+    {
+     "name": "users",
+     "columns": 16,
+     "otherModules": [
+      "auth",
+      "friend",
+      "matching",
+      "safety"
+     ]
+    }
+   ],
+   "tablesTouchedOfOthers": [],
+   "endpoints": {
+    "total": 6,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 0,
+    "webhooks": 0,
+    "explicitThrottle": 0
+   },
+   "endpointPaths": [
+    "/users"
+   ],
+   "realtimeProduced": [],
+   "jobs": [],
+   "redisCallSites": 2,
+   "redisOps": [
+    "zremrangebyscore",
+    "zcard"
+   ],
+   "envVars": [
+    {
+     "name": "REDIS_URL",
+     "file": "apps/core-api/src/modules/user/redis/user-redis.provider.ts",
+     "line": 15,
+     "quote": "createCoreRedisClient(config.getOrThrow('REDIS_URL', { infer: true })),",
+     "class": "endpoint",
+     "default": "redis://localhost:6379",
+     "required": false
+    },
+    {
+     "name": "USER_DEFAULT_AVATAR_ID",
+     "file": "apps/core-api/src/modules/user/user.service.ts",
+     "line": 78,
+     "quote": "avatarId: this.config.getOrThrow('USER_DEFAULT_AVATAR_ID', {",
+     "class": "other",
+     "default": "default-01",
+     "required": false
+    }
+   ],
+   "errorGroups": [
+    "UserErrors"
+   ],
+   "errorCodes": 3,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 4,
+    "integration": 0
+   },
+   "docs": {
+    "path": null,
+    "lastChanged": null,
+    "commitsSince": null
+   },
+   "features": [
+    {
+     "id": "user-profile-open-entry",
+     "title": "Optional profile birth date without an age-based access gate",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 13,
+    "recent": 0,
+    "fixes": 0,
+    "last": "2026-08-12"
+   },
+   "issues": [],
+   "mapCollaborators": [
+    {
+     "with": "redis",
+     "kind": "infra",
+     "mechanism": "redis-state",
+     "direction": "out"
+    },
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "admin",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "auth",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "calling",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "discovery",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "feed",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "friend",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "gift",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "matching",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "party-room",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "safety",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "short-video",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "soul-match",
+     "kind": "service",
+     "mechanism": "di-call",
+     "direction": "in"
+    },
+    {
+     "with": "signaling-gateway",
+     "kind": "service",
+     "mechanism": "redis-state",
+     "direction": "both"
+    },
+    {
+     "with": "auth",
+     "kind": "service",
+     "mechanism": "shared-db",
+     "direction": "in"
+    },
+    {
+     "with": "safety",
+     "kind": "service",
+     "mechanism": "shared-db",
+     "direction": "in"
+    },
+    {
+     "with": "friend",
+     "kind": "service",
+     "mechanism": "shared-db",
+     "direction": "in"
+    },
+    {
+     "with": "matching",
+     "kind": "service",
+     "mechanism": "shared-db",
+     "direction": "in"
+    }
+   ]
+  },
+  {
+   "id": "app-shell",
+   "kind": "core-api shell",
+   "dir": "apps/core-api/src/app",
+   "mapAnchor": "svc-app-shell",
+   "role": "Cung cấp /health, /health/live, /health/ready (probe cho Docker/k8s) và GET /api/v1/capabilities (hợp đồng tính năng runtime cho web/admin). Không có bảng riêng, không chứa business logic; chỉ kiểm tra Postgres/Redis và phản chiếu cấu hình env của các module khác.",
+   "tagline": "Health probe và hợp đồng capabilities",
+   "owns": [
+    "không sở hữu bảng/khoá Redis nào (readiness mở kết nối ioredis riêng chỉ để PING)"
+   ],
+   "tables": [],
+   "tablesTouchedOfOthers": [],
+   "endpoints": {
+    "total": 4,
+    "public": 4,
+    "adminOnly": 0,
+    "idempotent": 0,
+    "webhooks": 0,
+    "explicitThrottle": 1
+   },
+   "endpointPaths": [
+    "/capabilities",
+    "/health"
+   ],
+   "realtimeProduced": [],
+   "jobs": [],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [
+    {
+     "name": "LOG_LEVEL",
+     "file": "apps/core-api/src/app/app.module.ts",
+     "line": 58,
+     "quote": "level: config.getOrThrow('LOG_LEVEL', { infer: true }),",
+     "class": null,
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "NODE_ENV",
+     "file": "apps/core-api/src/app/app.module.ts",
+     "line": 59,
+     "quote": "pretty: config.get('NODE_ENV', { infer: true }) === 'development',",
+     "class": null,
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "DATABASE_URL",
+     "file": "apps/core-api/src/app/app.module.ts",
+     "line": 69,
+     "quote": "url: config.getOrThrow('DATABASE_URL', { infer: true }),",
+     "class": "endpoint",
+     "default": null,
+     "required": true
+    },
+    {
+     "name": "DATABASE_POOL_MAX",
+     "file": "apps/core-api/src/app/app.module.ts",
+     "line": 71,
+     "quote": "poolSize: config.getOrThrow('DATABASE_POOL_MAX', { infer: true }),",
+     "class": "tuning",
+     "default": "10",
+     "required": false
+    },
+    {
+     "name": "DATABASE_POOL_ACQUIRE_TIMEOUT_MS",
+     "file": "apps/core-api/src/app/app.module.ts",
+     "line": 74,
+     "quote": "connectTimeoutMS: config.getOrThrow(",
+     "class": "tuning",
+     "default": "10000",
+     "required": false
+    },
+    {
+     "name": "THROTTLE_STORAGE",
+     "file": "apps/core-api/src/app/app.module.ts",
+     "line": 89,
+     "quote": "config.getOrThrow('THROTTLE_STORAGE', { infer: true }) === 'redis';",
+     "class": "switch",
+     "default": "memory",
+     "required": false
+    },
+    {
+     "name": "HTTP_TRUST_PROXY_HOPS",
+     "file": "apps/core-api/src/app/app.module.ts",
+     "line": 93,
+     "quote": "config.getOrThrow('HTTP_TRUST_PROXY_HOPS', { infer: true }) === 0",
+     "class": "other",
+     "default": "0",
+     "required": false
+    },
+    {
+     "name": "THROTTLE_TTL_SECONDS",
+     "file": "apps/core-api/src/app/app.module.ts",
+     "line": 105,
+     "quote": "config.getOrThrow('THROTTLE_TTL_SECONDS', { infer: true }) *",
+     "class": "tuning",
+     "default": "60",
+     "required": false
+    },
+    {
+     "name": "THROTTLE_LIMIT",
+     "file": "apps/core-api/src/app/app.module.ts",
+     "line": 107,
+     "quote": "limit: config.getOrThrow('THROTTLE_LIMIT', { infer: true }),",
+     "class": "tuning",
+     "default": "100",
+     "required": false
+    },
+    {
+     "name": "REDIS_URL",
+     "file": "apps/core-api/src/app/app.module.ts",
+     "line": 115,
+     "quote": "config.getOrThrow('REDIS_URL', { infer: true }),",
+     "class": "endpoint",
+     "default": "redis://localhost:6379",
+     "required": false
+    },
+    {
+     "name": "CAPABILITY_MAINTENANCE_FEATURES",
+     "file": "apps/core-api/src/app/capabilities.service.ts",
+     "line": 23,
+     "quote": "this.config.getOrThrow('CAPABILITY_MAINTENANCE_FEATURES', {",
+     "class": "switch",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "ECONOMY_IAP_VERIFIER",
+     "file": "apps/core-api/src/app/capabilities.service.ts",
+     "line": 47,
+     "quote": "const iapVerifier = this.config.getOrThrow('ECONOMY_IAP_VERIFIER', {",
+     "class": "switch",
+     "default": "dev",
+     "required": false
+    },
+    {
+     "name": "VIDEO_UPLOAD_ENABLED",
+     "file": "apps/core-api/src/app/capabilities.service.ts",
+     "line": 60,
+     "quote": "const videoEnabled = this.config.getOrThrow('VIDEO_UPLOAD_ENABLED', {",
+     "class": "switch",
+     "default": "false",
+     "required": false
+    },
+    {
+     "name": "NOTIFICATION_PUSH_PROVIDER",
+     "file": "apps/core-api/src/app/capabilities.service.ts",
+     "line": 63,
+     "quote": "const pushProvider = this.config.getOrThrow('NOTIFICATION_PUSH_PROVIDER', {",
+     "class": "switch",
+     "default": "dev",
+     "required": false
+    },
+    {
+     "name": "AUTH_PHONE_OTP_ENABLED",
+     "file": "apps/core-api/src/app/capabilities.service.ts",
+     "line": 191,
+     "quote": "const configured = this.config.getOrThrow('AUTH_PHONE_OTP_ENABLED', {",
+     "class": "switch",
+     "default": "true",
+     "required": false
+    }
+   ],
+   "errorGroups": [],
+   "errorCodes": 0,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 3,
+    "integration": 0
+   },
+   "docs": {
+    "path": null,
+    "lastChanged": null,
+    "commitsSince": null
+   },
+   "features": [
+    {
+     "id": "runtime-capabilities",
+     "title": "Server-derived runtime availability contract for frontend providers",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 26,
+    "recent": 2,
+    "fixes": 4,
+    "last": "2026-10-09"
+   },
+   "issues": [
+    {
+     "id": "P076",
+     "title": "Rate limit trong bộ nhớ từng pod + trần kết nối Postgres",
+     "status": "fixed",
+     "tier": "B"
+    }
+   ],
+   "mapCollaborators": [
+    {
+     "with": "postgres",
+     "kind": "infra",
+     "mechanism": "shared-db",
+     "direction": "out"
+    },
+    {
+     "with": "redis",
+     "kind": "infra",
+     "mechanism": "redis-state",
+     "direction": "out"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "in"
+    },
+    {
+     "with": "admin-console",
+     "kind": "client",
+     "mechanism": "http",
+     "direction": "in"
+    },
+    {
+     "with": "auth",
+     "kind": "service",
+     "mechanism": "config",
+     "direction": "out"
+    },
+    {
+     "with": "economy",
+     "kind": "service",
+     "mechanism": "config",
+     "direction": "out"
+    },
+    {
+     "with": "notification",
+     "kind": "service",
+     "mechanism": "config",
+     "direction": "out"
+    },
+    {
+     "with": "short-video",
+     "kind": "service",
+     "mechanism": "config",
+     "direction": "out"
+    },
+    {
+     "with": "external:kubernetes-docker",
+     "kind": "external",
+     "mechanism": "http",
+     "direction": "in"
+    }
+   ]
+  },
+  {
+   "id": "signaling-gateway",
+   "kind": "deployable",
+   "dir": "apps/signaling-gateway",
+   "mapAnchor": "svc-signaling-gateway",
+   "role": "Gateway Socket.IO namespace /signaling: verify JWT của core-api lúc handshake, join socket vào room user:{userId}, relay nguyên văn envelope từ Redis pub/sub realtime:user:* xuống socket, và giữ quota kết nối + presence bằng lease trong Redis. KHÔNG chứa business logic, KHÔNG có DB, KHÔNG ký token và KHÔNG nhận room/event từ client (chỉ có 'ping').",
+   "tagline": "Fanout Socket.IO, quota kết nối, presence",
+   "owns": [
+    "Redis ZSET signaling:connection-quota:{userId} (lease mỗi socket, TTL WS_CONNECTION_LEASE_MS)",
+    "Redis ZSET realtime:presence:{userId} (cùng lease, core-api đọc để biết online)",
+    "Room Socket.IO user:{userId} (in-memory, đồng bộ giữa pod bằng Redis adapter)"
+   ],
+   "tables": [],
+   "tablesTouchedOfOthers": [],
+   "endpoints": {
+    "total": 0,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 0,
+    "webhooks": 0,
+    "explicitThrottle": 0
+   },
+   "endpointPaths": [],
+   "realtimeProduced": [],
+   "jobs": [
+    {
+     "class": "SignalingGateway",
+     "intervalMs": "Math.floor(this.connectionQuota.leaseMs / 3)"
+    }
+   ],
+   "redisCallSites": 8,
+   "redisOps": [
+    "eval",
+    "quit",
+    "duplicate",
+    "psubscribe"
+   ],
+   "envVars": [
+    {
+     "name": "LOG_LEVEL",
+     "file": "apps/signaling-gateway/src/app/app.module.ts",
+     "line": 25,
+     "quote": "level: config.getOrThrow('LOG_LEVEL', { infer: true }),",
+     "class": null,
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "NODE_ENV",
+     "file": "apps/signaling-gateway/src/app/app.module.ts",
+     "line": 26,
+     "quote": "pretty: config.get('NODE_ENV', { infer: true }) === 'development',",
+     "class": null,
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "JWT_SECRET",
+     "file": "apps/signaling-gateway/src/app/app.module.ts",
+     "line": 35,
+     "quote": "secret: config.getOrThrow('JWT_SECRET', { infer: true }),",
+     "class": "secret",
+     "default": null,
+     "required": true
+    },
+    {
+     "name": "WS_CONNECTION_LEASE_MS",
+     "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+     "line": 76,
+     "quote": "this.leaseMs = config.getOrThrow('WS_CONNECTION_LEASE_MS', {",
+     "class": "tuning",
+     "default": "90000",
+     "required": false
+    },
+    {
+     "name": "WS_MAX_CONNECTIONS_PER_USER",
+     "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+     "line": 79,
+     "quote": "this.maxConnections = config.getOrThrow('WS_MAX_CONNECTIONS_PER_USER', {",
+     "class": "tuning",
+     "default": "3",
+     "required": false
+    },
+    {
+     "name": "REDIS_URL",
+     "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+     "line": 83,
+     "quote": "config.getOrThrow('REDIS_URL', { infer: true }),",
+     "class": "endpoint",
+     "default": "redis://localhost:6379",
+     "required": false
+    },
+    {
+     "name": "JWT_SECRET_PREVIOUS",
+     "file": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+     "line": 78,
+     "quote": "config.get('JWT_SECRET_PREVIOUS', { infer: true }) || undefined;",
+     "class": "secret",
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "SENTRY_DSN",
+     "file": "apps/signaling-gateway/src/main.ts",
+     "line": 28,
+     "quote": "dsn: config.getOrThrow('SENTRY_DSN', { infer: true }),",
+     "class": "secret",
+     "default": null,
+     "required": false
+    },
+    {
+     "name": "SENTRY_RELEASE",
+     "file": "apps/signaling-gateway/src/main.ts",
+     "line": 30,
+     "quote": "release: config.getOrThrow('SENTRY_RELEASE', { infer: true }),",
+     "class": "other",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "CORS_ORIGINS",
+     "file": "apps/signaling-gateway/src/main.ts",
+     "line": 33,
+     "quote": "const corsOrigins = config",
+     "class": "endpoint",
+     "default": "",
+     "required": false
+    },
+    {
+     "name": "SIGNALING_PORT",
+     "file": "apps/signaling-gateway/src/main.ts",
+     "line": 49,
+     "quote": "await app.listen(config.getOrThrow('SIGNALING_PORT', { infer: true }));",
+     "class": "other",
+     "default": "3001",
+     "required": false
+    }
+   ],
+   "errorGroups": [],
+   "errorCodes": 0,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 9,
+    "integration": 2
+   },
+   "docs": {
+    "path": "docs/services/realtime-gateway.md",
+    "lastChanged": "2026-10-09",
+    "commitsSince": 0
+   },
+   "features": [
+    {
+     "id": "realtime-fanout",
+     "title": "Authenticated Socket.IO fanout and distributed connection quota through Redis",
+     "status": "implemented"
+    }
+   ],
+   "churn": {
+    "commits": 26,
+    "recent": 2,
+    "fixes": 7,
+    "last": "2026-10-09"
+   },
+   "issues": [
+    {
+     "id": "P004",
+     "title": "Adapter CLAUDE.md / skills lệch bản canonical (symlink tay)",
+     "status": "fixed",
+     "tier": "B"
+    },
+    {
+     "id": "P036",
+     "title": "Windows: hook/runner không chạy được pnpm (.cmd: 127 / EINVAL)",
+     "status": "fixed",
+     "tier": "A"
+    },
+    {
+     "id": "P038",
+     "title": "Windows: Jest không chạy (thiếu VC++ runtime, resolver native)",
+     "status": "fixed",
+     "tier": "A"
+    },
+    {
+     "id": "P039",
+     "title": "Pre-push trên Windows đỏ giả do giả định POSIX / công cụ Linux-only",
+     "status": "fixed",
+     "tier": "A"
+    },
+    {
+     "id": "P041",
+     "title": "Timeout cứng quá chặt / chạy song song làm test flaky",
+     "status": "fixed",
+     "tier": "A"
+    },
+    {
+     "id": "P043",
+     "title": "Nx cache bật cho test có state → có thể trả kết quả cũ",
+     "status": "fixed",
+     "tier": "B"
+    },
+    {
+     "id": "P044",
+     "title": "E2E local: server cũ còn sống, reset DB chồng, thiếu baseUrl",
+     "status": "fixed",
+     "tier": "A"
+    },
+    {
+     "id": "P086",
+     "title": "Relay realtime gửi trùng event theo số pod (LRN-011)",
+     "status": "fixed",
+     "tier": "A"
+    },
+    {
+     "id": "P091",
+     "title": "Xoay JWT_SECRET đăng xuất mọi người",
+     "status": "fixed",
+     "tier": "B"
+    }
+   ],
+   "mapCollaborators": [
+    {
+     "with": "gift",
+     "kind": "service",
+     "mechanism": "redis-pubsub",
+     "direction": "in"
+    },
+    {
+     "with": "matching",
+     "kind": "service",
+     "mechanism": "redis-pubsub",
+     "direction": "in"
+    },
+    {
+     "with": "calling",
+     "kind": "service",
+     "mechanism": "redis-pubsub",
+     "direction": "in"
+    },
+    {
+     "with": "soul-match",
+     "kind": "service",
+     "mechanism": "redis-pubsub",
+     "direction": "in"
+    },
+    {
+     "with": "movie-match",
+     "kind": "service",
+     "mechanism": "redis-pubsub",
+     "direction": "in"
+    },
+    {
+     "with": "mini-game",
+     "kind": "service",
+     "mechanism": "redis-pubsub",
+     "direction": "in"
+    },
+    {
+     "with": "friend",
+     "kind": "service",
+     "mechanism": "redis-pubsub",
+     "direction": "in"
+    },
+    {
+     "with": "party-room",
+     "kind": "service",
+     "mechanism": "redis-pubsub",
+     "direction": "in"
+    },
+    {
+     "with": "redis",
+     "kind": "infra",
+     "mechanism": "redis-pubsub",
+     "direction": "in"
+    },
+    {
+     "with": "redis",
+     "kind": "infra",
+     "mechanism": "redis-state",
+     "direction": "out"
+    },
+    {
+     "with": "redis",
+     "kind": "infra",
+     "mechanism": "sdk",
+     "direction": "both"
+    },
+    {
+     "with": "user",
+     "kind": "service",
+     "mechanism": "redis-state",
+     "direction": "in"
+    },
+    {
+     "with": "auth",
+     "kind": "service",
+     "mechanism": "config",
+     "direction": "in"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "socket",
+     "direction": "both"
+    }
+   ]
+  },
+  {
+   "id": "media-server",
+   "kind": "deployable (config only)",
+   "dir": "apps/media-server",
+   "mapAnchor": "svc-media-server",
+   "role": "Không phải code NestJS: chỉ là cấu hình/deploy image livekit/livekit-server (livekit.yaml, compose, k8s/base/media-server) làm SFU chuyển tiếp audio/video giữa client; giữ room runtime và trạng thái cụm trong Redis. KHÔNG chứa business logic, KHÔNG truy cập DB: quyền tham gia, membership, timer, billing và giới hạn speaker đều ở core-api (calling / party-room).",
+   "tagline": "LiveKit SFU: cấu hình và deploy, không logic",
+   "owns": [
+    "Cấu hình livekit.yaml: cổng 7880 (HTTP/WS + server API), 7881 (TCP RTC), UDP 50000-50200, Prometheus 6789",
+    "Room media runtime và participant đang kết nối (trạng thái cụm chia sẻ qua Redis)",
+    "Danh sách webhook URL trỏ về core-api (calling + party)"
+   ],
+   "tables": [],
+   "tablesTouchedOfOthers": [],
+   "endpoints": {
+    "total": 0,
+    "public": 0,
+    "adminOnly": 0,
+    "idempotent": 0,
+    "webhooks": 0,
+    "explicitThrottle": 0
+   },
+   "endpointPaths": [],
+   "realtimeProduced": [],
+   "jobs": [],
+   "redisCallSites": 0,
+   "redisOps": [],
+   "envVars": [],
+   "errorGroups": [],
+   "errorCodes": 0,
+   "errorCodesUnused": 0,
+   "tests": {
+    "unit": 0,
+    "integration": 0
+   },
+   "docs": {
+    "path": null,
+    "lastChanged": null,
+    "commitsSince": null
+   },
+   "features": [],
+   "churn": {
+    "commits": 14,
+    "recent": 0,
+    "fixes": 3,
+    "last": "2026-07-30"
+   },
+   "issues": [
+    {
+     "id": "P004",
+     "title": "Adapter CLAUDE.md / skills lệch bản canonical (symlink tay)",
+     "status": "fixed",
+     "tier": "B"
+    }
+   ],
+   "mapCollaborators": [
+    {
+     "with": "calling",
+     "kind": "service",
+     "mechanism": "sdk",
+     "direction": "in"
+    },
+    {
+     "with": "party-room",
+     "kind": "service",
+     "mechanism": "sdk",
+     "direction": "in"
+    },
+    {
+     "with": "calling",
+     "kind": "service",
+     "mechanism": "webhook",
+     "direction": "out"
+    },
+    {
+     "with": "party-room",
+     "kind": "service",
+     "mechanism": "webhook",
+     "direction": "out"
+    },
+    {
+     "with": "redis",
+     "kind": "infra",
+     "mechanism": "redis-state",
+     "direction": "both"
+    },
+    {
+     "with": "web",
+     "kind": "client",
+     "mechanism": "sdk",
+     "direction": "both"
+    },
+    {
+     "with": "party-room",
+     "kind": "service",
+     "mechanism": "config",
+     "direction": "both"
+    },
+    {
+     "with": "external:prometheus",
+     "kind": "external",
+     "mechanism": "http",
+     "direction": "in"
+    }
+   ]
+  }
+ ],
+ "features": [
+  {
+   "id": "auth-session",
+   "title": "Guest, OTP, social login, identity upgrade and rotating browser sessions",
+   "status": "implemented",
+   "owner": "core-api/auth",
+   "modules": [
+    "auth"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/06-domain-rules.md",
+    "docs/adr/0007-httponly-cookie-refresh-token.md"
+   ],
+   "verification": [
+    "apps/core-api/src/modules/auth/auth.service.spec.ts"
+   ]
+  },
+  {
+   "id": "runtime-capabilities",
+   "title": "Server-derived runtime availability contract for frontend providers",
+   "status": "implemented",
+   "owner": "core-api/app with admin/web consumers",
+   "modules": [
+    "admin",
+    "app-shell"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/12-frontend-architecture.md",
+    ".env.example"
+   ],
+   "verification": [
+    "apps/core-api/src/app/capabilities.service.spec.ts",
+    "apps/web/src/shared/capabilities/api.spec.tsx"
+   ]
+  },
+  {
+   "id": "economy-ledger",
+   "title": "Wallet, IAP catalog, VIP and double-entry ledger",
+   "status": "implemented",
+   "owner": "core-api/economy",
+   "modules": [
+    "economy"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/services/economy-service.md",
+    "docs/06-domain-rules.md"
+   ],
+   "verification": [
+    "apps/core-api/src/modules/economy/economy.integration.spec.ts"
+   ]
+  },
+  {
+   "id": "matching",
+   "title": "Queue ticket, pairing, guest quota and paid speed-up",
+   "status": "implemented",
+   "owner": "core-api/matching",
+   "modules": [
+    "matching"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/services/matching-service.md",
+    "docs/06-domain-rules.md"
+   ],
+   "verification": [
+    "apps/core-api/src/modules/matching/matching.integration.spec.ts"
+   ]
+  },
+  {
+   "id": "soul-match",
+   "title": "Anonymous text match, rating and friendship unlock",
+   "status": "implemented",
+   "owner": "core-api/soul-match",
+   "modules": [
+    "soul-match"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/services/soul-match-service.md",
+    "docs/services/realtime-gateway.md"
+   ],
+   "verification": [
+    "apps/core-api/src/modules/soul-match/soul-match.integration.spec.ts"
+   ]
+  },
+  {
+   "id": "calling",
+   "title": "Voice-call lifecycle and settlement",
+   "status": "implemented",
+   "owner": "core-api/calling",
+   "modules": [
+    "calling"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/services/calling-service.md",
+    "docs/06-domain-rules.md"
+   ],
+   "verification": [
+    "apps/core-api/src/modules/calling/calling.integration.spec.ts"
+   ]
+  },
+  {
+   "id": "party-room",
+   "title": "Party-room lifecycle, LiveKit token and member roles",
+   "status": "implemented",
+   "owner": "core-api/party-room",
+   "modules": [
+    "party-room"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/services/party-room-service.md",
+    "docs/services/realtime-gateway.md"
+   ],
+   "verification": [
+    "apps/core-api/src/modules/party-room/party-room.integration.spec.ts"
+   ]
+  },
+  {
+   "id": "gift",
+   "title": "Party-room gifts through Economy",
+   "status": "implemented",
+   "owner": "core-api/gift",
+   "modules": [
+    "gift"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/services/gift-service.md",
+    "docs/services/economy-service.md"
+   ],
+   "verification": [
+    "apps/core-api/src/modules/gift/gift.integration.spec.ts"
+   ]
+  },
+  {
+   "id": "friend-chat-streak",
+   "title": "Friendship, direct chat and streak",
+   "status": "implemented",
+   "owner": "core-api/friend",
+   "modules": [
+    "friend"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/services/friend-service.md",
+    "docs/services/streak-service.md"
+   ],
+   "verification": [
+    "apps/core-api/src/modules/friend/friend.integration.spec.ts"
+   ]
+  },
+  {
+   "id": "feed-stories",
+   "title": "Feed, reactions, comments and expiring stories",
+   "status": "implemented",
+   "owner": "core-api/feed",
+   "modules": [
+    "feed"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/services/feed-service.md"
+   ],
+   "verification": [
+    "apps/core-api/src/modules/feed/feed.integration.spec.ts"
+   ]
+  },
+  {
+   "id": "safety",
+   "title": "Report, block and trust-safety decisions",
+   "status": "implemented",
+   "owner": "core-api/safety",
+   "modules": [
+    "safety"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/services/safety-service.md",
+    "docs/06-domain-rules.md"
+   ],
+   "verification": [
+    "apps/core-api/src/modules/safety/safety.service.spec.ts"
+   ]
+  },
+  {
+   "id": "avatar-discovery-mood",
+   "title": "Avatar, discovery/nearby and mood",
+   "status": "implemented",
+   "owner": "core-api/avatar, core-api/discovery, core-api/mood",
+   "modules": [
+    "avatar",
+    "discovery",
+    "mood"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/services/avatar-service.md",
+    "docs/services/discovery-service.md",
+    "docs/services/mood-service.md"
+   ],
+   "verification": [
+    "apps/core-api/src/modules/avatar/avatar.integration.spec.ts",
+    "apps/core-api/src/modules/discovery/discovery.integration.spec.ts",
+    "apps/core-api/src/modules/mood/mood.integration.spec.ts"
+   ]
+  },
+  {
+   "id": "notification",
+   "title": "In-process notification dispatch with isolated push and analytics adapters",
+   "status": "implemented",
+   "owner": "core-api/notification",
+   "modules": [
+    "notification"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/services/notification-service.md"
+   ],
+   "verification": [
+    "apps/core-api/src/modules/notification/notification.service.spec.ts",
+    "apps/core-api/src/common/platform/platform.adapters.spec.ts"
+   ]
+  },
+  {
+   "id": "support-tickets",
+   "title": "Idempotent support tickets with customer tracking and staff workflow",
+   "status": "implemented",
+   "owner": "core-api/support with core-api/admin",
+   "modules": [
+    "admin",
+    "support"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/plans/2026-07-15-ui-contract-completion.md"
+   ],
+   "verification": [
+    "apps/core-api/src/modules/support/support.service.spec.ts"
+   ]
+  },
+  {
+   "id": "mini-game",
+   "title": "Two-player rock-paper-scissors mini game",
+   "status": "implemented",
+   "owner": "core-api/mini-game",
+   "modules": [
+    "mini-game"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/services/mini-game-service.md",
+    "docs/services/realtime-gateway.md"
+   ],
+   "verification": [
+    "apps/core-api/src/modules/mini-game/mini-game.integration.spec.ts"
+   ]
+  },
+  {
+   "id": "movie-match",
+   "title": "Shared video playback and anonymous movie match",
+   "status": "implemented",
+   "owner": "core-api/movie-match",
+   "modules": [
+    "movie-match"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/services/movie-match-service.md",
+    "docs/services/realtime-gateway.md"
+   ],
+   "verification": [
+    "apps/core-api/src/modules/movie-match/movie-match.integration.spec.ts"
+   ]
+  },
+  {
+   "id": "palm-match",
+   "title": "Deterministic palm reading and anonymous palm match",
+   "status": "implemented",
+   "owner": "core-api/palm-match",
+   "modules": [
+    "palm-match"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/services/palm-match-service.md"
+   ],
+   "verification": [
+    "apps/core-api/src/modules/palm-match/palm-match.integration.spec.ts"
+   ]
+  },
+  {
+   "id": "short-video",
+   "title": "Short-video lifecycle, moderation and derived ranking",
+   "status": "implemented",
+   "owner": "core-api/short-video",
+   "modules": [
+    "short-video"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/services/short-video-service.md",
+    "docs/services/safety-service.md"
+   ],
+   "verification": [
+    "apps/core-api/src/modules/short-video/short-video.integration.spec.ts"
+   ]
+  },
+  {
+   "id": "user-profile-open-entry",
+   "title": "Optional profile birth date without an age-based access gate",
+   "status": "implemented",
+   "owner": "core-api/user",
+   "modules": [
+    "user"
+   ],
+   "contracts": [
+    "openapi/core-api.json",
+    "docs/01-product-features.md",
+    "docs/06-domain-rules.md"
+   ],
+   "verification": [
+    "apps/core-api/src/modules/user/user.service.spec.ts"
+   ]
+  },
+  {
+   "id": "privacy-analytics-consent",
+   "title": "Hosted analytics with quota controls and an explicit privacy warning",
+   "status": "implemented",
+   "owner": "web/shared-analytics",
+   "modules": [],
+   "contracts": [
+    "docs/runbooks/posthog-cloud.md"
+   ],
+   "verification": [
+    "apps/web/src/shared/analytics/product-analytics.spec.ts",
+    "apps/web/src/shared/analytics/product-analytics.spec.ts",
+    "apps/web/src/shared/analytics/product-analytics-components.spec.tsx"
+   ]
+  },
+  {
+   "id": "realtime-fanout",
+   "title": "Authenticated Socket.IO fanout and distributed connection quota through Redis",
+   "status": "implemented",
+   "owner": "signaling-gateway with core-api producers",
+   "modules": [
+    "signaling-gateway"
+   ],
+   "contracts": [
+    "libs/common-dtos/src/lib/realtime-events.ts",
+    "docs/services/realtime-gateway.md",
+    "specs/realtime.asyncapi.yaml"
+   ],
+   "verification": [
+    "apps/signaling-gateway/src/app/signaling.integration.spec.ts",
+    "apps/signaling-gateway/src/app/signaling.horizontal-scale.integration.spec.ts"
+   ]
+  }
+ ],
+ "deferredDecisions": [
+  {
+   "id": "production-cache-policy",
+   "owner": "architecture/platform",
+   "reason": "Redis and derived ranking are already documented as projections or transport support. No production read/write, hit-rate, latency, or eviction evidence is checked into this repository to justify a new cache layer or TTL policy."
+  },
+  {
+   "id": "algorithm-upgrades",
+   "owner": "product/domain owners",
+   "reason": "Matching shard expansion, feed CQRS and richer video ranking need observed traffic and SLO evidence. The current code keeps the documented bounded algorithms rather than adding speculative infrastructure."
+  },
+  {
+   "id": "short-video-reporting-ui",
+   "owner": "web/short-video with core-api/safety",
+   "reason": "The backend report contract and web API hook remain, but the visible report action was deliberately removed from the current reel UI. Do not claim the client feature is implemented until a product decision re-enables it and a behavior test verifies the user action."
+  }
+ ],
+ "modulesWithoutFeature": [
+  "media"
+ ]
+}

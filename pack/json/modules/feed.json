@@ -1,0 +1,185 @@
+{
+ "id": "feed",
+ "kind": "core-api module",
+ "dir": "apps/core-api/src/modules/feed",
+ "mapAnchor": "svc-feed",
+ "role": "Sở hữu Post/Comment/Reaction (feed công khai toàn cục, không fanout) và Story/StoryView (ephemeral, hết hạn lọc lúc đọc). KHÔNG sở hữu quan hệ bạn bè/block/privacy/ảnh/notification: mọi quyết định xem được hay không đều hỏi module chủ qua DI; Feed không có inbound caller nào.",
+ "tagline": "Bài đăng, bình luận, thả tim và Stories 24h",
+ "owns": [
+  "bảng posts (likeCount/commentCount denormalized, audience, deletedAt)",
+  "bảng comments, reactions (unique postId+userId)",
+  "bảng stories, story_views (unique storyId+viewerId)"
+ ],
+ "tables": [
+  {
+   "name": "comments",
+   "columns": 7,
+   "otherModules": []
+  },
+  {
+   "name": "posts",
+   "columns": 11,
+   "otherModules": []
+  },
+  {
+   "name": "reactions",
+   "columns": 4,
+   "otherModules": []
+  },
+  {
+   "name": "stories",
+   "columns": 8,
+   "otherModules": []
+  },
+  {
+   "name": "story_views",
+   "columns": 4,
+   "otherModules": []
+  }
+ ],
+ "tablesTouchedOfOthers": [
+  {
+   "table": "user_privacy_settings",
+   "owner": "user",
+   "ops": {
+    "module": "feed",
+    "read": 1,
+    "write": 0,
+    "lock": 0,
+    "vias": [
+     "raw-sql"
+    ],
+    "samples": [
+     {
+      "file": "apps/core-api/src/modules/feed/feed.service.ts",
+      "line": 110,
+      "op": "read",
+      "via": "raw-sql",
+      "quote": "(SELECT 1 FROM user_privacy_settings ups WHERE ups.user_id = p.author_user_id AND ups.hide_profile ="
+     }
+    ]
+   }
+  }
+ ],
+ "endpoints": {
+  "total": 16,
+  "public": 0,
+  "adminOnly": 0,
+  "idempotent": 3,
+  "webhooks": 0,
+  "explicitThrottle": 0
+ },
+ "endpointPaths": [
+  "/stories",
+  "/feed"
+ ],
+ "realtimeProduced": [],
+ "jobs": [
+  {
+   "class": "StorySweeperService",
+   "jobName": "STORY_SWEEPER_JOB",
+   "intervalMs": "this.config.getOrThrow('STORY_SWEEPER_INTERVAL_MS', { infer: true, })"
+  }
+ ],
+ "redisCallSites": 0,
+ "redisOps": [],
+ "envVars": [
+  {
+   "name": "STORY_SWEEPER_INTERVAL_MS",
+   "file": "apps/core-api/src/modules/feed/jobs/story-sweeper.service.ts",
+   "line": 42,
+   "quote": "intervalMs: this.config.getOrThrow('STORY_SWEEPER_INTERVAL_MS', {",
+   "class": "tuning",
+   "default": "3600000",
+   "required": false
+  },
+  {
+   "name": "STORY_TTL_HOURS",
+   "file": "apps/core-api/src/modules/feed/services/story.service.ts",
+   "line": 56,
+   "quote": "const ttlHours = this.config.getOrThrow('STORY_TTL_HOURS', {",
+   "class": "tuning",
+   "default": "24",
+   "required": false
+  }
+ ],
+ "errorGroups": [
+  "FeedErrors"
+ ],
+ "errorCodes": 9,
+ "errorCodesUnused": 0,
+ "tests": {
+  "unit": 2,
+  "integration": 1
+ },
+ "docs": {
+  "path": "docs/services/feed-service.md",
+  "lastChanged": "2026-08-12",
+  "commitsSince": 1
+ },
+ "features": [
+  {
+   "id": "feed-stories",
+   "title": "Feed, reactions, comments and expiring stories",
+   "status": "implemented"
+  }
+ ],
+ "churn": {
+  "commits": 13,
+  "recent": 0,
+  "fixes": 3,
+  "last": "2026-08-14"
+ },
+ "issues": [
+  {
+   "id": "P006",
+   "title": "Swagger thiếu cursor pagination → client sinh kiểu never",
+   "status": "fixed",
+   "tier": "A"
+  }
+ ],
+ "mapCollaborators": [
+  {
+   "with": "friend",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "media",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "notification",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "safety",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "user",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "postgres",
+   "kind": "infra",
+   "mechanism": "shared-db",
+   "direction": "out"
+  },
+  {
+   "with": "web",
+   "kind": "client",
+   "mechanism": "http",
+   "direction": "in"
+  }
+ ]
+}

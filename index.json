@@ -1,0 +1,3179 @@
+{
+ "generatedFrom": "litmatch fix/multi-pod-readiness @ d3cb28c",
+ "base": "https://ducmanh001.github.io/litmatch-atlas-demo",
+ "entities": [
+  {
+   "id": "db:(common)",
+   "type": "db",
+   "title": "Tables of (common)",
+   "file": "db/common.md",
+   "summary": "Tables admin_audit_logs: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:(common)"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/common.md"
+  },
+  {
+   "id": "db:admin",
+   "type": "db",
+   "title": "Tables of admin",
+   "file": "db/admin.md",
+   "summary": "Tables admin_role_permissions: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:admin"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/admin.md"
+  },
+  {
+   "id": "db:auth",
+   "type": "db",
+   "title": "Tables of auth",
+   "file": "db/auth.md",
+   "summary": "Tables auth_identities, phone_otps, refresh_tokens: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:auth"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/auth.md"
+  },
+  {
+   "id": "db:avatar",
+   "type": "db",
+   "title": "Tables of avatar",
+   "file": "db/avatar.md",
+   "summary": "Tables avatar_assets, user_avatar_configs, user_avatar_items: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:avatar"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/avatar.md"
+  },
+  {
+   "id": "db:safety",
+   "type": "db",
+   "title": "Tables of safety",
+   "file": "db/safety.md",
+   "summary": "Tables blocks, reports: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:safety"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/safety.md"
+  },
+  {
+   "id": "db:calling",
+   "type": "db",
+   "title": "Tables of calling",
+   "file": "db/calling.md",
+   "summary": "Tables call_sessions, voice_match_reactions: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:calling"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/calling.md"
+  },
+  {
+   "id": "db:feed",
+   "type": "db",
+   "title": "Tables of feed",
+   "file": "db/feed.md",
+   "summary": "Tables comments, posts, reactions, stories, story_views: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:feed"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/feed.md"
+  },
+  {
+   "id": "db:friend",
+   "type": "db",
+   "title": "Tables of friend",
+   "file": "db/friend.md",
+   "summary": "Tables conversation_member_states, conversation_streaks, conversations, friendships, messages, profile_chat_contacts, profile_follows: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:friend"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/friend.md"
+  },
+  {
+   "id": "db:discovery",
+   "type": "db",
+   "title": "Tables of discovery",
+   "file": "db/discovery.md",
+   "summary": "Tables discovery_settings, user_locations: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:discovery"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/discovery.md"
+  },
+  {
+   "id": "db:gift",
+   "type": "db",
+   "title": "Tables of gift",
+   "file": "db/gift.md",
+   "summary": "Tables gift_events, gifts: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:gift"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/gift.md"
+  },
+  {
+   "id": "db:matching",
+   "type": "db",
+   "title": "Tables of matching",
+   "file": "db/matching.md",
+   "summary": "Tables guest_match_quotas, match_daily_quotas, match_invites, match_sessions, match_tickets: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:matching"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/matching.md"
+  },
+  {
+   "id": "db:economy",
+   "type": "db",
+   "title": "Tables of economy",
+   "file": "db/economy.md",
+   "summary": "Tables iap_products, iap_receipts, ledger_accounts, ledger_entries, outbox_events, payos_packages, payos_payment_orders, transactions, vip_plans, wallets: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:economy"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/economy.md"
+  },
+  {
+   "id": "db:media",
+   "type": "db",
+   "title": "Tables of media",
+   "file": "db/media.md",
+   "summary": "Tables image_assets: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:media"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/media.md"
+  },
+  {
+   "id": "db:mini-game",
+   "type": "db",
+   "title": "Tables of mini-game",
+   "file": "db/mini-game.md",
+   "summary": "Tables mini_game_active_participants, mini_game_sessions: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:mini-game"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/mini-game.md"
+  },
+  {
+   "id": "db:mood",
+   "type": "db",
+   "title": "Tables of mood",
+   "file": "db/mood.md",
+   "summary": "Tables mood_presets, mood_status_events: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:mood"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/mood.md"
+  },
+  {
+   "id": "db:movie-match",
+   "type": "db",
+   "title": "Tables of movie-match",
+   "file": "db/movie-match.md",
+   "summary": "Tables movie_match_queue_entries, movie_session_active_participants, movie_session_messages, movie_sessions: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:movie-match"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/movie-match.md"
+  },
+  {
+   "id": "db:notification",
+   "type": "db",
+   "title": "Tables of notification",
+   "file": "db/notification.md",
+   "summary": "Tables notifications, web_push_subscriptions: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:notification"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/notification.md"
+  },
+  {
+   "id": "db:palm-match",
+   "type": "db",
+   "title": "Tables of palm-match",
+   "file": "db/palm-match.md",
+   "summary": "Tables palm_match_active_participants, palm_match_queue_entries, palm_match_sessions, palm_reading_templates: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:palm-match"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/palm-match.md"
+  },
+  {
+   "id": "db:party-room",
+   "type": "db",
+   "title": "Tables of party-room",
+   "file": "db/party-room.md",
+   "summary": "Tables party_room_comments, party_room_members, party_rooms: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:party-room"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/party-room.md"
+  },
+  {
+   "id": "db:soul-match",
+   "type": "db",
+   "title": "Tables of soul-match",
+   "file": "db/soul-match.md",
+   "summary": "Tables soul_chat_messages, soul_match_ratings: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:soul-match"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/soul-match.md"
+  },
+  {
+   "id": "db:support",
+   "type": "db",
+   "title": "Tables of support",
+   "file": "db/support.md",
+   "summary": "Tables support_tickets: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:support"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/support.md"
+  },
+  {
+   "id": "db:user",
+   "type": "db",
+   "title": "Tables of user",
+   "file": "db/user.md",
+   "summary": "Tables user_privacy_settings, users: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/user.md"
+  },
+  {
+   "id": "db:short-video",
+   "type": "db",
+   "title": "Tables of short-video",
+   "file": "db/short-video.md",
+   "summary": "Tables video_comments, video_reactions, video_views, videos: columns, keys, constraints, indexes, who reads/writes.",
+   "related": [
+    "module:short-video"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/short-video.md"
+  },
+  {
+   "id": "db:migrations",
+   "type": "db",
+   "title": "Migrations",
+   "file": "db/migrations.md",
+   "summary": "63 migrations in execution order.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/migrations.md"
+  },
+  {
+   "id": "db:vocab",
+   "type": "db",
+   "title": "Status vocabularies",
+   "file": "db/status-vocabularies.md",
+   "summary": "CHECK constraints listing allowed values per table.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/status-vocabularies.md"
+  },
+  {
+   "id": "api:app-shell",
+   "type": "api",
+   "title": "API of app-shell",
+   "file": "api/app-shell.md",
+   "summary": "4 endpoints of app-shell: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:app-shell"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/app-shell.md"
+  },
+  {
+   "id": "api:admin",
+   "type": "api",
+   "title": "API of admin",
+   "file": "api/admin.md",
+   "summary": "31 endpoints of admin: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:admin"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/admin.md"
+  },
+  {
+   "id": "api:auth",
+   "type": "api",
+   "title": "API of auth",
+   "file": "api/auth.md",
+   "summary": "9 endpoints of auth: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:auth"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/auth.md"
+  },
+  {
+   "id": "api:avatar",
+   "type": "api",
+   "title": "API of avatar",
+   "file": "api/avatar.md",
+   "summary": "7 endpoints of avatar: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:avatar"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/avatar.md"
+  },
+  {
+   "id": "api:calling",
+   "type": "api",
+   "title": "API of calling",
+   "file": "api/calling.md",
+   "summary": "7 endpoints of calling: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:calling"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/calling.md"
+  },
+  {
+   "id": "api:discovery",
+   "type": "api",
+   "title": "API of discovery",
+   "file": "api/discovery.md",
+   "summary": "4 endpoints of discovery: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:discovery"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/discovery.md"
+  },
+  {
+   "id": "api:economy",
+   "type": "api",
+   "title": "API of economy",
+   "file": "api/economy.md",
+   "summary": "12 endpoints of economy: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:economy"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/economy.md"
+  },
+  {
+   "id": "api:feed",
+   "type": "api",
+   "title": "API of feed",
+   "file": "api/feed.md",
+   "summary": "16 endpoints of feed: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:feed"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/feed.md"
+  },
+  {
+   "id": "api:friend",
+   "type": "api",
+   "title": "API of friend",
+   "file": "api/friend.md",
+   "summary": "15 endpoints of friend: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:friend"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/friend.md"
+  },
+  {
+   "id": "api:gift",
+   "type": "api",
+   "title": "API of gift",
+   "file": "api/gift.md",
+   "summary": "4 endpoints of gift: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:gift"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/gift.md"
+  },
+  {
+   "id": "api:matching",
+   "type": "api",
+   "title": "API of matching",
+   "file": "api/matching.md",
+   "summary": "12 endpoints of matching: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:matching"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/matching.md"
+  },
+  {
+   "id": "api:media",
+   "type": "api",
+   "title": "API of media",
+   "file": "api/media.md",
+   "summary": "1 endpoints of media: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:media"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/media.md"
+  },
+  {
+   "id": "api:mini-game",
+   "type": "api",
+   "title": "API of mini-game",
+   "file": "api/mini-game.md",
+   "summary": "4 endpoints of mini-game: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:mini-game"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/mini-game.md"
+  },
+  {
+   "id": "api:mood",
+   "type": "api",
+   "title": "API of mood",
+   "file": "api/mood.md",
+   "summary": "5 endpoints of mood: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:mood"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/mood.md"
+  },
+  {
+   "id": "api:movie-match",
+   "type": "api",
+   "title": "API of movie-match",
+   "file": "api/movie-match.md",
+   "summary": "13 endpoints of movie-match: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:movie-match"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/movie-match.md"
+  },
+  {
+   "id": "api:notification",
+   "type": "api",
+   "title": "API of notification",
+   "file": "api/notification.md",
+   "summary": "5 endpoints of notification: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:notification"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/notification.md"
+  },
+  {
+   "id": "api:palm-match",
+   "type": "api",
+   "title": "API of palm-match",
+   "file": "api/palm-match.md",
+   "summary": "6 endpoints of palm-match: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:palm-match"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/palm-match.md"
+  },
+  {
+   "id": "api:party-room",
+   "type": "api",
+   "title": "API of party-room",
+   "file": "api/party-room.md",
+   "summary": "12 endpoints of party-room: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:party-room"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/party-room.md"
+  },
+  {
+   "id": "api:safety",
+   "type": "api",
+   "title": "API of safety",
+   "file": "api/safety.md",
+   "summary": "4 endpoints of safety: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:safety"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/safety.md"
+  },
+  {
+   "id": "api:short-video",
+   "type": "api",
+   "title": "API of short-video",
+   "file": "api/short-video.md",
+   "summary": "11 endpoints of short-video: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:short-video"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/short-video.md"
+  },
+  {
+   "id": "api:soul-match",
+   "type": "api",
+   "title": "API of soul-match",
+   "file": "api/soul-match.md",
+   "summary": "6 endpoints of soul-match: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:soul-match"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/soul-match.md"
+  },
+  {
+   "id": "api:support",
+   "type": "api",
+   "title": "API of support",
+   "file": "api/support.md",
+   "summary": "2 endpoints of support: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:support"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/support.md"
+  },
+  {
+   "id": "api:user",
+   "type": "api",
+   "title": "API of user",
+   "file": "api/user.md",
+   "summary": "6 endpoints of user: auth, guards, throttle, params, body, responses.",
+   "related": [
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/user.md"
+  },
+  {
+   "id": "api:conventions",
+   "type": "api",
+   "title": "API conventions",
+   "file": "api/conventions.md",
+   "summary": "Envelope, pagination, guards, CSRF, idempotency, throttle.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/conventions.md"
+  },
+  {
+   "id": "api:authz",
+   "type": "api",
+   "title": "Admin authz matrix",
+   "file": "api/authz.md",
+   "summary": "9 permissions x 2 roles with seeded defaults and endpoints.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/authz.md"
+  },
+  {
+   "id": "api:no-client",
+   "type": "api",
+   "title": "Endpoints without FE caller",
+   "file": "api/no-client.md",
+   "summary": "76 endpoints with no web/admin caller.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/no-client.md"
+  },
+  {
+   "id": "events:realtime",
+   "type": "events",
+   "title": "Realtime events",
+   "file": "events/realtime.md",
+   "summary": "26 events with payload types, producers and FE consumers.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/events/realtime.md"
+  },
+  {
+   "id": "events:jobs",
+   "type": "events",
+   "title": "Jobs, outbox, Redis",
+   "file": "events/jobs-outbox-redis.md",
+   "summary": "15 jobs, outbox writers, Redis call sites.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/events/jobs-outbox-redis.md"
+  },
+  {
+   "id": "events:metrics",
+   "type": "events",
+   "title": "Metrics",
+   "file": "events/metrics.md",
+   "summary": "18 OpenTelemetry metrics.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/events/metrics.md"
+  },
+  {
+   "id": "errors:AdminErrors",
+   "type": "errors",
+   "title": "Errors AdminErrors",
+   "file": "errors/adminerrors.md",
+   "summary": "6 codes.",
+   "related": [
+    "module:admin"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/adminerrors.md"
+  },
+  {
+   "id": "errors:AuthErrors",
+   "type": "errors",
+   "title": "Errors AuthErrors",
+   "file": "errors/autherrors.md",
+   "summary": "14 codes.",
+   "related": [
+    "module:auth"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/autherrors.md"
+  },
+  {
+   "id": "errors:AvatarErrors",
+   "type": "errors",
+   "title": "Errors AvatarErrors",
+   "file": "errors/avatarerrors.md",
+   "summary": "5 codes.",
+   "related": [
+    "module:avatar"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/avatarerrors.md"
+  },
+  {
+   "id": "errors:CallingErrors",
+   "type": "errors",
+   "title": "Errors CallingErrors",
+   "file": "errors/callingerrors.md",
+   "summary": "6 codes.",
+   "related": [
+    "module:calling"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/callingerrors.md"
+  },
+  {
+   "id": "errors:DiscoveryErrors",
+   "type": "errors",
+   "title": "Errors DiscoveryErrors",
+   "file": "errors/discoveryerrors.md",
+   "summary": "7 codes.",
+   "related": [
+    "module:discovery"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/discoveryerrors.md"
+  },
+  {
+   "id": "errors:EconomyErrors",
+   "type": "errors",
+   "title": "Errors EconomyErrors",
+   "file": "errors/economyerrors.md",
+   "summary": "19 codes.",
+   "related": [
+    "module:economy"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/economyerrors.md"
+  },
+  {
+   "id": "errors:FeedErrors",
+   "type": "errors",
+   "title": "Errors FeedErrors",
+   "file": "errors/feederrors.md",
+   "summary": "9 codes.",
+   "related": [
+    "module:feed"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/feederrors.md"
+  },
+  {
+   "id": "errors:FriendErrors",
+   "type": "errors",
+   "title": "Errors FriendErrors",
+   "file": "errors/frienderrors.md",
+   "summary": "6 codes.",
+   "related": [
+    "module:friend"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/frienderrors.md"
+  },
+  {
+   "id": "errors:ProfileSocialErrors",
+   "type": "errors",
+   "title": "Errors ProfileSocialErrors",
+   "file": "errors/profilesocialerrors.md",
+   "summary": "3 codes.",
+   "related": [
+    "module:friend"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/profilesocialerrors.md"
+  },
+  {
+   "id": "errors:GiftErrors",
+   "type": "errors",
+   "title": "Errors GiftErrors",
+   "file": "errors/gifterrors.md",
+   "summary": "5 codes.",
+   "related": [
+    "module:gift"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/gifterrors.md"
+  },
+  {
+   "id": "errors:MatchingErrors",
+   "type": "errors",
+   "title": "Errors MatchingErrors",
+   "file": "errors/matchingerrors.md",
+   "summary": "20 codes.",
+   "related": [
+    "module:matching"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/matchingerrors.md"
+  },
+  {
+   "id": "errors:MediaErrors",
+   "type": "errors",
+   "title": "Errors MediaErrors",
+   "file": "errors/mediaerrors.md",
+   "summary": "5 codes.",
+   "related": [
+    "module:media"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/mediaerrors.md"
+  },
+  {
+   "id": "errors:MiniGameErrors",
+   "type": "errors",
+   "title": "Errors MiniGameErrors",
+   "file": "errors/minigameerrors.md",
+   "summary": "5 codes.",
+   "related": [
+    "module:mini-game"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/minigameerrors.md"
+  },
+  {
+   "id": "errors:MoodErrors",
+   "type": "errors",
+   "title": "Errors MoodErrors",
+   "file": "errors/mooderrors.md",
+   "summary": "1 codes.",
+   "related": [
+    "module:mood"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/mooderrors.md"
+  },
+  {
+   "id": "errors:MovieMatchErrors",
+   "type": "errors",
+   "title": "Errors MovieMatchErrors",
+   "file": "errors/moviematcherrors.md",
+   "summary": "11 codes.",
+   "related": [
+    "module:movie-match"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/moviematcherrors.md"
+  },
+  {
+   "id": "errors:NotificationErrors",
+   "type": "errors",
+   "title": "Errors NotificationErrors",
+   "file": "errors/notificationerrors.md",
+   "summary": "2 codes.",
+   "related": [
+    "module:notification"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/notificationerrors.md"
+  },
+  {
+   "id": "errors:PalmMatchErrors",
+   "type": "errors",
+   "title": "Errors PalmMatchErrors",
+   "file": "errors/palmmatcherrors.md",
+   "summary": "6 codes.",
+   "related": [
+    "module:palm-match"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/palmmatcherrors.md"
+  },
+  {
+   "id": "errors:PartyRoomErrors",
+   "type": "errors",
+   "title": "Errors PartyRoomErrors",
+   "file": "errors/partyroomerrors.md",
+   "summary": "17 codes.",
+   "related": [
+    "module:party-room"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/partyroomerrors.md"
+  },
+  {
+   "id": "errors:SafetyErrors",
+   "type": "errors",
+   "title": "Errors SafetyErrors",
+   "file": "errors/safetyerrors.md",
+   "summary": "3 codes.",
+   "related": [
+    "module:safety"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/safetyerrors.md"
+  },
+  {
+   "id": "errors:ShortVideoErrors",
+   "type": "errors",
+   "title": "Errors ShortVideoErrors",
+   "file": "errors/shortvideoerrors.md",
+   "summary": "7 codes.",
+   "related": [
+    "module:short-video"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/shortvideoerrors.md"
+  },
+  {
+   "id": "errors:SoulMatchErrors",
+   "type": "errors",
+   "title": "Errors SoulMatchErrors",
+   "file": "errors/soulmatcherrors.md",
+   "summary": "9 codes.",
+   "related": [
+    "module:soul-match"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/soulmatcherrors.md"
+  },
+  {
+   "id": "errors:SupportErrors",
+   "type": "errors",
+   "title": "Errors SupportErrors",
+   "file": "errors/supporterrors.md",
+   "summary": "4 codes.",
+   "related": [
+    "module:support"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/supporterrors.md"
+  },
+  {
+   "id": "errors:UserErrors",
+   "type": "errors",
+   "title": "Errors UserErrors",
+   "file": "errors/usererrors.md",
+   "summary": "3 codes.",
+   "related": [
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/usererrors.md"
+  },
+  {
+   "id": "errors:CommonErrors",
+   "type": "errors",
+   "title": "Errors CommonErrors",
+   "file": "errors/commonerrors.md",
+   "summary": "9 codes.",
+   "related": [
+    "module:libs/common-exceptions"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/commonerrors.md"
+  },
+  {
+   "id": "config:MISC",
+   "type": "config",
+   "title": "Config MISC_*",
+   "file": "config/misc.md",
+   "summary": "21 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/misc.md"
+  },
+  {
+   "id": "config:DATABASE",
+   "type": "config",
+   "title": "Config DATABASE_*",
+   "file": "config/database.md",
+   "summary": "3 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/database.md"
+  },
+  {
+   "id": "config:EVENT",
+   "type": "config",
+   "title": "Config EVENT_*",
+   "file": "config/event.md",
+   "summary": "4 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/event.md"
+  },
+  {
+   "id": "config:JWT",
+   "type": "config",
+   "title": "Config JWT_*",
+   "file": "config/jwt.md",
+   "summary": "5 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/jwt.md"
+  },
+  {
+   "id": "config:AUTH",
+   "type": "config",
+   "title": "Config AUTH_*",
+   "file": "config/auth.md",
+   "summary": "14 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/auth.md"
+  },
+  {
+   "id": "config:SENTRY",
+   "type": "config",
+   "title": "Config SENTRY_*",
+   "file": "config/sentry.md",
+   "summary": "4 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/sentry.md"
+  },
+  {
+   "id": "config:ANALYTICS",
+   "type": "config",
+   "title": "Config ANALYTICS_*",
+   "file": "config/analytics.md",
+   "summary": "3 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/analytics.md"
+  },
+  {
+   "id": "config:MEDIA",
+   "type": "config",
+   "title": "Config MEDIA_*",
+   "file": "config/media.md",
+   "summary": "9 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/media.md"
+  },
+  {
+   "id": "config:AWS",
+   "type": "config",
+   "title": "Config AWS_*",
+   "file": "config/aws.md",
+   "summary": "6 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/aws.md"
+  },
+  {
+   "id": "config:ECONOMY",
+   "type": "config",
+   "title": "Config ECONOMY_*",
+   "file": "config/economy.md",
+   "summary": "25 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/economy.md"
+  },
+  {
+   "id": "config:PAYOS",
+   "type": "config",
+   "title": "Config PAYOS_*",
+   "file": "config/payos.md",
+   "summary": "9 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/payos.md"
+  },
+  {
+   "id": "config:MATCHING",
+   "type": "config",
+   "title": "Config MATCHING_*",
+   "file": "config/matching.md",
+   "summary": "25 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/matching.md"
+  },
+  {
+   "id": "config:SOUL",
+   "type": "config",
+   "title": "Config SOUL_*",
+   "file": "config/soul.md",
+   "summary": "3 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/soul.md"
+  },
+  {
+   "id": "config:STREAK",
+   "type": "config",
+   "title": "Config STREAK_*",
+   "file": "config/streak.md",
+   "summary": "3 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/streak.md"
+  },
+  {
+   "id": "config:LIVEKIT",
+   "type": "config",
+   "title": "Config LIVEKIT_*",
+   "file": "config/livekit.md",
+   "summary": "5 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/livekit.md"
+  },
+  {
+   "id": "config:CALLING",
+   "type": "config",
+   "title": "Config CALLING_*",
+   "file": "config/calling.md",
+   "summary": "5 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/calling.md"
+  },
+  {
+   "id": "config:PARTY",
+   "type": "config",
+   "title": "Config PARTY_*",
+   "file": "config/party.md",
+   "summary": "11 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/party.md"
+  },
+  {
+   "id": "config:SAFETY",
+   "type": "config",
+   "title": "Config SAFETY_*",
+   "file": "config/safety.md",
+   "summary": "5 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/safety.md"
+  },
+  {
+   "id": "config:NOTIFICATION",
+   "type": "config",
+   "title": "Config NOTIFICATION_*",
+   "file": "config/notification.md",
+   "summary": "10 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/notification.md"
+  },
+  {
+   "id": "config:WEB",
+   "type": "config",
+   "title": "Config WEB_*",
+   "file": "config/web.md",
+   "summary": "4 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/web.md"
+  },
+  {
+   "id": "config:MOVIE",
+   "type": "config",
+   "title": "Config MOVIE_*",
+   "file": "config/movie.md",
+   "summary": "6 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/movie.md"
+  },
+  {
+   "id": "config:PALM",
+   "type": "config",
+   "title": "Config PALM_*",
+   "file": "config/palm.md",
+   "summary": "3 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/palm.md"
+  },
+  {
+   "id": "config:DISCOVERY",
+   "type": "config",
+   "title": "Config DISCOVERY_*",
+   "file": "config/discovery.md",
+   "summary": "9 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/discovery.md"
+  },
+  {
+   "id": "config:VIDEO",
+   "type": "config",
+   "title": "Config VIDEO_*",
+   "file": "config/video.md",
+   "summary": "12 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/video.md"
+  },
+  {
+   "id": "config:THROTTLE",
+   "type": "config",
+   "title": "Config THROTTLE_*",
+   "file": "config/throttle.md",
+   "summary": "3 variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/throttle.md"
+  },
+  {
+   "id": "config:client",
+   "type": "config",
+   "title": "Client vars",
+   "file": "config/client-vars.md",
+   "summary": "NEXT_PUBLIC_* and VITE_* variables.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/client-vars.md"
+  },
+  {
+   "id": "flow:admin-ban-and-refund",
+   "type": "flow",
+   "title": "Admin khoá tài khoản và hoàn giao dịch",
+   "file": "flows/admin-ban-and-refund.md",
+   "summary": "Admin khoá một người dùng và hoàn một giao dịch diamond. AdminModule chỉ điều phối: dữ liệu users do user sở hữu, sổ cái và ví do economy sở hữu, nên mọi thay đổi phải đi qua service chủ dữ liệu và audit log phải ghi cù…",
+   "related": [
+    "module:admin",
+    "module:user",
+    "module:economy"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/admin-ban-and-refund.md"
+  },
+  {
+   "id": "flow:admin-broadcast-notification",
+   "type": "flow",
+   "title": "Admin gửi thông báo hàng loạt",
+   "file": "flows/admin-broadcast-notification.md",
+   "summary": "Admin broadcast thông báo tới mọi user active: Admin điều phối, User cấp danh sách người nhận, Economy cấp danh sách VIP để lọc audience, Notification ghi thông báo theo lô rồi đẩy push, vì mỗi module chỉ được đọc/ghi d…",
+   "related": [
+    "module:admin",
+    "module:user",
+    "module:economy",
+    "module:notification"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/admin-broadcast-notification.md"
+  },
+  {
+   "id": "flow:admin-dashboard",
+   "type": "flow",
+   "title": "Bảng điều khiển admin",
+   "file": "flows/admin-dashboard.md",
+   "summary": "Admin mở dashboard: dữ liệu nằm ở ba module khác nhau (người dùng, kinh tế, phòng party) cộng nhật ký audit, nên AdminService phải gom qua public API của từng module thay vì tự đọc bảng của họ.",
+   "related": [
+    "module:admin",
+    "module:user",
+    "module:economy",
+    "module:party-room"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/admin-dashboard.md"
+  },
+  {
+   "id": "flow:admin-economy-inspect-and-config",
+   "type": "flow",
+   "title": "Admin xem ví, giao dịch và chỉnh cấu hình kinh tế",
+   "file": "flows/admin-economy-inspect-and-config.md",
+   "summary": "Admin xem ví, lịch sử giao dịch và catalog kinh tế rồi bật/tắt IAP product hoặc VIP plan; Admin chỉ điều phối và ghi audit, còn dữ liệu do Economy sở hữu nên không sửa ledger trực tiếp.",
+   "related": [
+    "module:admin",
+    "module:economy"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/admin-economy-inspect-and-config.md"
+  },
+  {
+   "id": "flow:admin-gift-catalog",
+   "type": "flow",
+   "title": "Admin quản lý danh mục quà",
+   "file": "flows/admin-gift-catalog.md",
+   "summary": "Admin xem, tạo và sửa quà trong catalog; giá kim cương là dữ liệu trong bảng gifts do Gift sở hữu, còn Admin điều phối quyền và ghi audit log cùng transaction. Client thường chỉ đọc catalog đang bật.",
+   "related": [
+    "module:admin",
+    "module:gift"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/admin-gift-catalog.md"
+  },
+  {
+   "id": "flow:admin-report-resolution",
+   "type": "flow",
+   "title": "Admin xử lý báo cáo vi phạm",
+   "file": "flows/admin-report-resolution.md",
+   "summary": "Admin xem hàng đợi báo cáo rồi đánh dấu đã xử lý hoặc bác bỏ. AdminModule kiểm quyền và điều phối, SafetyModule sở hữu bảng report, và việc đổi trạng thái phải ghi cùng transaction với audit log.",
+   "related": [
+    "module:admin",
+    "module:safety"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/admin-report-resolution.md"
+  },
+  {
+   "id": "flow:admin-room-management",
+   "type": "flow",
+   "title": "Admin xem và đóng phòng party",
+   "file": "flows/admin-room-management.md",
+   "summary": "Admin liệt kê phòng party đang live rồi đóng một phòng. Việc này chạm nhiều dịch vụ: AdminModule kiểm quyền và ghi audit, Party Room sở hữu dữ liệu phòng, LiveKit phải dọn phòng âm thanh, và gateway báo realtime cho thà…",
+   "related": [
+    "module:admin",
+    "module:party-room",
+    "module:media-server",
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/admin-room-management.md"
+  },
+  {
+   "id": "flow:admin-staff-and-permissions",
+   "type": "flow",
+   "title": "Admin quản lý nhân sự và ma trận quyền",
+   "file": "flows/admin-staff-and-permissions.md",
+   "summary": "Admin xem và bật/tắt quyền theo vai trò, liệt kê nhân sự và đổi vai trò. AdminModule giữ ma trận quyền và audit, còn bảng users thuộc module user, nên đổi vai trò phải đi qua UserService trong cùng một transaction với a…",
+   "related": [
+    "module:admin",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/admin-staff-and-permissions.md"
+  },
+  {
+   "id": "flow:admin-support-tickets",
+   "type": "flow",
+   "title": "Người dùng gửi ticket hỗ trợ, admin xử lý",
+   "file": "flows/admin-support-tickets.md",
+   "summary": "Người dùng gửi ticket kèm Idempotency-Key để không bị tạo trùng khi gọi lại, rồi xem lại ticket của mình. Support chỉ có endpoint cho người dùng, nên staff xử lý qua module Admin: Admin kiểm quyền, gọi Support đổi trạng…",
+   "related": [
+    "module:support",
+    "module:admin"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/admin-support-tickets.md"
+  },
+  {
+   "id": "flow:admin-user-lookup-and-unban",
+   "type": "flow",
+   "title": "Admin tra cứu người dùng và mở khoá",
+   "file": "flows/admin-user-lookup-and-unban.md",
+   "summary": "Admin xem danh sách, xem chi tiết rồi mở khoá một tài khoản. Module Admin chỉ điều phối: dữ liệu users thuộc User, còn bản ghi audit phải được ghi cùng transaction với việc đổi status để không có mở khoá nào thiếu dấu v…",
+   "related": [
+    "module:admin",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/admin-user-lookup-and-unban.md"
+  },
+  {
+   "id": "flow:admin-video-moderation-queue",
+   "type": "flow",
+   "title": "Admin duyệt hàng chờ video",
+   "file": "flows/admin-video-moderation-queue.md",
+   "summary": "Moderator xem video chờ duyệt và video đã đăng, rồi từ chối hoặc gỡ video. AdminModule kiểm quyền và ghi audit log, còn Short Video là nơi sở hữu bảng videos và quy tắc chuyển trạng thái, nên hai module phải phối hợp tr…",
+   "related": [
+    "module:admin",
+    "module:short-video"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/admin-video-moderation-queue.md"
+  },
+  {
+   "id": "flow:app-shell-health-and-readiness",
+   "type": "flow",
+   "title": "Kiểm tra sẵn sàng của core-api (readiness)",
+   "file": "flows/app-shell-health-and-readiness.md",
+   "summary": "Probe Docker/k8s gọi /health/ready để biết core-api có nhận traffic được không; app-shell phải hỏi thật PostgreSQL và Redis song song với timeout 1 giây rồi trả 200 hoặc 503.",
+   "related": [
+    "module:app-shell"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/app-shell-health-and-readiness.md"
+  },
+  {
+   "id": "flow:auth-guest-login-and-socket",
+   "type": "flow",
+   "title": "Đăng nhập khách rồi mở kết nối realtime",
+   "file": "flows/auth-guest-login-and-socket.md",
+   "summary": "Người dùng mới lấy phiên khách từ core-api (auth + user + PostgreSQL), rồi mở Socket.IO tới signaling-gateway bằng chính access token đó; gateway tự verify token, giữ quota kết nối và presence trong Redis.",
+   "related": [
+    "module:auth",
+    "module:user",
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/auth-guest-login-and-socket.md"
+  },
+  {
+   "id": "flow:auth-guest-upgrade",
+   "type": "flow",
+   "title": "Nâng cấp tài khoản khách thành tài khoản thật",
+   "file": "flows/auth-guest-upgrade.md",
+   "summary": "Người dùng đang là guest gắn danh tính OTP điện thoại hoặc social (Google/Apple/Facebook) vào chính userId hiện tại. Module auth sở hữu danh tính và phiên, module user sở hữu hồ sơ users (cờ isGuest), nên việc gắn ident…",
+   "related": [
+    "module:auth",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/auth-guest-upgrade.md"
+  },
+  {
+   "id": "flow:auth-otp-login",
+   "type": "flow",
+   "title": "Đăng nhập bằng OTP điện thoại",
+   "file": "flows/auth-otp-login.md",
+   "summary": "Người dùng xin mã OTP rồi xác minh để nhận phiên đăng nhập. Auth giữ danh tính (auth_identities), OTP và refresh session, còn hồ sơ người dùng do User sở hữu nên Auth phải gọi UserService để đọc hoặc tạo user.",
+   "related": [
+    "module:auth",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/auth-otp-login.md"
+  },
+  {
+   "id": "flow:auth-refresh-and-logout",
+   "type": "flow",
+   "title": "Làm mới phiên và đăng xuất (cookie httpOnly + CSRF)",
+   "file": "flows/auth-refresh-and-logout.md",
+   "summary": "Web giữ refresh token trong cookie httpOnly; khi access token hết hạn web gọi /auth/refresh để xoay vòng token, và /auth/logout để thu hồi phiên. Module auth giữ phiên refresh nhưng phải hỏi module user để biết user còn…",
+   "related": [
+    "module:auth",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/auth-refresh-and-logout.md"
+  },
+  {
+   "id": "flow:auth-search-by-phone",
+   "type": "flow",
+   "title": "Tìm người theo số điện thoại",
+   "file": "flows/auth-search-by-phone.md",
+   "summary": "Người dùng đã đăng nhập tìm hồ sơ người khác bằng số điện thoại. Module auth giữ danh tính điện thoại còn module user giữ quyền riêng tư và hồ sơ, nên hai service phải phối hợp để chỉ lộ hồ sơ khi chủ hồ sơ cho phép.",
+   "related": [
+    "module:auth",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/auth-search-by-phone.md"
+  },
+  {
+   "id": "flow:auth-social-login",
+   "type": "flow",
+   "title": "Đăng nhập bằng Apple, Google hoặc Facebook",
+   "file": "flows/auth-social-login.md",
+   "summary": "Client gửi ID token (Google/Apple) hoặc access token (Facebook) lên POST /auth/social. Server không tin token mà tự xác minh với nhà cung cấp, rồi module auth tìm hoặc tạo danh tính, nhờ module user tạo hồ sơ, và cuối c…",
+   "related": [
+    "module:auth",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/auth-social-login.md"
+  },
+  {
+   "id": "flow:avatar-buy-item",
+   "type": "flow",
+   "title": "Mua vật phẩm avatar bằng kim cương",
+   "file": "flows/avatar-buy-item.md",
+   "summary": "Người dùng nhận item miễn phí, mua item trả phí bằng DIA với Idempotency-Key rồi trang bị. Avatar sở hữu catalog và quyền sở hữu nhưng không được tự trừ tiền, nên phải gọi Economy (sổ cái duy nhất) trước khi ghi quyền s…",
+   "related": [
+    "module:avatar",
+    "module:economy"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/avatar-buy-item.md"
+  },
+  {
+   "id": "flow:calling-end-and-ticker",
+   "type": "flow",
+   "title": "Kết thúc cuộc gọi và đồng hồ cuộc gọi",
+   "file": "flows/calling-end-and-ticker.md",
+   "summary": "Một cuộc gọi Voice Match có thể kết thúc từ nhiều phía (poll GET, nút kết thúc, ticker nền). Calling chốt CallSession, nhưng MatchSession thuộc Matching, phòng thuộc LiveKit và báo realtime đi qua Redis tới gateway nên …",
+   "related": [
+    "module:calling",
+    "module:matching",
+    "module:signaling-gateway",
+    "module:external:livekit"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/calling-end-and-ticker.md"
+  },
+  {
+   "id": "flow:calling-like-after-call",
+   "type": "flow",
+   "title": "Like sau cuộc gọi để thành bạn",
+   "file": "flows/calling-like-after-call.md",
+   "summary": "Sau Voice Match, mỗi bên bấm like; khi cả hai đã like thì Calling ghi reaction và nhờ Friend mở Friendship cùng Conversation trong cùng một giao dịch, nên không có friendship thiếu chat.",
+   "related": [
+    "module:calling",
+    "module:external:livekit",
+    "module:matching",
+    "module:friend",
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/calling-like-after-call.md"
+  },
+  {
+   "id": "flow:discovery-browse-and-nearby",
+   "type": "flow",
+   "title": "Khám phá người dùng và gần đây",
+   "file": "flows/discovery-browse-and-nearby.md",
+   "summary": "Người dùng duyệt danh sách theo giới tính/tuổi và tìm người gần bằng vị trí đã quantize. Discovery sở hữu vị trí và opt-in nearby nhưng phải hỏi Safety để loại người bị block/report và hỏi User để lấy hồ sơ active và qu…",
+   "related": [
+    "module:discovery",
+    "module:safety",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/discovery-browse-and-nearby.md"
+  },
+  {
+   "id": "flow:economy-outbox-relay",
+   "type": "flow",
+   "title": "Relay outbox của Economy ra Kafka",
+   "file": "flows/economy-outbox-relay.md",
+   "summary": "Economy ghi OutboxEvent cùng giao dịch sổ cái; một job nền định kỳ đọc các dòng chưa gửi, publish lên Kafka rồi đánh dấu đã gửi, nên cần phối hợp giữa PostgreSQL (khóa dòng) và Kafka (broker).",
+   "related": [
+    "module:economy"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/economy-outbox-relay.md"
+  },
+  {
+   "id": "flow:economy-reconciliation-and-startup-guards",
+   "type": "flow",
+   "title": "Đối soát sổ cái và guard khởi động của verifier",
+   "file": "flows/economy-reconciliation-and-startup-guards.md",
+   "summary": "Khi core-api khởi động, economy đăng ký hai job đối soát chỉ đọc (fast và deep) để tự phát hiện lệch Nợ/Có, và các verifier dev từ chối khởi động ở production. Cần Postgres (khóa advisory + ledger) và hệ metrics để cảnh…",
+   "related": [
+    "module:economy"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/economy-reconciliation-and-startup-guards.md"
+  },
+  {
+   "id": "flow:feed-comment-with-notification",
+   "type": "flow",
+   "title": "Bình luận bài kèm thông báo",
+   "file": "flows/feed-comment-with-notification.md",
+   "summary": "Người dùng bình luận lên bài đăng: feed phải hỏi safety (block hai chiều), friend (audience bạn bè) và user (ẩn hồ sơ) trước khi ghi, rồi lưu comment cùng notification cho tác giả trong một transaction và đẩy push sau c…",
+   "related": [
+    "module:feed",
+    "module:safety",
+    "module:friend",
+    "module:user",
+    "module:notification"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/feed-comment-with-notification.md"
+  },
+  {
+   "id": "flow:feed-delete-post",
+   "type": "flow",
+   "title": "Xoá bài và bình luận",
+   "file": "flows/feed-delete-post.md",
+   "summary": "Người dùng xoá mềm bài viết hoặc bình luận của chính mình trong feed; feed phải hỏi safety, friend, user về quyền xem bài trước khi đối chiếu quyền sở hữu, rồi ghi deletedAt vào PostgreSQL.",
+   "related": [
+    "module:feed",
+    "module:safety",
+    "module:friend",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/feed-delete-post.md"
+  },
+  {
+   "id": "flow:feed-post-with-image",
+   "type": "flow",
+   "title": "Đăng bài kèm ảnh: upload presigned rồi gắn asset",
+   "file": "flows/feed-post-with-image.md",
+   "summary": "Client không gửi file qua API: xin presigned URL từ media, upload thẳng lên object storage, rồi đăng bài chỉ với assetId. Feed không tự tin asset nên phải hỏi media xác thực trước khi lưu imageUrl, và hỏi user để dựng t…",
+   "related": [
+    "module:media",
+    "module:feed",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/feed-post-with-image.md"
+  },
+  {
+   "id": "flow:feed-reaction-with-notification",
+   "type": "flow",
+   "title": "Reaction bài kèm thông báo",
+   "file": "flows/feed-reaction-with-notification.md",
+   "summary": "Người dùng thả tim, bỏ tim và xem trạng thái reaction của một bài đăng. Feed sở hữu Reaction nhưng quyền xem bài phụ thuộc safety (block), friend (audience bạn bè) và user (ẩn hồ sơ), còn thông báo cho tác giả phải ghi …",
+   "related": [
+    "module:feed",
+    "module:safety",
+    "module:friend",
+    "module:user",
+    "module:notification"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/feed-reaction-with-notification.md"
+  },
+  {
+   "id": "flow:feed-read-posts",
+   "type": "flow",
+   "title": "Đọc feed và bài đăng",
+   "file": "flows/feed-read-posts.md",
+   "summary": "Người dùng đọc feed công khai, timeline của một tác giả và chi tiết một bài. Feed chỉ sở hữu Post, nên mọi quyết định xem được hay không phải hỏi Safety (block), User (ẩn hồ sơ, hồ sơ tác giả) và Friend (quan hệ bạn bè).",
+   "related": [
+    "module:feed",
+    "module:safety",
+    "module:user",
+    "module:friend"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/feed-read-posts.md"
+  },
+  {
+   "id": "flow:friend-direct-call",
+   "type": "flow",
+   "title": "Gọi trực tiếp cho bạn bè",
+   "file": "flows/friend-direct-call.md",
+   "summary": "Hai người đã follow nhau gọi voice lâu dài không qua ghép đôi: Calling phải hỏi Friend (và Safety bên trong Friend) xem được phép gọi chưa, rồi mới tạo hoặc lấy CallSession và cấp token LiveKit.",
+   "related": [
+    "module:calling",
+    "module:friend",
+    "module:safety",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/friend-direct-call.md"
+  },
+  {
+   "id": "flow:friend-follow-lists-and-connections",
+   "type": "flow",
+   "title": "Danh sách follower/following và danh sách bạn bè",
+   "file": "flows/friend-follow-lists-and-connections.md",
+   "summary": "Trang hồ sơ và trang Bạn bè đọc số follow, danh sách follower/following theo cursor và danh sách bạn bè (ghép đôi hoặc follow 2 chiều). Friend giữ bảng follow/friendship nên tự truy vấn Postgres; hồ sơ công khai lấy từ …",
+   "related": [
+    "module:friend",
+    "module:safety",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/friend-follow-lists-and-connections.md"
+  },
+  {
+   "id": "flow:friend-list-and-conversation-reads",
+   "type": "flow",
+   "title": "Danh sách bạn, đọc tin và streak",
+   "file": "flows/friend-list-and-conversation-reads.md",
+   "summary": "Màn chat cần danh sách hội thoại kèm hồ sơ đối phương, lịch sử tin nhắn, streak, mốc đã đọc và trạng thái tắt thông báo. Module friend giữ dữ liệu chat và gọi user để lấy hồ sơ công khai; các thao tác còn lại chỉ đọc/gh…",
+   "related": [
+    "module:friend",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/friend-list-and-conversation-reads.md"
+  },
+  {
+   "id": "flow:friend-open-conversation-from-profile",
+   "type": "flow",
+   "title": "Mở chat từ hồ sơ trước khi là bạn",
+   "file": "flows/friend-open-conversation-from-profile.md",
+   "summary": "Người xem bấm nhắn tin trên hồ sơ của người lạ. friend phải hỏi user (hồ sơ có tồn tại) và safety (có block không), rồi khoá dòng user đích trong một transaction để việc đếm first-contact trong ngày và việc tạo Conversa…",
+   "related": [
+    "module:friend",
+    "module:user",
+    "module:safety"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/friend-open-conversation-from-profile.md"
+  },
+  {
+   "id": "flow:friend-profile-follow-and-actions",
+   "type": "flow",
+   "title": "Theo dõi và xem hành động khả dụng trên hồ sơ",
+   "file": "flows/friend-profile-follow-and-actions.md",
+   "summary": "Khi người dùng mở hồ sơ người khác, module friend phải xác nhận hồ sơ tồn tại (user) và không bị block hai chiều (safety) trước khi trả trạng thái follow, hội thoại và ngưỡng first-chat, hoặc ghi/bỏ follow vào bảng của …",
+   "related": [
+    "module:friend",
+    "module:user",
+    "module:safety"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/friend-profile-follow-and-actions.md"
+  },
+  {
+   "id": "flow:friend-streak-warning-job",
+   "type": "flow",
+   "title": "Job cảnh báo streak sắp mất",
+   "file": "flows/friend-streak-warning-job.md",
+   "summary": "Job nền của module friend chạy theo chu kỳ, chỉ một replica được chạy nhờ advisory lock trong Postgres. Nó tìm các conversation sắp mất streak, báo realtime qua Redis và signaling-gateway, tạo thông báo kèm push, rồi đá…",
+   "related": [
+    "module:friend",
+    "module:signaling-gateway",
+    "module:notification"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/friend-streak-warning-job.md"
+  },
+  {
+   "id": "flow:gift-in-party-room",
+   "type": "flow",
+   "title": "Tặng quà trong phòng party",
+   "file": "flows/gift-in-party-room.md",
+   "summary": "Người dùng tặng quà trong phòng party đang diễn ra. Gift giữ catalog và GiftEvent, Economy là nơi duy nhất ghi sổ cái, Notification ghi thông báo, rồi cả phòng nhận hiệu ứng realtime qua Redis và signaling-gateway.",
+   "related": [
+    "module:gift",
+    "module:party-room",
+    "module:economy",
+    "module:notification",
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/gift-in-party-room.md"
+  },
+  {
+   "id": "flow:gift-on-video",
+   "type": "flow",
+   "title": "Tặng quà cho tác giả video",
+   "file": "flows/gift-on-video.md",
+   "summary": "Người xem tặng quà cho tác giả video: Gift tra catalog và người nhận, Economy trừ DIA người tặng và cộng PTS tác giả trong một giao dịch, rồi Notification báo cho tác giả.",
+   "related": [
+    "module:gift",
+    "module:short-video",
+    "module:user",
+    "module:economy",
+    "module:notification"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/gift-on-video.md"
+  },
+  {
+   "id": "flow:gift-to-profile-chat-gate",
+   "type": "flow",
+   "title": "Tặng quà từ hồ sơ để mở chat (cổng quà)",
+   "file": "flows/gift-to-profile-chat-gate.md",
+   "summary": "Người dùng tặng quà từ profile người khác để mở chat 1-1. Gift tính điểm, Economy ghi sổ kép, Friend tạo conversation và liên hệ first-contact, Notification ghi thông báo; tất cả phải nằm trong cùng một giao dịch DB để …",
+   "related": [
+    "module:gift",
+    "module:friend",
+    "module:user",
+    "module:economy",
+    "module:notification"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/gift-to-profile-chat-gate.md"
+  },
+  {
+   "id": "flow:iap-store-notifications-and-refund-poll",
+   "type": "flow",
+   "title": "Hoàn tiền IAP: webhook Apple/Google và job quét refund",
+   "file": "flows/iap-store-notifications-and-refund-poll.md",
+   "summary": "Khi Apple/Google hoàn tiền một giao dịch IAP, economy phải xác minh chữ ký webhook, rồi ghi bút toán đảo vào sổ cái và đánh dấu receipt đã refund trong cùng một transaction. Webhook có thể bị miss nên job quét định kỳ c…",
+   "related": [
+    "module:economy"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/iap-store-notifications-and-refund-poll.md"
+  },
+  {
+   "id": "flow:matching-invite-accept",
+   "type": "flow",
+   "title": "Chấp nhận lời mời và tạo phiên ghép",
+   "file": "flows/matching-invite-accept.md",
+   "summary": "Invitee chấp nhận lời mời ghép: matching phải khoá invite, nhờ safety kiểm tra block/báo cáo, đọc trạng thái user, tạo 2 ticket cùng MatchSession đã confirmed trong một transaction rồi báo realtime cho cả hai bên qua Re…",
+   "related": [
+    "module:matching",
+    "module:safety",
+    "module:user",
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/matching-invite-accept.md"
+  },
+  {
+   "id": "flow:matching-invite-create",
+   "type": "flow",
+   "title": "Mời chơi có chủ đích: tạo và xem lời mời",
+   "file": "flows/matching-invite-create.md",
+   "summary": "Người dùng mời trực tiếp một người khác chơi Voice/Soul Match. Module matching sở hữu MatchInvite nhưng phải hỏi Safety (hidden-set), User (trạng thái invitee), ghi thông báo và push qua Notification, nên nhiều service …",
+   "related": [
+    "module:matching",
+    "module:safety",
+    "module:user",
+    "module:notification"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/matching-invite-create.md"
+  },
+  {
+   "id": "flow:matching-invite-decline-cancel",
+   "type": "flow",
+   "title": "Từ chối hoặc huỷ lời mời",
+   "file": "flows/matching-invite-decline-cancel.md",
+   "summary": "Invitee từ chối hoặc inviter huỷ một MatchInvite. matching khoá dòng invite và kiểm tra hết hạn tại thời điểm thao tác, rồi gọi user để dựng DTO trả về.",
+   "related": [
+    "module:matching",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/matching-invite-decline-cancel.md"
+  },
+  {
+   "id": "flow:matching-sweeper-jobs",
+   "type": "flow",
+   "title": "Job dọn lời mời và vé ghép đôi hết hạn",
+   "file": "flows/matching-sweeper-jobs.md",
+   "summary": "Hai worker nền của matching chạy theo timer trên mọi replica, nên phải dùng advisory lock Postgres để chỉ một replica làm việc; kết quả cuối cùng phải đồng bộ giữa bảng Postgres và hàng đợi Redis.",
+   "related": [
+    "module:matching"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/matching-sweeper-jobs.md"
+  },
+  {
+   "id": "flow:matching-ticket-status-cancel-speedup",
+   "type": "flow",
+   "title": "Xem, huỷ và tăng tốc vé ghép đôi",
+   "file": "flows/matching-ticket-status-cancel-speedup.md",
+   "summary": "Người dùng đọc trạng thái vé và giá tăng tốc theo hạng VIP, huỷ vé đang xếp hàng, hoặc trả DIA để tăng ưu tiên. Matching sở hữu vé và hàng đợi Redis, còn hạng VIP và việc trừ DIA thuộc Economy nên hai service phải phối …",
+   "related": [
+    "module:matching",
+    "module:economy"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/matching-ticket-status-cancel-speedup.md"
+  },
+  {
+   "id": "flow:matching-to-call",
+   "type": "flow",
+   "title": "Từ hàng đợi ghép đôi đến cuộc gọi thoại",
+   "file": "flows/matching-to-call.md",
+   "summary": "Hai người xếp hàng ghép đôi, worker ghép cặp và hai bên xác nhận, sau đó vào cuộc gọi LiveKit. Matching sở hữu MatchSession, Calling sở hữu CallSession nên hai service phải gọi nhau qua DI và báo kết quả xuống client qu…",
+   "related": [
+    "module:matching",
+    "module:economy",
+    "module:calling",
+    "module:signaling-gateway",
+    "module:media-server"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/matching-to-call.md"
+  },
+  {
+   "id": "flow:message-push-notification",
+   "type": "flow",
+   "title": "Tin nhắn bạn bè: realtime và Web Push",
+   "file": "flows/message-push-notification.md",
+   "summary": "Một người gửi tin nhắn 1-1; module friend lưu tin, cập nhật streak, rồi báo cho người nhận qua realtime (Redis tới signaling-gateway) và qua thông báo lưu DB kèm Web Push tới trình duyệt đã đăng ký.",
+   "related": [
+    "module:friend",
+    "module:safety",
+    "module:notification",
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/message-push-notification.md"
+  },
+  {
+   "id": "flow:mini-game-session",
+   "type": "flow",
+   "title": "Mini game giữa hai bạn bè",
+   "file": "flows/mini-game-session.md",
+   "summary": "Một bạn mời bạn bè chơi oẳn tù tì, hai bên nộp move ẩn theo lượt; mini-game phải hỏi friend xem hai người có là bạn không, ghi phiên vào PostgreSQL rồi báo realtime qua Redis và signaling-gateway tới web.",
+   "related": [
+    "module:mini-game",
+    "module:friend",
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/mini-game-session.md"
+  },
+  {
+   "id": "flow:mood-status-visibility",
+   "type": "flow",
+   "title": "Trạng thái tâm trạng và quyền xem",
+   "file": "flows/mood-status-visibility.md",
+   "summary": "Người dùng đặt và xoá mood theo preset với Idempotency-Key, rồi người khác xem mood đó. Mood sở hữu log sự kiện, còn quyền xem phụ thuộc block do Safety sở hữu nên getPublicMood phải hỏi Safety trước khi đọc mood.",
+   "related": [
+    "module:mood",
+    "module:safety"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/mood-status-visibility.md"
+  },
+  {
+   "id": "flow:movie-match-anon-chat-finish-reactions",
+   "type": "flow",
+   "title": "Xem phim ẩn danh: chat, reaction và kết thúc",
+   "file": "flows/movie-match-anon-chat-finish-reactions.md",
+   "summary": "Trong phiên xem phim ẩn danh, hai người chat có Idempotency-Key, gửi reaction tạm thời, bấm kết thúc và dọn trạng thái. movie-match lưu dữ liệu vào PostgreSQL còn Redis và signaling-gateway đẩy sự kiện realtime xuống cả…",
+   "related": [
+    "module:movie-match",
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/movie-match-anon-chat-finish-reactions.md"
+  },
+  {
+   "id": "flow:movie-match-anonymous",
+   "type": "flow",
+   "title": "Xem phim chung ẩn danh: hàng đợi, đồng bộ playback, rating",
+   "file": "flows/movie-match-anonymous.md",
+   "summary": "Người lạ xếp hàng xem phim chung. movie-match ghép cặp (hỏi safety có được ghép không), đồng bộ playback qua realtime tới signaling-gateway, và chỉ khi cả hai like thì friend mới tạo Friendship.",
+   "related": [
+    "module:movie-match",
+    "module:safety",
+    "module:friend",
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/movie-match-anonymous.md"
+  },
+  {
+   "id": "flow:movie-match-friend-session",
+   "type": "flow",
+   "title": "Xem phim chung giữa bạn bè",
+   "file": "flows/movie-match-friend-session.md",
+   "summary": "Hai người bạn xem chung một video YouTube: movie-match phải kiểm tra quan hệ bạn bè với friend, ghi phiên và 2 dòng participant vào PostgreSQL, rồi đẩy sự kiện qua Redis và signaling-gateway để người còn lại nhận playba…",
+   "related": [
+    "module:movie-match",
+    "module:friend",
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/movie-match-friend-session.md"
+  },
+  {
+   "id": "flow:palm-match-queue-and-rating",
+   "type": "flow",
+   "title": "Palm Match: vào hàng, lật và đánh giá",
+   "file": "flows/palm-match-queue-and-rating.md",
+   "summary": "Người dùng vào hàng đợi ghép cặp ẩn danh, lật bài rồi like/skip. Palm Match sở hữu hàng đợi và phiên nhưng không sở hữu block/report (Safety) hay quan hệ bạn bè (Friend), nên phải hỏi Safety.canPair lúc ghép và nhờ Frie…",
+   "related": [
+    "module:palm-match",
+    "module:safety",
+    "module:friend"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/palm-match-queue-and-rating.md"
+  },
+  {
+   "id": "flow:party-room-detail-and-comments",
+   "type": "flow",
+   "title": "Xem phòng party và bình luận trong phòng",
+   "file": "flows/party-room-detail-and-comments.md",
+   "summary": "Client xem danh sách phòng, chi tiết phòng (kèm hồ sơ member lấy từ module user), đọc comment rồi gửi comment với Idempotency-Key. Comment được ghi trong transaction của party-room, sau đó được fanout realtime qua Redis…",
+   "related": [
+    "module:party-room",
+    "module:user",
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/party-room-detail-and-comments.md"
+  },
+  {
+   "id": "flow:party-room-leave-and-role-change",
+   "type": "flow",
+   "title": "Rời phòng và đổi vai trò thành viên",
+   "file": "flows/party-room-leave-and-role-change.md",
+   "summary": "Member rời phòng party hoặc host thu quyền speaker: party-room đổi trạng thái trong PostgreSQL dưới lock phòng, rồi đẩy quyền publish xuống LiveKit (SFU) và báo roster cho các member qua Redis và signaling-gateway, vì q…",
+   "related": [
+    "module:party-room",
+    "module:media-server",
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/party-room-leave-and-role-change.md"
+  },
+  {
+   "id": "flow:party-room-lifecycle",
+   "type": "flow",
+   "title": "Vòng đời phòng party với LiveKit",
+   "file": "flows/party-room-lifecycle.md",
+   "summary": "Phòng party có DB (party-room) là nguồn sự thật về thành viên, còn âm thanh chạy qua LiveKit SFU (media-server). Hai bên chỉ biết nhau qua token, lệnh SDK và webhook, nên core-api phải giữ DB và SFU khớp nhau, rồi báo r…",
+   "related": [
+    "module:party-room",
+    "module:user",
+    "module:media-server",
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/party-room-lifecycle.md"
+  },
+  {
+   "id": "flow:party-room-speaker-invite",
+   "type": "flow",
+   "title": "Mời lên nói và phản hồi lời mời",
+   "file": "flows/party-room-speaker-invite.md",
+   "summary": "Host mời một khán giả lên speaker; khán giả chấp nhận hoặc từ chối. Chấp nhận phải đổi role trong PostgreSQL và cấp quyền publish thật trên LiveKit SFU, còn thông báo tới client đi qua Redis và signaling-gateway nên nhi…",
+   "related": [
+    "module:party-room",
+    "module:signaling-gateway",
+    "module:media-server"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/party-room-speaker-invite.md"
+  },
+  {
+   "id": "flow:payos-topup-webhook",
+   "type": "flow",
+   "title": "Nạp kim cương qua PayOS và webhook",
+   "file": "flows/payos-topup-webhook.md",
+   "summary": "Người dùng tạo đơn nạp PayOS rồi thanh toán trên trang của PayOS; tiền chỉ được cộng vào ví khi webhook có chữ ký hợp lệ quay lại economy, ghi sổ cái kép và chống cộng hai lần. Economy phải phối hợp với PayOS (bên ngoài…",
+   "related": [
+    "module:economy",
+    "module:external:payos"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/payos-topup-webhook.md"
+  },
+  {
+   "id": "flow:safety-block-and-unblock",
+   "type": "flow",
+   "title": "Chặn và bỏ chặn người dùng",
+   "file": "flows/safety-block-and-unblock.md",
+   "summary": "Người dùng chặn, bỏ chặn hoặc kiểm tra trạng thái chặn một người khác. Safety sở hữu log Block append-only nhưng phải hỏi User để chắc người bị chặn tồn tại trước khi ghi.",
+   "related": [
+    "module:safety",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/safety-block-and-unblock.md"
+  },
+  {
+   "id": "flow:safety-report-and-trust-score",
+   "type": "flow",
+   "title": "Báo cáo người dùng và trừ điểm tin cậy",
+   "file": "flows/safety-report-and-trust-score.md",
+   "summary": "Khi một người dùng báo cáo người khác, safety phải ghi Report append-only và trừ trust score của người bị báo cáo atomic, có trần theo cặp và theo ngày; vì vậy safety phối hợp với user (sở hữu bảng users) và PostgreSQL …",
+   "related": [
+    "module:safety",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/safety-report-and-trust-score.md"
+  },
+  {
+   "id": "flow:short-video-browse-and-detail",
+   "type": "flow",
+   "title": "Duyệt video ngắn, xem chi tiết, view và reaction",
+   "file": "flows/short-video-browse-and-detail.md",
+   "summary": "Người dùng duyệt danh sách video published (recent hoặc ranked, hoặc tab following), mở chi tiết, ghi watch-time và thả/bỏ tim. short-video sở hữu dữ liệu video nhưng phải gọi friend để lấy danh sách bạn bè và user để l…",
+   "related": [
+    "module:short-video",
+    "module:friend",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/short-video-browse-and-detail.md"
+  },
+  {
+   "id": "flow:short-video-comments",
+   "type": "flow",
+   "title": "Bình luận video ngắn",
+   "file": "flows/short-video-comments.md",
+   "summary": "Người dùng thêm, xem và xoá comment của video ngắn. short-video sở hữu video và comment (kèm commentCount), nhưng hồ sơ tác giả thuộc module user nên controller phải gọi UserService để ghép PublicProfileDto vào kết quả.",
+   "related": [
+    "module:short-video",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/short-video-comments.md"
+  },
+  {
+   "id": "flow:short-video-publish-moderation",
+   "type": "flow",
+   "title": "Đăng video ngắn và duyệt bởi admin",
+   "file": "flows/short-video-publish-moderation.md",
+   "summary": "Người dùng xin URL upload, upload video rồi finalize; tuỳ VIDEO_MODERATION_MODE video sang pending_review hoặc published. Admin duyệt qua AdminModule, nên short-video (sở hữu Video) và admin (audit log) phải cùng một tr…",
+   "related": [
+    "module:short-video",
+    "module:admin",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/short-video-publish-moderation.md"
+  },
+  {
+   "id": "flow:short-video-ranking-and-sweeper-jobs",
+   "type": "flow",
+   "title": "Job tính điểm xếp hạng và dọn video lỗi",
+   "file": "flows/short-video-ranking-and-sweeper-jobs.md",
+   "summary": "Hai worker nền của short-video chạy theo setInterval: một job tính lại rank_score cho video published, một job chuyển video uploading quá hạn sang failed rồi xóa object trên storage. Cả hai cần PostgreSQL (khóa advisory…",
+   "related": [
+    "module:short-video"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/short-video-ranking-and-sweeper-jobs.md"
+  },
+  {
+   "id": "flow:short-video-report",
+   "type": "flow",
+   "title": "Báo cáo video vi phạm",
+   "file": "flows/short-video-report.md",
+   "summary": "Người xem báo cáo một video ngắn; short-video phải xác nhận video tồn tại và hiển thị được trước, Safety ghi log report append-only và đếm số người báo cáo khác nhau, rồi short-video quyết định tự ẩn video khi vượt ngưỡ…",
+   "related": [
+    "module:short-video",
+    "module:safety"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/short-video-report.md"
+  },
+  {
+   "id": "flow:soul-match-room-reads-and-reveal",
+   "type": "flow",
+   "title": "Đọc phòng Soul Match và lộ hồ sơ sau mutual-like",
+   "file": "flows/soul-match-room-reads-and-reveal.md",
+   "summary": "Phòng chat ẩn danh Soul Match thuộc soul-match nhưng MatchSession do matching sở hữu và Friendship do friend sở hữu, nên mọi lần đọc phòng, tin nhắn hay hồ sơ đối phương đều phải hỏi hai service kia và suy ra phase theo…",
+   "related": [
+    "module:soul-match",
+    "module:matching",
+    "module:friend",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/soul-match-room-reads-and-reveal.md"
+  },
+  {
+   "id": "flow:soul-match-send-message",
+   "type": "flow",
+   "title": "Gửi tin nhắn ẩn danh trong phòng Soul Match",
+   "file": "flows/soul-match-send-message.md",
+   "summary": "Thành viên gửi tin nhắn ẩn danh trong phòng Soul Match. Soul Match không sở hữu MatchSession và quan hệ bạn bè, nên phải hỏi Matching và Friend, hỏi User về trạng thái ban, rồi lưu tin trong transaction và đẩy realtime …",
+   "related": [
+    "module:soul-match",
+    "module:matching",
+    "module:friend",
+    "module:user",
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/soul-match-send-message.md"
+  },
+  {
+   "id": "flow:soul-match-session",
+   "type": "flow",
+   "title": "Phòng chat ẩn danh Soul Match và mutual-like",
+   "file": "flows/soul-match-session.md",
+   "summary": "Hai người đã được Matching ghép đôi chat ẩn danh rồi đánh giá lẫn nhau; khi cả hai like thì Soul Match phải nhờ Friend mở Friendship và nhập lịch sử chat, đồng thời khoá hàng MatchSession của Matching để hai rater không…",
+   "related": [
+    "module:soul-match",
+    "module:matching",
+    "module:friend",
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/soul-match-session.md"
+  },
+  {
+   "id": "flow:story-create-with-image",
+   "type": "flow",
+   "title": "Đăng story kèm ảnh và dọn story hết hạn",
+   "file": "flows/story-create-with-image.md",
+   "summary": "Story chỉ được lưu khi ảnh đã được Media xác nhận là của đúng chủ, đúng purpose Story và đã upload hợp lệ; sau đó một sweeper nền của Feed xoá cứng các story hết hạn nên Feed và Media phải phối hợp.",
+   "related": [
+    "module:feed",
+    "module:media"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/story-create-with-image.md"
+  },
+  {
+   "id": "flow:story-reply-to-dm",
+   "type": "flow",
+   "title": "Trả lời story thành tin nhắn",
+   "file": "flows/story-reply-to-dm.md",
+   "summary": "Người xem trả lời một story: Feed không có chat riêng nên phải hỏi Safety/Friend/User xem có được xem story không, rồi nhờ Friend tạo DM thật kèm attachment snapshot mediaUrl, vì story hết hạn còn message thì sống mãi.",
+   "related": [
+    "module:feed",
+    "module:safety",
+    "module:user",
+    "module:friend",
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/story-reply-to-dm.md"
+  },
+  {
+   "id": "flow:story-ring-view-and-viewers",
+   "type": "flow",
+   "title": "Vòng story, xem story và người đã xem",
+   "file": "flows/story-ring-view-and-viewers.md",
+   "summary": "Feed sở hữu Story/StoryView nhưng không sở hữu quan hệ bạn bè, block hay quyền riêng tư, nên mỗi lần liệt kê vòng story, xem một story hoặc liệt kê người xem đều phải hỏi friend, safety và user trước khi đọc hoặc ghi bả…",
+   "related": [
+    "module:feed",
+    "module:friend",
+    "module:safety",
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/story-ring-view-and-viewers.md"
+  },
+  {
+   "id": "flow:user-presence-read",
+   "type": "flow",
+   "title": "Xem trạng thái online của người dùng",
+   "file": "flows/user-presence-read.md",
+   "summary": "Khi một người dùng xem trạng thái online của người khác, User đọc cài đặt riêng tư trong PostgreSQL rồi đọc khoá presence trong Redis do lease của signaling-gateway ghi, nên User phụ thuộc dữ liệu do gateway sở hữu.",
+   "related": [
+    "module:user",
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/user-presence-read.md"
+  },
+  {
+   "id": "flow:vip-purchase-iap",
+   "type": "flow",
+   "title": "Mua VIP và xác minh biên nhận IAP",
+   "file": "flows/vip-purchase-iap.md",
+   "summary": "Hai luồng tiền chạy qua cùng một sổ cái: mua VIP bằng diamond với Idempotency-Key, và nạp diamond qua IAP chỉ khi server tự hỏi Apple/Google. Economy phải ghi sổ, ví, VIP/biên nhận trong một giao dịch PostgreSQL để khôn…",
+   "related": [
+    "module:economy"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/vip-purchase-iap.md"
+  },
+  {
+   "id": "flows:index",
+   "type": "flow",
+   "title": "Flow index",
+   "file": "flows/index.md",
+   "summary": "72 sequence flows grouped by domain + coverage of entrypoints.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/index.md"
+  },
+  {
+   "id": "service-map:admin",
+   "type": "service-map",
+   "title": "Service map admin",
+   "file": "service-map/admin.md",
+   "summary": "API back-office: RBAC, audit, điều phối module",
+   "related": [
+    "module:admin"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/admin.md"
+  },
+  {
+   "id": "techniques:admin",
+   "type": "service-map",
+   "title": "Techniques admin",
+   "file": "service-map/admin-techniques.md",
+   "summary": "17 technique cards.",
+   "related": [
+    "module:admin"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/admin-techniques.md"
+  },
+  {
+   "id": "service-map:app-shell",
+   "type": "service-map",
+   "title": "Service map app-shell",
+   "file": "service-map/app-shell.md",
+   "summary": "Health probe và hợp đồng capabilities",
+   "related": [
+    "module:app-shell"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/app-shell.md"
+  },
+  {
+   "id": "techniques:app-shell",
+   "type": "service-map",
+   "title": "Techniques app-shell",
+   "file": "service-map/app-shell-techniques.md",
+   "summary": "7 technique cards.",
+   "related": [
+    "module:app-shell"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/app-shell-techniques.md"
+  },
+  {
+   "id": "service-map:auth",
+   "type": "service-map",
+   "title": "Service map auth",
+   "file": "service-map/auth.md",
+   "summary": "Đăng nhập, phiên refresh và nâng cấp guest",
+   "related": [
+    "module:auth"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/auth.md"
+  },
+  {
+   "id": "techniques:auth",
+   "type": "service-map",
+   "title": "Techniques auth",
+   "file": "service-map/auth-techniques.md",
+   "summary": "23 technique cards.",
+   "related": [
+    "module:auth"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/auth-techniques.md"
+  },
+  {
+   "id": "service-map:avatar",
+   "type": "service-map",
+   "title": "Service map avatar",
+   "file": "service-map/avatar.md",
+   "summary": "Catalog, sở hữu và trang bị avatar",
+   "related": [
+    "module:avatar"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/avatar.md"
+  },
+  {
+   "id": "techniques:avatar",
+   "type": "service-map",
+   "title": "Techniques avatar",
+   "file": "service-map/avatar-techniques.md",
+   "summary": "9 technique cards.",
+   "related": [
+    "module:avatar"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/avatar-techniques.md"
+  },
+  {
+   "id": "service-map:calling",
+   "type": "service-map",
+   "title": "Service map calling",
+   "file": "service-map/calling.md",
+   "summary": "Vòng đời CallSession voice 2 người trên LiveKit",
+   "related": [
+    "module:calling"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/calling.md"
+  },
+  {
+   "id": "techniques:calling",
+   "type": "service-map",
+   "title": "Techniques calling",
+   "file": "service-map/calling-techniques.md",
+   "summary": "19 technique cards.",
+   "related": [
+    "module:calling"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/calling-techniques.md"
+  },
+  {
+   "id": "service-map:discovery",
+   "type": "service-map",
+   "title": "Service map discovery",
+   "file": "service-map/discovery.md",
+   "summary": "Duyệt người dùng và Nearby ẩn vị trí",
+   "related": [
+    "module:discovery"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/discovery.md"
+  },
+  {
+   "id": "techniques:discovery",
+   "type": "service-map",
+   "title": "Techniques discovery",
+   "file": "service-map/discovery-techniques.md",
+   "summary": "14 technique cards.",
+   "related": [
+    "module:discovery"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/discovery-techniques.md"
+  },
+  {
+   "id": "service-map:economy",
+   "type": "service-map",
+   "title": "Service map economy",
+   "file": "service-map/economy.md",
+   "summary": "Sổ cái kép, ví diamond, VIP, nạp tiền",
+   "related": [
+    "module:economy"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/economy.md"
+  },
+  {
+   "id": "techniques:economy",
+   "type": "service-map",
+   "title": "Techniques economy",
+   "file": "service-map/economy-techniques.md",
+   "summary": "29 technique cards.",
+   "related": [
+    "module:economy"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/economy-techniques.md"
+  },
+  {
+   "id": "service-map:feed",
+   "type": "service-map",
+   "title": "Service map feed",
+   "file": "service-map/feed.md",
+   "summary": "Bài đăng, bình luận, thả tim và Stories 24h",
+   "related": [
+    "module:feed"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/feed.md"
+  },
+  {
+   "id": "techniques:feed",
+   "type": "service-map",
+   "title": "Techniques feed",
+   "file": "service-map/feed-techniques.md",
+   "summary": "18 technique cards.",
+   "related": [
+    "module:feed"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/feed-techniques.md"
+  },
+  {
+   "id": "service-map:friend",
+   "type": "service-map",
+   "title": "Service map friend",
+   "file": "service-map/friend.md",
+   "summary": "Bạn bè, chat 1-1, streak, follow và mở chat từ profile",
+   "related": [
+    "module:friend"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/friend.md"
+  },
+  {
+   "id": "techniques:friend",
+   "type": "service-map",
+   "title": "Techniques friend",
+   "file": "service-map/friend-techniques.md",
+   "summary": "22 technique cards.",
+   "related": [
+    "module:friend"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/friend-techniques.md"
+  },
+  {
+   "id": "service-map:gift",
+   "type": "service-map",
+   "title": "Service map gift",
+   "file": "service-map/gift.md",
+   "summary": "Catalog quà và luồng tặng quà",
+   "related": [
+    "module:gift"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/gift.md"
+  },
+  {
+   "id": "techniques:gift",
+   "type": "service-map",
+   "title": "Techniques gift",
+   "file": "service-map/gift-techniques.md",
+   "summary": "12 technique cards.",
+   "related": [
+    "module:gift"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/gift-techniques.md"
+  },
+  {
+   "id": "service-map:matching",
+   "type": "service-map",
+   "title": "Service map matching",
+   "file": "service-map/matching.md",
+   "summary": "Hàng đợi ghép cặp, ticket, invite, MatchSession",
+   "related": [
+    "module:matching"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/matching.md"
+  },
+  {
+   "id": "techniques:matching",
+   "type": "service-map",
+   "title": "Techniques matching",
+   "file": "service-map/matching-techniques.md",
+   "summary": "31 technique cards.",
+   "related": [
+    "module:matching"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/matching-techniques.md"
+  },
+  {
+   "id": "service-map:media-server",
+   "type": "service-map",
+   "title": "Service map media-server",
+   "file": "service-map/media-server.md",
+   "summary": "LiveKit SFU: cấu hình và deploy, không logic",
+   "related": [
+    "module:media-server"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/media-server.md"
+  },
+  {
+   "id": "techniques:media-server",
+   "type": "service-map",
+   "title": "Techniques media-server",
+   "file": "service-map/media-server-techniques.md",
+   "summary": "6 technique cards.",
+   "related": [
+    "module:media-server"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/media-server-techniques.md"
+  },
+  {
+   "id": "service-map:media",
+   "type": "service-map",
+   "title": "Service map media",
+   "file": "service-map/media.md",
+   "summary": "Presigned upload ảnh, xác thực asset",
+   "related": [
+    "module:media"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/media.md"
+  },
+  {
+   "id": "techniques:media",
+   "type": "service-map",
+   "title": "Techniques media",
+   "file": "service-map/media-techniques.md",
+   "summary": "9 technique cards.",
+   "related": [
+    "module:media"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/media-techniques.md"
+  },
+  {
+   "id": "service-map:mini-game",
+   "type": "service-map",
+   "title": "Service map mini-game",
+   "file": "service-map/mini-game.md",
+   "summary": "Oẳn tù tì 2 người giữa bạn bè, move ẩn",
+   "related": [
+    "module:mini-game"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/mini-game.md"
+  },
+  {
+   "id": "techniques:mini-game",
+   "type": "service-map",
+   "title": "Techniques mini-game",
+   "file": "service-map/mini-game-techniques.md",
+   "summary": "13 technique cards.",
+   "related": [
+    "module:mini-game"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/mini-game-techniques.md"
+  },
+  {
+   "id": "service-map:mood",
+   "type": "service-map",
+   "title": "Service map mood",
+   "file": "service-map/mood.md",
+   "summary": "Trạng thái tâm trạng preset, hết hạn theo TTL",
+   "related": [
+    "module:mood"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/mood.md"
+  },
+  {
+   "id": "techniques:mood",
+   "type": "service-map",
+   "title": "Techniques mood",
+   "file": "service-map/mood-techniques.md",
+   "summary": "9 technique cards.",
+   "related": [
+    "module:mood"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/mood-techniques.md"
+  },
+  {
+   "id": "service-map:movie-match",
+   "type": "service-map",
+   "title": "Service map movie-match",
+   "file": "service-map/movie-match.md",
+   "summary": "Phiên xem chung 2 người, playback state",
+   "related": [
+    "module:movie-match"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/movie-match.md"
+  },
+  {
+   "id": "techniques:movie-match",
+   "type": "service-map",
+   "title": "Techniques movie-match",
+   "file": "service-map/movie-match-techniques.md",
+   "summary": "21 technique cards.",
+   "related": [
+    "module:movie-match"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/movie-match-techniques.md"
+  },
+  {
+   "id": "service-map:notification",
+   "type": "service-map",
+   "title": "Service map notification",
+   "file": "service-map/notification.md",
+   "summary": "Thông báo in-app và Web Push",
+   "related": [
+    "module:notification"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/notification.md"
+  },
+  {
+   "id": "techniques:notification",
+   "type": "service-map",
+   "title": "Techniques notification",
+   "file": "service-map/notification-techniques.md",
+   "summary": "14 technique cards.",
+   "related": [
+    "module:notification"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/notification-techniques.md"
+  },
+  {
+   "id": "service-map:palm-match",
+   "type": "service-map",
+   "title": "Service map palm-match",
+   "file": "service-map/palm-match.md",
+   "summary": "Ghép đôi ẩn danh theo hàng đợi, bói bài",
+   "related": [
+    "module:palm-match"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/palm-match.md"
+  },
+  {
+   "id": "techniques:palm-match",
+   "type": "service-map",
+   "title": "Techniques palm-match",
+   "file": "service-map/palm-match-techniques.md",
+   "summary": "14 technique cards.",
+   "related": [
+    "module:palm-match"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/palm-match-techniques.md"
+  },
+  {
+   "id": "service-map:party-room",
+   "type": "service-map",
+   "title": "Service map party-room",
+   "file": "service-map/party-room.md",
+   "summary": "Phòng audio nhiều người, role và grace rớt mạng",
+   "related": [
+    "module:party-room"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/party-room.md"
+  },
+  {
+   "id": "techniques:party-room",
+   "type": "service-map",
+   "title": "Techniques party-room",
+   "file": "service-map/party-room-techniques.md",
+   "summary": "28 technique cards.",
+   "related": [
+    "module:party-room"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/party-room-techniques.md"
+  },
+  {
+   "id": "service-map:safety",
+   "type": "service-map",
+   "title": "Service map safety",
+   "file": "service-map/safety.md",
+   "summary": "Report, block và luật ẩn người dùng",
+   "related": [
+    "module:safety"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/safety.md"
+  },
+  {
+   "id": "techniques:safety",
+   "type": "service-map",
+   "title": "Techniques safety",
+   "file": "service-map/safety-techniques.md",
+   "summary": "15 technique cards.",
+   "related": [
+    "module:safety"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/safety-techniques.md"
+  },
+  {
+   "id": "service-map:short-video",
+   "type": "service-map",
+   "title": "Service map short-video",
+   "file": "service-map/short-video.md",
+   "summary": "Video ngắn: upload, duyệt, xem, tim, bình luận",
+   "related": [
+    "module:short-video"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/short-video.md"
+  },
+  {
+   "id": "techniques:short-video",
+   "type": "service-map",
+   "title": "Techniques short-video",
+   "file": "service-map/short-video-techniques.md",
+   "summary": "18 technique cards.",
+   "related": [
+    "module:short-video"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/short-video-techniques.md"
+  },
+  {
+   "id": "service-map:signaling-gateway",
+   "type": "service-map",
+   "title": "Service map signaling-gateway",
+   "file": "service-map/signaling-gateway.md",
+   "summary": "Fanout Socket.IO, quota kết nối, presence",
+   "related": [
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/signaling-gateway.md"
+  },
+  {
+   "id": "techniques:signaling-gateway",
+   "type": "service-map",
+   "title": "Techniques signaling-gateway",
+   "file": "service-map/signaling-gateway-techniques.md",
+   "summary": "22 technique cards.",
+   "related": [
+    "module:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/signaling-gateway-techniques.md"
+  },
+  {
+   "id": "service-map:soul-match",
+   "type": "service-map",
+   "title": "Service map soul-match",
+   "file": "service-map/soul-match.md",
+   "summary": "Phòng chat ẩn danh, rating, mutual-like",
+   "related": [
+    "module:soul-match"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/soul-match.md"
+  },
+  {
+   "id": "techniques:soul-match",
+   "type": "service-map",
+   "title": "Techniques soul-match",
+   "file": "service-map/soul-match-techniques.md",
+   "summary": "19 technique cards.",
+   "related": [
+    "module:soul-match"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/soul-match-techniques.md"
+  },
+  {
+   "id": "service-map:support",
+   "type": "service-map",
+   "title": "Service map support",
+   "file": "service-map/support.md",
+   "summary": "Phiếu hỗ trợ và vòng đời xử lý",
+   "related": [
+    "module:support"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/support.md"
+  },
+  {
+   "id": "techniques:support",
+   "type": "service-map",
+   "title": "Techniques support",
+   "file": "service-map/support-techniques.md",
+   "summary": "10 technique cards.",
+   "related": [
+    "module:support"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/support-techniques.md"
+  },
+  {
+   "id": "service-map:user",
+   "type": "service-map",
+   "title": "Service map user",
+   "file": "service-map/user.md",
+   "summary": "Hồ sơ người dùng, quyền riêng tư, trạng thái",
+   "related": [
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/user.md"
+  },
+  {
+   "id": "techniques:user",
+   "type": "service-map",
+   "title": "Techniques user",
+   "file": "service-map/user-techniques.md",
+   "summary": "13 technique cards.",
+   "related": [
+    "module:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/user-techniques.md"
+  },
+  {
+   "id": "qa:authn-model",
+   "type": "service-map",
+   "title": "Xác thực người dùng bằng mô hình nào?",
+   "file": "service-map/qa-authn-model.md",
+   "summary": "JWT bearer không trạng thái, kiểm bằng JwtAuthGuard đăng ký toàn cục: route nào muốn mở phải gắn @Public(). Có ba đường vào (khách kèm token thiết bị, OTP điện thoại, ID token Apple/Google/Facebook) và gateway WebSocket…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/qa-authn-model.md"
+  },
+  {
+   "id": "qa:authz-model",
+   "type": "service-map",
+   "title": "Phân quyền dùng RBAC, ABAC hay kết hợp?",
+   "file": "service-map/qa-authz-model.md",
+   "summary": "Kết hợp nhiều lớp và không có policy engine (không CASL, Casbin hay OPA trong package.json): RBAC cho vai trò (RolesGuard toàn cục + ma trận quyền admin lưu DB), ABAC theo thuộc tính (guest, bị ban, hạng VIP, chính sách…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/qa-authz-model.md"
+  },
+  {
+   "id": "qa:token-lifecycle",
+   "type": "service-map",
+   "title": "Vòng đời token và phiên: access, refresh, CSRF, cookie?",
+   "file": "service-map/qa-token-lifecycle.md",
+   "summary": "Access token ngắn hạn kèm refresh token xoay vòng: mỗi lần refresh phát token mới, dùng lại token cũ bị coi là bị lộ và thu hồi cả họ token. Refresh token nằm trong cookie httpOnly nên cần thêm CSRF double-submit.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/qa-token-lifecycle.md"
+  },
+  {
+   "id": "qa:webhook-security",
+   "type": "service-map",
+   "title": "Bảo mật webhook từ bên ngoài (thanh toán, LiveKit)?",
+   "file": "service-map/qa-webhook-security.md",
+   "summary": "Mọi webhook công khai đều tự xác minh nguồn gửi trước khi làm gì: PayOS bằng HMAC-SHA256, Apple bằng JWS (kiểm chuỗi chứng chỉ x5c lên Apple Root CA), Google RTDN bằng OIDC token (kiểm issuer, audience, service account)…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/qa-webhook-security.md"
+  },
+  {
+   "id": "qa:media-access",
+   "type": "service-map",
+   "title": "Kiểm soát truy cập media: LiveKit và upload file?",
+   "file": "service-map/qa-media-access.md",
+   "summary": "Quyền vào phòng media là capability token ngắn hạn do core-api ký (LiveKit grants theo vai trò); đổi vai trò giữa chừng thì core-api đẩy quyền xuống SFU chứ không tin client. File ảnh hoặc video upload bằng presigned UR…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/qa-media-access.md"
+  },
+  {
+   "id": "qa:realtime-delivery",
+   "type": "service-map",
+   "title": "Realtime dùng Redis Streams, queue hay pub/sub?",
+   "file": "service-map/qa-realtime-delivery.md",
+   "summary": "Redis pub/sub fanout, at-most-once, không lưu và không replay, chỉ publish sau khi commit. Không dùng Redis Streams hay hàng đợi cho realtime vì sự kiện chỉ là gợi ý, REST polling mới là nguồn sự thật.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/qa-realtime-delivery.md"
+  },
+  {
+   "id": "qa:queues-and-workers",
+   "type": "service-map",
+   "title": "Hàng đợi và worker nền: dùng gì, ở đâu?",
+   "file": "service-map/qa-queues-and-workers.md",
+   "summary": "Không có thư viện job queue chung (không BullMQ, Agenda hay pg-boss trong package.json). Ghép đôi dùng Redis sorted set chia shard (ZADD/ZPOPMIN) rồi xác minh lại trong PostgreSQL bằng SELECT FOR UPDATE; worker nền là v…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/qa-queues-and-workers.md"
+  },
+  {
+   "id": "qa:consistency-concurrency",
+   "type": "service-map",
+   "title": "Nhất quán và đồng thời: transaction, khoá, sổ cái?",
+   "file": "service-map/qa-consistency-concurrency.md",
+   "summary": "Một PostgreSQL chung nên atomicity xuyên module dùng chung một transaction (truyền EntityManager), không saga hay 2PC. Race được chặn bằng khoá bi quan (SELECT FOR UPDATE), advisory lock và ràng buộc unique làm chốt cuố…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/qa-consistency-concurrency.md"
+  },
+  {
+   "id": "qa:idempotency",
+   "type": "service-map",
+   "title": "Chống xử lý trùng (idempotency) làm thế nào?",
+   "file": "service-map/qa-idempotency.md",
+   "summary": "Hai lớp: client gửi Idempotency-Key (decorator @IdempotencyKey) và DB giữ chốt cuối bằng unique trên cột idempotency_key, nên retry mạng nhận lại kết quả cũ thay vì tạo bản ghi hoặc trừ tiền hai lần.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/qa-idempotency.md"
+  },
+  {
+   "id": "qa:rate-limit-abuse",
+   "type": "service-map",
+   "title": "Giới hạn tốc độ và chống lạm dụng?",
+   "file": "service-map/qa-rate-limit-abuse.md",
+   "summary": "Nhiều lớp: ThrottlerGuard toàn cục đứng trước JWT và @Throttle riêng cho route nhạy cảm; rate limit nghiệp vụ bằng Redis (Lua) dùng chung nhiều instance; gateway giữ quota kết nối bằng lease Lua và fail-closed khi Redis…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/qa-rate-limit-abuse.md"
+  },
+  {
+   "id": "qa:api-contract",
+   "type": "service-map",
+   "title": "Hợp đồng API và dữ liệu: OpenAPI, validate, phân trang, schema?",
+   "file": "service-map/qa-api-contract.md",
+   "summary": "Hợp đồng REST sinh từ chính controller (OpenAPI) rồi sinh client TypeScript; DTO validate bằng class-validator; phân trang bằng cursor; schema DB chỉ đổi bằng migration (synchronize tắt).",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/qa-api-contract.md"
+  },
+  {
+   "id": "qa:observability",
+   "type": "service-map",
+   "title": "Quan sát và vận hành: metrics, log, trace, health, audit?",
+   "file": "service-map/qa-observability.md",
+   "summary": "Metrics và tracing qua OpenTelemetry, log JSON bằng pino, probe liveness/readiness cho Kubernetes và audit log cho hành động nhạy cảm của admin.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/qa-observability.md"
+  },
+  {
+   "id": "service-map:findings",
+   "type": "service-map",
+   "title": "Findings",
+   "file": "service-map/findings.md",
+   "summary": "9 observations with status.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/findings.md"
+  },
+  {
+   "id": "issues:index",
+   "type": "issues",
+   "title": "Issue ledger index",
+   "file": "issues/index.md",
+   "summary": "103 problems met while building Litmatch with status.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/index.md"
+  },
+  {
+   "id": "issues:economy-payment",
+   "type": "issues",
+   "title": "Issues economy-payment",
+   "file": "issues/economy-payment.md",
+   "summary": "3 rows.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/economy-payment.md"
+  },
+  {
+   "id": "issues:ci-cd",
+   "type": "issues",
+   "title": "Issues ci-cd",
+   "file": "issues/ci-cd.md",
+   "summary": "24 rows.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/ci-cd.md"
+  },
+  {
+   "id": "issues:ai-agent-process",
+   "type": "issues",
+   "title": "Issues ai-agent-process",
+   "file": "issues/ai-agent-process.md",
+   "summary": "13 rows.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/ai-agent-process.md"
+  },
+  {
+   "id": "issues:frontend-ux",
+   "type": "issues",
+   "title": "Issues frontend-ux",
+   "file": "issues/frontend-ux.md",
+   "summary": "9 rows.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/frontend-ux.md"
+  },
+  {
+   "id": "issues:auth-security",
+   "type": "issues",
+   "title": "Issues auth-security",
+   "file": "issues/auth-security.md",
+   "summary": "9 rows.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/auth-security.md"
+  },
+  {
+   "id": "issues:matching",
+   "type": "issues",
+   "title": "Issues matching",
+   "file": "issues/matching.md",
+   "summary": "6 rows.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/matching.md"
+  },
+  {
+   "id": "issues:database-concurrency",
+   "type": "issues",
+   "title": "Issues database-concurrency",
+   "file": "issues/database-concurrency.md",
+   "summary": "5 rows.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/database-concurrency.md"
+  },
+  {
+   "id": "issues:deploy-config",
+   "type": "issues",
+   "title": "Issues deploy-config",
+   "file": "issues/deploy-config.md",
+   "summary": "5 rows.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/deploy-config.md"
+  },
+  {
+   "id": "issues:realtime-gateway",
+   "type": "issues",
+   "title": "Issues realtime-gateway",
+   "file": "issues/realtime-gateway.md",
+   "summary": "3 rows.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/realtime-gateway.md"
+  },
+  {
+   "id": "issues:observability",
+   "type": "issues",
+   "title": "Issues observability",
+   "file": "issues/observability.md",
+   "summary": "4 rows.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/observability.md"
+  },
+  {
+   "id": "issues:other",
+   "type": "issues",
+   "title": "Issues other",
+   "file": "issues/other.md",
+   "summary": "7 rows.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/other.md"
+  },
+  {
+   "id": "issues:dependencies",
+   "type": "issues",
+   "title": "Issues dependencies",
+   "file": "issues/dependencies.md",
+   "summary": "2 rows.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/dependencies.md"
+  },
+  {
+   "id": "issues:docs-tooling",
+   "type": "issues",
+   "title": "Issues docs-tooling",
+   "file": "issues/docs-tooling.md",
+   "summary": "2 rows.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/docs-tooling.md"
+  },
+  {
+   "id": "issues:windows-toolchain",
+   "type": "issues",
+   "title": "Issues windows-toolchain",
+   "file": "issues/windows-toolchain.md",
+   "summary": "8 rows.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/windows-toolchain.md"
+  },
+  {
+   "id": "issues:short-video",
+   "type": "issues",
+   "title": "Issues short-video",
+   "file": "issues/short-video.md",
+   "summary": "3 rows.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/short-video.md"
+  },
+  {
+   "id": "module:admin",
+   "type": "module",
+   "title": "Module admin",
+   "file": "modules/admin.md",
+   "summary": "AdminModule là lớp điều phối back-office cho apps/admin: kiểm quyền (role + permission theo bảng admin_role_permissions), gọi đúng service của module sở hữu dữ liệu và ghi admin_audit_logs CÙNG transaction với hành động…",
+   "related": [
+    "service-map:admin",
+    "db:admin",
+    "api:admin"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/admin.md"
+  },
+  {
+   "id": "module:auth",
+   "type": "module",
+   "title": "Module auth",
+   "file": "modules/auth.md",
+   "summary": "Sở hữu danh tính đăng nhập (auth_identities), OTP điện thoại, refresh-token family và việc ký access token JWT / guest device token. Không sở hữu hồ sơ user (module user), không gửi SMS thật và không tự verify token ở c…",
+   "related": [
+    "service-map:auth",
+    "db:auth",
+    "api:auth"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/auth.md"
+  },
+  {
+   "id": "module:avatar",
+   "type": "module",
+   "title": "Module avatar",
+   "file": "modules/avatar.md",
+   "summary": "Sở hữu catalog layer avatar (avatar_assets, giá là DATA), quyền sở hữu item (user_avatar_items) và cấu hình đang trang bị (user_avatar_configs, 5 slot). Mua item trả phí là việc của Economy (Avatar chỉ gọi spendDiamond)…",
+   "related": [
+    "service-map:avatar",
+    "db:avatar",
+    "api:avatar"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/avatar.md"
+  },
+  {
+   "id": "module:calling",
+   "type": "module",
+   "title": "Module calling",
+   "file": "modules/calling.md",
+   "summary": "Sở hữu CallSession (pending/active/ended), VoiceMatchReaction, token join LiveKit và bộ đếm thời gian Voice Match enforce ở server (7 phút, pending timeout, reconnect grace). KHÔNG sở hữu MatchSession (Matching ghi), Fr…",
+   "related": [
+    "service-map:calling",
+    "db:calling",
+    "api:calling"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/calling.md"
+  },
+  {
+   "id": "module:discovery",
+   "type": "module",
+   "title": "Module discovery",
+   "file": "modules/discovery.md",
+   "summary": "Sở hữu user_locations (toạ độ đã quantize ~500m) và discovery_settings (opt-in nearbyVisible), cộng logic browse/nearby: ghép bộ lọc, loại block/report, jitter khoảng cách, rate limit. Không sở hữu bảng users/privacy (m…",
+   "related": [
+    "service-map:discovery",
+    "db:discovery",
+    "api:discovery"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/discovery.md"
+  },
+  {
+   "id": "module:economy",
+   "type": "module",
+   "title": "Module economy",
+   "file": "modules/economy.md",
+   "summary": "Sở hữu sổ cái double-entry append-only (ledger_entries), snapshot ví wallets, catalog IAP/VIP/payOS, receipt và order nạp tiền; LedgerService là writer duy nhất vào ledger/wallet cho cả hệ thống. Không sở hữu hiệu ứng n…",
+   "related": [
+    "service-map:economy",
+    "db:economy",
+    "api:economy"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/economy.md"
+  },
+  {
+   "id": "module:feed",
+   "type": "module",
+   "title": "Module feed",
+   "file": "modules/feed.md",
+   "summary": "Sở hữu Post/Comment/Reaction (feed công khai toàn cục, không fanout) và Story/StoryView (ephemeral, hết hạn lọc lúc đọc). KHÔNG sở hữu quan hệ bạn bè/block/privacy/ảnh/notification: mọi quyết định xem được hay không đều…",
+   "related": [
+    "service-map:feed",
+    "db:feed",
+    "api:feed"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/feed.md"
+  },
+  {
+   "id": "module:friend",
+   "type": "module",
+   "title": "Module friend",
+   "file": "modules/friend.md",
+   "summary": "Sở hữu Friendship, Conversation/Message chat 1-1 lâu dài, trạng thái đọc/mute theo thành viên, ConversationStreak (sub-service nội bộ), ProfileFollow và ProfileChatContact (cổng first-contact của chat trực tiếp từ profi…",
+   "related": [
+    "service-map:friend",
+    "db:friend",
+    "api:friend"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/friend.md"
+  },
+  {
+   "id": "module:gift",
+   "type": "module",
+   "title": "Module gift",
+   "file": "modules/gift.md",
+   "summary": "Sở hữu catalog quà (bảng gifts, giá là DATA) và GiftEvent (gift_events) cho 3 ngữ cảnh tặng: phòng Party, tác giả video, mở chat từ profile; tính tỉ lệ PTS và điều phối side effect quanh giao dịch. KHÔNG sở hữu sổ cái/v…",
+   "related": [
+    "service-map:gift",
+    "db:gift",
+    "api:gift"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/gift.md"
+  },
+  {
+   "id": "module:matching",
+   "type": "module",
+   "title": "Module matching",
+   "file": "modules/matching.md",
+   "summary": "Sở hữu vòng đời MatchTicket (queued→confirmed|expired|cancelled), hàng đợi Redis sharded + matcher worker, MatchInvite (mời có chủ đích) và MatchSession là bản ghi duy nhất của một cặp đã ghép; là nơi DUY NHẤT ghi match…",
+   "related": [
+    "service-map:matching",
+    "db:matching",
+    "api:matching"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/matching.md"
+  },
+  {
+   "id": "module:media",
+   "type": "module",
+   "title": "Module media",
+   "file": "modules/media.md",
+   "summary": "Cấp presigned PUT URL để client upload ảnh thẳng lên object storage và là nơi DUY NHẤT xác nhận asset hợp lệ (đúng chủ, đúng purpose, đã upload, MIME/size khớp magic bytes) trước khi Feed/Friend lưu URL ảnh. Không nhận …",
+   "related": [
+    "service-map:media",
+    "db:media",
+    "api:media"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/media.md"
+  },
+  {
+   "id": "module:mini-game",
+   "type": "module",
+   "title": "Module mini-game",
+   "file": "modules/mini-game.md",
+   "summary": "Sở hữu phiên oẳn tù tì giữa 2 người đã là bạn (mini_game_sessions + bảng participant giữ bất biến 1 ván chờ move/user) và logic thắng thua. Không sở hữu quan hệ bạn bè (Friend), không chạm Economy, không tích hợp tin nh…",
+   "related": [
+    "service-map:mini-game",
+    "db:mini-game",
+    "api:mini-game"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/mini-game.md"
+  },
+  {
+   "id": "module:mood",
+   "type": "module",
+   "title": "Module mood",
+   "file": "modules/mood.md",
+   "summary": "Sở hữu catalog mood_presets và log append-only mood_status_events (set/clear), suy ra mood hiện tại lúc đọc dựa trên dòng mới nhất và expiresAt. Không sở hữu block/report (Safety), không có free-text/moderation, không p…",
+   "related": [
+    "service-map:mood",
+    "db:mood",
+    "api:mood"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/mood.md"
+  },
+  {
+   "id": "module:movie-match",
+   "type": "module",
+   "title": "Module movie-match",
+   "file": "modules/movie-match.md",
+   "summary": "Sở hữu phiên xem chung 2 người (friend mode: 2 bạn tự chọn URL YouTube; anonymous mode: hàng đợi ghép người lạ, server chọn video, chat + rating, chỉ mutual-like mới mở Friendship) và là nguồn sự thật duy nhất của playb…",
+   "related": [
+    "service-map:movie-match",
+    "db:movie-match",
+    "api:movie-match"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/movie-match.md"
+  },
+  {
+   "id": "module:notification",
+   "type": "module",
+   "title": "Module notification",
+   "file": "modules/notification.md",
+   "summary": "Sở hữu bảng notifications (in-app, cursor theo seq) và web_push_subscriptions; là điểm duy nhất các module nghiệp vụ gọi để ghi thông báo (createWithManager/create) rồi đẩy push best-effort (sendPush). Không sở hữu nội …",
+   "related": [
+    "service-map:notification",
+    "db:notification",
+    "api:notification"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/notification.md"
+  },
+  {
+   "id": "module:palm-match",
+   "type": "module",
+   "title": "Module palm-match",
+   "file": "modules/palm-match.md",
+   "summary": "Sở hữu hàng đợi ghép cặp ẩn danh Palm Match, phiên 2 người (lật bài, độ hợp, đánh giá like/skip) và kho nội dung bói palm_reading_templates. Không sở hữu quan hệ bạn bè/Conversation (Friend tạo), không sở hữu block/repo…",
+   "related": [
+    "service-map:palm-match",
+    "db:palm-match",
+    "api:palm-match"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/palm-match.md"
+  },
+  {
+   "id": "module:party-room",
+   "type": "module",
+   "title": "Module party-room",
+   "file": "modules/party-room.md",
+   "summary": "Sở hữu phòng party (party_rooms), membership theo dòng, comment append-only, lời mời speaker và vòng đời phòng (host rời/rớt, sweeper, grace reconnect). Quyền publish audio được enforce ở LiveKit SFU qua token/updatePar…",
+   "related": [
+    "service-map:party-room",
+    "db:party-room",
+    "api:party-room"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/party-room.md"
+  },
+  {
+   "id": "module:safety",
+   "type": "module",
+   "title": "Module safety",
+   "file": "modules/safety.md",
+   "summary": "Sở hữu log append-only Report/Block, trust-score penalty chống vote-kick và các câu hỏi đồng bộ 'hai người này có được thấy/ghép/nhắn nhau không' (isBlocked, getBlockedUserIds, getHiddenUserIds, canPair). KHÔNG sở hữu b…",
+   "related": [
+    "service-map:safety",
+    "db:safety",
+    "api:safety"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/safety.md"
+  },
+  {
+   "id": "module:short-video",
+   "type": "module",
+   "title": "Module short-video",
+   "file": "modules/short-video.md",
+   "summary": "Sở hữu vòng đời Video (uploading -> processing -> pending_review|published -> removed|rejected|failed), view/reaction/comment và ranking v1. Upload đi qua VideoStoragePort/VideoTranscodePort RIÊNG của module (KHÔNG dùng…",
+   "related": [
+    "service-map:short-video",
+    "db:short-video",
+    "api:short-video"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/short-video.md"
+  },
+  {
+   "id": "module:soul-match",
+   "type": "module",
+   "title": "Module soul-match",
+   "file": "modules/soul-match.md",
+   "summary": "Sở hữu phòng chat ẩn danh ngắn sau khi Matching ghép cặp: tin nhắn (append-only), rating 2 chiều rude|boring|like (bất biến) và quyết định 'cả hai like → mở Friendship + unlock profile'. KHÔNG sở hữu MatchSession (Match…",
+   "related": [
+    "service-map:soul-match",
+    "db:soul-match",
+    "api:soul-match"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/soul-match.md"
+  },
+  {
+   "id": "module:support",
+   "type": "module",
+   "title": "Module support",
+   "file": "modules/support.md",
+   "summary": "Sở hữu bảng support_tickets: người dùng gửi phản hồi/yêu cầu hỗ trợ (idempotent) và xem lại phiếu của mình; vòng đời trạng thái open -> in_progress -> resolved -> closed. Không có endpoint cho staff: staff xử lý qua mod…",
+   "related": [
+    "service-map:support",
+    "db:support",
+    "api:support"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/support.md"
+  },
+  {
+   "id": "module:user",
+   "type": "module",
+   "title": "Module user",
+   "file": "modules/user.md",
+   "summary": "Sở hữu bảng users (hồ sơ, status, role, isGuest, trustScore) và user_privacy_settings; cung cấp UserService/PrivacySettingsService/PublicProfileDto cho gần như mọi module khác. Không sở hữu danh tính đăng nhập (auth), k…",
+   "related": [
+    "service-map:user",
+    "db:user",
+    "api:user"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/user.md"
+  },
+  {
+   "id": "module:app-shell",
+   "type": "module",
+   "title": "Module app-shell",
+   "file": "modules/app-shell.md",
+   "summary": "Cung cấp /health, /health/live, /health/ready (probe cho Docker/k8s) và GET /api/v1/capabilities (hợp đồng tính năng runtime cho web/admin). Không có bảng riêng, không chứa business logic; chỉ kiểm tra Postgres/Redis và…",
+   "related": [
+    "service-map:app-shell",
+    "api:app-shell"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/app-shell.md"
+  },
+  {
+   "id": "module:signaling-gateway",
+   "type": "module",
+   "title": "Module signaling-gateway",
+   "file": "modules/signaling-gateway.md",
+   "summary": "Gateway Socket.IO namespace /signaling: verify JWT của core-api lúc handshake, join socket vào room user:{userId}, relay nguyên văn envelope từ Redis pub/sub realtime:user:* xuống socket, và giữ quota kết nối + presence…",
+   "related": [
+    "service-map:signaling-gateway"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/signaling-gateway.md"
+  },
+  {
+   "id": "module:media-server",
+   "type": "module",
+   "title": "Module media-server",
+   "file": "modules/media-server.md",
+   "summary": "Không phải code NestJS: chỉ là cấu hình/deploy image livekit/livekit-server (livekit.yaml, compose, k8s/base/media-server) làm SFU chuyển tiếp audio/video giữa client; giữ room runtime và trạng thái cụm trong Redis. KHÔ…",
+   "related": [
+    "service-map:media-server"
+   ],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/media-server.md"
+  },
+  {
+   "id": "modules:index",
+   "type": "module",
+   "title": "Module index",
+   "file": "modules/index.md",
+   "summary": "25 modules/services with counts and links.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/index.md"
+  },
+  {
+   "id": "recipes",
+   "type": "misc",
+   "title": "Change recipes",
+   "file": "recipes.md",
+   "summary": "What past commits of each kind touched.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/recipes.md"
+  },
+  {
+   "id": "reconciliation",
+   "type": "misc",
+   "title": "Reconciliation",
+   "file": "reconciliation.md",
+   "summary": "Where the atlas and the service map disagree.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/reconciliation.md"
+  }
+ ]
+}

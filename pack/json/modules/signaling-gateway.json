@@ -1,0 +1,306 @@
+{
+ "id": "signaling-gateway",
+ "kind": "deployable",
+ "dir": "apps/signaling-gateway",
+ "mapAnchor": "svc-signaling-gateway",
+ "role": "Gateway Socket.IO namespace /signaling: verify JWT của core-api lúc handshake, join socket vào room user:{userId}, relay nguyên văn envelope từ Redis pub/sub realtime:user:* xuống socket, và giữ quota kết nối + presence bằng lease trong Redis. KHÔNG chứa business logic, KHÔNG có DB, KHÔNG ký token và KHÔNG nhận room/event từ client (chỉ có 'ping').",
+ "tagline": "Fanout Socket.IO, quota kết nối, presence",
+ "owns": [
+  "Redis ZSET signaling:connection-quota:{userId} (lease mỗi socket, TTL WS_CONNECTION_LEASE_MS)",
+  "Redis ZSET realtime:presence:{userId} (cùng lease, core-api đọc để biết online)",
+  "Room Socket.IO user:{userId} (in-memory, đồng bộ giữa pod bằng Redis adapter)"
+ ],
+ "tables": [],
+ "tablesTouchedOfOthers": [],
+ "endpoints": {
+  "total": 0,
+  "public": 0,
+  "adminOnly": 0,
+  "idempotent": 0,
+  "webhooks": 0,
+  "explicitThrottle": 0
+ },
+ "endpointPaths": [],
+ "realtimeProduced": [],
+ "jobs": [
+  {
+   "class": "SignalingGateway",
+   "intervalMs": "Math.floor(this.connectionQuota.leaseMs / 3)"
+  }
+ ],
+ "redisCallSites": 8,
+ "redisOps": [
+  "eval",
+  "quit",
+  "duplicate",
+  "psubscribe"
+ ],
+ "envVars": [
+  {
+   "name": "LOG_LEVEL",
+   "file": "apps/signaling-gateway/src/app/app.module.ts",
+   "line": 25,
+   "quote": "level: config.getOrThrow('LOG_LEVEL', { infer: true }),",
+   "class": null,
+   "default": null,
+   "required": false
+  },
+  {
+   "name": "NODE_ENV",
+   "file": "apps/signaling-gateway/src/app/app.module.ts",
+   "line": 26,
+   "quote": "pretty: config.get('NODE_ENV', { infer: true }) === 'development',",
+   "class": null,
+   "default": null,
+   "required": false
+  },
+  {
+   "name": "JWT_SECRET",
+   "file": "apps/signaling-gateway/src/app/app.module.ts",
+   "line": 35,
+   "quote": "secret: config.getOrThrow('JWT_SECRET', { infer: true }),",
+   "class": "secret",
+   "default": null,
+   "required": true
+  },
+  {
+   "name": "WS_CONNECTION_LEASE_MS",
+   "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+   "line": 76,
+   "quote": "this.leaseMs = config.getOrThrow('WS_CONNECTION_LEASE_MS', {",
+   "class": "tuning",
+   "default": "90000",
+   "required": false
+  },
+  {
+   "name": "WS_MAX_CONNECTIONS_PER_USER",
+   "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+   "line": 79,
+   "quote": "this.maxConnections = config.getOrThrow('WS_MAX_CONNECTIONS_PER_USER', {",
+   "class": "tuning",
+   "default": "3",
+   "required": false
+  },
+  {
+   "name": "REDIS_URL",
+   "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+   "line": 83,
+   "quote": "config.getOrThrow('REDIS_URL', { infer: true }),",
+   "class": "endpoint",
+   "default": "redis://localhost:6379",
+   "required": false
+  },
+  {
+   "name": "JWT_SECRET_PREVIOUS",
+   "file": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+   "line": 78,
+   "quote": "config.get('JWT_SECRET_PREVIOUS', { infer: true }) || undefined;",
+   "class": "secret",
+   "default": null,
+   "required": false
+  },
+  {
+   "name": "SENTRY_DSN",
+   "file": "apps/signaling-gateway/src/main.ts",
+   "line": 28,
+   "quote": "dsn: config.getOrThrow('SENTRY_DSN', { infer: true }),",
+   "class": "secret",
+   "default": null,
+   "required": false
+  },
+  {
+   "name": "SENTRY_RELEASE",
+   "file": "apps/signaling-gateway/src/main.ts",
+   "line": 30,
+   "quote": "release: config.getOrThrow('SENTRY_RELEASE', { infer: true }),",
+   "class": "other",
+   "default": "",
+   "required": false
+  },
+  {
+   "name": "CORS_ORIGINS",
+   "file": "apps/signaling-gateway/src/main.ts",
+   "line": 33,
+   "quote": "const corsOrigins = config",
+   "class": "endpoint",
+   "default": "",
+   "required": false
+  },
+  {
+   "name": "SIGNALING_PORT",
+   "file": "apps/signaling-gateway/src/main.ts",
+   "line": 49,
+   "quote": "await app.listen(config.getOrThrow('SIGNALING_PORT', { infer: true }));",
+   "class": "other",
+   "default": "3001",
+   "required": false
+  }
+ ],
+ "errorGroups": [],
+ "errorCodes": 0,
+ "errorCodesUnused": 0,
+ "tests": {
+  "unit": 9,
+  "integration": 2
+ },
+ "docs": {
+  "path": "docs/services/realtime-gateway.md",
+  "lastChanged": "2026-10-09",
+  "commitsSince": 0
+ },
+ "features": [
+  {
+   "id": "realtime-fanout",
+   "title": "Authenticated Socket.IO fanout and distributed connection quota through Redis",
+   "status": "implemented"
+  }
+ ],
+ "churn": {
+  "commits": 26,
+  "recent": 2,
+  "fixes": 7,
+  "last": "2026-10-09"
+ },
+ "issues": [
+  {
+   "id": "P004",
+   "title": "Adapter CLAUDE.md / skills lệch bản canonical (symlink tay)",
+   "status": "fixed",
+   "tier": "B"
+  },
+  {
+   "id": "P036",
+   "title": "Windows: hook/runner không chạy được pnpm (.cmd: 127 / EINVAL)",
+   "status": "fixed",
+   "tier": "A"
+  },
+  {
+   "id": "P038",
+   "title": "Windows: Jest không chạy (thiếu VC++ runtime, resolver native)",
+   "status": "fixed",
+   "tier": "A"
+  },
+  {
+   "id": "P039",
+   "title": "Pre-push trên Windows đỏ giả do giả định POSIX / công cụ Linux-only",
+   "status": "fixed",
+   "tier": "A"
+  },
+  {
+   "id": "P041",
+   "title": "Timeout cứng quá chặt / chạy song song làm test flaky",
+   "status": "fixed",
+   "tier": "A"
+  },
+  {
+   "id": "P043",
+   "title": "Nx cache bật cho test có state → có thể trả kết quả cũ",
+   "status": "fixed",
+   "tier": "B"
+  },
+  {
+   "id": "P044",
+   "title": "E2E local: server cũ còn sống, reset DB chồng, thiếu baseUrl",
+   "status": "fixed",
+   "tier": "A"
+  },
+  {
+   "id": "P086",
+   "title": "Relay realtime gửi trùng event theo số pod (LRN-011)",
+   "status": "fixed",
+   "tier": "A"
+  },
+  {
+   "id": "P091",
+   "title": "Xoay JWT_SECRET đăng xuất mọi người",
+   "status": "fixed",
+   "tier": "B"
+  }
+ ],
+ "mapCollaborators": [
+  {
+   "with": "gift",
+   "kind": "service",
+   "mechanism": "redis-pubsub",
+   "direction": "in"
+  },
+  {
+   "with": "matching",
+   "kind": "service",
+   "mechanism": "redis-pubsub",
+   "direction": "in"
+  },
+  {
+   "with": "calling",
+   "kind": "service",
+   "mechanism": "redis-pubsub",
+   "direction": "in"
+  },
+  {
+   "with": "soul-match",
+   "kind": "service",
+   "mechanism": "redis-pubsub",
+   "direction": "in"
+  },
+  {
+   "with": "movie-match",
+   "kind": "service",
+   "mechanism": "redis-pubsub",
+   "direction": "in"
+  },
+  {
+   "with": "mini-game",
+   "kind": "service",
+   "mechanism": "redis-pubsub",
+   "direction": "in"
+  },
+  {
+   "with": "friend",
+   "kind": "service",
+   "mechanism": "redis-pubsub",
+   "direction": "in"
+  },
+  {
+   "with": "party-room",
+   "kind": "service",
+   "mechanism": "redis-pubsub",
+   "direction": "in"
+  },
+  {
+   "with": "redis",
+   "kind": "infra",
+   "mechanism": "redis-pubsub",
+   "direction": "in"
+  },
+  {
+   "with": "redis",
+   "kind": "infra",
+   "mechanism": "redis-state",
+   "direction": "out"
+  },
+  {
+   "with": "redis",
+   "kind": "infra",
+   "mechanism": "sdk",
+   "direction": "both"
+  },
+  {
+   "with": "user",
+   "kind": "service",
+   "mechanism": "redis-state",
+   "direction": "in"
+  },
+  {
+   "with": "auth",
+   "kind": "service",
+   "mechanism": "config",
+   "direction": "in"
+  },
+  {
+   "with": "web",
+   "kind": "client",
+   "mechanism": "socket",
+   "direction": "both"
+  }
+ ]
+}

@@ -1,0 +1,469 @@
+{
+ "id": "matching",
+ "kind": "core-api module",
+ "dir": "apps/core-api/src/modules/matching",
+ "mapAnchor": "svc-matching",
+ "role": "Sở hữu vòng đời MatchTicket (queued→confirmed|expired|cancelled), hàng đợi Redis sharded + matcher worker, MatchInvite (mời có chủ đích) và MatchSession là bản ghi duy nhất của một cặp đã ghép; là nơi DUY NHẤT ghi match_sessions. KHÔNG sở hữu ví/ledger (Economy), block/report (Safety), hồ sơ (User), chat Soul (Soul Match) hay call LiveKit (Calling).",
+ "tagline": "Hàng đợi ghép cặp, ticket, invite, MatchSession",
+ "owns": [
+  "bảng match_tickets (partial unique uq_match_tickets_active_user: 1 user 1 ticket queued/matched)",
+  "bảng match_sessions (nguồn sự thật của cặp đã ghép, Soul/Voice)",
+  "bảng match_invites (partial unique pending theo cặp)",
+  "bảng match_daily_quotas + guest_match_quotas (quota miễn phí theo ngày UTC, guest theo HMAC user/device/IP)",
+  "Redis ZSET matching:queue:{matchType}:{region}:{ageBand} + SET matching:shards:active",
+  "Redis rate-limit key lời mời mỗi giờ"
+ ],
+ "tables": [
+  {
+   "name": "guest_match_quotas",
+   "columns": 4,
+   "otherModules": []
+  },
+  {
+   "name": "match_daily_quotas",
+   "columns": 5,
+   "otherModules": []
+  },
+  {
+   "name": "match_invites",
+   "columns": 10,
+   "otherModules": []
+  },
+  {
+   "name": "match_sessions",
+   "columns": 12,
+   "otherModules": [
+    "soul-match"
+   ]
+  },
+  {
+   "name": "match_tickets",
+   "columns": 15,
+   "otherModules": []
+  }
+ ],
+ "tablesTouchedOfOthers": [
+  {
+   "table": "users",
+   "owner": "user",
+   "ops": {
+    "module": "matching",
+    "read": 3,
+    "write": 0,
+    "lock": 1,
+    "vias": [
+     "manager",
+     "manager(lock option)"
+    ],
+    "samples": [
+     {
+      "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+      "line": 246,
+      "op": "read",
+      "via": "manager",
+      "quote": "manager.find(User, { where: { id: In(userIds) } })"
+     },
+     {
+      "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+      "line": 53,
+      "op": "lock",
+      "via": "manager(lock option)",
+      "quote": "manager.findOneOrFail(User, { where: { id: userId }, lock: { mode: 'pessimistic_write' }, })"
+     },
+     {
+      "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+      "line": 336,
+      "op": "read",
+      "via": "manager",
+      "quote": "manager.find(User, { where: { id: In([invite.inviterUserId, invite.inviteeUserId]) }, })"
+     }
+    ]
+   }
+  }
+ ],
+ "endpoints": {
+  "total": 12,
+  "public": 0,
+  "adminOnly": 0,
+  "idempotent": 2,
+  "webhooks": 0,
+  "explicitThrottle": 2
+ },
+ "endpointPaths": [
+  "/matching"
+ ],
+ "realtimeProduced": [
+  "match.confirmed"
+ ],
+ "jobs": [
+  {
+   "class": "InviteSweeperService",
+   "jobName": "INVITE_SWEEPER_JOB",
+   "intervalMs": "this.config.getOrThrow( 'MATCHING_INVITE_SWEEPER_INTERVAL_MS', { infer: true, }, )"
+  },
+  {
+   "class": "MatcherWorkerService",
+   "jobName": "MATCHER_JOB",
+   "intervalMs": "this.config.getOrThrow('MATCHING_MATCHER_INTERVAL_MS', { infer: true, })"
+  },
+  {
+   "class": "TicketSweeperService",
+   "jobName": "SWEEPER_JOB",
+   "intervalMs": "this.config.getOrThrow('MATCHING_SWEEPER_INTERVAL_MS', { infer: true, })"
+  }
+ ],
+ "redisCallSites": 7,
+ "redisOps": [
+  "zadd",
+  "zrem",
+  "zpopmin",
+  "smembers",
+  "sadd",
+  "srem",
+  "zcard"
+ ],
+ "envVars": [
+  {
+   "name": "MATCHING_INVITE_SWEEPER_INTERVAL_MS",
+   "file": "apps/core-api/src/modules/matching/jobs/invite-sweeper.service.ts",
+   "line": 42,
+   "quote": "intervalMs: this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "60000",
+   "required": false
+  },
+  {
+   "name": "MATCHING_MATCHER_INTERVAL_MS",
+   "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+   "line": 102,
+   "quote": "intervalMs: this.config.getOrThrow('MATCHING_MATCHER_INTERVAL_MS', {",
+   "class": "tuning",
+   "default": "10000",
+   "required": false
+  },
+  {
+   "name": "MATCHING_MATCHER_BATCH_SIZE",
+   "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+   "line": 194,
+   "quote": "const batchSize = this.config.getOrThrow('MATCHING_MATCHER_BATCH_SIZE', {",
+   "class": "tuning",
+   "default": "20",
+   "required": false
+  },
+  {
+   "name": "MATCHING_SWEEPER_INTERVAL_MS",
+   "file": "apps/core-api/src/modules/matching/jobs/ticket-sweeper.service.ts",
+   "line": 65,
+   "quote": "intervalMs: this.config.getOrThrow('MATCHING_SWEEPER_INTERVAL_MS', {",
+   "class": "tuning",
+   "default": "5000",
+   "required": false
+  },
+  {
+   "name": "MATCHING_QUEUE_MAX_WAIT_SECONDS",
+   "file": "apps/core-api/src/modules/matching/jobs/ticket-sweeper.service.ts",
+   "line": 100,
+   "quote": "const maxWaitSeconds = this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "120",
+   "required": false
+  },
+  {
+   "name": "MATCHING_CONFIRM_TIMEOUT_SECONDS",
+   "file": "apps/core-api/src/modules/matching/jobs/ticket-sweeper.service.ts",
+   "line": 142,
+   "quote": "const timeoutSeconds = this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "15",
+   "required": false
+  },
+  {
+   "name": "MATCHING_SPEEDUP_PRICE_DIAMOND",
+   "file": "apps/core-api/src/modules/matching/matching.service.ts",
+   "line": 258,
+   "quote": "return this.config.getOrThrow('MATCHING_SPEEDUP_PRICE_DIAMOND', {",
+   "class": "other",
+   "default": "50",
+   "required": false
+  },
+  {
+   "name": "MATCHING_SVIP_SPEEDUP_PRICE_DIAMOND",
+   "file": "apps/core-api/src/modules/matching/matching.service.ts",
+   "line": 266,
+   "quote": "return this.config.getOrThrow('MATCHING_SVIP_SPEEDUP_PRICE_DIAMOND', {",
+   "class": "other",
+   "default": "30",
+   "required": false
+  },
+  {
+   "name": "MATCHING_VIP_SPEEDUP_PRICE_DIAMOND",
+   "file": "apps/core-api/src/modules/matching/matching.service.ts",
+   "line": 270,
+   "quote": "return this.config.getOrThrow('MATCHING_VIP_SPEEDUP_PRICE_DIAMOND', {",
+   "class": "other",
+   "default": "40",
+   "required": false
+  },
+  {
+   "name": "MATCHING_EXTRA_SOUL_PRICE_DIAMOND",
+   "file": "apps/core-api/src/modules/matching/matching.service.ts",
+   "line": 278,
+   "quote": "? this.config.getOrThrow('MATCHING_EXTRA_SOUL_PRICE_DIAMOND', {",
+   "class": "other",
+   "default": "20",
+   "required": false
+  },
+  {
+   "name": "MATCHING_EXTRA_VOICE_PRICE_DIAMOND",
+   "file": "apps/core-api/src/modules/matching/matching.service.ts",
+   "line": 281,
+   "quote": ": this.config.getOrThrow('MATCHING_EXTRA_VOICE_PRICE_DIAMOND', {",
+   "class": "other",
+   "default": "40",
+   "required": false
+  },
+  {
+   "name": "MATCHING_PRIORITY_BOOST_MS",
+   "file": "apps/core-api/src/modules/matching/matching.service.ts",
+   "line": 443,
+   "quote": "const boostMs = this.config.getOrThrow('MATCHING_PRIORITY_BOOST_MS', {",
+   "class": "tuning",
+   "default": "300000",
+   "required": false
+  },
+  {
+   "name": "MATCHING_AGE_BAND_SIZE",
+   "file": "apps/core-api/src/modules/matching/matching.service.ts",
+   "line": 670,
+   "quote": "const bandSize = this.config.getOrThrow('MATCHING_AGE_BAND_SIZE', {",
+   "class": "tuning",
+   "default": "5",
+   "required": false
+  },
+  {
+   "name": "MATCHING_TRUST_PENALTY_MS_PER_POINT",
+   "file": "apps/core-api/src/modules/matching/matching.service.ts",
+   "line": 681,
+   "quote": "const perPoint = this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "2000",
+   "required": false
+  },
+  {
+   "name": "MATCHING_TRUST_PENALTY_MAX_MS",
+   "file": "apps/core-api/src/modules/matching/matching.service.ts",
+   "line": 685,
+   "quote": "const maxMs = this.config.getOrThrow('MATCHING_TRUST_PENALTY_MAX_MS', {",
+   "class": "tuning",
+   "default": "120000",
+   "required": false
+  },
+  {
+   "name": "REDIS_URL",
+   "file": "apps/core-api/src/modules/matching/redis/matching-redis.provider.ts",
+   "line": 58,
+   "quote": "createCoreRedisClient(config.getOrThrow('REDIS_URL', { infer: true })),",
+   "class": "endpoint",
+   "default": "redis://localhost:6379",
+   "required": false
+  },
+  {
+   "name": "MATCHING_GUEST_DAILY_LIMIT",
+   "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+   "line": 105,
+   "quote": "const limit = this.config.getOrThrow('MATCHING_GUEST_DAILY_LIMIT', {",
+   "class": "tuning",
+   "default": "3",
+   "required": false
+  },
+  {
+   "name": "MATCHING_SVIP_DAILY_SOUL_LIMIT",
+   "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+   "line": 207,
+   "quote": "? this.config.getOrThrow('MATCHING_SVIP_DAILY_SOUL_LIMIT', {",
+   "class": "tuning",
+   "default": "60",
+   "required": false
+  },
+  {
+   "name": "MATCHING_SVIP_DAILY_VOICE_LIMIT",
+   "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+   "line": 210,
+   "quote": ": this.config.getOrThrow('MATCHING_SVIP_DAILY_VOICE_LIMIT', {",
+   "class": "tuning",
+   "default": "40",
+   "required": false
+  },
+  {
+   "name": "MATCHING_VIP_DAILY_SOUL_LIMIT",
+   "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+   "line": 216,
+   "quote": "? this.config.getOrThrow('MATCHING_VIP_DAILY_SOUL_LIMIT', {",
+   "class": "tuning",
+   "default": "30",
+   "required": false
+  },
+  {
+   "name": "MATCHING_VIP_DAILY_VOICE_LIMIT",
+   "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+   "line": 219,
+   "quote": ": this.config.getOrThrow('MATCHING_VIP_DAILY_VOICE_LIMIT', {",
+   "class": "tuning",
+   "default": "20",
+   "required": false
+  },
+  {
+   "name": "MATCHING_DAILY_SOUL_LIMIT",
+   "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+   "line": 224,
+   "quote": "? this.config.getOrThrow('MATCHING_DAILY_SOUL_LIMIT', { infer: true })",
+   "class": "tuning",
+   "default": "10",
+   "required": false
+  },
+  {
+   "name": "MATCHING_DAILY_VOICE_LIMIT",
+   "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+   "line": 225,
+   "quote": ": this.config.getOrThrow('MATCHING_DAILY_VOICE_LIMIT', { infer: true });",
+   "class": "tuning",
+   "default": "10",
+   "required": false
+  },
+  {
+   "name": "MATCHING_GUEST_QUOTA_PEPPER",
+   "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+   "line": 231,
+   "quote": "this.config.getOrThrow('MATCHING_GUEST_QUOTA_PEPPER', { infer: true }),",
+   "class": "secret",
+   "default": null,
+   "required": true
+  },
+  {
+   "name": "MATCHING_INVITE_RATE_LIMIT_PER_HOUR",
+   "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+   "line": 105,
+   "quote": "const maxPerHour = this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "10",
+   "required": false
+  },
+  {
+   "name": "MATCHING_INVITE_TTL_SECONDS",
+   "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+   "line": 124,
+   "quote": "const ttlSeconds = this.config.getOrThrow('MATCHING_INVITE_TTL_SECONDS', {",
+   "class": "tuning",
+   "default": "3600",
+   "required": false
+  }
+ ],
+ "errorGroups": [
+  "MatchingErrors"
+ ],
+ "errorCodes": 20,
+ "errorCodesUnused": 0,
+ "tests": {
+  "unit": 6,
+  "integration": 1
+ },
+ "docs": {
+  "path": "docs/services/matching-service.md",
+  "lastChanged": "2026-08-13",
+  "commitsSince": 0
+ },
+ "features": [
+  {
+   "id": "matching",
+   "title": "Queue ticket, pairing, guest quota and paid speed-up",
+   "status": "implemented"
+  }
+ ],
+ "churn": {
+  "commits": 24,
+  "recent": 0,
+  "fixes": 1,
+  "last": "2026-08-13"
+ },
+ "issues": [],
+ "mapCollaborators": [
+  {
+   "with": "auth",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "economy",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "notification",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "safety",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "user",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "user",
+   "kind": "service",
+   "mechanism": "shared-db",
+   "direction": "out"
+  },
+  {
+   "with": "signaling-gateway",
+   "kind": "service",
+   "mechanism": "redis-pubsub",
+   "direction": "out"
+  },
+  {
+   "with": "redis",
+   "kind": "infra",
+   "mechanism": "redis-state",
+   "direction": "out"
+  },
+  {
+   "with": "postgres",
+   "kind": "infra",
+   "mechanism": "shared-db",
+   "direction": "out"
+  },
+  {
+   "with": "calling",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "soul-match",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "web",
+   "kind": "client",
+   "mechanism": "http",
+   "direction": "in"
+  },
+  {
+   "with": "web",
+   "kind": "client",
+   "mechanism": "socket",
+   "direction": "out"
+  }
+ ]
+}

@@ -1,0 +1,106 @@
+{
+ "id": "media-server",
+ "kind": "deployable (config only)",
+ "dir": "apps/media-server",
+ "mapAnchor": "svc-media-server",
+ "role": "Không phải code NestJS: chỉ là cấu hình/deploy image livekit/livekit-server (livekit.yaml, compose, k8s/base/media-server) làm SFU chuyển tiếp audio/video giữa client; giữ room runtime và trạng thái cụm trong Redis. KHÔNG chứa business logic, KHÔNG truy cập DB: quyền tham gia, membership, timer, billing và giới hạn speaker đều ở core-api (calling / party-room).",
+ "tagline": "LiveKit SFU: cấu hình và deploy, không logic",
+ "owns": [
+  "Cấu hình livekit.yaml: cổng 7880 (HTTP/WS + server API), 7881 (TCP RTC), UDP 50000-50200, Prometheus 6789",
+  "Room media runtime và participant đang kết nối (trạng thái cụm chia sẻ qua Redis)",
+  "Danh sách webhook URL trỏ về core-api (calling + party)"
+ ],
+ "tables": [],
+ "tablesTouchedOfOthers": [],
+ "endpoints": {
+  "total": 0,
+  "public": 0,
+  "adminOnly": 0,
+  "idempotent": 0,
+  "webhooks": 0,
+  "explicitThrottle": 0
+ },
+ "endpointPaths": [],
+ "realtimeProduced": [],
+ "jobs": [],
+ "redisCallSites": 0,
+ "redisOps": [],
+ "envVars": [],
+ "errorGroups": [],
+ "errorCodes": 0,
+ "errorCodesUnused": 0,
+ "tests": {
+  "unit": 0,
+  "integration": 0
+ },
+ "docs": {
+  "path": null,
+  "lastChanged": null,
+  "commitsSince": null
+ },
+ "features": [],
+ "churn": {
+  "commits": 14,
+  "recent": 0,
+  "fixes": 3,
+  "last": "2026-07-30"
+ },
+ "issues": [
+  {
+   "id": "P004",
+   "title": "Adapter CLAUDE.md / skills lệch bản canonical (symlink tay)",
+   "status": "fixed",
+   "tier": "B"
+  }
+ ],
+ "mapCollaborators": [
+  {
+   "with": "calling",
+   "kind": "service",
+   "mechanism": "sdk",
+   "direction": "in"
+  },
+  {
+   "with": "party-room",
+   "kind": "service",
+   "mechanism": "sdk",
+   "direction": "in"
+  },
+  {
+   "with": "calling",
+   "kind": "service",
+   "mechanism": "webhook",
+   "direction": "out"
+  },
+  {
+   "with": "party-room",
+   "kind": "service",
+   "mechanism": "webhook",
+   "direction": "out"
+  },
+  {
+   "with": "redis",
+   "kind": "infra",
+   "mechanism": "redis-state",
+   "direction": "both"
+  },
+  {
+   "with": "web",
+   "kind": "client",
+   "mechanism": "sdk",
+   "direction": "both"
+  },
+  {
+   "with": "party-room",
+   "kind": "service",
+   "mechanism": "config",
+   "direction": "both"
+  },
+  {
+   "with": "external:prometheus",
+   "kind": "external",
+   "mechanism": "http",
+   "direction": "in"
+  }
+ ]
+}

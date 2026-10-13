@@ -1,0 +1,143 @@
+{
+ "id": "palm-match",
+ "kind": "core-api module",
+ "dir": "apps/core-api/src/modules/palm-match",
+ "mapAnchor": "svc-palm-match",
+ "role": "Sở hữu hàng đợi ghép cặp ẩn danh Palm Match, phiên 2 người (lật bài, độ hợp, đánh giá like/skip) và kho nội dung bói palm_reading_templates. Không sở hữu quan hệ bạn bè/Conversation (Friend tạo), không sở hữu block/report (Safety quyết định), không chạm Economy và không phát realtime.",
+ "tagline": "Ghép đôi ẩn danh theo hàng đợi, bói bài",
+ "owns": [
+  "palm_match_sessions (snapshot dấu hiệu, độ hợp, fortune, rating, outcome, expiresAt)",
+  "palm_match_queue_entries (hàng đợi, PK userId)",
+  "palm_match_active_participants (PK userId: 1 user chỉ ở 1 phiên active)",
+  "palm_reading_templates (catalog nội dung bói)",
+  "advisory lock Postgres 'litmatch:palm-match:pairing'"
+ ],
+ "tables": [
+  {
+   "name": "palm_match_active_participants",
+   "columns": 3,
+   "otherModules": []
+  },
+  {
+   "name": "palm_match_queue_entries",
+   "columns": 2,
+   "otherModules": []
+  },
+  {
+   "name": "palm_match_sessions",
+   "columns": 17,
+   "otherModules": []
+  },
+  {
+   "name": "palm_reading_templates",
+   "columns": 4,
+   "otherModules": []
+  }
+ ],
+ "tablesTouchedOfOthers": [],
+ "endpoints": {
+  "total": 6,
+  "public": 0,
+  "adminOnly": 0,
+  "idempotent": 0,
+  "webhooks": 0,
+  "explicitThrottle": 0
+ },
+ "endpointPaths": [
+  "/palm-match"
+ ],
+ "realtimeProduced": [],
+ "jobs": [],
+ "redisCallSites": 0,
+ "redisOps": [],
+ "envVars": [
+  {
+   "name": "PALM_MATCH_QUEUE_MAX_WAIT_SECONDS",
+   "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+   "line": 122,
+   "quote": "const queueMaxWaitSeconds = this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "120",
+   "required": false
+  },
+  {
+   "name": "PALM_MATCH_SESSION_DURATION_SECONDS",
+   "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+   "line": 356,
+   "quote": "const durationSeconds = this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "300",
+   "required": false
+  },
+  {
+   "name": "PALM_MATCH_TARGET_NAME_MAX_LENGTH",
+   "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+   "line": 534,
+   "quote": "const maxLength = this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "50",
+   "required": false
+  }
+ ],
+ "errorGroups": [
+  "PalmMatchErrors"
+ ],
+ "errorCodes": 6,
+ "errorCodesUnused": 0,
+ "tests": {
+  "unit": 1,
+  "integration": 1
+ },
+ "docs": {
+  "path": "docs/services/palm-match-service.md",
+  "lastChanged": "2026-10-09",
+  "commitsSince": 0
+ },
+ "features": [
+  {
+   "id": "palm-match",
+   "title": "Deterministic palm reading and anonymous palm match",
+   "status": "implemented"
+  }
+ ],
+ "churn": {
+  "commits": 3,
+  "recent": 0,
+  "fixes": 0,
+  "last": "2026-08-13"
+ },
+ "issues": [
+  {
+   "id": "P094",
+   "title": "Giới hạn đã biết: advisory lock Palm/Movie Match, outbox chưa có consumer/retention",
+   "status": "open",
+   "tier": "B"
+  }
+ ],
+ "mapCollaborators": [
+  {
+   "with": "friend",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "safety",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "postgres",
+   "kind": "infra",
+   "mechanism": "shared-db",
+   "direction": "out"
+  },
+  {
+   "with": "web",
+   "kind": "client",
+   "mechanism": "http",
+   "direction": "in"
+  }
+ ]
+}

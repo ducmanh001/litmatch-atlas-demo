@@ -1,0 +1,1072 @@
+{
+ "files": [
+  "apps/core-api/src/common/events/event-bus.port.ts",
+  "apps/core-api/src/common/events/kafka-event-bus.adapter.ts",
+  "apps/core-api/src/common/livekit/livekit-sdk.client.ts",
+  "apps/core-api/src/common/livekit/livekit-url.ts",
+  "apps/core-api/src/common/platform/analytics-adapters.ts",
+  "apps/core-api/src/common/platform/analytics.port.ts",
+  "apps/core-api/src/common/platform/apns-push-notification.adapter.ts",
+  "apps/core-api/src/common/platform/dev-platform-adapters.ts",
+  "apps/core-api/src/common/platform/fcm-push-notification.adapter.ts",
+  "apps/core-api/src/common/platform/index.ts",
+  "apps/core-api/src/common/platform/platform.constants.ts",
+  "apps/core-api/src/common/platform/platform.module.ts",
+  "apps/core-api/src/common/platform/provider-factory.ts",
+  "apps/core-api/src/common/platform/push-notification.port.ts",
+  "apps/core-api/src/common/platform/web-push-notification.adapter.ts",
+  "apps/core-api/src/common/platform/web-push-notification.port.ts",
+  "apps/core-api/src/common/realtime/realtime-publisher.port.ts",
+  "apps/core-api/src/common/realtime/redis-realtime-publisher.adapter.ts",
+  "apps/core-api/src/common/redis/rate-limit.port.ts",
+  "apps/core-api/src/common/redis/redis-rate-limit.adapter.ts",
+  "apps/core-api/src/modules/auth/ports/refresh-session.port.ts",
+  "apps/core-api/src/modules/auth/repositories/typeorm-refresh-session.adapter.ts",
+  "apps/core-api/src/modules/calling/clients/livekit-room.adapter.ts",
+  "apps/core-api/src/modules/calling/ports/livekit-room.ts",
+  "apps/core-api/src/modules/economy/clients/apple-receipt-api.adapter.ts",
+  "apps/core-api/src/modules/economy/clients/apple-refund-api.adapter.ts",
+  "apps/core-api/src/modules/economy/clients/apple-server-api.ts",
+  "apps/core-api/src/modules/economy/clients/google-play-receipt-api.adapter.ts",
+  "apps/core-api/src/modules/economy/clients/google-refund-api.adapter.ts",
+  "apps/core-api/src/modules/economy/clients/google-service-account.ts",
+  "apps/core-api/src/modules/economy/clients/store-api-http.ts",
+  "apps/core-api/src/modules/economy/clients/store-iap-verifier.adapter.ts",
+  "apps/core-api/src/modules/economy/ports/iap-verifier.ts",
+  "apps/core-api/src/modules/economy/ports/ledger-persistence.port.ts",
+  "apps/core-api/src/modules/economy/ports/notification-verifier.ts",
+  "apps/core-api/src/modules/economy/ports/payos-client.ts",
+  "apps/core-api/src/modules/economy/ports/refund-gateways.ts",
+  "apps/core-api/src/modules/economy/ports/store-payment-gateways.ts",
+  "apps/core-api/src/modules/matching/ports/interaction-policy.ts",
+  "apps/core-api/src/modules/matching/ports/matching-queue.port.ts",
+  "apps/core-api/src/modules/matching/redis/redis-matching-queue.adapter.ts",
+  "apps/core-api/src/modules/media/ports/dev-image-storage.provider.ts",
+  "apps/core-api/src/modules/media/ports/image-storage.port.ts",
+  "apps/core-api/src/modules/media/ports/r2-image-storage.provider.ts",
+  "apps/core-api/src/modules/media/ports/s3-image-storage.provider.ts",
+  "apps/core-api/src/modules/notification/ports/push-provider.ts",
+  "apps/core-api/src/modules/party-room/clients/livekit-party-room.adapter.ts",
+  "apps/core-api/src/modules/party-room/ports/livekit-party-room.ts",
+  "apps/core-api/src/modules/short-video/ports/dev-video-storage.adapter.ts",
+  "apps/core-api/src/modules/short-video/ports/dev-video-transcode.adapter.ts",
+  "apps/core-api/src/modules/short-video/ports/unavailable-video-storage.adapter.ts",
+  "apps/core-api/src/modules/short-video/ports/unavailable-video-transcode.adapter.ts",
+  "apps/core-api/src/modules/short-video/ports/video-provider.factory.ts",
+  "apps/core-api/src/modules/short-video/ports/video-storage.port.ts",
+  "apps/core-api/src/modules/short-video/ports/video-transcode.port.ts",
+  "apps/core-api/src/modules/user/ports/user-presence-reader.port.ts",
+  "apps/core-api/src/modules/user/redis/redis-presence-reader.adapter.ts",
+  "apps/signaling-gateway/src/app/cors-io.adapter.ts"
+ ],
+ "symbols": [
+  {
+   "name": "EventEnvelope",
+   "interface": true,
+   "file": "apps/core-api/src/common/events/event-bus.port.ts",
+   "line": 6,
+   "module": "core-api(common)",
+   "doc": "Durable event transport boundary. Business modules must not depend on KafkaJS or any other broker client; durable business events are first written to the outbox and this port is used by the relay/consumer boundary after the database transaction has committed."
+  },
+  {
+   "name": "EventSubscription",
+   "interface": true,
+   "file": "apps/core-api/src/common/events/event-bus.port.ts",
+   "line": 15,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "EventBusPort",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/common/events/event-bus.port.ts",
+   "line": 23,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "KafkaEventBusAdapter",
+   "abstract": false,
+   "implements": [
+    "extends EventBusPort",
+    "implements OnApplicationShutdown"
+   ],
+   "file": "apps/core-api/src/common/events/kafka-event-bus.adapter.ts",
+   "line": 37,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "LivekitSdkWebhookEvent",
+   "interface": true,
+   "file": "apps/core-api/src/common/livekit/livekit-sdk.client.ts",
+   "line": 12,
+   "module": "core-api(common)",
+   "doc": "Provider-neutral webhook data returned after the LiveKit signature is verified."
+  },
+  {
+   "name": "LivekitTokenGrant",
+   "interface": true,
+   "file": "apps/core-api/src/common/livekit/livekit-sdk.client.ts",
+   "line": 18,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "LivekitSdkClient",
+   "abstract": false,
+   "implements": [],
+   "file": "apps/core-api/src/common/livekit/livekit-sdk.client.ts",
+   "line": 29,
+   "module": "core-api(common)",
+   "doc": "LiveKit SDK/API adapter. This is the only core-api production file allowed to import the provider SDK; domain modules consume their own ports and module-local adapters instead."
+  },
+  {
+   "name": "DisabledAnalyticsAdapter",
+   "abstract": false,
+   "implements": [
+    "extends AnalyticsPort"
+   ],
+   "file": "apps/core-api/src/common/platform/analytics-adapters.ts",
+   "line": 31,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "PostHogAnalyticsAdapter",
+   "abstract": false,
+   "implements": [
+    "extends AnalyticsPort",
+    "implements OnApplicationBootstrap"
+   ],
+   "file": "apps/core-api/src/common/platform/analytics-adapters.ts",
+   "line": 38,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "AnalyticsEvent",
+   "interface": true,
+   "file": "apps/core-api/src/common/platform/analytics.port.ts",
+   "line": 3,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "AnalyticsPort",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/common/platform/analytics.port.ts",
+   "line": 10,
+   "module": "core-api(common)",
+   "doc": "Analytics is an optional side effect; provider concerns stay outside business modules."
+  },
+  {
+   "name": "ApnsTransportMessage",
+   "interface": true,
+   "file": "apps/core-api/src/common/platform/apns-push-notification.adapter.ts",
+   "line": 15,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "ApnsPushTransport",
+   "interface": true,
+   "file": "apps/core-api/src/common/platform/apns-push-notification.adapter.ts",
+   "line": 20,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "ApnsHttp2Transport",
+   "abstract": false,
+   "implements": [
+    "implements ApnsPushTransport"
+   ],
+   "file": "apps/core-api/src/common/platform/apns-push-notification.adapter.ts",
+   "line": 24,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "ApnsPushNotificationAdapter",
+   "abstract": false,
+   "implements": [
+    "extends PushNotificationPort",
+    "implements OnApplicationBootstrap"
+   ],
+   "file": "apps/core-api/src/common/platform/apns-push-notification.adapter.ts",
+   "line": 115,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "DisabledPushNotificationAdapter",
+   "abstract": false,
+   "implements": [
+    "extends PushNotificationPort"
+   ],
+   "file": "apps/core-api/src/common/platform/dev-platform-adapters.ts",
+   "line": 11,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "DevPushNotificationAdapter",
+   "abstract": false,
+   "implements": [
+    "extends PushNotificationPort",
+    "implements OnApplicationBootstrap"
+   ],
+   "file": "apps/core-api/src/common/platform/dev-platform-adapters.ts",
+   "line": 19,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "FcmTransportMessage",
+   "interface": true,
+   "file": "apps/core-api/src/common/platform/fcm-push-notification.adapter.ts",
+   "line": 17,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "FcmPushTransport",
+   "interface": true,
+   "file": "apps/core-api/src/common/platform/fcm-push-notification.adapter.ts",
+   "line": 22,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "FcmHttpTransport",
+   "abstract": false,
+   "implements": [
+    "implements FcmPushTransport"
+   ],
+   "file": "apps/core-api/src/common/platform/fcm-push-notification.adapter.ts",
+   "line": 26,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "FcmPushNotificationAdapter",
+   "abstract": false,
+   "implements": [
+    "extends PushNotificationPort",
+    "implements OnApplicationBootstrap"
+   ],
+   "file": "apps/core-api/src/common/platform/fcm-push-notification.adapter.ts",
+   "line": 118,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "PlatformModule",
+   "abstract": false,
+   "implements": [],
+   "file": "apps/core-api/src/common/platform/platform.module.ts",
+   "line": 25,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "PushNotificationMessage",
+   "interface": true,
+   "file": "apps/core-api/src/common/platform/push-notification.port.ts",
+   "line": 3,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "PushDeliveryResult",
+   "interface": true,
+   "file": "apps/core-api/src/common/platform/push-notification.port.ts",
+   "line": 11,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "PushNotificationPort",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/common/platform/push-notification.port.ts",
+   "line": 18,
+   "module": "core-api(common)",
+   "doc": "Business code only knows this contract. Provider SDKs and HTTP details stay in adapters."
+  },
+  {
+   "name": "WebPushNotificationAdapter",
+   "abstract": false,
+   "implements": [
+    "extends WebPushNotificationPort",
+    "implements OnApplicationBootstrap"
+   ],
+   "file": "apps/core-api/src/common/platform/web-push-notification.adapter.ts",
+   "line": 13,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "WebPushSubscriptionMessage",
+   "interface": true,
+   "file": "apps/core-api/src/common/platform/web-push-notification.port.ts",
+   "line": 1,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "WebPushNotificationMessage",
+   "interface": true,
+   "file": "apps/core-api/src/common/platform/web-push-notification.port.ts",
+   "line": 6,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "WebPushDeliveryResult",
+   "interface": true,
+   "file": "apps/core-api/src/common/platform/web-push-notification.port.ts",
+   "line": 14,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "WebPushNotificationPort",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/common/platform/web-push-notification.port.ts",
+   "line": 20,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "RealtimePublisherPort",
+   "interface": true,
+   "file": "apps/core-api/src/common/realtime/realtime-publisher.port.ts",
+   "line": 2,
+   "module": "core-api(common)",
+   "doc": "Ephemeral fanout capability. Consumers must retain their REST polling fallback."
+  },
+  {
+   "name": "RedisRealtimePublisher",
+   "abstract": false,
+   "implements": [
+    "implements RealtimePublisherPort"
+   ],
+   "file": "apps/core-api/src/common/realtime/redis-realtime-publisher.adapter.ts",
+   "line": 7,
+   "module": "core-api(common)",
+   "doc": "Redis pub/sub adapter; it deliberately has no delivery guarantee."
+  },
+  {
+   "name": "RateLimitPort",
+   "interface": true,
+   "file": "apps/core-api/src/common/redis/rate-limit.port.ts",
+   "line": 4,
+   "module": "core-api(common)",
+   "doc": "Ephemeral request quota only. Durable business state, including Economy, remains in Postgres."
+  },
+  {
+   "name": "RateLimitConsumeRequest",
+   "interface": true,
+   "file": "apps/core-api/src/common/redis/rate-limit.port.ts",
+   "line": 11,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "RateLimitReservation",
+   "interface": true,
+   "file": "apps/core-api/src/common/redis/rate-limit.port.ts",
+   "line": 19,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "RedisRateLimitAdapter",
+   "abstract": false,
+   "implements": [
+    "implements RateLimitPort"
+   ],
+   "file": "apps/core-api/src/common/redis/redis-rate-limit.adapter.ts",
+   "line": 67,
+   "module": "core-api(common)",
+   "doc": null
+  },
+  {
+   "name": "RefreshSessionIssue",
+   "interface": true,
+   "file": "apps/core-api/src/modules/auth/ports/refresh-session.port.ts",
+   "line": 3,
+   "module": "auth",
+   "doc": null
+  },
+  {
+   "name": "RefreshSessionRecord",
+   "interface": true,
+   "file": "apps/core-api/src/modules/auth/ports/refresh-session.port.ts",
+   "line": 10,
+   "module": "auth",
+   "doc": null
+  },
+  {
+   "name": "RefreshSessionRotationInput",
+   "interface": true,
+   "file": "apps/core-api/src/modules/auth/ports/refresh-session.port.ts",
+   "line": 19,
+   "module": "auth",
+   "doc": null
+  },
+  {
+   "name": "RefreshSessionPort",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/modules/auth/ports/refresh-session.port.ts",
+   "line": 28,
+   "module": "auth",
+   "doc": "Persistence boundary cho refresh session; implementation cụ thể không leak ra TokenService. `manager` chỉ dùng khi caller phải giữ atomicity với aggregate Auth khác trong cùng transaction."
+  },
+  {
+   "name": "TypeOrmRefreshSessionAdapter",
+   "abstract": false,
+   "implements": [
+    "implements RefreshSessionPort"
+   ],
+   "file": "apps/core-api/src/modules/auth/repositories/typeorm-refresh-session.adapter.ts",
+   "line": 13,
+   "module": "auth",
+   "doc": null
+  },
+  {
+   "name": "LivekitRoomAdapter",
+   "abstract": false,
+   "implements": [
+    "extends LivekitRoomPort"
+   ],
+   "file": "apps/core-api/src/modules/calling/clients/livekit-room.adapter.ts",
+   "line": 10,
+   "module": "calling",
+   "doc": "Maps the shared LiveKit infrastructure client to the calling application port."
+  },
+  {
+   "name": "LivekitWebhookEvent",
+   "interface": true,
+   "file": "apps/core-api/src/modules/calling/ports/livekit-room.ts",
+   "line": 2,
+   "module": "calling",
+   "doc": "Sự kiện webhook đã verify + rút gọn về đúng phần calling cần — không leak type SDK ra service."
+  },
+  {
+   "name": "LivekitRoomPort",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/modules/calling/ports/livekit-room.ts",
+   "line": 12,
+   "module": "calling",
+   "doc": "Port nói chuyện với media provider (docs/05 § 5.3 ports/): boundary thật — đổi SFU/mock trong test mà không sửa service. Adapter/provider được bind ở module composition root."
+  },
+  {
+   "name": "AppleReceiptResponse",
+   "interface": true,
+   "file": "apps/core-api/src/modules/economy/clients/apple-receipt-api.adapter.ts",
+   "line": 22,
+   "module": "economy",
+   "doc": null
+  },
+  {
+   "name": "ApplePurchase",
+   "interface": true,
+   "file": "apps/core-api/src/modules/economy/clients/apple-receipt-api.adapter.ts",
+   "line": 27,
+   "module": "economy",
+   "doc": null
+  },
+  {
+   "name": "AppleReceiptApiAdapter",
+   "abstract": false,
+   "implements": [
+    "extends AppleReceiptGateway"
+   ],
+   "file": "apps/core-api/src/modules/economy/clients/apple-receipt-api.adapter.ts",
+   "line": 33,
+   "module": "economy",
+   "doc": "Apple verifyReceipt adapter. Không export HTTP details ra Economy business layer."
+  },
+  {
+   "name": "AppleRefundApiAdapter",
+   "abstract": false,
+   "implements": [
+    "extends AppleRefundGateway"
+   ],
+   "file": "apps/core-api/src/modules/economy/clients/apple-refund-api.adapter.ts",
+   "line": 18,
+   "module": "economy",
+   "doc": "Apple refund lookup adapter; refund polling business logic sees only the port."
+  },
+  {
+   "name": "GooglePlayReceiptApiAdapter",
+   "abstract": false,
+   "implements": [
+    "extends GooglePlayReceiptGateway"
+   ],
+   "file": "apps/core-api/src/modules/economy/clients/google-play-receipt-api.adapter.ts",
+   "line": 22,
+   "module": "economy",
+   "doc": "Google Play Developer API adapter. OAuth and HTTP stay outside EconomyService."
+  },
+  {
+   "name": "GoogleRefundApiAdapter",
+   "abstract": false,
+   "implements": [
+    "extends GoogleVoidedPurchasesGateway"
+   ],
+   "file": "apps/core-api/src/modules/economy/clients/google-refund-api.adapter.ts",
+   "line": 17,
+   "module": "economy",
+   "doc": "Google Voided Purchases adapter; OAuth/API details stay out of refund job."
+  },
+  {
+   "name": "StoreIapVerifierAdapter",
+   "abstract": false,
+   "implements": [
+    "extends IapVerifier"
+   ],
+   "file": "apps/core-api/src/modules/economy/clients/store-iap-verifier.adapter.ts",
+   "line": 13,
+   "module": "economy",
+   "doc": "Adapter chọn gateway của store; EconomyService chỉ thấy IapVerifier."
+  },
+  {
+   "name": "VerifiedPurchase",
+   "interface": true,
+   "file": "apps/core-api/src/modules/economy/ports/iap-verifier.ts",
+   "line": 14,
+   "module": "economy",
+   "doc": null
+  },
+  {
+   "name": "IapVerifier",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/modules/economy/ports/iap-verifier.ts",
+   "line": 23,
+   "module": "economy",
+   "doc": "Verify receipt/purchase token Ở SERVER (docs/10 § Economy — không tin client). Chọn implementation qua env ECONOMY_IAP_VERIFIER: 'dev' (local/test) | 'store' (sandbox/ production đủ credential) | 'disabled' (production subset, fail-closed)."
+  },
+  {
+   "name": "DisabledIapVerifier",
+   "abstract": false,
+   "implements": [
+    "extends IapVerifier"
+   ],
+   "file": "apps/core-api/src/modules/economy/ports/iap-verifier.ts",
+   "line": 32,
+   "module": "economy",
+   "doc": "Production subset không có store credential: từ chối trước mọi ledger side effect."
+  },
+  {
+   "name": "DevIapVerifier",
+   "abstract": false,
+   "implements": [
+    "extends IapVerifier",
+    "implements OnApplicationBootstrap"
+   ],
+   "file": "apps/core-api/src/modules/economy/ports/iap-verifier.ts",
+   "line": 51,
+   "module": "economy",
+   "doc": "Dev/test: nhận devTransactionId giả — chặn cứng ở production như các dev-only adapter khác."
+  },
+  {
+   "name": "LedgerEntryInput",
+   "interface": true,
+   "file": "apps/core-api/src/modules/economy/ports/ledger-persistence.port.ts",
+   "line": 14,
+   "module": "economy",
+   "doc": null
+  },
+  {
+   "name": "RecordTransactionInput",
+   "interface": true,
+   "file": "apps/core-api/src/modules/economy/ports/ledger-persistence.port.ts",
+   "line": 22,
+   "module": "economy",
+   "doc": null
+  },
+  {
+   "name": "RecordResult",
+   "interface": true,
+   "file": "apps/core-api/src/modules/economy/ports/ledger-persistence.port.ts",
+   "line": 46,
+   "module": "economy",
+   "doc": null
+  },
+  {
+   "name": "LedgerPersistencePort",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/modules/economy/ports/ledger-persistence.port.ts",
+   "line": 60,
+   "module": "economy",
+   "doc": "Economy's replaceable persistence boundary. The implementation owns PostgreSQL-specific constraints, raw SQL, account creation, wallet locking and the ledger/outbox transaction. It is not a generic repository: record/reverse/rebuild are intentionally aggregate operations whose atomicity is part of the contract."
+  },
+  {
+   "name": "AppleNotificationPayload",
+   "interface": true,
+   "file": "apps/core-api/src/modules/economy/ports/notification-verifier.ts",
+   "line": 26,
+   "module": "economy",
+   "doc": null
+  },
+  {
+   "name": "AppleTransactionInfo",
+   "interface": true,
+   "file": "apps/core-api/src/modules/economy/ports/notification-verifier.ts",
+   "line": 37,
+   "module": "economy",
+   "doc": null
+  },
+  {
+   "name": "AppleNotificationVerifier",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/modules/economy/ports/notification-verifier.ts",
+   "line": 47,
+   "module": "economy",
+   "doc": "Verify App Store Server Notifications V2 (docs/services/economy-service.md § 5) — KHÔNG tin payload chưa verify chữ ký (docs/10 § 10.0.B)."
+  },
+  {
+   "name": "DevAppleNotificationVerifier",
+   "abstract": false,
+   "implements": [
+    "extends AppleNotificationVerifier",
+    "implements OnApplicationBootstrap"
+   ],
+   "file": "apps/core-api/src/modules/economy/ports/notification-verifier.ts",
+   "line": 55,
+   "module": "economy",
+   "doc": "Dev/test: KHÔNG verify chữ ký, chỉ decode — chặn cứng ở production giống DevIapVerifier."
+  },
+  {
+   "name": "StoreAppleNotificationVerifier",
+   "abstract": false,
+   "implements": [
+    "extends AppleNotificationVerifier"
+   ],
+   "file": "apps/core-api/src/modules/economy/ports/notification-verifier.ts",
+   "line": 100,
+   "module": "economy",
+   "doc": "Verify chữ ký JWS (ES256) + chain x5c lên tới Apple Root CA đáng tin (docs § 5). Cần `ECONOMY_APPLE_ROOT_CA_PEM` = PEM cert \"Apple Root CA - G3\" tải từ https://www.apple.com/certificateauthority/ (KHÔNG hardcode trong code — docs/05 § 5.1). signedTransactionInfo lồng bên trong data đã được coi là đáng tin nếu signedPayload ngoài verify chain thành công — vì toàn bộ chuỗi JSON (bao gồm chuỗi signedTransactionInfo) đã nằm trong phạm vi chữ ký ngoài, không ai chỉnh sửa được nó mà không phá chữ ký ngoài."
+  },
+  {
+   "name": "GoogleRtdnEnvelope",
+   "interface": true,
+   "file": "apps/core-api/src/modules/economy/ports/notification-verifier.ts",
+   "line": 170,
+   "module": "economy",
+   "doc": null
+  },
+  {
+   "name": "GoogleRtdnVerifier",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/modules/economy/ports/notification-verifier.ts",
+   "line": 176,
+   "module": "economy",
+   "doc": "Verify Pub/Sub push envelope (Google RTDN — docs § 5) rồi trả JSON RTDN đã decode."
+  },
+  {
+   "name": "DevGoogleRtdnVerifier",
+   "abstract": false,
+   "implements": [
+    "extends GoogleRtdnVerifier",
+    "implements OnApplicationBootstrap"
+   ],
+   "file": "apps/core-api/src/modules/economy/ports/notification-verifier.ts",
+   "line": 184,
+   "module": "economy",
+   "doc": "Dev/test: KHÔNG verify OIDC token — chặn cứng ở production."
+  },
+  {
+   "name": "StoreGoogleRtdnVerifier",
+   "abstract": false,
+   "implements": [
+    "extends GoogleRtdnVerifier"
+   ],
+   "file": "apps/core-api/src/modules/economy/ports/notification-verifier.ts",
+   "line": 225,
+   "module": "economy",
+   "doc": "Verify JWT trong header Authorization theo hướng dẫn Pub/Sub push OIDC token của Google: iss = accounts.google.com, aud = URL endpoint đã cấu hình khi tạo push subscription, email = service account đã cấu hình cho subscription đó (docs § 5)."
+  },
+  {
+   "name": "PayosCreatePaymentLinkInput",
+   "interface": true,
+   "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
+   "line": 14,
+   "module": "economy",
+   "doc": null
+  },
+  {
+   "name": "PayosCreatePaymentLinkResult",
+   "interface": true,
+   "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
+   "line": 23,
+   "module": "economy",
+   "doc": null
+  },
+  {
+   "name": "PayosWebhookEvent",
+   "interface": true,
+   "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
+   "line": 29,
+   "module": "economy",
+   "doc": null
+  },
+  {
+   "name": "PayosClient",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
+   "line": 41,
+   "module": "economy",
+   "doc": "Port cho payOS; business service không phụ thuộc HTTP/credential provider."
+  },
+  {
+   "name": "PayosHttpClientAdapter",
+   "abstract": false,
+   "implements": [
+    "extends PayosClient"
+   ],
+   "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
+   "line": 49,
+   "module": "economy",
+   "doc": "HTTP adapter cho payOS; credential và checksum chỉ tồn tại server-side."
+  },
+  {
+   "name": "AppleRefundGateway",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/modules/economy/ports/refund-gateways.ts",
+   "line": 1,
+   "module": "economy",
+   "doc": null
+  },
+  {
+   "name": "GoogleVoidedPurchasesGateway",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/modules/economy/ports/refund-gateways.ts",
+   "line": 5,
+   "module": "economy",
+   "doc": null
+  },
+  {
+   "name": "AppleReceiptVerificationInput",
+   "interface": true,
+   "file": "apps/core-api/src/modules/economy/ports/store-payment-gateways.ts",
+   "line": 3,
+   "module": "economy",
+   "doc": null
+  },
+  {
+   "name": "AppleReceiptGateway",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/modules/economy/ports/store-payment-gateways.ts",
+   "line": 10,
+   "module": "economy",
+   "doc": "Port nội bộ cho Apple; HTTP/JWS/credential chỉ nằm ở adapter."
+  },
+  {
+   "name": "GooglePlayReceiptGateway",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/modules/economy/ports/store-payment-gateways.ts",
+   "line": 17,
+   "module": "economy",
+   "doc": "Port nội bộ cho Google Play; API/OAuth chỉ nằm ở adapter."
+  },
+  {
+   "name": "MatchInteractionPolicy",
+   "interface": true,
+   "file": "apps/core-api/src/modules/matching/ports/interaction-policy.ts",
+   "line": 12,
+   "module": "matching",
+   "doc": null
+  },
+  {
+   "name": "MatchingQueuePort",
+   "interface": true,
+   "file": "apps/core-api/src/modules/matching/ports/matching-queue.port.ts",
+   "line": 6,
+   "module": "matching",
+   "doc": "Capability port for the derived Matching queue. Postgres remains the source of truth for ticket state; this port only exposes the Redis sorted-set/index operations required by the matcher."
+  },
+  {
+   "name": "RedisMatchingQueue",
+   "abstract": false,
+   "implements": [
+    "implements MatchingQueuePort"
+   ],
+   "file": "apps/core-api/src/modules/matching/redis/redis-matching-queue.adapter.ts",
+   "line": 6,
+   "module": "matching",
+   "doc": null
+  },
+  {
+   "name": "DevImageStorageProvider",
+   "abstract": false,
+   "implements": [
+    "extends ImageStoragePort"
+   ],
+   "file": "apps/core-api/src/modules/media/ports/dev-image-storage.provider.ts",
+   "line": 10,
+   "module": "media",
+   "doc": "Dev/test adapter: không upload binary thật và không được phép boot ở production."
+  },
+  {
+   "name": "ImageObjectMetadata",
+   "interface": true,
+   "file": "apps/core-api/src/modules/media/ports/image-storage.port.ts",
+   "line": 1,
+   "module": "media",
+   "doc": null
+  },
+  {
+   "name": "ImageStoragePort",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/modules/media/ports/image-storage.port.ts",
+   "line": 6,
+   "module": "media",
+   "doc": null
+  },
+  {
+   "name": "R2ImageStorageProvider",
+   "abstract": false,
+   "implements": [
+    "extends S3ImageStorageProvider"
+   ],
+   "file": "apps/core-api/src/modules/media/ports/r2-image-storage.provider.ts",
+   "line": 8,
+   "module": "media",
+   "doc": null
+  },
+  {
+   "name": "S3ImageStorageProviderOptions",
+   "interface": true,
+   "file": "apps/core-api/src/modules/media/ports/s3-image-storage.provider.ts",
+   "line": 18,
+   "module": "media",
+   "doc": null
+  },
+  {
+   "name": "S3ImageStorageProvider",
+   "abstract": false,
+   "implements": [
+    "extends ImageStoragePort"
+   ],
+   "file": "apps/core-api/src/modules/media/ports/s3-image-storage.provider.ts",
+   "line": 54,
+   "module": "media",
+   "doc": null
+  },
+  {
+   "name": "LivekitPartyRoomAdapter",
+   "abstract": false,
+   "implements": [
+    "extends PartyLivekitRoomPort"
+   ],
+   "file": "apps/core-api/src/modules/party-room/clients/livekit-party-room.adapter.ts",
+   "line": 11,
+   "module": "party-room",
+   "doc": "Maps the shared LiveKit infrastructure client to the party-room application port."
+  },
+  {
+   "name": "PartyWebhookEvent",
+   "interface": true,
+   "file": "apps/core-api/src/modules/party-room/ports/livekit-party-room.ts",
+   "line": 2,
+   "module": "party-room",
+   "doc": "Sự kiện webhook đã verify + rút gọn về đúng phần party cần — không leak type SDK ra service."
+  },
+  {
+   "name": "PartyLivekitRoomPort",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/modules/party-room/ports/livekit-party-room.ts",
+   "line": 22,
+   "module": "party-room",
+   "doc": "Port nói chuyện với media provider cho phòng multi-party (docs/05 § 5.3 ports/). Khác LivekitRoomPort của calling (phòng 2 người, grant cố định): party cần tạo room TƯỜNG MINH (maxParticipants/emptyTimeout — \"mở rộng SFU cho multi-party\", docs/07 GĐ3), grant theo role và ĐỔI grant runtime khi host cấp/thu speaker — enforce ở SFU, không tin client (docs/10 § Party Room: audience tự unmute phải bị chặn ở server). Adapter/provider được bind ở module composition root."
+  },
+  {
+   "name": "DevVideoStorageAdapter",
+   "abstract": false,
+   "implements": [
+    "extends VideoStoragePort"
+   ],
+   "file": "apps/core-api/src/modules/short-video/ports/dev-video-storage.adapter.ts",
+   "line": 13,
+   "module": "short-video",
+   "doc": "Dev/test adapter: không upload binary thật. Adapter này chỉ được tạo ngoài production; provider factory là chốt chọn implementation, còn guard ở đây bảo vệ cả lúc gọi trực tiếp."
+  },
+  {
+   "name": "DevVideoTranscodeAdapter",
+   "abstract": false,
+   "implements": [
+    "extends VideoTranscodePort"
+   ],
+   "file": "apps/core-api/src/modules/short-video/ports/dev-video-transcode.adapter.ts",
+   "line": 10,
+   "module": "short-video",
+   "doc": "Dev/test adapter: trả metadata giả đồng bộ và không chạy production."
+  },
+  {
+   "name": "UnavailableVideoStorageAdapter",
+   "abstract": false,
+   "implements": [
+    "extends VideoStoragePort"
+   ],
+   "file": "apps/core-api/src/modules/short-video/ports/unavailable-video-storage.adapter.ts",
+   "line": 6,
+   "module": "short-video",
+   "doc": "Fail-closed adapter cho production view-only khi chưa có storage provider thật."
+  },
+  {
+   "name": "UnavailableVideoTranscodeAdapter",
+   "abstract": false,
+   "implements": [
+    "extends VideoTranscodePort"
+   ],
+   "file": "apps/core-api/src/modules/short-video/ports/unavailable-video-transcode.adapter.ts",
+   "line": 6,
+   "module": "short-video",
+   "doc": "Fail-closed adapter cho production view-only khi chưa có transcode provider thật."
+  },
+  {
+   "name": "VideoStoragePort",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/modules/short-video/ports/video-storage.port.ts",
+   "line": 10,
+   "module": "short-video",
+   "doc": "Cổng lưu trữ video — thật (Cloudflare Stream/Mux, ADR sau khi có bảng giá cụ thể) cắm vào ở giai đoạn sau. Body video KHÔNG BAO GIỜ chạm NestJS — client upload thẳng lên storage qua `uploadUrl` presigned; server chỉ biết `storageKey` để tra cứu sau. Tách sinh `storageKey` (pure, không I/O) khỏi `issueUploadUrl` (có I/O, có thể gọi LẠI cho CÙNG 1 storageKey) — đây là điều kiện để idempotent-replay của `createUploadIntent` phát lại ĐÚNG URL cho video đã tạo thay vì phải bịa 1 key mới không ai dùng."
+  },
+  {
+   "name": "TranscodeResult",
+   "interface": true,
+   "file": "apps/core-api/src/modules/short-video/ports/video-transcode.port.ts",
+   "line": 1,
+   "module": "short-video",
+   "doc": null
+  },
+  {
+   "name": "VideoTranscodePort",
+   "abstract": true,
+   "implements": [],
+   "file": "apps/core-api/src/modules/short-video/ports/video-transcode.port.ts",
+   "line": 13,
+   "module": "short-video",
+   "doc": "Cổng transcode video — thật (Cloudflare Stream/Mux, ADR sau) là bất đồng bộ thật (webhook khi xong); Dev port ở đây làm ĐỒNG BỘ (trả kết quả ngay) để V1 không cần thêm job/worker riêng — khi thay bằng vendor thật, `VideoService` đổi từ \"await xong luôn\" sang \"chờ webhook\" mà không đổi state machine (`processing` vẫn là bước trung gian, chỉ khác thời gian ở lại đó)."
+  },
+  {
+   "name": "UserPresenceReaderPort",
+   "interface": true,
+   "file": "apps/core-api/src/modules/user/ports/user-presence-reader.port.ts",
+   "line": 2,
+   "module": "user",
+   "doc": "Presence is derived realtime state, never a business source of truth."
+  },
+  {
+   "name": "RedisPresenceReader",
+   "abstract": false,
+   "implements": [
+    "implements UserPresenceReaderPort"
+   ],
+   "file": "apps/core-api/src/modules/user/redis/redis-presence-reader.adapter.ts",
+   "line": 8,
+   "module": "user",
+   "doc": null
+  },
+  {
+   "name": "CorsIoAdapter",
+   "abstract": false,
+   "implements": [
+    "extends IoAdapter"
+   ],
+   "file": "apps/signaling-gateway/src/app/cors-io.adapter.ts",
+   "line": 11,
+   "module": "signaling-gateway",
+   "doc": "Áp allow-list runtime cho cả polling và WebSocket handshake của Socket.IO, và (tuỳ chọn) gắn cluster adapter (Redis — docs/07 Giai đoạn 6) để nhiều instance gateway chia sẻ được room/broadcast qua Socket.IO thay vì chỉ hoạt động đúng trong phạm vi 1 process."
+  }
+ ],
+ "dependencies": {
+  "@aws-sdk/client-s3": "^3.1103.0",
+  "@aws-sdk/s3-request-presigner": "^3.1103.0",
+  "@hookform/resolvers": "^5.4.0",
+  "@microlabs/otel-cf-workers": "1.0.0-rc.51",
+  "@nestjs/common": "^11.0.0",
+  "@nestjs/config": "^4.0.4",
+  "@nestjs/core": "^11.0.0",
+  "@nestjs/jwt": "^11.0.2",
+  "@nestjs/platform-express": "^11.0.0",
+  "@nestjs/platform-socket.io": "^11.1.28",
+  "@nestjs/schedule": "^6.1.3",
+  "@nestjs/swagger": "^11.4.5",
+  "@nestjs/throttler": "^6.5.0",
+  "@nestjs/typeorm": "^11.0.3",
+  "@nestjs/websockets": "^11.1.28",
+  "@opentelemetry/api": "1.9.1",
+  "@opentelemetry/auto-instrumentations-node": "0.78.0",
+  "@opentelemetry/exporter-logs-otlp-http": "0.220.0",
+  "@opentelemetry/exporter-metrics-otlp-http": "0.220.0",
+  "@opentelemetry/exporter-trace-otlp-http": "0.220.0",
+  "@opentelemetry/resources": "2.9.0",
+  "@opentelemetry/sdk-logs": "0.220.0",
+  "@opentelemetry/sdk-metrics": "2.9.0",
+  "@opentelemetry/sdk-node": "0.220.0",
+  "@opentelemetry/sdk-trace-base": "2.9.0",
+  "@opentelemetry/sdk-trace-node": "2.9.0",
+  "@opentelemetry/semantic-conventions": "1.43.0",
+  "@sentry/browser": "^10.67.0",
+  "@sentry/node": "^10.67.0",
+  "@socket.io/redis-adapter": "^8.3.0",
+  "@tanstack/react-query": "^5.101.2",
+  "@types/web-push": "^3.6.4",
+  "axios": "^1.18.1",
+  "class-transformer": "^0.5.1",
+  "class-validator": "^0.15.1",
+  "class-variance-authority": "^0.7.1",
+  "clsx": "^2.1.1",
+  "cookie-parser": "^1.4.7",
+  "helmet": "^8.2.0",
+  "ioredis": "^5.4.1",
+  "joi": "^18.2.3",
+  "jose": "^5.10.0",
+  "kafkajs": "^2.2.4",
+  "livekit-client": "^2.20.1",
+  "livekit-server-sdk": "^2.17.0",
+  "lucide-react": "^1.24.0",
+  "nestjs-pino": "^4.6.1",
+  "next": "^16.2.10",
+  "openapi-fetch": "^0.17.0",
+  "pg": "^8.22.0",
+  "pino": "^10.3.1",
+  "pino-http": "^11.0.0",
+  "posthog-js": "^1.404.0",
+  "react": "^19.2.7",
+  "react-dom": "^19.2.7",
+  "react-hook-form": "^7.81.0",
+  "react-router-dom": "^7.18.1",
+  "reflect-metadata": "^0.2.0",
+  "rxjs": "^7.8.0",
+  "socket.io": "^4.8.3",
+  "tailwind-merge": "^3.6.0",
+  "typeorm": "^1.0.0",
+  "web-push": "^3.6.7",
+  "zod": "^4.4.3"
+ },
+ "devDependencies": 79
+}

@@ -1,0 +1,290 @@
+{
+ "id": "short-video",
+ "kind": "core-api module",
+ "dir": "apps/core-api/src/modules/short-video",
+ "mapAnchor": "svc-short-video",
+ "role": "Sở hữu vòng đời Video (uploading -> processing -> pending_review|published -> removed|rejected|failed), view/reaction/comment và ranking v1. Upload đi qua VideoStoragePort/VideoTranscodePort RIÊNG của module (KHÔNG dùng module Media); không sở hữu graph bạn bè, report/trust (Safety), hồ sơ tác giả (User) hay tiền quà tặng (Gift/Economy).",
+ "tagline": "Video ngắn: upload, duyệt, xem, tim, bình luận",
+ "owns": [
+  "bảng videos (status, storageKey, rankScore, viewCount/likeCount/commentCount)",
+  "bảng video_views (unique videoId+viewerId, qualified), video_reactions, video_comments",
+  "cờ VIDEO_UPLOAD_ENABLED / VIDEO_MODERATION_MODE (pre|post)"
+ ],
+ "tables": [
+  {
+   "name": "video_comments",
+   "columns": 7,
+   "otherModules": []
+  },
+  {
+   "name": "video_reactions",
+   "columns": 4,
+   "otherModules": []
+  },
+  {
+   "name": "video_views",
+   "columns": 6,
+   "otherModules": []
+  },
+  {
+   "name": "videos",
+   "columns": 16,
+   "otherModules": []
+  }
+ ],
+ "tablesTouchedOfOthers": [],
+ "endpoints": {
+  "total": 11,
+  "public": 0,
+  "adminOnly": 0,
+  "idempotent": 1,
+  "webhooks": 0,
+  "explicitThrottle": 0
+ },
+ "endpointPaths": [
+  "/videos"
+ ],
+ "realtimeProduced": [],
+ "jobs": [
+  {
+   "class": "VideoRankingService",
+   "jobName": "VIDEO_RANKING_JOB",
+   "intervalMs": "this.config.getOrThrow('VIDEO_RANKING_JOB_INTERVAL_MS', { infer: true, })"
+  },
+  {
+   "class": "VideoSweeperService",
+   "jobName": "VIDEO_SWEEPER_JOB",
+   "intervalMs": "this.config.getOrThrow('VIDEO_SWEEPER_INTERVAL_MS', { infer: true, })"
+  }
+ ],
+ "redisCallSites": 0,
+ "redisOps": [],
+ "envVars": [
+  {
+   "name": "VIDEO_RANKING_JOB_INTERVAL_MS",
+   "file": "apps/core-api/src/modules/short-video/jobs/video-ranking.service.ts",
+   "line": 43,
+   "quote": "intervalMs: this.config.getOrThrow('VIDEO_RANKING_JOB_INTERVAL_MS', {",
+   "class": "tuning",
+   "default": "1800000",
+   "required": false
+  },
+  {
+   "name": "VIDEO_RANK_WEIGHT_VIEW",
+   "file": "apps/core-api/src/modules/short-video/jobs/video-ranking.service.ts",
+   "line": 61,
+   "quote": "const weightView = this.config.getOrThrow('VIDEO_RANK_WEIGHT_VIEW', {",
+   "class": "other",
+   "default": "1",
+   "required": false
+  },
+  {
+   "name": "VIDEO_RANK_WEIGHT_LIKE",
+   "file": "apps/core-api/src/modules/short-video/jobs/video-ranking.service.ts",
+   "line": 64,
+   "quote": "const weightLike = this.config.getOrThrow('VIDEO_RANK_WEIGHT_LIKE', {",
+   "class": "other",
+   "default": "3",
+   "required": false
+  },
+  {
+   "name": "VIDEO_RANK_WEIGHT_COMMENT",
+   "file": "apps/core-api/src/modules/short-video/jobs/video-ranking.service.ts",
+   "line": 67,
+   "quote": "const weightComment = this.config.getOrThrow(",
+   "class": "other",
+   "default": "5",
+   "required": false
+  },
+  {
+   "name": "VIDEO_RANK_TIME_DECAY_HOURS",
+   "file": "apps/core-api/src/modules/short-video/jobs/video-ranking.service.ts",
+   "line": 71,
+   "quote": "const decayHours = this.config.getOrThrow('VIDEO_RANK_TIME_DECAY_HOURS', {",
+   "class": "tuning",
+   "default": "48",
+   "required": false
+  },
+  {
+   "name": "VIDEO_SWEEPER_INTERVAL_MS",
+   "file": "apps/core-api/src/modules/short-video/jobs/video-sweeper.service.ts",
+   "line": 47,
+   "quote": "intervalMs: this.config.getOrThrow('VIDEO_SWEEPER_INTERVAL_MS', {",
+   "class": "tuning",
+   "default": "3600000",
+   "required": false
+  },
+  {
+   "name": "VIDEO_UPLOAD_TIMEOUT_SECONDS",
+   "file": "apps/core-api/src/modules/short-video/jobs/video-sweeper.service.ts",
+   "line": 65,
+   "quote": "const timeoutSeconds = this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "3600",
+   "required": false
+  },
+  {
+   "name": "NODE_ENV",
+   "file": "apps/core-api/src/modules/short-video/ports/dev-video-storage.adapter.ts",
+   "line": 50,
+   "quote": "if (this.config.get('NODE_ENV', { infer: true }) === 'production') {",
+   "class": null,
+   "default": null,
+   "required": false
+  },
+  {
+   "name": "VIDEO_UPLOAD_ENABLED",
+   "file": "apps/core-api/src/modules/short-video/ports/video-provider.factory.ts",
+   "line": 19,
+   "quote": "config.getOrThrow('VIDEO_UPLOAD_ENABLED', { infer: true })",
+   "class": "switch",
+   "default": "false",
+   "required": false
+  },
+  {
+   "name": "VIDEO_CAPTION_MAX_LENGTH",
+   "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+   "line": 64,
+   "quote": "const captionMaxLength = this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "500",
+   "required": false
+  },
+  {
+   "name": "VIDEO_MODERATION_MODE",
+   "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+   "line": 143,
+   "quote": "const moderationMode = this.config.getOrThrow('VIDEO_MODERATION_MODE', {",
+   "class": "switch",
+   "default": "pre",
+   "required": false
+  },
+  {
+   "name": "VIDEO_QUALIFIED_VIEW_MIN_MS",
+   "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+   "line": 262,
+   "quote": "const qualifiedMinMs = this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "3000",
+   "required": false
+  },
+  {
+   "name": "VIDEO_REPORT_AUTOHIDE_THRESHOLD",
+   "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+   "line": 496,
+   "quote": "const threshold = this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "5",
+   "required": false
+  }
+ ],
+ "errorGroups": [
+  "ShortVideoErrors"
+ ],
+ "errorCodes": 7,
+ "errorCodesUnused": 0,
+ "tests": {
+  "unit": 3,
+  "integration": 1
+ },
+ "docs": {
+  "path": "docs/services/short-video-service.md",
+  "lastChanged": "2026-10-09",
+  "commitsSince": 0
+ },
+ "features": [
+  {
+   "id": "short-video",
+   "title": "Short-video lifecycle, moderation and derived ranking",
+   "status": "implemented"
+  }
+ ],
+ "churn": {
+  "commits": 10,
+  "recent": 2,
+  "fixes": 3,
+  "last": "2026-10-09"
+ },
+ "issues": [
+  {
+   "id": "P088",
+   "title": "View count video cộng đôi khi đồng thời",
+   "status": "fixed",
+   "tier": "A"
+  },
+  {
+   "id": "P089",
+   "title": "Sweeper video lỗi bị đói (lặp 200 hàng cũ nhất)",
+   "status": "fixed",
+   "tier": "A"
+  },
+  {
+   "id": "P108",
+   "title": "Replay upload-intent cấp lại URL sau khi video đã published/failed",
+   "status": "fixed",
+   "tier": "A"
+  }
+ ],
+ "mapCollaborators": [
+  {
+   "with": "friend",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "safety",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "user",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "postgres",
+   "kind": "infra",
+   "mechanism": "shared-db",
+   "direction": "out"
+  },
+  {
+   "with": "admin",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "gift",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "external:object-storage",
+   "kind": "external",
+   "mechanism": "sdk",
+   "direction": "out"
+  },
+  {
+   "with": "external:video-transcode",
+   "kind": "external",
+   "mechanism": "sdk",
+   "direction": "out"
+  },
+  {
+   "with": "web",
+   "kind": "client",
+   "mechanism": "http",
+   "direction": "in"
+  },
+  {
+   "with": "admin-console",
+   "kind": "client",
+   "mechanism": "http",
+   "direction": "in"
+  }
+ ]
+}

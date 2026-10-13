@@ -1,0 +1,321 @@
+{
+ "callSites": [
+  {
+   "op": "publish",
+   "target": "publisher",
+   "module": "core-api(common)",
+   "file": "apps/core-api/src/common/realtime/publish-realtime.ts",
+   "line": 24,
+   "firstArg": "realtimeUserChannel(userId)",
+   "quote": "await publisher.publish("
+  },
+  {
+   "op": "publish",
+   "target": "this.redis",
+   "module": "core-api(common)",
+   "file": "apps/core-api/src/common/realtime/redis-realtime-publisher.adapter.ts",
+   "line": 11,
+   "firstArg": "channel",
+   "quote": "return this.redis.publish(channel, payload);"
+  },
+  {
+   "op": "get",
+   "target": "sharedClientsByUrl",
+   "module": "core-api(common)",
+   "file": "apps/core-api/src/common/redis/core-redis-client.ts",
+   "line": 42,
+   "firstArg": "redisUrl",
+   "quote": "const existing = sharedClientsByUrl.get(redisUrl);"
+  },
+  {
+   "op": "set",
+   "target": "sharedClientsByUrl",
+   "module": "core-api(common)",
+   "file": "apps/core-api/src/common/redis/core-redis-client.ts",
+   "line": 58,
+   "firstArg": "redisUrl",
+   "quote": "sharedClientsByUrl.set(redisUrl, entry);"
+  },
+  {
+   "op": "set",
+   "target": "sharedEntryByClient",
+   "module": "core-api(common)",
+   "file": "apps/core-api/src/common/redis/core-redis-client.ts",
+   "line": 59,
+   "firstArg": "client",
+   "quote": "sharedEntryByClient.set(client, entry);"
+  },
+  {
+   "op": "get",
+   "target": "sharedEntryByClient",
+   "module": "core-api(common)",
+   "file": "apps/core-api/src/common/redis/core-redis-client.ts",
+   "line": 69,
+   "firstArg": "client",
+   "quote": "const shared = sharedEntryByClient.get(client);"
+  },
+  {
+   "op": "quit",
+   "target": "client",
+   "module": "core-api(common)",
+   "file": "apps/core-api/src/common/redis/core-redis-client.ts",
+   "line": 81,
+   "firstArg": null,
+   "quote": "await client.quit();"
+  },
+  {
+   "op": "eval",
+   "target": "this.redis",
+   "module": "core-api(common)",
+   "file": "apps/core-api/src/common/redis/redis-rate-limit.adapter.ts",
+   "line": 79,
+   "firstArg": "RATE_LIMIT_CONSUME_LUA",
+   "quote": "const result = (await this.redis.eval("
+  },
+  {
+   "op": "eval",
+   "target": "this.redis",
+   "module": "core-api(common)",
+   "file": "apps/core-api/src/common/redis/redis-rate-limit.adapter.ts",
+   "line": 103,
+   "firstArg": "RATE_LIMIT_REFUND_LUA",
+   "quote": "const result = await this.redis.eval("
+  },
+  {
+   "op": "eval",
+   "target": "this.redis",
+   "module": "core-api(common)",
+   "file": "apps/core-api/src/common/throttle/redis-throttler-storage.ts",
+   "line": 91,
+   "firstArg": "THROTTLE_INCREMENT_LUA",
+   "quote": "(await this.redis.eval("
+  },
+  {
+   "op": "zadd",
+   "target": "this.redis",
+   "module": "matching",
+   "file": "apps/core-api/src/modules/matching/redis/redis-matching-queue.adapter.ts",
+   "line": 18,
+   "firstArg": "shard",
+   "quote": "await this.redis.zadd(shard, mode, score, ticketId);"
+  },
+  {
+   "op": "zrem",
+   "target": "this.redis",
+   "module": "matching",
+   "file": "apps/core-api/src/modules/matching/redis/redis-matching-queue.adapter.ts",
+   "line": 22,
+   "firstArg": "shard",
+   "quote": "await this.redis.zrem(shard, ticketId);"
+  },
+  {
+   "op": "zpopmin",
+   "target": "this.redis",
+   "module": "matching",
+   "file": "apps/core-api/src/modules/matching/redis/redis-matching-queue.adapter.ts",
+   "line": 26,
+   "firstArg": "shard",
+   "quote": "const values = await this.redis.zpopmin(shard, count);"
+  },
+  {
+   "op": "smembers",
+   "target": "this.redis",
+   "module": "matching",
+   "file": "apps/core-api/src/modules/matching/redis/redis-matching-queue.adapter.ts",
+   "line": 35,
+   "firstArg": "this.activeShardsKey",
+   "quote": "return this.redis.smembers(this.activeShardsKey);"
+  },
+  {
+   "op": "sadd",
+   "target": "this.redis",
+   "module": "matching",
+   "file": "apps/core-api/src/modules/matching/redis/redis-matching-queue.adapter.ts",
+   "line": 39,
+   "firstArg": "this.activeShardsKey",
+   "quote": "await this.redis.sadd(this.activeShardsKey, shard);"
+  },
+  {
+   "op": "srem",
+   "target": "this.redis",
+   "module": "matching",
+   "file": "apps/core-api/src/modules/matching/redis/redis-matching-queue.adapter.ts",
+   "line": 43,
+   "firstArg": "this.activeShardsKey",
+   "quote": "await this.redis.srem(this.activeShardsKey, shard);"
+  },
+  {
+   "op": "zcard",
+   "target": "this.redis",
+   "module": "matching",
+   "file": "apps/core-api/src/modules/matching/redis/redis-matching-queue.adapter.ts",
+   "line": 47,
+   "firstArg": "shard",
+   "quote": "return (await this.redis.zcard(shard)) > 0;"
+  },
+  {
+   "op": "zremrangebyscore",
+   "target": "this.redis",
+   "module": "user",
+   "file": "apps/core-api/src/modules/user/redis/redis-presence-reader.adapter.ts",
+   "line": 15,
+   "firstArg": "key",
+   "quote": "await this.redis.zremrangebyscore(key, '-inf', Date.now());"
+  },
+  {
+   "op": "zcard",
+   "target": "this.redis",
+   "module": "user",
+   "file": "apps/core-api/src/modules/user/redis/redis-presence-reader.adapter.ts",
+   "line": 16,
+   "firstArg": "key",
+   "quote": "return (await this.redis.zcard(key)) > 0;"
+  },
+  {
+   "op": "eval",
+   "target": "this.redis",
+   "module": "signaling-gateway",
+   "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+   "line": 126,
+   "firstArg": "ACQUIRE_SCRIPT",
+   "quote": "const result = await this.redis.eval("
+  },
+  {
+   "op": "eval",
+   "target": "this.redis",
+   "module": "signaling-gateway",
+   "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+   "line": 139,
+   "firstArg": "REFRESH_SCRIPT",
+   "quote": "const result = await this.redis.eval("
+  },
+  {
+   "op": "eval",
+   "target": "this.redis",
+   "module": "signaling-gateway",
+   "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+   "line": 151,
+   "firstArg": "RELEASE_SCRIPT",
+   "quote": "await this.redis.eval("
+  },
+  {
+   "op": "quit",
+   "target": "this.redis",
+   "module": "signaling-gateway",
+   "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+   "line": 162,
+   "firstArg": null,
+   "quote": "await this.redis.quit();"
+  },
+  {
+   "op": "duplicate",
+   "target": "this.pubClient",
+   "module": "signaling-gateway",
+   "file": "apps/signaling-gateway/src/app/redis-adapter.service.ts",
+   "line": 26,
+   "firstArg": null,
+   "quote": "this.subClient = this.pubClient.duplicate();"
+  },
+  {
+   "op": "quit",
+   "target": "client",
+   "module": "signaling-gateway",
+   "file": "apps/signaling-gateway/src/app/redis-adapter.service.ts",
+   "line": 75,
+   "firstArg": null,
+   "quote": "await client.quit();"
+  },
+  {
+   "op": "quit",
+   "target": "subscriber",
+   "module": "signaling-gateway",
+   "file": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+   "line": 140,
+   "firstArg": null,
+   "quote": "await subscriber.quit();"
+  },
+  {
+   "op": "psubscribe",
+   "target": "this.subscriber",
+   "module": "signaling-gateway",
+   "file": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+   "line": 345,
+   "firstArg": "REALTIME_USER_CHANNEL_PATTERN",
+   "quote": "this.subscriptionInFlight = this.subscriber"
+  }
+ ],
+ "keyPatternCandidates": [
+  {
+   "pattern": "throttle:{${}:${}}",
+   "file": "apps/core-api/src/common/throttle/redis-throttler-storage.ts",
+   "line": 89,
+   "quote": "const slot = `throttle:{${throttlerName}:${key}}`;"
+  },
+  {
+   "pattern": "ws://localhost:7880",
+   "file": "apps/core-api/src/config/env.validation.ts",
+   "line": 534,
+   "quote": ".default('ws://localhost:7880'),"
+  },
+  {
+   "pattern": "match-sessions/:matchSessionId/join",
+   "file": "apps/core-api/src/modules/calling/calling.controller.ts",
+   "line": 30,
+   "quote": "@Post('match-sessions/:matchSessionId/join')"
+  },
+  {
+   "pattern": "match-sessions/:matchSessionId/end",
+   "file": "apps/core-api/src/modules/calling/calling.controller.ts",
+   "line": 113,
+   "quote": "@Post('match-sessions/:matchSessionId/end')"
+  },
+  {
+   "pattern": "quota_date = :quotaDate",
+   "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+   "line": 123,
+   "quote": ".where('quota_date = :quotaDate', { quotaDate })"
+  },
+  {
+   "pattern": "user_id = :userId",
+   "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+   "line": 197,
+   "quote": ".where('user_id = :userId', { userId: authorization.user.id })"
+  },
+  {
+   "pattern": "quota_date = :quotaDate",
+   "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+   "line": 198,
+   "quote": ".andWhere('quota_date = :quotaDate', { quotaDate })"
+  },
+  {
+   "pattern": "match_type = :matchType",
+   "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+   "line": 199,
+   "quote": ".andWhere('match_type = :matchType', { matchType })"
+  },
+  {
+   "pattern": "party:comment:${}:${}:${}",
+   "file": "apps/core-api/src/modules/party-room/party-room.constants.ts",
+   "line": 27,
+   "quote": "return `party:comment:${userId}:${roomId}:${key}`;"
+  },
+  {
+   "pattern": "user:${}",
+   "file": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+   "line": 33,
+   "quote": "return `user:${userId}`;"
+  },
+  {
+   "pattern": "realtime:user:",
+   "file": "libs/common-dtos/src/lib/realtime-events.ts",
+   "line": 13,
+   "quote": "export const REALTIME_USER_CHANNEL_PREFIX = 'realtime:user:';"
+  },
+  {
+   "pattern": "realtime:presence:",
+   "file": "libs/common-dtos/src/lib/realtime-presence.ts",
+   "line": 6,
+   "quote": "export const REALTIME_PRESENCE_KEY_PREFIX = 'realtime:presence:';"
+  }
+ ]
+}

@@ -1,0 +1,535 @@
+{
+ "id": "economy",
+ "kind": "core-api module",
+ "dir": "apps/core-api/src/modules/economy",
+ "mapAnchor": "svc-economy",
+ "role": "Sở hữu sổ cái double-entry append-only (ledger_entries), snapshot ví wallets, catalog IAP/VIP/payOS, receipt và order nạp tiền; LedgerService là writer duy nhất vào ledger/wallet cho cả hệ thống. Không sở hữu hiệu ứng nghiệp vụ của nơi tiêu diamond (boost hàng đợi, ghi GiftEvent, cấp item avatar) và không phát realtime; các module khác chỉ gọi qua EconomyService trong index.ts.",
+ "tagline": "Sổ cái kép, ví diamond, VIP, nạp tiền",
+ "owns": [
+  "bảng ledger_accounts, transactions (idempotency_key unique), ledger_entries (trigger chặn UPDATE/DELETE), wallets (snapshot balance/earnings/VIP)",
+  "bảng iap_products, iap_receipts, vip_plans, payos_packages, payos_payment_orders",
+  "bảng outbox_events (relay -> Kafka topic litmatch.economy.events)",
+  "advisory lock Postgres cho job đối soát (clusterSingleton)"
+ ],
+ "tables": [
+  {
+   "name": "iap_products",
+   "columns": 5,
+   "otherModules": []
+  },
+  {
+   "name": "iap_receipts",
+   "columns": 11,
+   "otherModules": []
+  },
+  {
+   "name": "ledger_accounts",
+   "columns": 5,
+   "otherModules": []
+  },
+  {
+   "name": "ledger_entries",
+   "columns": 7,
+   "otherModules": []
+  },
+  {
+   "name": "outbox_events",
+   "columns": 9,
+   "otherModules": []
+  },
+  {
+   "name": "payos_packages",
+   "columns": 5,
+   "otherModules": []
+  },
+  {
+   "name": "payos_payment_orders",
+   "columns": 17,
+   "otherModules": []
+  },
+  {
+   "name": "transactions",
+   "columns": 9,
+   "otherModules": []
+  },
+  {
+   "name": "vip_plans",
+   "columns": 6,
+   "otherModules": []
+  },
+  {
+   "name": "wallets",
+   "columns": 6,
+   "otherModules": []
+  }
+ ],
+ "tablesTouchedOfOthers": [],
+ "endpoints": {
+  "total": 12,
+  "public": 3,
+  "adminOnly": 0,
+  "idempotent": 2,
+  "webhooks": 3,
+  "explicitThrottle": 5
+ },
+ "endpointPaths": [
+  "/economy"
+ ],
+ "realtimeProduced": [],
+ "jobs": [
+  {
+   "class": "IapRefundPollService",
+   "jobName": "JOB",
+   "intervalMs": "this.config.getOrThrow('ECONOMY_REFUND_POLL_INTERVAL_MS', { infer: true, })"
+  },
+  {
+   "class": "OutboxRelayService",
+   "jobName": "RELAY_JOB",
+   "intervalMs": "this.config.getOrThrow('ECONOMY_OUTBOX_RELAY_INTERVAL_MS', { infer: true, })"
+  },
+  {
+   "class": "ReconciliationService",
+   "jobName": "JOB_FAST",
+   "intervalMs": "this.config.getOrThrow( 'ECONOMY_RECONCILIATION_FAST_INTERVAL_MS', { infer: true }, )"
+  },
+  {
+   "class": "ReconciliationService",
+   "jobName": "JOB_DEEP",
+   "intervalMs": "this.config.getOrThrow('ECONOMY_RECONCILIATION_INTERVAL_MS', { infer: true, })"
+  }
+ ],
+ "redisCallSites": 0,
+ "redisOps": [],
+ "envVars": [
+  {
+   "name": "ECONOMY_APPLE_SHARED_SECRET",
+   "file": "apps/core-api/src/modules/economy/clients/apple-receipt-api.adapter.ts",
+   "line": 42,
+   "quote": "const sharedSecret = this.config.getOrThrow('ECONOMY_APPLE_SHARED_SECRET', {",
+   "class": "secret",
+   "default": null,
+   "required": false
+  },
+  {
+   "name": "ECONOMY_APPLE_ISSUER_ID",
+   "file": "apps/core-api/src/modules/economy/clients/apple-server-api.ts",
+   "line": 18,
+   "quote": "const issuerId = config.getOrThrow('ECONOMY_APPLE_ISSUER_ID', {",
+   "class": "other",
+   "default": "",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_APPLE_KEY_ID",
+   "file": "apps/core-api/src/modules/economy/clients/apple-server-api.ts",
+   "line": 21,
+   "quote": "const keyId = config.getOrThrow('ECONOMY_APPLE_KEY_ID', { infer: true });",
+   "class": "other",
+   "default": "",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_APPLE_BUNDLE_ID",
+   "file": "apps/core-api/src/modules/economy/clients/apple-server-api.ts",
+   "line": 22,
+   "quote": "const bundleId = config.getOrThrow('ECONOMY_APPLE_BUNDLE_ID', {",
+   "class": "other",
+   "default": "",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_APPLE_PRIVATE_KEY",
+   "file": "apps/core-api/src/modules/economy/clients/apple-server-api.ts",
+   "line": 25,
+   "quote": "const privateKeyPem = config",
+   "class": "secret",
+   "default": null,
+   "required": false
+  },
+  {
+   "name": "ECONOMY_APPLE_SERVER_API_ENV",
+   "file": "apps/core-api/src/modules/economy/clients/apple-server-api.ts",
+   "line": 41,
+   "quote": "return config.getOrThrow('ECONOMY_APPLE_SERVER_API_ENV', { infer: true }) ===",
+   "class": "switch",
+   "default": "sandbox",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_GOOGLE_PACKAGE_NAME",
+   "file": "apps/core-api/src/modules/economy/clients/google-play-receipt-api.adapter.ts",
+   "line": 34,
+   "quote": "const packageName = this.config.getOrThrow(",
+   "class": "other",
+   "default": "",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_GOOGLE_SA_EMAIL",
+   "file": "apps/core-api/src/modules/economy/clients/google-service-account.ts",
+   "line": 16,
+   "quote": "const email = config.getOrThrow('ECONOMY_GOOGLE_SA_EMAIL', { infer: true });",
+   "class": "other",
+   "default": "",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_GOOGLE_SA_PRIVATE_KEY",
+   "file": "apps/core-api/src/modules/economy/clients/google-service-account.ts",
+   "line": 17,
+   "quote": "const privateKeyPem = config",
+   "class": "secret",
+   "default": null,
+   "required": false
+  },
+  {
+   "name": "ECONOMY_STORE_HTTP_TIMEOUT_MS",
+   "file": "apps/core-api/src/modules/economy/clients/store-api-http.ts",
+   "line": 10,
+   "quote": "config.getOrThrow('ECONOMY_STORE_HTTP_TIMEOUT_MS', { infer: true }),",
+   "class": "tuning",
+   "default": "10000",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_IAP_VERIFIER",
+   "file": "apps/core-api/src/modules/economy/economy.module.ts",
+   "line": 115,
+   "quote": "const provider = config.getOrThrow('ECONOMY_IAP_VERIFIER', {",
+   "class": "switch",
+   "default": "dev",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_APPLE_WEBHOOK_VERIFIER",
+   "file": "apps/core-api/src/modules/economy/economy.module.ts",
+   "line": 137,
+   "quote": "config.getOrThrow('ECONOMY_APPLE_WEBHOOK_VERIFIER', { infer: true }) ===",
+   "class": "switch",
+   "default": "store",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_GOOGLE_RTDN_VERIFIER",
+   "file": "apps/core-api/src/modules/economy/economy.module.ts",
+   "line": 152,
+   "quote": "config.getOrThrow('ECONOMY_GOOGLE_RTDN_VERIFIER', { infer: true }) ===",
+   "class": "switch",
+   "default": "store",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_REFUND_POLL_ENABLED",
+   "file": "apps/core-api/src/modules/economy/jobs/iap-refund-poll.service.ts",
+   "line": 64,
+   "quote": "if (!this.config.getOrThrow('ECONOMY_REFUND_POLL_ENABLED', { infer: true }))",
+   "class": "switch",
+   "default": "false",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_REFUND_POLL_INTERVAL_MS",
+   "file": "apps/core-api/src/modules/economy/jobs/iap-refund-poll.service.ts",
+   "line": 68,
+   "quote": "intervalMs: this.config.getOrThrow('ECONOMY_REFUND_POLL_INTERVAL_MS', {",
+   "class": "tuning",
+   "default": "3600000",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_REFUND_POLL_WINDOW_DAYS",
+   "file": "apps/core-api/src/modules/economy/jobs/iap-refund-poll.service.ts",
+   "line": 82,
+   "quote": "const windowDays = this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "60",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_OUTBOX_RELAY_ENABLED",
+   "file": "apps/core-api/src/modules/economy/jobs/outbox-relay.service.ts",
+   "line": 44,
+   "quote": "!this.config.getOrThrow('ECONOMY_OUTBOX_RELAY_ENABLED', { infer: true })",
+   "class": "switch",
+   "default": "false",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_OUTBOX_RELAY_INTERVAL_MS",
+   "file": "apps/core-api/src/modules/economy/jobs/outbox-relay.service.ts",
+   "line": 50,
+   "quote": "intervalMs: this.config.getOrThrow('ECONOMY_OUTBOX_RELAY_INTERVAL_MS', {",
+   "class": "tuning",
+   "default": "2000",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_OUTBOX_MAX_ATTEMPTS",
+   "file": "apps/core-api/src/modules/economy/jobs/outbox-relay.service.ts",
+   "line": 110,
+   "quote": "return this.config.getOrThrow('ECONOMY_OUTBOX_MAX_ATTEMPTS', {",
+   "class": "tuning",
+   "default": "5",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_RECONCILIATION_ENABLED",
+   "file": "apps/core-api/src/modules/economy/jobs/reconciliation.service.ts",
+   "line": 82,
+   "quote": "!this.config.getOrThrow('ECONOMY_RECONCILIATION_ENABLED', { infer: true })",
+   "class": "switch",
+   "default": "true",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_RECONCILIATION_FAST_INTERVAL_MS",
+   "file": "apps/core-api/src/modules/economy/jobs/reconciliation.service.ts",
+   "line": 87,
+   "quote": "intervalMs: this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "60000",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_RECONCILIATION_INTERVAL_MS",
+   "file": "apps/core-api/src/modules/economy/jobs/reconciliation.service.ts",
+   "line": 98,
+   "quote": "intervalMs: this.config.getOrThrow('ECONOMY_RECONCILIATION_INTERVAL_MS', {",
+   "class": "tuning",
+   "default": "300000",
+   "required": false
+  },
+  {
+   "name": "NODE_ENV",
+   "file": "apps/core-api/src/modules/economy/ports/iap-verifier.ts",
+   "line": 64,
+   "quote": "this.config.get('NODE_ENV', { infer: true }) === 'production' &&",
+   "class": null,
+   "default": null,
+   "required": false
+  },
+  {
+   "name": "ECONOMY_APPLE_ROOT_CA_PEM",
+   "file": "apps/core-api/src/modules/economy/ports/notification-verifier.ts",
+   "line": 119,
+   "quote": "const trustedRootPem = this.config",
+   "class": "secret",
+   "default": null,
+   "required": false
+  },
+  {
+   "name": "ECONOMY_GOOGLE_RTDN_AUDIENCE",
+   "file": "apps/core-api/src/modules/economy/ports/notification-verifier.ts",
+   "line": 243,
+   "quote": "const audience = this.config.getOrThrow('ECONOMY_GOOGLE_RTDN_AUDIENCE', {",
+   "class": "other",
+   "default": "",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_GOOGLE_RTDN_SERVICE_ACCOUNT_EMAIL",
+   "file": "apps/core-api/src/modules/economy/ports/notification-verifier.ts",
+   "line": 246,
+   "quote": "const expectedEmail = this.config.getOrThrow(",
+   "class": "other",
+   "default": "",
+   "required": false
+  },
+  {
+   "name": "PAYOS_API_BASE_URL",
+   "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
+   "line": 75,
+   "quote": "const baseUrl = this.config.getOrThrow('PAYOS_API_BASE_URL', {",
+   "class": "endpoint",
+   "default": "https://api-merchant.payos.vn",
+   "required": false
+  },
+  {
+   "name": "PAYOS_HTTP_TIMEOUT_MS",
+   "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
+   "line": 102,
+   "quote": "this.config.getOrThrow('PAYOS_HTTP_TIMEOUT_MS', { infer: true }),",
+   "class": "tuning",
+   "default": "10000",
+   "required": false
+  },
+  {
+   "name": "PAYOS_CLIENT_ID",
+   "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
+   "line": 181,
+   "quote": "const clientId = this.config.getOrThrow('PAYOS_CLIENT_ID', { infer: true });",
+   "class": "other",
+   "default": "",
+   "required": false
+  },
+  {
+   "name": "PAYOS_API_KEY",
+   "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
+   "line": 182,
+   "quote": "const apiKey = this.config.getOrThrow('PAYOS_API_KEY', { infer: true });",
+   "class": "secret",
+   "default": null,
+   "required": false
+  },
+  {
+   "name": "PAYOS_CHECKSUM_KEY",
+   "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
+   "line": 183,
+   "quote": "const checksumKey = this.config.getOrThrow('PAYOS_CHECKSUM_KEY', {",
+   "class": "secret",
+   "default": null,
+   "required": false
+  },
+  {
+   "name": "PAYOS_ORDER_EXPIRES_SECONDS",
+   "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+   "line": 102,
+   "quote": "this.config.getOrThrow('PAYOS_ORDER_EXPIRES_SECONDS', {",
+   "class": "tuning",
+   "default": "900",
+   "required": false
+  },
+  {
+   "name": "PAYOS_WEB_WALLET_URL",
+   "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+   "line": 268,
+   "quote": "this.config.getOrThrow('PAYOS_WEB_WALLET_URL', { infer: true });",
+   "class": "endpoint",
+   "default": "",
+   "required": false
+  }
+ ],
+ "errorGroups": [
+  "EconomyErrors"
+ ],
+ "errorCodes": 19,
+ "errorCodesUnused": 3,
+ "tests": {
+  "unit": 7,
+  "integration": 1
+ },
+ "docs": {
+  "path": "docs/services/economy-service.md",
+  "lastChanged": "2026-10-09",
+  "commitsSince": 0
+ },
+ "features": [
+  {
+   "id": "economy-ledger",
+   "title": "Wallet, IAP catalog, VIP and double-entry ledger",
+   "status": "implemented"
+  }
+ ],
+ "churn": {
+  "commits": 30,
+  "recent": 0,
+  "fixes": 4,
+  "last": "2026-08-13"
+ },
+ "issues": [
+  {
+   "id": "P094",
+   "title": "Giới hạn đã biết: advisory lock Palm/Movie Match, outbox chưa có consumer/retention",
+   "status": "open",
+   "tier": "B"
+  },
+  {
+   "id": "P001",
+   "title": "Guard ledger chặn nhầm bút toán đảo (refund/chargeback)",
+   "status": "fixed",
+   "tier": "A"
+  },
+  {
+   "id": "P006",
+   "title": "Swagger thiếu cursor pagination → client sinh kiểu never",
+   "status": "fixed",
+   "tier": "A"
+  },
+  {
+   "id": "P087",
+   "title": "Bỏ qua kiểm bundleId Apple khi env rỗng",
+   "status": "fixed",
+   "tier": "A"
+  }
+ ],
+ "mapCollaborators": [
+  {
+   "with": "kafka",
+   "kind": "infra",
+   "mechanism": "kafka",
+   "direction": "out"
+  },
+  {
+   "with": "postgres",
+   "kind": "infra",
+   "mechanism": "shared-db",
+   "direction": "out"
+  },
+  {
+   "with": "admin",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "avatar",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "gift",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "matching",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "external:apple",
+   "kind": "external",
+   "mechanism": "http",
+   "direction": "out"
+  },
+  {
+   "with": "external:apple",
+   "kind": "external",
+   "mechanism": "webhook",
+   "direction": "in"
+  },
+  {
+   "with": "external:google-play",
+   "kind": "external",
+   "mechanism": "http",
+   "direction": "out"
+  },
+  {
+   "with": "external:google-play",
+   "kind": "external",
+   "mechanism": "webhook",
+   "direction": "in"
+  },
+  {
+   "with": "external:payos",
+   "kind": "external",
+   "mechanism": "http",
+   "direction": "out"
+  },
+  {
+   "with": "external:payos",
+   "kind": "external",
+   "mechanism": "webhook",
+   "direction": "in"
+  },
+  {
+   "with": "web",
+   "kind": "client",
+   "mechanism": "http",
+   "direction": "both"
+  }
+ ]
+}

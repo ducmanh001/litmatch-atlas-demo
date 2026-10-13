@@ -1,0 +1,1520 @@
+{
+ "generatedFrom": "git log of the current branch",
+ "head": "d3cb28c",
+ "totalCommits": 145,
+ "recipes": [
+  {
+   "id": "endpoint",
+   "title": "Thêm một endpoint REST",
+   "detection": "Commit làm openapi/core-api.json thêm một operationId mới",
+   "commitsConsidered": 27,
+   "matching": 21,
+   "usable": 9,
+   "skippedMega": 12,
+   "buckets": [
+    {
+     "bucket": "controller",
+     "count": 9,
+     "pct": 100,
+     "example": [
+      "apps/core-api/src/modules/friend/controllers/profile-social.controller.ts",
+      "apps/core-api/src/modules/friend/friend.controller.ts"
+     ]
+    },
+    {
+     "bucket": "unit/integration test",
+     "count": 9,
+     "pct": 100,
+     "example": [
+      "apps/core-api/src/modules/friend/friend.integration.spec.ts",
+      "apps/web/src/features/notification/notification-copy.spec.ts"
+     ]
+    },
+    {
+     "bucket": "service / domain code",
+     "count": 9,
+     "pct": 100,
+     "example": [
+      "apps/core-api/src/modules/friend/services/profile-social.service.spec.ts",
+      "apps/core-api/src/modules/friend/services/profile-social.service.ts"
+     ]
+    },
+    {
+     "bucket": "generated api-client",
+     "count": 9,
+     "pct": 100,
+     "example": [
+      "libs/api-client/src/generated/core-api.ts"
+     ]
+    },
+    {
+     "bucket": "openapi/core-api.json",
+     "count": 9,
+     "pct": 100,
+     "example": [
+      "openapi/core-api.json"
+     ]
+    },
+    {
+     "bucket": "dto",
+     "count": 8,
+     "pct": 89,
+     "example": [
+      "apps/core-api/src/modules/friend/dto/profile-social.dtos.ts"
+     ]
+    },
+    {
+     "bucket": "module wiring (*.module.ts)",
+     "count": 7,
+     "pct": 78,
+     "example": [
+      "apps/core-api/src/modules/friend/friend.module.ts",
+      "apps/core-api/src/modules/gift/gift.module.ts"
+     ]
+    },
+    {
+     "bucket": "migration",
+     "count": 6,
+     "pct": 67,
+     "example": [
+      "apps/core-api/src/database/migrations/1757900000000-profile-follow-following-index.ts"
+     ]
+    },
+    {
+     "bucket": "entity",
+     "count": 6,
+     "pct": 67,
+     "example": [
+      "apps/core-api/src/modules/friend/entities/profile-follow.entity.ts"
+     ]
+    },
+    {
+     "bucket": "module public API (index.ts)",
+     "count": 6,
+     "pct": 67,
+     "example": [
+      "apps/core-api/src/modules/friend/index.ts"
+     ]
+    },
+    {
+     "bucket": "agent instructions (AGENTS.md)",
+     "count": 5,
+     "pct": 56,
+     "example": [
+      "apps/web/AGENTS.md"
+     ]
+    },
+    {
+     "bucket": "web feature code",
+     "count": 5,
+     "pct": 56,
+     "example": [
+      "apps/web/src/app/(app)/app-chrome.tsx",
+      "apps/web/src/app/(app)/friends/page.tsx"
+     ]
+    },
+    {
+     "bucket": "docs/services",
+     "count": 5,
+     "pct": 56,
+     "example": [
+      "docs/services/friend-service.md"
+     ]
+    },
+    {
+     "bucket": "env.validation.ts (core-api)",
+     "count": 4,
+     "pct": 44,
+     "example": [
+      "apps/core-api/src/config/env.validation.ts"
+     ]
+    },
+    {
+     "bucket": ".env.example",
+     "count": 3,
+     "pct": 33,
+     "example": [
+      ".env.example"
+     ]
+    },
+    {
+     "bucket": "docs (other)",
+     "count": 3,
+     "pct": 33,
+     "example": [
+      "docs/02-domain-model.md",
+      "docs/06-domain-rules.md"
+     ]
+    },
+    {
+     "bucket": "core-api other source (jobs, ports, guards, common)",
+     "count": 3,
+     "pct": 33,
+     "example": [
+      "apps/core-api/src/modules/party-room/jobs/party-room-sweeper.service.ts"
+     ]
+    },
+    {
+     "bucket": "realtime contract (common-dtos)",
+     "count": 3,
+     "pct": 33,
+     "example": [
+      "libs/common-dtos/src/lib/realtime-events.ts"
+     ]
+    },
+    {
+     "bucket": "admin feature code",
+     "count": 3,
+     "pct": 33,
+     "example": [
+      "apps/admin/src/app/router.tsx",
+      "apps/admin/src/features/economy/api.ts"
+     ]
+    },
+    {
+     "bucket": "CI / scripts",
+     "count": 2,
+     "pct": 22,
+     "example": [
+      "scripts/ci/local.mjs",
+      "scripts/ci/local.test.mjs"
+     ]
+    },
+    {
+     "bucket": "other",
+     "count": 1,
+     "pct": 11,
+     "example": [
+      ".agents/context-map.json"
+     ]
+    },
+    {
+     "bucket": "core-api app wiring (app.module / main)",
+     "count": 1,
+     "pct": 11,
+     "example": [
+      "apps/core-api/src/app/app.module.ts",
+      "apps/core-api/src/main.ts"
+     ]
+    }
+   ],
+   "sample": [
+    {
+     "hash": "3d3953d",
+     "date": "2026-10-10",
+     "subject": "feat(friend,web): danh sách follower/following và trang Bạn bè (ghép đôi hoặc follow 2 chiều)",
+     "files": 38
+    },
+    {
+     "hash": "4e1332b",
+     "date": "2026-08-19",
+     "subject": "feat/profile-direct-chat-gift-gate (#68)",
+     "files": 35
+    },
+    {
+     "hash": "886b8f6",
+     "date": "2026-08-03",
+     "subject": "feat/room-chat-realtime (#60)",
+     "files": 28
+    },
+    {
+     "hash": "218f573",
+     "date": "2026-08-01",
+     "subject": "feat(agent): add memory and auto-save state for cross-session context (#54)",
+     "files": 32
+    },
+    {
+     "hash": "7987316",
+     "date": "2026-07-30",
+     "subject": "feat/payos-diamond-integration (#49)",
+     "files": 32
+    },
+    {
+     "hash": "01ffb4a",
+     "date": "2026-07-13",
+     "subject": "feat(admin): Economy ops — wallet view, transaction history, manual refund (#24)",
+     "files": 13
+    }
+   ]
+  },
+  {
+   "id": "env",
+   "title": "Thêm một biến môi trường cho core-api",
+   "detection": "Commit thêm một dòng KEY: Joi… trong env.validation.ts",
+   "commitsConsidered": 37,
+   "matching": 34,
+   "usable": 18,
+   "skippedMega": 16,
+   "buckets": [
+    {
+     "bucket": "env.validation.ts (core-api)",
+     "count": 18,
+     "pct": 100,
+     "example": [
+      "apps/core-api/src/config/env.validation.ts"
+     ]
+    },
+    {
+     "bucket": "unit/integration test",
+     "count": 17,
+     "pct": 94,
+     "example": [
+      "apps/core-api/src/config/env.validation.spec.ts"
+     ]
+    },
+    {
+     "bucket": ".env.example",
+     "count": 16,
+     "pct": 89,
+     "example": [
+      ".env.example"
+     ]
+    },
+    {
+     "bucket": "docs/services",
+     "count": 14,
+     "pct": 78,
+     "example": [
+      "docs/services/economy-service.md"
+     ]
+    },
+    {
+     "bucket": "core-api other source (jobs, ports, guards, common)",
+     "count": 14,
+     "pct": 78,
+     "example": [
+      "apps/core-api/src/common/guards/jwt-auth.guard.ts",
+      "apps/core-api/src/common/guards/jwt-rotation.ts"
+     ]
+    },
+    {
+     "bucket": "service / domain code",
+     "count": 14,
+     "pct": 78,
+     "example": [
+      "apps/core-api/src/modules/friend/friend.errors.ts",
+      "apps/core-api/src/modules/friend/services/profile-social.service.spec.ts"
+     ]
+    },
+    {
+     "bucket": "migration",
+     "count": 13,
+     "pct": 72,
+     "example": [
+      "apps/core-api/src/database/migrations/1757400000000-profile-follow.ts",
+      "apps/core-api/src/database/migrations/1757500000000-profile-gift-context.ts"
+     ]
+    },
+    {
+     "bucket": "dto",
+     "count": 12,
+     "pct": 67,
+     "example": [
+      "apps/core-api/src/modules/friend/dto/profile-social.dtos.ts",
+      "apps/core-api/src/modules/gift/dto/gift.dtos.ts"
+     ]
+    },
+    {
+     "bucket": "entity",
+     "count": 12,
+     "pct": 67,
+     "example": [
+      "apps/core-api/src/modules/friend/entities/profile-chat-contact.entity.ts",
+      "apps/core-api/src/modules/friend/entities/profile-follow.entity.ts"
+     ]
+    },
+    {
+     "bucket": "module wiring (*.module.ts)",
+     "count": 12,
+     "pct": 67,
+     "example": [
+      "apps/core-api/src/modules/friend/friend.module.ts",
+      "apps/core-api/src/modules/gift/gift.module.ts"
+     ]
+    },
+    {
+     "bucket": "docs (other)",
+     "count": 12,
+     "pct": 67,
+     "example": [
+      "docs/02-domain-model.md",
+      "docs/06-domain-rules.md"
+     ]
+    },
+    {
+     "bucket": "controller",
+     "count": 11,
+     "pct": 61,
+     "example": [
+      "apps/core-api/src/modules/friend/controllers/profile-social.controller.ts",
+      "apps/core-api/src/modules/gift/gift.controller.ts"
+     ]
+    },
+    {
+     "bucket": "module public API (index.ts)",
+     "count": 10,
+     "pct": 56,
+     "example": [
+      "apps/core-api/src/modules/friend/index.ts"
+     ]
+    },
+    {
+     "bucket": "core-api app wiring (app.module / main)",
+     "count": 8,
+     "pct": 44,
+     "example": [
+      "apps/core-api/src/app/app.module.ts"
+     ]
+    },
+    {
+     "bucket": "k8s manifests",
+     "count": 7,
+     "pct": 39,
+     "example": [
+      "k8s/README.md",
+      "k8s/base/core-api/configmap.yaml"
+     ]
+    },
+    {
+     "bucket": "other",
+     "count": 7,
+     "pct": 39,
+     "example": [
+      ".husky/pre-push"
+     ]
+    },
+    {
+     "bucket": "generated api-client",
+     "count": 5,
+     "pct": 28,
+     "example": [
+      "libs/api-client/src/generated/core-api.ts"
+     ]
+    },
+    {
+     "bucket": "openapi/core-api.json",
+     "count": 5,
+     "pct": 28,
+     "example": [
+      "openapi/core-api.json"
+     ]
+    },
+    {
+     "bucket": "web feature code",
+     "count": 4,
+     "pct": 22,
+     "example": [
+      "apps/web/src/features/discovery/components/discovery-detail-sheet.tsx",
+      "apps/web/src/features/profile/api.ts"
+     ]
+    },
+    {
+     "bucket": "realtime contract (common-dtos)",
+     "count": 4,
+     "pct": 22,
+     "example": [
+      "libs/common-dtos/src/lib/realtime-events.ts"
+     ]
+    },
+    {
+     "bucket": "CI / scripts",
+     "count": 3,
+     "pct": 17,
+     "example": [
+      "scripts/ci/local.mjs",
+      "scripts/ci/local.test.mjs"
+     ]
+    },
+    {
+     "bucket": "deploy/ (compose, hosted)",
+     "count": 2,
+     "pct": 11,
+     "example": [
+      "deploy/production/compose.yml"
+     ]
+    },
+    {
+     "bucket": "agent instructions (AGENTS.md)",
+     "count": 2,
+     "pct": 11,
+     "example": [
+      "apps/web/AGENTS.md"
+     ]
+    },
+    {
+     "bucket": "dependencies (package.json, lockfile)",
+     "count": 2,
+     "pct": 11,
+     "example": [
+      "package.json",
+      "pnpm-lock.yaml"
+     ]
+    },
+    {
+     "bucket": "signaling-gateway",
+     "count": 1,
+     "pct": 6,
+     "example": [
+      "apps/signaling-gateway/src/app/jwt-rotation.ts",
+      "apps/signaling-gateway/src/app/signaling.gateway.ts"
+     ]
+    },
+    {
+     "bucket": "admin feature code",
+     "count": 1,
+     "pct": 6,
+     "example": [
+      "apps/admin/src/features/moderation/api.ts",
+      "apps/admin/src/features/users/api.ts"
+     ]
+    }
+   ],
+   "sample": [
+    {
+     "hash": "1ffebf3",
+     "date": "2026-10-09",
+     "subject": "fix(core-api): trust proxy cho rate limit dùng chung, sàn và timeout lấy kết nối của pool Postgres",
+     "files": 6
+    },
+    {
+     "hash": "03ab95e",
+     "date": "2026-10-09",
+     "subject": "fix(economy): bắt buộc ECONOMY_APPLE_BUNDLE_ID khi ECONOMY_IAP_VERIFIER=store",
+     "files": 4
+    },
+    {
+     "hash": "80106a1",
+     "date": "2026-10-09",
+     "subject": "feat(auth): xoay JWT_SECRET không đăng xuất mọi người (JWT_SECRET_PREVIOUS)",
+     "files": 17
+    },
+    {
+     "hash": "7bd301b",
+     "date": "2026-10-09",
+     "subject": "fix(core-api): sẵn sàng nhiều replica — rate limit dùng chung qua Redis và trần kết nối Postgres mỗi pod",
+     "files": 8
+    },
+    {
+     "hash": "4e1332b",
+     "date": "2026-08-19",
+     "subject": "feat/profile-direct-chat-gift-gate (#68)",
+     "files": 35
+    },
+    {
+     "hash": "886b8f6",
+     "date": "2026-08-03",
+     "subject": "feat/room-chat-realtime (#60)",
+     "files": 28
+    }
+   ]
+  },
+  {
+   "id": "migration",
+   "title": "Thêm một migration (bảng/cột/index mới)",
+   "detection": "Commit thêm file mới trong database/migrations/",
+   "commitsConsidered": 36,
+   "matching": 33,
+   "usable": 18,
+   "skippedMega": 15,
+   "buckets": [
+    {
+     "bucket": "migration",
+     "count": 18,
+     "pct": 100,
+     "example": [
+      "apps/core-api/src/database/migrations/1757900000000-profile-follow-following-index.ts"
+     ]
+    },
+    {
+     "bucket": "unit/integration test",
+     "count": 18,
+     "pct": 100,
+     "example": [
+      "apps/core-api/src/modules/friend/friend.integration.spec.ts",
+      "apps/web/src/features/notification/notification-copy.spec.ts"
+     ]
+    },
+    {
+     "bucket": "service / domain code",
+     "count": 17,
+     "pct": 94,
+     "example": [
+      "apps/core-api/src/modules/friend/services/profile-social.service.spec.ts",
+      "apps/core-api/src/modules/friend/services/profile-social.service.ts"
+     ]
+    },
+    {
+     "bucket": "entity",
+     "count": 16,
+     "pct": 89,
+     "example": [
+      "apps/core-api/src/modules/friend/entities/profile-follow.entity.ts"
+     ]
+    },
+    {
+     "bucket": "dto",
+     "count": 15,
+     "pct": 83,
+     "example": [
+      "apps/core-api/src/modules/friend/dto/profile-social.dtos.ts"
+     ]
+    },
+    {
+     "bucket": "docs/services",
+     "count": 14,
+     "pct": 78,
+     "example": [
+      "docs/services/friend-service.md"
+     ]
+    },
+    {
+     "bucket": "controller",
+     "count": 13,
+     "pct": 72,
+     "example": [
+      "apps/core-api/src/modules/friend/controllers/profile-social.controller.ts",
+      "apps/core-api/src/modules/friend/friend.controller.ts"
+     ]
+    },
+    {
+     "bucket": "core-api other source (jobs, ports, guards, common)",
+     "count": 13,
+     "pct": 72,
+     "example": [
+      "apps/core-api/src/modules/short-video/jobs/video-sweeper.service.ts"
+     ]
+    },
+    {
+     "bucket": "env.validation.ts (core-api)",
+     "count": 13,
+     "pct": 72,
+     "example": [
+      "apps/core-api/src/config/env.validation.ts"
+     ]
+    },
+    {
+     "bucket": "module wiring (*.module.ts)",
+     "count": 13,
+     "pct": 72,
+     "example": [
+      "apps/core-api/src/modules/friend/friend.module.ts",
+      "apps/core-api/src/modules/gift/gift.module.ts"
+     ]
+    },
+    {
+     "bucket": ".env.example",
+     "count": 11,
+     "pct": 61,
+     "example": [
+      ".env.example"
+     ]
+    },
+    {
+     "bucket": "module public API (index.ts)",
+     "count": 11,
+     "pct": 61,
+     "example": [
+      "apps/core-api/src/modules/friend/index.ts"
+     ]
+    },
+    {
+     "bucket": "docs (other)",
+     "count": 11,
+     "pct": 61,
+     "example": [
+      "docs/02-domain-model.md",
+      "docs/06-domain-rules.md"
+     ]
+    },
+    {
+     "bucket": "generated api-client",
+     "count": 7,
+     "pct": 39,
+     "example": [
+      "libs/api-client/src/generated/core-api.ts"
+     ]
+    },
+    {
+     "bucket": "openapi/core-api.json",
+     "count": 7,
+     "pct": 39,
+     "example": [
+      "openapi/core-api.json"
+     ]
+    },
+    {
+     "bucket": "core-api app wiring (app.module / main)",
+     "count": 7,
+     "pct": 39,
+     "example": [
+      "apps/core-api/src/app/capabilities.service.ts"
+     ]
+    },
+    {
+     "bucket": "other",
+     "count": 7,
+     "pct": 39,
+     "example": [
+      "apps/web/public/avatar/accessory-crown.svg",
+      "apps/web/public/avatar/accessory-none.svg"
+     ]
+    },
+    {
+     "bucket": "web feature code",
+     "count": 6,
+     "pct": 33,
+     "example": [
+      "apps/web/src/app/(app)/app-chrome.tsx",
+      "apps/web/src/app/(app)/friends/page.tsx"
+     ]
+    },
+    {
+     "bucket": "agent instructions (AGENTS.md)",
+     "count": 4,
+     "pct": 22,
+     "example": [
+      "apps/web/AGENTS.md"
+     ]
+    },
+    {
+     "bucket": "realtime contract (common-dtos)",
+     "count": 4,
+     "pct": 22,
+     "example": [
+      "libs/common-dtos/src/lib/realtime-events.ts"
+     ]
+    },
+    {
+     "bucket": "CI / scripts",
+     "count": 3,
+     "pct": 17,
+     "example": [
+      "scripts/ci/local.mjs",
+      "scripts/ci/local.test.mjs"
+     ]
+    },
+    {
+     "bucket": "admin feature code",
+     "count": 2,
+     "pct": 11,
+     "example": [
+      "apps/admin/src/features/moderation/api.ts",
+      "apps/admin/src/features/users/api.ts"
+     ]
+    },
+    {
+     "bucket": "k8s manifests",
+     "count": 2,
+     "pct": 11,
+     "example": [
+      "k8s/base/core-api/configmap.yaml"
+     ]
+    },
+    {
+     "bucket": "dependencies (package.json, lockfile)",
+     "count": 2,
+     "pct": 11,
+     "example": [
+      "package.json",
+      "pnpm-lock.yaml"
+     ]
+    },
+    {
+     "bucket": "libs (other)",
+     "count": 1,
+     "pct": 6,
+     "example": [
+      "libs/api-client/src/lib/client.ts",
+      "libs/api-client/src/lib/token-store.ts"
+     ]
+    },
+    {
+     "bucket": "deploy/ (compose, hosted)",
+     "count": 1,
+     "pct": 6,
+     "example": [
+      "deploy/production/livekit.yaml"
+     ]
+    }
+   ],
+   "sample": [
+    {
+     "hash": "3d3953d",
+     "date": "2026-10-10",
+     "subject": "feat(friend,web): danh sách follower/following và trang Bạn bè (ghép đôi hoặc follow 2 chiều)",
+     "files": 38
+    },
+    {
+     "hash": "4f0ae66",
+     "date": "2026-10-09",
+     "subject": "fix(short-video): view count không cộng đôi khi đồng thời; sweeper không đói video failed mới",
+     "files": 9
+    },
+    {
+     "hash": "4e1332b",
+     "date": "2026-08-19",
+     "subject": "feat/profile-direct-chat-gift-gate (#68)",
+     "files": 35
+    },
+    {
+     "hash": "e2b5841",
+     "date": "2026-08-15",
+     "subject": "fix: unblock guest matching and avatar/feed UX",
+     "files": 19
+    },
+    {
+     "hash": "886b8f6",
+     "date": "2026-08-03",
+     "subject": "feat/room-chat-realtime (#60)",
+     "files": 28
+    },
+    {
+     "hash": "3b1b982",
+     "date": "2026-08-01",
+     "subject": "refactor/mutiple-stage-CI/CD (#51)",
+     "files": 40
+    }
+   ]
+  },
+  {
+   "id": "realtime",
+   "title": "Thêm một sự kiện realtime",
+   "detection": "Commit thêm một khoá vào RealtimeEvents",
+   "commitsConsidered": 12,
+   "matching": 10,
+   "usable": 6,
+   "skippedMega": 4,
+   "buckets": [
+    {
+     "bucket": "unit/integration test",
+     "count": 6,
+     "pct": 100,
+     "example": [
+      "apps/core-api/src/modules/gift/gift.integration.spec.ts",
+      "apps/core-api/src/modules/party-room/party-room.integration.spec.ts"
+     ]
+    },
+    {
+     "bucket": "service / domain code",
+     "count": 6,
+     "pct": 100,
+     "example": [
+      "apps/core-api/src/modules/party-room/party-room.constants.ts",
+      "apps/core-api/src/modules/party-room/party-room.errors.ts"
+     ]
+    },
+    {
+     "bucket": "docs/services",
+     "count": 6,
+     "pct": 100,
+     "example": [
+      "docs/services/party-room-service.md"
+     ]
+    },
+    {
+     "bucket": "realtime contract (common-dtos)",
+     "count": 6,
+     "pct": 100,
+     "example": [
+      "libs/common-dtos/src/lib/realtime-events.ts"
+     ]
+    },
+    {
+     "bucket": "core-api other source (jobs, ports, guards, common)",
+     "count": 5,
+     "pct": 83,
+     "example": [
+      "apps/core-api/src/modules/party-room/jobs/party-room-sweeper.service.ts"
+     ]
+    },
+    {
+     "bucket": "controller",
+     "count": 5,
+     "pct": 83,
+     "example": [
+      "apps/core-api/src/modules/party-room/party-room.controller.ts"
+     ]
+    },
+    {
+     "bucket": "module wiring (*.module.ts)",
+     "count": 5,
+     "pct": 83,
+     "example": [
+      "apps/core-api/src/modules/party-room/party-room.module.ts"
+     ]
+    },
+    {
+     "bucket": "other",
+     "count": 5,
+     "pct": 83,
+     "example": [
+      ".agents/context-map.json"
+     ]
+    },
+    {
+     "bucket": ".env.example",
+     "count": 4,
+     "pct": 67,
+     "example": [
+      ".env.example"
+     ]
+    },
+    {
+     "bucket": "dto",
+     "count": 4,
+     "pct": 67,
+     "example": [
+      "apps/core-api/src/modules/party-room/dto/party-room.dtos.ts"
+     ]
+    },
+    {
+     "bucket": "entity",
+     "count": 4,
+     "pct": 67,
+     "example": [
+      "apps/core-api/src/modules/party-room/entities/party-room-comment.entity.ts",
+      "apps/core-api/src/modules/party-room/entities/party-room-member.entity.ts"
+     ]
+    },
+    {
+     "bucket": "module public API (index.ts)",
+     "count": 4,
+     "pct": 67,
+     "example": [
+      "apps/core-api/src/modules/party-room/index.ts"
+     ]
+    },
+    {
+     "bucket": "docs (other)",
+     "count": 4,
+     "pct": 67,
+     "example": [
+      "docs/00-overview-and-index.md",
+      "docs/08-working-with-agents.md"
+     ]
+    },
+    {
+     "bucket": "env.validation.ts (core-api)",
+     "count": 3,
+     "pct": 50,
+     "example": [
+      "apps/core-api/src/config/env.validation.ts"
+     ]
+    },
+    {
+     "bucket": "migration",
+     "count": 3,
+     "pct": 50,
+     "example": [
+      "apps/core-api/src/database/migrations/1756800000000-party-room-presence-chat.ts"
+     ]
+    },
+    {
+     "bucket": "web feature code",
+     "count": 2,
+     "pct": 33,
+     "example": [
+      "apps/web/src/features/party-room/api.ts",
+      "apps/web/src/features/party-room/components/member-list.tsx"
+     ]
+    },
+    {
+     "bucket": "generated api-client",
+     "count": 2,
+     "pct": 33,
+     "example": [
+      "libs/api-client/src/generated/core-api.ts"
+     ]
+    },
+    {
+     "bucket": "openapi/core-api.json",
+     "count": 2,
+     "pct": 33,
+     "example": [
+      "openapi/core-api.json"
+     ]
+    },
+    {
+     "bucket": "dependencies (package.json, lockfile)",
+     "count": 2,
+     "pct": 33,
+     "example": [
+      "package.json",
+      "pnpm-lock.yaml"
+     ]
+    },
+    {
+     "bucket": "CI / scripts",
+     "count": 1,
+     "pct": 17,
+     "example": [
+      "scripts/agent/context.test.mjs"
+     ]
+    },
+    {
+     "bucket": "core-api app wiring (app.module / main)",
+     "count": 1,
+     "pct": 17,
+     "example": [
+      "apps/core-api/src/app/app.module.ts",
+      "apps/core-api/src/main.ts"
+     ]
+    },
+    {
+     "bucket": "signaling-gateway",
+     "count": 1,
+     "pct": 17,
+     "example": [
+      "apps/signaling-gateway/jest.config.cts",
+      "apps/signaling-gateway/src/app/signaling.gateway.ts"
+     ]
+    }
+   ],
+   "sample": [
+    {
+     "hash": "886b8f6",
+     "date": "2026-08-03",
+     "subject": "feat/room-chat-realtime (#60)",
+     "files": 28
+    },
+    {
+     "hash": "218f573",
+     "date": "2026-08-01",
+     "subject": "feat(agent): add memory and auto-save state for cross-session context (#54)",
+     "files": 32
+    },
+    {
+     "hash": "0a3dc5e",
+     "date": "2026-07-12",
+     "subject": "feat(gift): catalog, sendGift 2-leg transaction, realtime publish — Giai đoạn 3 part 2",
+     "files": 18
+    },
+    {
+     "hash": "37c20c6",
+     "date": "2026-07-12",
+     "subject": "feat(friend): chat 1-1 lâu dài giữa bạn bè — hoàn tất Giai đoạn 2",
+     "files": 23
+    },
+    {
+     "hash": "e6c9a7d",
+     "date": "2026-07-12",
+     "subject": "feat(calling): voice call 2 người trên LiveKit — lifecycle, timer server, billing theo phút (Giai đoạn 2)",
+     "files": 27
+    },
+    {
+     "hash": "9e74e6a",
+     "date": "2026-07-12",
+     "subject": "feat(realtime): nền fanout Signaling Gateway + publish event từ core-api (Giai đoạn 2)",
+     "files": 28
+    }
+   ]
+  },
+  {
+   "id": "job",
+   "title": "Thêm một job nền",
+   "detection": "Commit thêm file mới trong modules/*/jobs/",
+   "commitsConsidered": 60,
+   "matching": 6,
+   "usable": 3,
+   "skippedMega": 3,
+   "buckets": [
+    {
+     "bucket": ".env.example",
+     "count": 3,
+     "pct": 100,
+     "example": [
+      ".env.example"
+     ]
+    },
+    {
+     "bucket": "env.validation.ts (core-api)",
+     "count": 3,
+     "pct": 100,
+     "example": [
+      "apps/core-api/src/config/env.validation.ts"
+     ]
+    },
+    {
+     "bucket": "unit/integration test",
+     "count": 3,
+     "pct": 100,
+     "example": [
+      "apps/core-api/src/modules/economy/economy.integration.spec.ts",
+      "apps/core-api/src/modules/economy/economy.metrics.spec.ts"
+     ]
+    },
+    {
+     "bucket": "service / domain code",
+     "count": 3,
+     "pct": 100,
+     "example": [
+      "apps/core-api/src/modules/economy/economy.metrics.ts"
+     ]
+    },
+    {
+     "bucket": "core-api other source (jobs, ports, guards, common)",
+     "count": 3,
+     "pct": 100,
+     "example": [
+      "apps/core-api/src/modules/economy/jobs/reconciliation.service.ts"
+     ]
+    },
+    {
+     "bucket": "docs (other)",
+     "count": 3,
+     "pct": 100,
+     "example": [
+      "docs/03-architecture.md",
+      "docs/07-roadmap.md"
+     ]
+    },
+    {
+     "bucket": "docs/services",
+     "count": 3,
+     "pct": 100,
+     "example": [
+      "docs/services/economy-service.md"
+     ]
+    },
+    {
+     "bucket": "other",
+     "count": 3,
+     "pct": 100,
+     "example": [
+      "loadtest/README.md",
+      "loadtest/party-room-livekit.sh"
+     ]
+    },
+    {
+     "bucket": "core-api app wiring (app.module / main)",
+     "count": 2,
+     "pct": 67,
+     "example": [
+      "apps/core-api/src/app/app.module.ts"
+     ]
+    },
+    {
+     "bucket": "migration",
+     "count": 2,
+     "pct": 67,
+     "example": [
+      "apps/core-api/src/database/migrations/1752700000000-party-room-gift.ts"
+     ]
+    },
+    {
+     "bucket": "dto",
+     "count": 2,
+     "pct": 67,
+     "example": [
+      "apps/core-api/src/modules/party-room/dto/party-room.dtos.ts"
+     ]
+    },
+    {
+     "bucket": "entity",
+     "count": 2,
+     "pct": 67,
+     "example": [
+      "apps/core-api/src/modules/party-room/entities/party-room-member.entity.ts",
+      "apps/core-api/src/modules/party-room/entities/party-room.entity.ts"
+     ]
+    },
+    {
+     "bucket": "module public API (index.ts)",
+     "count": 2,
+     "pct": 67,
+     "example": [
+      "apps/core-api/src/modules/party-room/index.ts"
+     ]
+    },
+    {
+     "bucket": "controller",
+     "count": 2,
+     "pct": 67,
+     "example": [
+      "apps/core-api/src/modules/party-room/party-room.controller.ts",
+      "apps/core-api/src/modules/party-room/webhooks/party-livekit-webhook.controller.ts"
+     ]
+    },
+    {
+     "bucket": "module wiring (*.module.ts)",
+     "count": 2,
+     "pct": 67,
+     "example": [
+      "apps/core-api/src/modules/party-room/party-room.module.ts"
+     ]
+    },
+    {
+     "bucket": "k8s manifests",
+     "count": 1,
+     "pct": 33,
+     "example": [
+      "k8s/base/core-api/configmap.yaml",
+      "k8s/base/media-server/prometheus-alerts.yaml"
+     ]
+    },
+    {
+     "bucket": "realtime contract (common-dtos)",
+     "count": 1,
+     "pct": 33,
+     "example": [
+      "libs/common-dtos/src/lib/realtime-events.ts"
+     ]
+    },
+    {
+     "bucket": "dependencies (package.json, lockfile)",
+     "count": 1,
+     "pct": 33,
+     "example": [
+      "package.json",
+      "pnpm-lock.yaml"
+     ]
+    }
+   ],
+   "sample": [
+    {
+     "hash": "d620541",
+     "date": "2026-07-13",
+     "subject": "feat(platform): Giai đoạn 7 — reconciliation alerting + LiveKit benchmark scaffolding",
+     "files": 15
+    },
+    {
+     "hash": "3d659b8",
+     "date": "2026-07-12",
+     "subject": "feat(party-room): host/speaker/audience roles, speaker cap enforcement, sweeper backstop",
+     "files": 22
+    },
+    {
+     "hash": "e6c9a7d",
+     "date": "2026-07-12",
+     "subject": "feat(calling): voice call 2 người trên LiveKit — lifecycle, timer server, billing theo phút (Giai đoạn 2)",
+     "files": 27
+    }
+   ]
+  },
+  {
+   "id": "metric",
+   "title": "Thêm một metric",
+   "detection": "Commit thêm một lời gọi createCounter/createHistogram/createObservableGauge",
+   "commitsConsidered": 3,
+   "matching": 3,
+   "usable": 1,
+   "skippedMega": 2,
+   "buckets": [
+    {
+     "bucket": "module wiring (*.module.ts)",
+     "count": 1,
+     "pct": 100,
+     "example": [
+      "apps/core-api/src/common/metrics/metrics.module.ts"
+     ]
+    },
+    {
+     "bucket": "unit/integration test",
+     "count": 1,
+     "pct": 100,
+     "example": [
+      "apps/core-api/src/common/runtime/runtime-activity.spec.ts",
+      "apps/web/src/app/providers.spec.ts"
+     ]
+    },
+    {
+     "bucket": "core-api other source (jobs, ports, guards, common)",
+     "count": 1,
+     "pct": 100,
+     "example": [
+      "apps/core-api/src/common/runtime/runtime-activity.ts",
+      "apps/core-api/src/common/scheduling/managed-interval.ts"
+     ]
+    },
+    {
+     "bucket": "web feature code",
+     "count": 1,
+     "pct": 100,
+     "example": [
+      "apps/web/src/app/providers.tsx",
+      "apps/web/src/shared/api/query-retry-policy.ts"
+     ]
+    },
+    {
+     "bucket": "docs (other)",
+     "count": 1,
+     "pct": 100,
+     "example": [
+      "docs/runbooks/hosted-free-release.md"
+     ]
+    }
+   ],
+   "sample": [
+    {
+     "hash": "0f12fff",
+     "date": "2026-08-01",
+     "subject": "perf(jobs): idle-gate background jobs to cut Upstash usage (#56)",
+     "files": 14
+    }
+   ]
+  },
+  {
+   "id": "errorcode",
+   "title": "Thêm một mã lỗi nghiệp vụ",
+   "detection": "Commit thêm một khoá vào *.errors.ts",
+   "commitsConsidered": 30,
+   "matching": 28,
+   "usable": 15,
+   "skippedMega": 13,
+   "buckets": [
+    {
+     "bucket": "unit/integration test",
+     "count": 15,
+     "pct": 100,
+     "example": [
+      "apps/core-api/src/modules/friend/friend.integration.spec.ts",
+      "apps/core-api/src/modules/gift/gift.integration.spec.ts"
+     ]
+    },
+    {
+     "bucket": "controller",
+     "count": 14,
+     "pct": 93,
+     "example": [
+      "apps/core-api/src/modules/friend/controllers/profile-social.controller.ts",
+      "apps/core-api/src/modules/gift/gift.controller.ts"
+     ]
+    },
+    {
+     "bucket": "dto",
+     "count": 14,
+     "pct": 93,
+     "example": [
+      "apps/core-api/src/modules/friend/dto/profile-social.dtos.ts",
+      "apps/core-api/src/modules/gift/dto/gift.dtos.ts"
+     ]
+    },
+    {
+     "bucket": "service / domain code",
+     "count": 14,
+     "pct": 93,
+     "example": [
+      "apps/core-api/src/modules/friend/friend.errors.ts",
+      "apps/core-api/src/modules/friend/services/profile-social.service.spec.ts"
+     ]
+    },
+    {
+     "bucket": "module wiring (*.module.ts)",
+     "count": 14,
+     "pct": 93,
+     "example": [
+      "apps/core-api/src/modules/friend/friend.module.ts",
+      "apps/core-api/src/modules/gift/gift.module.ts"
+     ]
+    },
+    {
+     "bucket": "entity",
+     "count": 13,
+     "pct": 87,
+     "example": [
+      "apps/core-api/src/modules/friend/entities/profile-chat-contact.entity.ts",
+      "apps/core-api/src/modules/friend/entities/profile-follow.entity.ts"
+     ]
+    },
+    {
+     "bucket": "module public API (index.ts)",
+     "count": 13,
+     "pct": 87,
+     "example": [
+      "apps/core-api/src/modules/friend/index.ts"
+     ]
+    },
+    {
+     "bucket": "migration",
+     "count": 12,
+     "pct": 80,
+     "example": [
+      "apps/core-api/src/database/migrations/1757400000000-profile-follow.ts",
+      "apps/core-api/src/database/migrations/1757500000000-profile-gift-context.ts"
+     ]
+    },
+    {
+     "bucket": "env.validation.ts (core-api)",
+     "count": 11,
+     "pct": 73,
+     "example": [
+      "apps/core-api/src/config/env.validation.ts"
+     ]
+    },
+    {
+     "bucket": "docs/services",
+     "count": 11,
+     "pct": 73,
+     "example": [
+      "docs/services/discovery-service.md",
+      "docs/services/friend-service.md"
+     ]
+    },
+    {
+     "bucket": "core-api other source (jobs, ports, guards, common)",
+     "count": 11,
+     "pct": 73,
+     "example": [
+      "apps/core-api/src/modules/party-room/jobs/party-room-sweeper.service.ts"
+     ]
+    },
+    {
+     "bucket": "docs (other)",
+     "count": 10,
+     "pct": 67,
+     "example": [
+      "docs/02-domain-model.md",
+      "docs/06-domain-rules.md"
+     ]
+    },
+    {
+     "bucket": ".env.example",
+     "count": 9,
+     "pct": 60,
+     "example": [
+      ".env.example"
+     ]
+    },
+    {
+     "bucket": "other",
+     "count": 7,
+     "pct": 47,
+     "example": [
+      ".vscode/settings.json"
+     ]
+    },
+    {
+     "bucket": "generated api-client",
+     "count": 6,
+     "pct": 40,
+     "example": [
+      "libs/api-client/src/generated/core-api.ts"
+     ]
+    },
+    {
+     "bucket": "openapi/core-api.json",
+     "count": 6,
+     "pct": 40,
+     "example": [
+      "openapi/core-api.json"
+     ]
+    },
+    {
+     "bucket": "realtime contract (common-dtos)",
+     "count": 6,
+     "pct": 40,
+     "example": [
+      "libs/common-dtos/src/lib/realtime-events.ts"
+     ]
+    },
+    {
+     "bucket": "core-api app wiring (app.module / main)",
+     "count": 6,
+     "pct": 40,
+     "example": [
+      "apps/core-api/src/app/app.module.ts",
+      "apps/core-api/src/main.ts"
+     ]
+    },
+    {
+     "bucket": "agent instructions (AGENTS.md)",
+     "count": 5,
+     "pct": 33,
+     "example": [
+      "apps/web/AGENTS.md"
+     ]
+    },
+    {
+     "bucket": "web feature code",
+     "count": 3,
+     "pct": 20,
+     "example": [
+      "apps/web/src/features/discovery/components/discovery-detail-sheet.tsx",
+      "apps/web/src/features/profile/api.ts"
+     ]
+    },
+    {
+     "bucket": "CI / scripts",
+     "count": 3,
+     "pct": 20,
+     "example": [
+      "scripts/ci/local.mjs",
+      "scripts/ci/local.test.mjs"
+     ]
+    },
+    {
+     "bucket": "admin feature code",
+     "count": 2,
+     "pct": 13,
+     "example": [
+      "apps/admin/src/app/router.tsx",
+      "apps/admin/src/features/gifts/api.ts"
+     ]
+    },
+    {
+     "bucket": "dependencies (package.json, lockfile)",
+     "count": 2,
+     "pct": 13,
+     "example": [
+      "package.json",
+      "pnpm-lock.yaml"
+     ]
+    },
+    {
+     "bucket": "errors (*.errors.ts)",
+     "count": 1,
+     "pct": 7,
+     "example": [
+      "libs/common-exceptions/src/lib/common.errors.ts"
+     ]
+    },
+    {
+     "bucket": "project config (project.json, tsconfig, nx)",
+     "count": 1,
+     "pct": 7,
+     "example": [
+      "nx.json"
+     ]
+    }
+   ],
+   "sample": [
+    {
+     "hash": "4e1332b",
+     "date": "2026-08-19",
+     "subject": "feat/profile-direct-chat-gift-gate (#68)",
+     "files": 35
+    },
+    {
+     "hash": "886b8f6",
+     "date": "2026-08-03",
+     "subject": "feat/room-chat-realtime (#60)",
+     "files": 28
+    },
+    {
+     "hash": "7987316",
+     "date": "2026-07-30",
+     "subject": "feat/payos-diamond-integration (#49)",
+     "files": 32
+    },
+    {
+     "hash": "81d0984",
+     "date": "2026-07-13",
+     "subject": "feat(admin): Gift catalog CRUD (backend + frontend) (#23)",
+     "files": 17
+    },
+    {
+     "hash": "bdfddd7",
+     "date": "2026-07-13",
+     "subject": "feat(admin): Users list + Moderation queue (backend + frontend) (#22)",
+     "files": 32
+    },
+    {
+     "hash": "d48ff60",
+     "date": "2026-07-13",
+     "subject": "feat(core-api): Task 0 backend — RBAC nền tảng (role + RolesGuard + admin + CORS + audit) (#21)",
+     "files": 45
+    }
+   ]
+  }
+ ]
+}

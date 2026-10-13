@@ -1,0 +1,137 @@
+{
+ "id": "admin",
+ "kind": "core-api module",
+ "dir": "apps/core-api/src/modules/admin",
+ "mapAnchor": "svc-admin",
+ "role": "AdminModule là lớp điều phối back-office cho apps/admin: kiểm quyền (role + permission theo bảng admin_role_permissions), gọi đúng service của module sở hữu dữ liệu và ghi admin_audit_logs CÙNG transaction với hành động. Nó chỉ sở hữu ma trận quyền; KHÔNG sở hữu user/ví/ledger/video/phòng/report/ticket/gift/notification và không tự ghi vào bảng của họ.",
+ "tagline": "API back-office: RBAC, audit, điều phối module",
+ "owns": [
+  "bảng admin_role_permissions (role x permission -> enabled)",
+  "điều phối ghi bảng admin_audit_logs qua common/audit (bảng thuộc AuditModule, append-only bằng DB trigger)"
+ ],
+ "tables": [
+  {
+   "name": "admin_role_permissions",
+   "columns": 4,
+   "otherModules": []
+  }
+ ],
+ "tablesTouchedOfOthers": [],
+ "endpoints": {
+  "total": 31,
+  "public": 0,
+  "adminOnly": 31,
+  "idempotent": 0,
+  "webhooks": 0,
+  "explicitThrottle": 0
+ },
+ "endpointPaths": [
+  "/admin"
+ ],
+ "realtimeProduced": [],
+ "jobs": [],
+ "redisCallSites": 0,
+ "redisOps": [],
+ "envVars": [],
+ "errorGroups": [
+  "AdminErrors"
+ ],
+ "errorCodes": 6,
+ "errorCodesUnused": 0,
+ "tests": {
+  "unit": 2,
+  "integration": 1
+ },
+ "docs": {
+  "path": null,
+  "lastChanged": null,
+  "commitsSince": null
+ },
+ "features": [
+  {
+   "id": "runtime-capabilities",
+   "title": "Server-derived runtime availability contract for frontend providers",
+   "status": "implemented"
+  },
+  {
+   "id": "support-tickets",
+   "title": "Idempotent support tickets with customer tracking and staff workflow",
+   "status": "implemented"
+  }
+ ],
+ "churn": {
+  "commits": 9,
+  "recent": 0,
+  "fixes": 0,
+  "last": "2026-08-12"
+ },
+ "issues": [],
+ "mapCollaborators": [
+  {
+   "with": "economy",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "gift",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "notification",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "party-room",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "safety",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "short-video",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "support",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "user",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "postgres",
+   "kind": "infra",
+   "mechanism": "shared-db",
+   "direction": "out"
+  },
+  {
+   "with": "admin-console",
+   "kind": "client",
+   "mechanism": "http",
+   "direction": "in"
+  },
+  {
+   "with": "kafka",
+   "kind": "infra",
+   "mechanism": "kafka",
+   "direction": "out"
+  }
+ ]
+}

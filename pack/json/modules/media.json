@@ -1,0 +1,235 @@
+{
+ "id": "media",
+ "kind": "core-api module",
+ "dir": "apps/core-api/src/modules/media",
+ "mapAnchor": "svc-media",
+ "role": "Cấp presigned PUT URL để client upload ảnh thẳng lên object storage và là nơi DUY NHẤT xác nhận asset hợp lệ (đúng chủ, đúng purpose, đã upload, MIME/size khớp magic bytes) trước khi Feed/Friend lưu URL ảnh. Không nhận body binary, không phải LiveKit media-server, không xử lý video (Short Video có VideoStoragePort riêng).",
+ "tagline": "Presigned upload ảnh, xác thực asset",
+ "owns": [
+  "bảng image_assets (ownerUserId, status pending/ready, purpose, contentType, sizeBytes, storageKey)",
+  "object key quarantine rồi key final bất biến trên S3/R2/MinIO"
+ ],
+ "tables": [
+  {
+   "name": "image_assets",
+   "columns": 9,
+   "otherModules": []
+  }
+ ],
+ "tablesTouchedOfOthers": [],
+ "endpoints": {
+  "total": 1,
+  "public": 0,
+  "adminOnly": 0,
+  "idempotent": 0,
+  "webhooks": 0,
+  "explicitThrottle": 0
+ },
+ "endpointPaths": [
+  "/media"
+ ],
+ "realtimeProduced": [],
+ "jobs": [],
+ "redisCallSites": 0,
+ "redisOps": [],
+ "envVars": [
+  {
+   "name": "MEDIA_STORAGE_PROVIDER",
+   "file": "apps/core-api/src/modules/media/media.module.ts",
+   "line": 26,
+   "quote": "const provider = config.getOrThrow('MEDIA_STORAGE_PROVIDER', {",
+   "class": "switch",
+   "default": "dev",
+   "required": false
+  },
+  {
+   "name": "MEDIA_IMAGE_MAX_BYTES",
+   "file": "apps/core-api/src/modules/media/media.service.ts",
+   "line": 43,
+   "quote": "const maxBytes = this.config.getOrThrow('MEDIA_IMAGE_MAX_BYTES', {",
+   "class": "tuning",
+   "default": "10 * 1024 * 1024",
+   "required": false
+  },
+  {
+   "name": "MEDIA_ALLOWED_IMAGE_TYPES",
+   "file": "apps/core-api/src/modules/media/media.service.ts",
+   "line": 211,
+   "quote": "const allowed = this.config",
+   "class": "other",
+   "default": "image/jpeg,image/png,image/webp,image/gif",
+   "required": false
+  },
+  {
+   "name": "NODE_ENV",
+   "file": "apps/core-api/src/modules/media/ports/dev-image-storage.provider.ts",
+   "line": 16,
+   "quote": "if (this.config.get('NODE_ENV', { infer: true }) === 'production') {",
+   "class": null,
+   "default": null,
+   "required": false
+  },
+  {
+   "name": "MEDIA_R2_ACCOUNT_ID",
+   "file": "apps/core-api/src/modules/media/ports/r2-image-storage.provider.ts",
+   "line": 11,
+   "quote": "const accountId = config.getOrThrow('MEDIA_R2_ACCOUNT_ID', {",
+   "class": "other",
+   "default": "",
+   "required": false
+  },
+  {
+   "name": "MEDIA_R2_BUCKET",
+   "file": "apps/core-api/src/modules/media/ports/r2-image-storage.provider.ts",
+   "line": 14,
+   "quote": "const bucket = config.getOrThrow('MEDIA_R2_BUCKET', { infer: true });",
+   "class": "other",
+   "default": "",
+   "required": false
+  },
+  {
+   "name": "MEDIA_R2_ACCESS_KEY_ID",
+   "file": "apps/core-api/src/modules/media/ports/r2-image-storage.provider.ts",
+   "line": 15,
+   "quote": "const accessKeyId = config.getOrThrow('MEDIA_R2_ACCESS_KEY_ID', {",
+   "class": "other",
+   "default": "",
+   "required": false
+  },
+  {
+   "name": "MEDIA_R2_SECRET_ACCESS_KEY",
+   "file": "apps/core-api/src/modules/media/ports/r2-image-storage.provider.ts",
+   "line": 18,
+   "quote": "const secretAccessKey = config.getOrThrow('MEDIA_R2_SECRET_ACCESS_KEY', {",
+   "class": "secret",
+   "default": null,
+   "required": false
+  },
+  {
+   "name": "MEDIA_PUBLIC_BASE_URL",
+   "file": "apps/core-api/src/modules/media/ports/r2-image-storage.provider.ts",
+   "line": 21,
+   "quote": "const publicBaseUrl = config.getOrThrow('MEDIA_PUBLIC_BASE_URL', {",
+   "class": "endpoint",
+   "default": "",
+   "required": false
+  },
+  {
+   "name": "MEDIA_UPLOAD_URL_TTL_SECONDS",
+   "file": "apps/core-api/src/modules/media/ports/r2-image-storage.provider.ts",
+   "line": 45,
+   "quote": "uploadUrlTtlSeconds: config.getOrThrow('MEDIA_UPLOAD_URL_TTL_SECONDS', {",
+   "class": "tuning",
+   "default": "900",
+   "required": false
+  },
+  {
+   "name": "AWS_S3_ENDPOINT",
+   "file": "apps/core-api/src/modules/media/ports/s3-image-storage.provider.ts",
+   "line": 32,
+   "quote": "const endpoint = config.getOrThrow('AWS_S3_ENDPOINT', { infer: true });",
+   "class": "endpoint",
+   "default": "",
+   "required": false
+  },
+  {
+   "name": "AWS_REGION",
+   "file": "apps/core-api/src/modules/media/ports/s3-image-storage.provider.ts",
+   "line": 35,
+   "quote": "region: config.getOrThrow('AWS_REGION', { infer: true }),",
+   "class": "other",
+   "default": "us-east-1",
+   "required": false
+  },
+  {
+   "name": "AWS_S3_BUCKET",
+   "file": "apps/core-api/src/modules/media/ports/s3-image-storage.provider.ts",
+   "line": 37,
+   "quote": "bucket: config.getOrThrow('AWS_S3_BUCKET', { infer: true }),",
+   "class": "other",
+   "default": "",
+   "required": false
+  },
+  {
+   "name": "AWS_ACCESS_KEY_ID",
+   "file": "apps/core-api/src/modules/media/ports/s3-image-storage.provider.ts",
+   "line": 38,
+   "quote": "accessKeyId: config.getOrThrow('AWS_ACCESS_KEY_ID', { infer: true }),",
+   "class": "other",
+   "default": "",
+   "required": false
+  },
+  {
+   "name": "AWS_SECRET_ACCESS_KEY",
+   "file": "apps/core-api/src/modules/media/ports/s3-image-storage.provider.ts",
+   "line": 39,
+   "quote": "secretAccessKey: config.getOrThrow('AWS_SECRET_ACCESS_KEY', {",
+   "class": "secret",
+   "default": null,
+   "required": false
+  },
+  {
+   "name": "AWS_S3_FORCE_PATH_STYLE",
+   "file": "apps/core-api/src/modules/media/ports/s3-image-storage.provider.ts",
+   "line": 42,
+   "quote": "forcePathStyle: config.getOrThrow('AWS_S3_FORCE_PATH_STYLE', {",
+   "class": "other",
+   "default": "false",
+   "required": false
+  }
+ ],
+ "errorGroups": [
+  "MediaErrors"
+ ],
+ "errorCodes": 5,
+ "errorCodesUnused": 0,
+ "tests": {
+  "unit": 2,
+  "integration": 0
+ },
+ "docs": {
+  "path": "docs/services/media-service.md",
+  "lastChanged": "2026-08-12",
+  "commitsSince": 0
+ },
+ "features": [],
+ "churn": {
+  "commits": 1,
+  "recent": 0,
+  "fixes": 0,
+  "last": "2026-08-12"
+ },
+ "issues": [],
+ "mapCollaborators": [
+  {
+   "with": "postgres",
+   "kind": "infra",
+   "mechanism": "shared-db",
+   "direction": "out"
+  },
+  {
+   "with": "feed",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "friend",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "external:object-storage",
+   "kind": "external",
+   "mechanism": "sdk",
+   "direction": "out"
+  },
+  {
+   "with": "web",
+   "kind": "client",
+   "mechanism": "http",
+   "direction": "in"
+  }
+ ]
+}

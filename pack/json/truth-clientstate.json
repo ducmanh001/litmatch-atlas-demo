@@ -1,0 +1,284 @@
+{
+ "items": [
+  {
+   "kind": "QueryClient",
+   "file": "apps/admin/src/app/providers.tsx",
+   "line": 10,
+   "app": "admin",
+   "config": "new QueryClient({ defaultOptions: { queries: { staleTime: 30_000, retry: 1, refetchOnWindowFocus: false, }, }, })",
+   "quote": "return new QueryClient({"
+  },
+  {
+   "kind": "staleTime",
+   "value": "30_000",
+   "file": "apps/admin/src/app/providers.tsx",
+   "line": 13,
+   "app": "admin",
+   "quote": "staleTime: 30_000,"
+  },
+  {
+   "kind": "staleTime",
+   "value": "30_000",
+   "file": "apps/admin/src/features/dashboard/api.ts",
+   "line": 20,
+   "app": "admin",
+   "quote": "staleTime: 30_000,"
+  },
+  {
+   "kind": "staleTime",
+   "value": "5000",
+   "file": "apps/admin/src/features/gifts/api.ts",
+   "line": 22,
+   "app": "admin",
+   "quote": "staleTime: 5000,"
+  },
+  {
+   "kind": "staleTime",
+   "value": "5000",
+   "file": "apps/admin/src/features/moderation/api.ts",
+   "line": 36,
+   "app": "admin",
+   "quote": "staleTime: 5000,"
+  },
+  {
+   "kind": "sessionStorage",
+   "op": "getItem",
+   "key": "SAVED_FILTERS_KEY",
+   "file": "apps/admin/src/features/moderation/components/reports-panel.tsx",
+   "line": 55,
+   "app": "admin",
+   "quote": "sessionStorage.getItem(SAVED_FILTERS_KEY) ?? '[]',"
+  },
+  {
+   "kind": "sessionStorage",
+   "op": "setItem",
+   "key": "SAVED_FILTERS_KEY",
+   "file": "apps/admin/src/features/moderation/components/reports-panel.tsx",
+   "line": 153,
+   "app": "admin",
+   "quote": "sessionStorage.setItem(SAVED_FILTERS_KEY, JSON.stringify(next));"
+  },
+  {
+   "kind": "staleTime",
+   "value": "5000",
+   "file": "apps/admin/src/features/moderation/videos-api.ts",
+   "line": 30,
+   "app": "admin",
+   "quote": "staleTime: 5000,"
+  },
+  {
+   "kind": "staleTime",
+   "value": "5000",
+   "file": "apps/admin/src/features/moderation/videos-api.ts",
+   "line": 43,
+   "app": "admin",
+   "quote": "staleTime: 5000,"
+  },
+  {
+   "kind": "staleTime",
+   "value": "5000",
+   "file": "apps/admin/src/features/rooms/api.ts",
+   "line": 32,
+   "app": "admin",
+   "quote": "staleTime: 5000,"
+  },
+  {
+   "kind": "staleTime",
+   "value": "5000",
+   "file": "apps/admin/src/features/rooms/api.ts",
+   "line": 45,
+   "app": "admin",
+   "quote": "staleTime: 5000,"
+  },
+  {
+   "kind": "staleTime",
+   "value": "5000",
+   "file": "apps/admin/src/features/users/api.ts",
+   "line": 41,
+   "app": "admin",
+   "quote": "staleTime: 5000,"
+  },
+  {
+   "kind": "staleTime",
+   "value": "Infinity",
+   "file": "apps/admin/src/shared/capabilities/api.ts",
+   "line": 32,
+   "app": "admin",
+   "quote": "staleTime: Infinity,"
+  },
+  {
+   "kind": "cookie-write",
+   "file": "apps/admin/src/shared/i18n/locale-store.ts",
+   "line": 28,
+   "app": "admin",
+   "quote": "document.cookie = `${LOCALE_STORAGE_COOKIE}=${locale}; Path=/; Max-Age=31536000; SameSite=Lax`;"
+  },
+  {
+   "kind": "localStorage",
+   "op": "setItem",
+   "key": "THEME_STORAGE_KEY",
+   "file": "apps/admin/src/shared/lib/theme-store.ts",
+   "line": 40,
+   "app": "admin",
+   "quote": "localStorage.setItem(THEME_STORAGE_KEY, value);"
+  },
+  {
+   "kind": "QueryClient",
+   "file": "apps/web/src/app/providers.tsx",
+   "line": 20,
+   "app": "web",
+   "config": "new QueryClient({ defaultOptions: { queries: { staleTime: 30_000, retry: shouldRetryQuery, refetchOnWindowFocus: false, // Keep browser online recovery for public routes and sessions whose socket did not // reconnect. AppChrome still resynchronizes durable state after a socket reconnect. refetchOnReconnect: shouldRefetchOnReconnect, // High-frequency session fallbacks are for the active tab only. ",
+   "quote": "return new QueryClient({"
+  },
+  {
+   "kind": "staleTime",
+   "value": "30_000",
+   "file": "apps/web/src/app/providers.tsx",
+   "line": 23,
+   "app": "web",
+   "quote": "staleTime: 30_000,"
+  },
+  {
+   "kind": "staleTime",
+   "value": "5 * 60 * 1000",
+   "file": "apps/web/src/features/avatar/api.ts",
+   "line": 36,
+   "app": "web",
+   "quote": "staleTime: 5 * 60 * 1000,"
+  },
+  {
+   "kind": "staleTime",
+   "value": "30_000",
+   "file": "apps/web/src/features/profile/api.ts",
+   "line": 182,
+   "app": "web",
+   "quote": "staleTime: 30_000,"
+  },
+  {
+   "kind": "staleTime",
+   "value": "Infinity",
+   "file": "apps/web/src/features/wallet/api.ts",
+   "line": 37,
+   "app": "web",
+   "quote": "staleTime: Infinity,"
+  },
+  {
+   "kind": "staleTime",
+   "value": "Infinity",
+   "file": "apps/web/src/features/wallet/api.ts",
+   "line": 48,
+   "app": "web",
+   "quote": "staleTime: Infinity,"
+  },
+  {
+   "kind": "staleTime",
+   "value": "Infinity",
+   "file": "apps/web/src/features/wallet/api.ts",
+   "line": 92,
+   "app": "web",
+   "quote": "staleTime: Infinity,"
+  },
+  {
+   "kind": "cookie-write",
+   "file": "apps/web/src/shared/analytics/product-analytics.ts",
+   "line": 93,
+   "app": "web",
+   "quote": "document.cookie = `${CONSENT_COOKIE_NAME}=${consent}; Path=/; Max-Age=${CONSENT_COOKIE_MAX_AGE_SECONDS}; SameSite=Lax`;"
+  },
+  {
+   "kind": "localStorage",
+   "op": "getItem",
+   "key": "GUEST_DEVICE_ID_STORAGE_KEY",
+   "file": "apps/web/src/shared/auth/login-form.tsx",
+   "line": 41,
+   "app": "web",
+   "quote": "const existing = window.localStorage.getItem(GUEST_DEVICE_ID_STORAGE_KEY);"
+  },
+  {
+   "kind": "localStorage",
+   "op": "setItem",
+   "key": "GUEST_DEVICE_ID_STORAGE_KEY",
+   "file": "apps/web/src/shared/auth/login-form.tsx",
+   "line": 44,
+   "app": "web",
+   "quote": "window.localStorage.setItem(GUEST_DEVICE_ID_STORAGE_KEY, created);"
+  },
+  {
+   "kind": "staleTime",
+   "value": "Infinity",
+   "file": "apps/web/src/shared/auth/use-current-user.ts",
+   "line": 25,
+   "app": "web",
+   "quote": "staleTime: Infinity,"
+  },
+  {
+   "kind": "staleTime",
+   "value": "Infinity",
+   "file": "apps/web/src/shared/capabilities/api.ts",
+   "line": 32,
+   "app": "web",
+   "quote": "staleTime: Infinity,"
+  },
+  {
+   "kind": "cookie-write",
+   "file": "apps/web/src/shared/i18n/locale-store.ts",
+   "line": 37,
+   "app": "web",
+   "quote": "document.cookie = `${LOCALE_COOKIE_NAME}=${locale}; Path=/; Max-Age=31536000; SameSite=Lax`;"
+  },
+  {
+   "kind": "localStorage",
+   "op": "setItem",
+   "key": "THEME_STORAGE_KEY",
+   "file": "apps/web/src/shared/ui/theme-switcher.tsx",
+   "line": 25,
+   "app": "web",
+   "quote": "localStorage.setItem(THEME_STORAGE_KEY, next);"
+  },
+  {
+   "kind": "localStorage",
+   "op": "setItem",
+   "key": "LAST_DARK_MOOD_KEY",
+   "file": "apps/web/src/shared/ui/theme-toggle-button.tsx",
+   "line": 36,
+   "app": "web",
+   "quote": "localStorage.setItem(LAST_DARK_MOOD_KEY, current);"
+  },
+  {
+   "kind": "localStorage",
+   "op": "getItem",
+   "key": "LAST_DARK_MOOD_KEY",
+   "file": "apps/web/src/shared/ui/theme-toggle-button.tsx",
+   "line": 39,
+   "app": "web",
+   "quote": "const lastMood = localStorage.getItem(LAST_DARK_MOOD_KEY);"
+  },
+  {
+   "kind": "localStorage",
+   "op": "getItem",
+   "key": "storageKey",
+   "file": "libs/api-client/src/lib/token-store.ts",
+   "line": 43,
+   "app": "libs/api-client",
+   "quote": "get: () => (available() ? window.localStorage.getItem(storageKey) : null),"
+  },
+  {
+   "kind": "localStorage",
+   "op": "removeItem",
+   "key": "storageKey",
+   "file": "libs/api-client/src/lib/token-store.ts",
+   "line": 46,
+   "app": "libs/api-client",
+   "quote": "if (next === null) window.localStorage.removeItem(storageKey);"
+  },
+  {
+   "kind": "localStorage",
+   "op": "setItem",
+   "key": "storageKey",
+   "file": "libs/api-client/src/lib/token-store.ts",
+   "line": 47,
+   "app": "libs/api-client",
+   "quote": "else window.localStorage.setItem(storageKey, next);"
+  }
+ ]
+}

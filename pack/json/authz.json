@@ -1,0 +1,475 @@
+{
+ "source": "apps/core-api/src/modules/admin/admin.constants.ts",
+ "permissions": [
+  {
+   "permission": "view_users",
+   "key": "ViewUsers",
+   "label": "Xem danh sách người dùng",
+   "enumLine": 2,
+   "moderatorDefault": true,
+   "adminDefault": true,
+   "endpoints": [
+    {
+     "http": "GET",
+     "path": "/api/v1/admin/dashboard",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "GET",
+     "path": "/api/v1/admin/users",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "GET",
+     "path": "/api/v1/admin/users/{id}",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    }
+   ]
+  },
+  {
+   "permission": "ban_users",
+   "key": "BanUsers",
+   "label": "Khoá / Mở khoá tài khoản",
+   "enumLine": 3,
+   "moderatorDefault": true,
+   "adminDefault": true,
+   "endpoints": [
+    {
+     "http": "POST",
+     "path": "/api/v1/admin/users/{id}/ban",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "POST",
+     "path": "/api/v1/admin/users/{id}/unban",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    }
+   ]
+  },
+  {
+   "permission": "resolve_reports",
+   "key": "ResolveReports",
+   "label": "Duyệt báo cáo & video ngắn",
+   "enumLine": 4,
+   "moderatorDefault": true,
+   "adminDefault": true,
+   "endpoints": [
+    {
+     "http": "GET",
+     "path": "/api/v1/admin/reports",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "POST",
+     "path": "/api/v1/admin/reports/{id}/resolve",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "POST",
+     "path": "/api/v1/admin/reports/{id}/dismiss",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "GET",
+     "path": "/api/v1/admin/videos/pending",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "GET",
+     "path": "/api/v1/admin/videos/published",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "POST",
+     "path": "/api/v1/admin/videos/{id}/approve",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "POST",
+     "path": "/api/v1/admin/videos/{id}/reject",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "POST",
+     "path": "/api/v1/admin/videos/{id}/remove",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    }
+   ]
+  },
+  {
+   "permission": "refund_transaction",
+   "key": "RefundTransaction",
+   "label": "Hoàn tiền giao dịch",
+   "enumLine": 5,
+   "moderatorDefault": false,
+   "adminDefault": true,
+   "endpoints": [
+    {
+     "http": "GET",
+     "path": "/api/v1/admin/economy/wallet/{userId}",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "GET",
+     "path": "/api/v1/admin/economy/users/{userId}/transactions",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "POST",
+     "path": "/api/v1/admin/economy/transactions/{id}/refund",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    }
+   ]
+  },
+  {
+   "permission": "manage_gifts",
+   "key": "ManageGifts",
+   "label": "Quản lý Gift catalog",
+   "enumLine": 6,
+   "moderatorDefault": false,
+   "adminDefault": true,
+   "endpoints": [
+    {
+     "http": "GET",
+     "path": "/api/v1/admin/gifts",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "POST",
+     "path": "/api/v1/admin/gifts",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "PATCH",
+     "path": "/api/v1/admin/gifts/{id}",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    }
+   ]
+  },
+  {
+   "permission": "manage_config",
+   "key": "ManageConfig",
+   "label": "Cấu hình gói Diamond / Thông báo",
+   "enumLine": 7,
+   "moderatorDefault": false,
+   "adminDefault": true,
+   "endpoints": [
+    {
+     "http": "GET",
+     "path": "/api/v1/admin/config/economy-catalog",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "PATCH",
+     "path": "/api/v1/admin/config/iap-products/{productId}",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "PATCH",
+     "path": "/api/v1/admin/config/vip-plans/{id}",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "POST",
+     "path": "/api/v1/admin/notifications/broadcast",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    }
+   ]
+  },
+  {
+   "permission": "manage_rooms",
+   "key": "ManageRooms",
+   "label": "Quản lý Party Room",
+   "enumLine": 8,
+   "moderatorDefault": true,
+   "adminDefault": true,
+   "endpoints": [
+    {
+     "http": "POST",
+     "path": "/api/v1/admin/rooms/{id}/close",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "GET",
+     "path": "/api/v1/admin/rooms",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    }
+   ]
+  },
+  {
+   "permission": "manage_permissions",
+   "key": "ManagePermissions",
+   "label": "Phân quyền admin",
+   "enumLine": 9,
+   "moderatorDefault": false,
+   "adminDefault": true,
+   "endpoints": [
+    {
+     "http": "GET",
+     "path": "/api/v1/admin/permissions",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "PATCH",
+     "path": "/api/v1/admin/permissions/{role}/{permission}",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "GET",
+     "path": "/api/v1/admin/staff",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "PATCH",
+     "path": "/api/v1/admin/staff/{id}/role",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    }
+   ]
+  },
+  {
+   "permission": "manage_support",
+   "key": "ManageSupport",
+   "label": "Xử lý yêu cầu hỗ trợ",
+   "enumLine": 10,
+   "moderatorDefault": true,
+   "adminDefault": true,
+   "endpoints": [
+    {
+     "http": "GET",
+     "path": "/api/v1/admin/support/tickets",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    },
+    {
+     "http": "PATCH",
+     "path": "/api/v1/admin/support/tickets/{id}",
+     "roles": [
+      "(Roles.Admin, Roles.Moderator)"
+     ]
+    }
+   ]
+  }
+ ],
+ "seeds": [
+  {
+   "role": "moderator",
+   "permission": "admin",
+   "enabled": true,
+   "file": "apps/core-api/src/database/migrations/1755100000000-admin-role-permissions.ts",
+   "line": 13,
+   "quote": "CHECK (role IN ('moderator', 'admin'))"
+  },
+  {
+   "role": "moderator",
+   "permission": "view_users",
+   "enabled": true,
+   "file": "apps/core-api/src/database/migrations/1755100000000-admin-role-permissions.ts",
+   "line": 18,
+   "quote": "('moderator', 'view_users', true),"
+  },
+  {
+   "role": "moderator",
+   "permission": "ban_users",
+   "enabled": true,
+   "file": "apps/core-api/src/database/migrations/1755100000000-admin-role-permissions.ts",
+   "line": 19,
+   "quote": "('moderator', 'ban_users', true),"
+  },
+  {
+   "role": "moderator",
+   "permission": "resolve_reports",
+   "enabled": true,
+   "file": "apps/core-api/src/database/migrations/1755100000000-admin-role-permissions.ts",
+   "line": 20,
+   "quote": "('moderator', 'resolve_reports', true),"
+  },
+  {
+   "role": "moderator",
+   "permission": "refund_transaction",
+   "enabled": false,
+   "file": "apps/core-api/src/database/migrations/1755100000000-admin-role-permissions.ts",
+   "line": 21,
+   "quote": "('moderator', 'refund_transaction', false),"
+  },
+  {
+   "role": "moderator",
+   "permission": "manage_gifts",
+   "enabled": false,
+   "file": "apps/core-api/src/database/migrations/1755100000000-admin-role-permissions.ts",
+   "line": 22,
+   "quote": "('moderator', 'manage_gifts', false),"
+  },
+  {
+   "role": "moderator",
+   "permission": "manage_config",
+   "enabled": false,
+   "file": "apps/core-api/src/database/migrations/1755100000000-admin-role-permissions.ts",
+   "line": 23,
+   "quote": "('moderator', 'manage_config', false),"
+  },
+  {
+   "role": "moderator",
+   "permission": "manage_rooms",
+   "enabled": true,
+   "file": "apps/core-api/src/database/migrations/1755100000000-admin-role-permissions.ts",
+   "line": 24,
+   "quote": "('moderator', 'manage_rooms', true),"
+  },
+  {
+   "role": "moderator",
+   "permission": "manage_permissions",
+   "enabled": false,
+   "file": "apps/core-api/src/database/migrations/1755100000000-admin-role-permissions.ts",
+   "line": 25,
+   "quote": "('moderator', 'manage_permissions', false),"
+  },
+  {
+   "role": "admin",
+   "permission": "view_users",
+   "enabled": true,
+   "file": "apps/core-api/src/database/migrations/1755100000000-admin-role-permissions.ts",
+   "line": 26,
+   "quote": "('admin', 'view_users', true),"
+  },
+  {
+   "role": "admin",
+   "permission": "ban_users",
+   "enabled": true,
+   "file": "apps/core-api/src/database/migrations/1755100000000-admin-role-permissions.ts",
+   "line": 27,
+   "quote": "('admin', 'ban_users', true),"
+  },
+  {
+   "role": "admin",
+   "permission": "resolve_reports",
+   "enabled": true,
+   "file": "apps/core-api/src/database/migrations/1755100000000-admin-role-permissions.ts",
+   "line": 28,
+   "quote": "('admin', 'resolve_reports', true),"
+  },
+  {
+   "role": "admin",
+   "permission": "refund_transaction",
+   "enabled": true,
+   "file": "apps/core-api/src/database/migrations/1755100000000-admin-role-permissions.ts",
+   "line": 29,
+   "quote": "('admin', 'refund_transaction', true),"
+  },
+  {
+   "role": "admin",
+   "permission": "manage_gifts",
+   "enabled": true,
+   "file": "apps/core-api/src/database/migrations/1755100000000-admin-role-permissions.ts",
+   "line": 30,
+   "quote": "('admin', 'manage_gifts', true),"
+  },
+  {
+   "role": "admin",
+   "permission": "manage_config",
+   "enabled": true,
+   "file": "apps/core-api/src/database/migrations/1755100000000-admin-role-permissions.ts",
+   "line": 31,
+   "quote": "('admin', 'manage_config', true),"
+  },
+  {
+   "role": "admin",
+   "permission": "manage_rooms",
+   "enabled": true,
+   "file": "apps/core-api/src/database/migrations/1755100000000-admin-role-permissions.ts",
+   "line": 32,
+   "quote": "('admin', 'manage_rooms', true),"
+  },
+  {
+   "role": "admin",
+   "permission": "manage_permissions",
+   "enabled": true,
+   "file": "apps/core-api/src/database/migrations/1755100000000-admin-role-permissions.ts",
+   "line": 33,
+   "quote": "('admin', 'manage_permissions', true)"
+  },
+  {
+   "role": "moderator",
+   "permission": "manage_support",
+   "enabled": true,
+   "file": "apps/core-api/src/database/migrations/1755400000000-admin-support-permission.ts",
+   "line": 9,
+   "quote": "('moderator', 'manage_support', true),"
+  },
+  {
+   "role": "admin",
+   "permission": "manage_support",
+   "enabled": true,
+   "file": "apps/core-api/src/database/migrations/1755400000000-admin-support-permission.ts",
+   "line": 10,
+   "quote": "('admin', 'manage_support', true)"
+  }
+ ],
+ "roleChecks": [
+  {
+   "table": "admin_role_permissions",
+   "name": "chk_admin_role_permissions_role",
+   "def": "CHECK (((role)::text = ANY ((ARRAY['moderator'::character varying, 'admin'::character varying])::text[])))"
+  }
+ ],
+ "adminEndpoints": 31,
+ "adminEndpointsWithoutPermission": []
+}

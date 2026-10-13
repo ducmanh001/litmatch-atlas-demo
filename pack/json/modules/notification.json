@@ -1,0 +1,144 @@
+{
+ "id": "notification",
+ "kind": "core-api module",
+ "dir": "apps/core-api/src/modules/notification",
+ "mapAnchor": "svc-notification",
+ "role": "Sở hữu bảng notifications (in-app, cursor theo seq) và web_push_subscriptions; là điểm duy nhất các module nghiệp vụ gọi để ghi thông báo (createWithManager/create) rồi đẩy push best-effort (sendPush). Không sở hữu nội dung hiển thị (payload tối thiểu, client tự render), không có realtime event riêng và không publish Redis.",
+ "tagline": "Thông báo in-app và Web Push",
+ "owns": [
+  "bảng notifications (userId, type, payload jsonb, readAt, seq)",
+  "bảng web_push_subscriptions (endpoint unique, p256dh, auth)"
+ ],
+ "tables": [
+  {
+   "name": "notifications",
+   "columns": 7,
+   "otherModules": []
+  },
+  {
+   "name": "web_push_subscriptions",
+   "columns": 7,
+   "otherModules": []
+  }
+ ],
+ "tablesTouchedOfOthers": [],
+ "endpoints": {
+  "total": 5,
+  "public": 0,
+  "adminOnly": 0,
+  "idempotent": 0,
+  "webhooks": 0,
+  "explicitThrottle": 0
+ },
+ "endpointPaths": [
+  "/notifications"
+ ],
+ "realtimeProduced": [],
+ "jobs": [],
+ "redisCallSites": 0,
+ "redisOps": [],
+ "envVars": [],
+ "errorGroups": [
+  "NotificationErrors"
+ ],
+ "errorCodes": 2,
+ "errorCodesUnused": 0,
+ "tests": {
+  "unit": 2,
+  "integration": 0
+ },
+ "docs": {
+  "path": "docs/services/notification-service.md",
+  "lastChanged": "2026-08-20",
+  "commitsSince": 0
+ },
+ "features": [
+  {
+   "id": "notification",
+   "title": "In-process notification dispatch with isolated push and analytics adapters",
+   "status": "implemented"
+  }
+ ],
+ "churn": {
+  "commits": 7,
+  "recent": 0,
+  "fixes": 1,
+  "last": "2026-08-20"
+ },
+ "issues": [
+  {
+   "id": "P006",
+   "title": "Swagger thiếu cursor pagination → client sinh kiểu never",
+   "status": "fixed",
+   "tier": "A"
+  }
+ ],
+ "mapCollaborators": [
+  {
+   "with": "postgres",
+   "kind": "infra",
+   "mechanism": "shared-db",
+   "direction": "out"
+  },
+  {
+   "with": "admin",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "feed",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "friend",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "gift",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "matching",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "in"
+  },
+  {
+   "with": "external:web-push",
+   "kind": "external",
+   "mechanism": "sdk",
+   "direction": "out"
+  },
+  {
+   "with": "external:fcm",
+   "kind": "external",
+   "mechanism": "http",
+   "direction": "out"
+  },
+  {
+   "with": "external:apns",
+   "kind": "external",
+   "mechanism": "http",
+   "direction": "out"
+  },
+  {
+   "with": "web",
+   "kind": "client",
+   "mechanism": "sdk",
+   "direction": "both"
+  },
+  {
+   "with": "web",
+   "kind": "client",
+   "mechanism": "http",
+   "direction": "in"
+  }
+ ]
+}

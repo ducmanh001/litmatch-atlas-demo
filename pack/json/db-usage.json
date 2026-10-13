@@ -1,0 +1,4695 @@
+{
+ "generatedFrom": "AST of apps/core-api/src (non-test) at HEAD",
+ "entityCount": 70,
+ "tables": {
+  "admin_audit_logs": {
+   "owner": "(common)",
+   "entity": "AdminAuditLog",
+   "entityFile": "apps/core-api/src/common/audit/audit-log.entity.ts",
+   "entityLine": 15,
+   "accessors": [
+    {
+     "module": "(common)",
+     "read": 1,
+     "write": 2,
+     "lock": 0,
+     "vias": [
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/common/audit/audit-log.service.ts",
+       "line": 30,
+       "op": "write",
+       "via": "repository",
+       "quote": "repo.save( repo.create({ actorUserId: input.actorUserId, action: input.action, targetType: input.targetType, targetId: input.targetId, metadata: input.met"
+      },
+      {
+       "file": "apps/core-api/src/common/audit/audit-log.service.ts",
+       "line": 31,
+       "op": "write",
+       "via": "repository",
+       "quote": "repo.create({ actorUserId: input.actorUserId, action: input.action, targetType: input.targetType, targetId: input.targetId, metadata: input.metadata ?? null,"
+      },
+      {
+       "file": "apps/core-api/src/common/audit/audit-log.service.ts",
+       "line": 42,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.repo.find({ order: { createdAt: 'DESC' }, take: limit })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "admin_role_permissions": {
+   "owner": "admin",
+   "entity": "AdminRolePermission",
+   "entityFile": "apps/core-api/src/modules/admin/entities/admin-role-permission.entity.ts",
+   "entityLine": 7,
+   "accessors": [
+    {
+     "module": "admin",
+     "read": 3,
+     "write": 1,
+     "lock": 0,
+     "vias": [
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/admin/admin.service.ts",
+       "line": 476,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.rolePermissionRepo.findOneBy({ role: user.role, permission, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/admin/admin.service.ts",
+       "line": 491,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.rolePermissionRepo.find()"
+      },
+      {
+       "file": "apps/core-api/src/modules/admin/admin.service.ts",
+       "line": 541,
+       "op": "read",
+       "via": "repository",
+       "quote": "repo.findOneBy({ role, permission })"
+      },
+      {
+       "file": "apps/core-api/src/modules/admin/admin.service.ts",
+       "line": 550,
+       "op": "write",
+       "via": "repository",
+       "quote": "repo.save(policy)"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "auth_identities": {
+   "owner": "auth",
+   "entity": "AuthIdentity",
+   "entityFile": "apps/core-api/src/modules/auth/entities/auth-identity.entity.ts",
+   "entityLine": 22,
+   "accessors": [
+    {
+     "module": "auth",
+     "read": 6,
+     "write": 5,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "manager.save(instance)",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/auth/auth.service.ts",
+       "line": 156,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.identityRepo.findOneBy({ provider, providerUid, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/auth/auth.service.ts",
+       "line": 175,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(AuthIdentity, { userId: user.id, provider, providerUid, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/auth/auth.service.ts",
+       "line": 185,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.identityRepo.findOneByOrFail({ provider, providerUid, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/auth/auth.service.ts",
+       "line": 205,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.identityRepo.findOneBy({ provider, providerUid, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/auth/auth.service.ts",
+       "line": 232,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.findOneBy(AuthIdentity, { provider, providerUid, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/auth/auth.service.ts",
+       "line": 251,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.insert(AuthIdentity, { userId, provider, providerUid, })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "avatar_assets": {
+   "owner": "avatar",
+   "entity": "AvatarAsset",
+   "entityFile": "apps/core-api/src/modules/avatar/entities/avatar-asset.entity.ts",
+   "entityLine": 16,
+   "accessors": [
+    {
+     "module": "avatar",
+     "read": 5,
+     "write": 0,
+     "lock": 0,
+     "vias": [
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+       "line": 39,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.assetRepo.find({ where: { active: true, ...(slot ? { slot } : {}) }, order: { sortOrder: 'ASC', code: 'ASC' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+       "line": 48,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.assetRepo.find({ where: { id: In(items.map((i) => i.avatarAssetId)) }, order: { sortOrder: 'ASC' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+       "line": 160,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.assetRepo.findOneBy({ id: assetId, active: true })"
+      },
+      {
+       "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+       "line": 214,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.assetRepo.find({ where: { id: In(ids) } })"
+      },
+      {
+       "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+       "line": 224,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.assetRepo.find({ where: { active: true, priceDiamond: 0 }, order: { sortOrder: 'ASC' }, })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "blocks": {
+   "owner": "safety",
+   "entity": "Block",
+   "entityFile": "apps/core-api/src/modules/safety/entities/block.entity.ts",
+   "entityLine": 20,
+   "accessors": [
+    {
+     "module": "safety",
+     "read": 3,
+     "write": 4,
+     "lock": 0,
+     "vias": [
+      "raw-sql",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/safety/safety.service.ts",
+       "line": 202,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.blockRepo.save( this.blockRepo.create({ blockerUserId, blockedUserId: targetUserId, action: BlockAction.Blocked, }), )"
+      },
+      {
+       "file": "apps/core-api/src/modules/safety/safety.service.ts",
+       "line": 203,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.blockRepo.create({ blockerUserId, blockedUserId: targetUserId, action: BlockAction.Blocked, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/safety/safety.service.ts",
+       "line": 215,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.blockRepo.save( this.blockRepo.create({ blockerUserId, blockedUserId: targetUserId, action: BlockAction.Unblocked, }), )"
+      },
+      {
+       "file": "apps/core-api/src/modules/safety/safety.service.ts",
+       "line": 216,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.blockRepo.create({ blockerUserId, blockedUserId: targetUserId, action: BlockAction.Unblocked, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/safety/safety.service.ts",
+       "line": 242,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "n FROM blocks WHERE blocker_user_id = $1 ORDER BY blocked_user_id, created_at DESC"
+      },
+      {
+       "file": "apps/core-api/src/modules/safety/safety.service.ts",
+       "line": 319,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.blockRepo.exists({ where: [ { blockerUserId: userAId, blockedUserId: userBId, createdAt: MoreThanOrEqual(cutoff), }, { blocke"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "call_sessions": {
+   "owner": "calling",
+   "entity": "CallSession",
+   "entityFile": "apps/core-api/src/modules/calling/entities/call-session.entity.ts",
+   "entityLine": 35,
+   "accessors": [
+    {
+     "module": "calling",
+     "read": 16,
+     "write": 8,
+     "lock": 5,
+     "vias": [
+      "manager",
+      "manager(lock option)",
+      "manager.save(instance)",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/calling/calling.service.ts",
+       "line": 116,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.callRepo.findOneBy({ matchSessionId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/calling/calling.service.ts",
+       "line": 146,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.callRepo.save( this.callRepo.create({ id, matchSessionId, roomName: callRoomName(id), userAId: session.userAId, userBId: sess"
+      },
+      {
+       "file": "apps/core-api/src/modules/calling/calling.service.ts",
+       "line": 147,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.callRepo.create({ id, matchSessionId, roomName: callRoomName(id), userAId: session.userAId, userBId: session.userBId, statu"
+      },
+      {
+       "file": "apps/core-api/src/modules/calling/calling.service.ts",
+       "line": 160,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.callRepo.findOneByOrFail({ matchSessionId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/calling/calling.service.ts",
+       "line": 216,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.callRepo .createQueryBuilder('call')"
+      },
+      {
+       "file": "apps/core-api/src/modules/calling/calling.service.ts",
+       "line": 228,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.callRepo.save( this.callRepo.create({ id, matchSessionId: null, roomName: callRoomName(id), userAId, userBId, cal"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "comments": {
+   "owner": "feed",
+   "entity": "Comment",
+   "entityFile": "apps/core-api/src/modules/feed/entities/comment.entity.ts",
+   "entityLine": 10,
+   "accessors": [
+    {
+     "module": "feed",
+     "read": 2,
+     "write": 4,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "manager.save(instance)",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/feed/feed.service.ts",
+       "line": 251,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(Comment, { postId, authorUserId: user.userId, content: dto.content, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/feed.service.ts",
+       "line": 299,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.commentRepo .createQueryBuilder('c')"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/feed.service.ts",
+       "line": 314,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.commentRepo.findOneBy({ id: commentId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/feed.service.ts",
+       "line": 330,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.update( Comment, { id: commentId, deletedAt: IsNull() }, { deletedAt: new Date() }, )"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/feed.service.ts",
+       "line": 250,
+       "op": "write",
+       "via": "manager.save(instance)",
+       "quote": "manager.save( manager.create(Comment, { postId, authorUserId: user.userId, content: dto.content, }), )"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "conversation_member_states": {
+   "owner": "friend",
+   "entity": "ConversationMemberState",
+   "entityFile": "apps/core-api/src/modules/friend/entities/conversation-member-state.entity.ts",
+   "entityLine": 12,
+   "accessors": [
+    {
+     "module": "friend",
+     "read": 2,
+     "write": 4,
+     "lock": 0,
+     "vias": [
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/friend/friend.service.ts",
+       "line": 233,
+       "op": "write",
+       "via": "querybuilder",
+       "quote": "this.memberStateRepo .createQueryBuilder() .insert() .into(ConversationMemberState)"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/friend.service.ts",
+       "line": 250,
+       "op": "write",
+       "via": "querybuilder",
+       "quote": "this.memberStateRepo .createQueryBuilder() .insert() .into(ConversationMemberState)"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/friend.service.ts",
+       "line": 268,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.memberStateRepo.findOne({ where: { conversationId, userId }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/friend.service.ts",
+       "line": 436,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.memberStateRepo.findOne({ where: { conversationId, userId: partnerId }, })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "conversation_streaks": {
+   "owner": "friend",
+   "entity": "ConversationStreak",
+   "entityFile": "apps/core-api/src/modules/friend/entities/conversation-streak.entity.ts",
+   "entityLine": 12,
+   "accessors": [
+    {
+     "module": "friend",
+     "read": 2,
+     "write": 3,
+     "lock": 1,
+     "vias": [
+      "manager.querybuilder",
+      "manager.save(instance)",
+      "querybuilder",
+      "raw-sql",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/friend/services/streak.service.ts",
+       "line": 61,
+       "op": "write",
+       "via": "raw-sql",
+       "quote": "INSERT INTO conversation_streaks (conversation_id) VALUES ($1) ON CONFLICT (conve"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/streak.service.ts",
+       "line": 65,
+       "op": "lock",
+       "via": "manager.querybuilder",
+       "quote": "manager .createQueryBuilder(ConversationStreak, 'cs')"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/streak.service.ts",
+       "line": 113,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.streakRepo.findOneBy({ conversationId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/streak.service.ts",
+       "line": 141,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.streakRepo .createQueryBuilder('cs')"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/streak.service.ts",
+       "line": 158,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.streakRepo.update( { conversationId }, { lastWarningSentAt: new Date() }, )"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/streak.service.ts",
+       "line": 100,
+       "op": "write",
+       "via": "manager.save(instance)",
+       "quote": "manager.save(row)"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "conversations": {
+   "owner": "friend",
+   "entity": "Conversation",
+   "entityFile": "apps/core-api/src/modules/friend/entities/conversation.entity.ts",
+   "entityLine": 12,
+   "accessors": [
+    {
+     "module": "friend",
+     "read": 8,
+     "write": 5,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/friend/friend.service.ts",
+       "line": 125,
+       "op": "write",
+       "via": "querybuilder",
+       "quote": "manager .createQueryBuilder() .insert() .into(Conversation)"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/friend.service.ts",
+       "line": 134,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.findOne(Conversation, { where: { userLowId, userHighId }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/friend.service.ts",
+       "line": 166,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager .createQueryBuilder() .update(Conversation)"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/conversation.service.ts",
+       "line": 55,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.conversationRepo.findOneBy({ userLowId, userHighId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/conversation.service.ts",
+       "line": 59,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.conversationRepo.findOneBy({ id })"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/conversation.service.ts",
+       "line": 68,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.conversationRepo .createQueryBuilder('c')"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "discovery_settings": {
+   "owner": "discovery",
+   "entity": "DiscoverySetting",
+   "entityFile": "apps/core-api/src/modules/discovery/entities/discovery-setting.entity.ts",
+   "entityLine": 13,
+   "accessors": [
+    {
+     "module": "discovery",
+     "read": 2,
+     "write": 1,
+     "lock": 0,
+     "vias": [
+      "raw-sql",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+       "line": 111,
+       "op": "write",
+       "via": "raw-sql",
+       "quote": "INSERT INTO discovery_settings (user_id, nearby_visible) VALUES ($1, $2)"
+      },
+      {
+       "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+       "line": 144,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.settingRepo.findOne({ where: { userId: user.userId }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+       "line": 315,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "ul JOIN discovery_settings ds ON ds.user_id = ul.user_id LEFT JOIN user_privacy_settin"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "friendships": {
+   "owner": "friend",
+   "entity": "Friendship",
+   "entityFile": "apps/core-api/src/modules/friend/entities/friendship.entity.ts",
+   "entityLine": 19,
+   "accessors": [
+    {
+     "module": "friend",
+     "read": 3,
+     "write": 1,
+     "lock": 0,
+     "vias": [
+      "querybuilder",
+      "raw-sql",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/friend/friend.service.ts",
+       "line": 117,
+       "op": "write",
+       "via": "querybuilder",
+       "quote": "manager .createQueryBuilder() .insert() .into(Friendship)"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/friend.service.ts",
+       "line": 184,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.friendshipRepo.exists({ where: { userLowId, userHighId } })"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/friend.service.ts",
+       "line": 192,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.friendshipRepo .createQueryBuilder('f')"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+       "line": 221,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "e FROM friendships f WHERE f.user_low_id = $1 OR f.user_high_id = $1 UNION A"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "gift_events": {
+   "owner": "gift",
+   "entity": "GiftEvent",
+   "entityFile": "apps/core-api/src/modules/gift/entities/gift-event.entity.ts",
+   "entityLine": 14,
+   "accessors": [
+    {
+     "module": "gift",
+     "read": 3,
+     "write": 6,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "manager.save(instance)",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/gift/gift.service.ts",
+       "line": 226,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(GiftEvent, { giftId: gift.id, roomId, senderUserId: user.userId, receiverUserId, priceDiamond: gift.priceDiamond,"
+      },
+      {
+       "file": "apps/core-api/src/modules/gift/gift.service.ts",
+       "line": 255,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.giftEventRepo.findOneByOrFail({ transactionId: result.transactionId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/gift/gift.service.ts",
+       "line": 323,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(GiftEvent, { giftId: gift.id, roomId: null, videoId, senderUserId: user.userId, receiverUserId, priceDiamond: gif"
+      },
+      {
+       "file": "apps/core-api/src/modules/gift/gift.service.ts",
+       "line": 351,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.giftEventRepo.findOneByOrFail({ transactionId: result.transactionId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/gift/gift.service.ts",
+       "line": 422,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(GiftEvent, { giftId: gift.id, roomId: null, videoId: null, profileUserId, senderUserId: user.userId, receiverUser"
+      },
+      {
+       "file": "apps/core-api/src/modules/gift/gift.service.ts",
+       "line": 463,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.giftEventRepo.findOneByOrFail({ transactionId: result.transactionId, })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "gifts": {
+   "owner": "gift",
+   "entity": "Gift",
+   "entityFile": "apps/core-api/src/modules/gift/entities/gift.entity.ts",
+   "entityLine": 14,
+   "accessors": [
+    {
+     "module": "gift",
+     "read": 6,
+     "write": 3,
+     "lock": 0,
+     "vias": [
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/gift/gift.service.ts",
+       "line": 88,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.giftRepo.find({ where: { active: true }, order: { sortOrder: 'ASC', code: 'ASC' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/gift/gift.service.ts",
+       "line": 96,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.giftRepo.find({ order: { sortOrder: 'ASC', code: 'ASC' } })"
+      },
+      {
+       "file": "apps/core-api/src/modules/gift/gift.service.ts",
+       "line": 109,
+       "op": "write",
+       "via": "repository",
+       "quote": "repo.save( repo.create({ code: input.code, name: input.name, priceDiamond: input.priceDiamond, sortOrder: input.sortOrder ?? 0, active: true,"
+      },
+      {
+       "file": "apps/core-api/src/modules/gift/gift.service.ts",
+       "line": 110,
+       "op": "write",
+       "via": "repository",
+       "quote": "repo.create({ code: input.code, name: input.name, priceDiamond: input.priceDiamond, sortOrder: input.sortOrder ?? 0, active: true, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/gift/gift.service.ts",
+       "line": 140,
+       "op": "read",
+       "via": "repository",
+       "quote": "repo.findOneBy({ id: giftId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/gift/gift.service.ts",
+       "line": 153,
+       "op": "write",
+       "via": "repository",
+       "quote": "repo.save(gift)"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "guest_match_quotas": {
+   "owner": "matching",
+   "entity": "GuestMatchQuota",
+   "entityFile": "apps/core-api/src/modules/matching/entities/guest-match-quota.entity.ts",
+   "entityLine": 3,
+   "accessors": [
+    {
+     "module": "matching",
+     "read": 0,
+     "write": 3,
+     "lock": 1,
+     "vias": [
+      "manager",
+      "manager.querybuilder",
+      "querybuilder"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+       "line": 90,
+       "op": "write",
+       "via": "querybuilder",
+       "quote": "manager .createQueryBuilder() .insert() .into(GuestMatchQuota)"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+       "line": 98,
+       "op": "lock",
+       "via": "manager.querybuilder",
+       "quote": "manager .createQueryBuilder(GuestMatchQuota, 'q')"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+       "line": 119,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager .createQueryBuilder() .update(GuestMatchQuota)"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "iap_products": {
+   "owner": "economy",
+   "entity": "IapProduct",
+   "entityFile": "apps/core-api/src/modules/economy/entities/iap.entities.ts",
+   "entityLine": 16,
+   "accessors": [
+    {
+     "module": "economy",
+     "read": 3,
+     "write": 0,
+     "lock": 0,
+     "vias": [
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 114,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.productRepo.find({ where: { active: true }, order: { diamonds: 'ASC' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 152,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.productRepo.find({ order: { diamonds: 'ASC' } })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 300,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.productRepo.findOneBy({ productId, provider, active: true, })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "iap_receipts": {
+   "owner": "economy",
+   "entity": "IapReceipt",
+   "entityFile": "apps/core-api/src/modules/economy/entities/iap.entities.ts",
+   "entityLine": 40,
+   "accessors": [
+    {
+     "module": "economy",
+     "read": 2,
+     "write": 7,
+     "lock": 1,
+     "vias": [
+      "manager",
+      "manager.save(instance)",
+      "querybuilder",
+      "raw-sql",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 347,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(IapReceipt, { provider, providerTransactionId: verified.providerTransactionId, userId, productId, transactionId: txn.id, // b"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/jobs/iap-refund-poll.service.ts",
+       "line": 93,
+       "op": "lock",
+       "via": "querybuilder",
+       "quote": "manager .getRepository(IapReceipt) .createQueryBuilder('r')"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/jobs/iap-refund-poll.service.ts",
+       "line": 104,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.update( IapReceipt, claimed.map((c) => c.id), { refundCheckedAt: new Date() }, )"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/jobs/reconciliation.service.ts",
+       "line": 141,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "AS count FROM iap_receipts WHERE status = 'credited' AND transaction_id IS NULL"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/refund.service.ts",
+       "line": 40,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.receiptRepo.findOneBy({ provider, providerTransactionId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/refund.service.ts",
+       "line": 74,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.update( IapReceipt, { id: receipt.id }, { status: IapReceiptStatus.Refunded, refundTransactionId: reversalTxn.id,"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "image_assets": {
+   "owner": "media",
+   "entity": "ImageAsset",
+   "entityFile": "apps/core-api/src/modules/media/entities/image-asset.entity.ts",
+   "entityLine": 6,
+   "accessors": [
+    {
+     "module": "media",
+     "read": 1,
+     "write": 3,
+     "lock": 0,
+     "vias": [
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/media/media.service.ts",
+       "line": 55,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.assetRepo.create({ id: randomUUID(), ownerUserId: user.userId, storageKey: this.storage.generateStorageKey(user.userId), purpose: input.purpose, contentTyp"
+      },
+      {
+       "file": "apps/core-api/src/modules/media/media.service.ts",
+       "line": 68,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.assetRepo.save(asset)"
+      },
+      {
+       "file": "apps/core-api/src/modules/media/media.service.ts",
+       "line": 85,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.assetRepo.findOne({ where: { id: assetId, ownerUserId }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/media/media.service.ts",
+       "line": 126,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.assetRepo.save(asset)"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "ledger_accounts": {
+   "owner": "economy",
+   "entity": "LedgerAccount",
+   "entityFile": "apps/core-api/src/modules/economy/entities/ledger-account.entity.ts",
+   "entityLine": 24,
+   "accessors": [
+    {
+     "module": "economy",
+     "read": 6,
+     "write": 1,
+     "lock": 0,
+     "vias": [
+      "querybuilder",
+      "raw-sql",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 244,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "JOIN ledger_accounts la ON la.id = le.account_id WHERE la.kind = $1 AN"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/jobs/reconciliation.service.ts",
+       "line": 186,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "JOIN ledger_accounts la ON la.id = le.account_id JOIN sample_wallets sw ON sw.us"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+       "line": 225,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.dataSource .getRepository(LedgerAccount) .findBy(entries.map((e) => ({ id: e.accountId })))"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+       "line": 299,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "manager .createQueryBuilder(LedgerEntry, 'le') .innerJoin(LedgerAccount, 'la', 'la.id = le.account_id')"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+       "line": 388,
+       "op": "read",
+       "via": "repository",
+       "quote": "manager.getRepository(LedgerAccount).findOneBy(where)"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+       "line": 398,
+       "op": "write",
+       "via": "raw-sql",
+       "quote": "INSERT INTO ledger_accounts (kind, user_id, currency) VALUES ($1, $2, $3) ON CONFLICT DO N"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "ledger_entries": {
+   "owner": "economy",
+   "entity": "LedgerEntry",
+   "entityFile": "apps/core-api/src/modules/economy/entities/ledger-entry.entity.ts",
+   "entityLine": 21,
+   "accessors": [
+    {
+     "module": "economy",
+     "read": 5,
+     "write": 2,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "manager.querybuilder",
+      "manager.save(instance)",
+      "raw-sql",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 244,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "FROM ledger_entries le JOIN ledger_accounts la ON la.id = le.account_id"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/jobs/reconciliation.service.ts",
+       "line": 131,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "nce FROM ledger_entries GROUP BY currency HAVING SUM(CASE WHEN direction = 'debit' THEN"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/jobs/reconciliation.service.ts",
+       "line": 186,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "FROM ledger_entries le JOIN ledger_accounts la ON la.id = le.account_id"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+       "line": 163,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(LedgerEntry, { transactionId: txn.id, accountId: accounts[i].id, direction: entry.direction, amount: entry.amount.toString(), currency:"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+       "line": 222,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.dataSource .getRepository(LedgerEntry) .findBy({ transactionId: original.id })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+       "line": 299,
+       "op": "read",
+       "via": "manager.querybuilder",
+       "quote": "manager .createQueryBuilder(LedgerEntry, 'le')"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "match_daily_quotas": {
+   "owner": "matching",
+   "entity": "MatchDailyQuota",
+   "entityFile": "apps/core-api/src/modules/matching/entities/match-daily-quota.entity.ts",
+   "entityLine": 9,
+   "accessors": [
+    {
+     "module": "matching",
+     "read": 0,
+     "write": 3,
+     "lock": 1,
+     "vias": [
+      "manager",
+      "querybuilder"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+       "line": 165,
+       "op": "write",
+       "via": "querybuilder",
+       "quote": "manager .createQueryBuilder() .insert() .into(MatchDailyQuota)"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+       "line": 177,
+       "op": "lock",
+       "via": "querybuilder",
+       "quote": "manager .getRepository(MatchDailyQuota) .createQueryBuilder('q')"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+       "line": 193,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager .createQueryBuilder() .update(MatchDailyQuota)"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "match_invites": {
+   "owner": "matching",
+   "entity": "MatchInvite",
+   "entityFile": "apps/core-api/src/modules/matching/entities/match-invite.entity.ts",
+   "entityLine": 44,
+   "accessors": [
+    {
+     "module": "matching",
+     "read": 4,
+     "write": 7,
+     "lock": 1,
+     "vias": [
+      "manager",
+      "manager(lock option)",
+      "manager.save(instance)",
+      "querybuilder",
+      "raw-sql",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/matching/jobs/invite-sweeper.service.ts",
+       "line": 64,
+       "op": "write",
+       "via": "raw-sql",
+       "quote": "UPDATE match_invites SET status = $1, updated_at = now() WHERE statu"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+       "line": 131,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.inviteRepo.save( this.inviteRepo.create({ inviterUserId: user.userId, inviteeUserId: dto.inviteeUserId, matchType: dto.matchType, status: MatchInvi"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+       "line": 132,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.inviteRepo.create({ inviterUserId: user.userId, inviteeUserId: dto.inviteeUserId, matchType: dto.matchType, status: MatchInviteStatus.Pending, ex"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+       "line": 171,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.inviteRepo.findOneBy({ id: inviteId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+       "line": 202,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.inviteRepo .createQueryBuilder('i')"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+       "line": 605,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.findOne(MatchInvite, { where: { id: inviteId }, lock: { mode: 'pessimistic_write' }, })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "match_sessions": {
+   "owner": "matching",
+   "entity": "MatchSession",
+   "entityFile": "apps/core-api/src/modules/matching/entities/match-session.entity.ts",
+   "entityLine": 18,
+   "accessors": [
+    {
+     "module": "matching",
+     "read": 9,
+     "write": 9,
+     "lock": 5,
+     "vias": [
+      "manager",
+      "manager(lock option)",
+      "manager.save(instance)",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+       "line": 281,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(MatchSession, { matchType: ta.matchType, userAId: ta.userId, userBId: tb.userId, ticketAId: ta.id, ticketBId: tb.id,"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/jobs/ticket-sweeper.service.ts",
+       "line": 146,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.dataSource .getRepository(MatchSession) .createQueryBuilder('s')"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/jobs/ticket-sweeper.service.ts",
+       "line": 172,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.findOne(MatchSession, { where: { id: sessionId }, lock: { mode: 'pessimistic_write' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/matching.service.ts",
+       "line": 327,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.findOne(MatchSession, { where: { id: sessionId }, lock: { mode: 'pessimistic_write' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/matching.service.ts",
+       "line": 487,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.dataSource .getRepository(MatchSession) .findOneBy({ id: sessionId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/matching.service.ts",
+       "line": 503,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.findOne(MatchSession, { where: { id: sessionId }, lock: { mode: 'pessimistic_write' }, })"
+      }
+     ]
+    },
+    {
+     "module": "soul-match",
+     "read": 2,
+     "write": 0,
+     "lock": 2,
+     "vias": [
+      "manager",
+      "manager(lock option)"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+       "line": 163,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.findOne(MatchSession, { where: { id: sessionId }, lock: { mode: 'pessimistic_write' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+       "line": 311,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.findOne(MatchSession, { where: { id: sessionId }, lock: { mode: 'pessimistic_write' }, })"
+      }
+     ]
+    }
+   ],
+   "crossModule": [
+    "soul-match"
+   ]
+  },
+  "match_tickets": {
+   "owner": "matching",
+   "entity": "MatchTicket",
+   "entityFile": "apps/core-api/src/modules/matching/entities/match-ticket.entity.ts",
+   "entityLine": 70,
+   "accessors": [
+    {
+     "module": "matching",
+     "read": 12,
+     "write": 15,
+     "lock": 3,
+     "vias": [
+      "manager",
+      "manager(lock option)",
+      "manager.save(instance)",
+      "raw-sql",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+       "line": 234,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.find(MatchTicket, { where: { id: In([a.id, b.id]) }, order: { id: 'ASC' }, // thứ tự lock cố định — tránh deadlock với các writer khác lock: { mode: 'pe"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/jobs/ticket-sweeper.service.ts",
+       "line": 106,
+       "op": "write",
+       "via": "raw-sql",
+       "quote": "UPDATE match_tickets SET status = $1, updated_at = now() WHERE status ="
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/jobs/ticket-sweeper.service.ts",
+       "line": 180,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.find(MatchTicket, { where: { id: In([session.ticketAId, session.ticketBId]) }, order: { id: 'ASC' }, lock: { mode: 'pessimistic_write' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/jobs/ticket-sweeper.service.ts",
+       "line": 198,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(MatchTicket, { userId: ticket.userId, matchType: ticket.matchType, region: ticket.region, ageBand: ticket.ageBand,"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/matching.service.ts",
+       "line": 118,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.findOneBy(MatchTicket, { idempotencyKey: prefixedKey, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/matching.service.ts",
+       "line": 153,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(MatchTicket, { userId: user.userId, matchType: dto.matchType, region: profile.region ?? DEFAULT_REGION, ageBand: this.ageBandOf(profile.b"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "messages": {
+   "owner": "friend",
+   "entity": "Message",
+   "entityFile": "apps/core-api/src/modules/friend/entities/message.entity.ts",
+   "entityLine": 25,
+   "accessors": [
+    {
+     "module": "friend",
+     "read": 4,
+     "write": 3,
+     "lock": 0,
+     "vias": [
+      "querybuilder",
+      "raw-sql",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/friend/friend.service.ts",
+       "line": 143,
+       "op": "write",
+       "via": "querybuilder",
+       "quote": "manager .createQueryBuilder() .insert() .into(Message)"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/conversation.service.ts",
+       "line": 104,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "count(*) FROM messages m WHERE m.conversation_id = c.id AND m.sender_user_i"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/conversation.service.ts",
+       "line": 111,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "m.content FROM messages m WHERE m.conversation_id = c.id ORDER BY m.seq DESC L"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/conversation.service.ts",
+       "line": 162,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.messageRepo.save( this.messageRepo.create({ conversationId: conversation.id, senderUserId, content, idempotencyKey: prefixedKey, attachme"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/conversation.service.ts",
+       "line": 163,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.messageRepo.create({ conversationId: conversation.id, senderUserId, content, idempotencyKey: prefixedKey, attachment, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/conversation.service.ts",
+       "line": 173,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.messageRepo.findOneBy({ idempotencyKey: prefixedKey, })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "mini_game_active_participants": {
+   "owner": "mini-game",
+   "entity": "MiniGameActiveParticipant",
+   "entityFile": "apps/core-api/src/modules/mini-game/entities/mini-game-active-participant.entity.ts",
+   "entityLine": 19,
+   "accessors": [
+    {
+     "module": "mini-game",
+     "read": 0,
+     "write": 4,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "querybuilder"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
+       "line": 101,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.insert(MiniGameActiveParticipant, [ { userId: userLowId, sessionId: session.id }, { userId: userHighId, sessionId: session.id }, ])"
+      },
+      {
+       "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
+       "line": 201,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.delete(MiniGameActiveParticipant, { sessionId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
+       "line": 269,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.delete(MiniGameActiveParticipant, { sessionId })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "mini_game_sessions": {
+   "owner": "mini-game",
+   "entity": "MiniGameSession",
+   "entityFile": "apps/core-api/src/modules/mini-game/entities/mini-game-session.entity.ts",
+   "entityLine": 25,
+   "accessors": [
+    {
+     "module": "mini-game",
+     "read": 3,
+     "write": 8,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "manager.save(instance)",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
+       "line": 88,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(MiniGameSession, { userLowId, userHighId, gameType, lowMove: null, highMove: null, status: MiniGameSessionStatus."
+      },
+      {
+       "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
+       "line": 156,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager .createQueryBuilder() .update(MiniGameSession)"
+      },
+      {
+       "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
+       "line": 174,
+       "op": "read",
+       "via": "repository",
+       "quote": "manager .getRepository(MiniGameSession) .findOneByOrFail({ id: sessionId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
+       "line": 192,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.update( MiniGameSession, { id: sessionId }, { status: MiniGameSessionStatus.Resolved, winnerUserId, resolvedAt, },"
+      },
+      {
+       "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
+       "line": 263,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.update( MiniGameSession, { id: sessionId, status: MiniGameSessionStatus.WaitingMoves }, { status: MiniGameSessionStatus.Cancelled }, )"
+      },
+      {
+       "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
+       "line": 301,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.sessionRepo.findOneBy({ userLowId, userHighId, status: MiniGameSessionStatus.WaitingMoves, })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "mood_presets": {
+   "owner": "mood",
+   "entity": "MoodPreset",
+   "entityFile": "apps/core-api/src/modules/mood/entities/mood-preset.entity.ts",
+   "entityLine": 7,
+   "accessors": [
+    {
+     "module": "mood",
+     "read": 3,
+     "write": 0,
+     "lock": 0,
+     "vias": [
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/mood/mood.service.ts",
+       "line": 47,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.presetRepo.find({ where: { active: true }, order: { sortOrder: 'ASC', code: 'ASC' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/mood/mood.service.ts",
+       "line": 63,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.presetRepo.findOneBy({ code: presetCode, active: true, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/mood/mood.service.ts",
+       "line": 150,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.presetRepo.findOneBy({ id: latest.presetId as string, })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "mood_status_events": {
+   "owner": "mood",
+   "entity": "MoodStatusEvent",
+   "entityFile": "apps/core-api/src/modules/mood/entities/mood-status-event.entity.ts",
+   "entityLine": 22,
+   "accessors": [
+    {
+     "module": "mood",
+     "read": 2,
+     "write": 3,
+     "lock": 0,
+     "vias": [
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/mood/mood.service.ts",
+       "line": 83,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.eventRepo.create({ userId, presetId: preset.id, kind: MoodEventKind.Set, expiresAt, idempotencyKey: key, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/mood/mood.service.ts",
+       "line": 103,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.eventRepo.create({ userId, presetId: null, kind: MoodEventKind.Clear, expiresAt: null, idempotencyKey: key, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/mood/mood.service.ts",
+       "line": 142,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.eventRepo.findOne({ where: { userId }, order: { createdAt: 'DESC' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/mood/mood.service.ts",
+       "line": 167,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.eventRepo.save(build())"
+      },
+      {
+       "file": "apps/core-api/src/modules/mood/mood.service.ts",
+       "line": 170,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.eventRepo.findOneByOrFail({ idempotencyKey })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "movie_match_queue_entries": {
+   "owner": "movie-match",
+   "entity": "MovieMatchQueueEntry",
+   "entityFile": "apps/core-api/src/modules/movie-match/entities/movie-match-anon.entities.ts",
+   "entityLine": 11,
+   "accessors": [
+    {
+     "module": "movie-match",
+     "read": 3,
+     "write": 6,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "querybuilder",
+      "raw-sql"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 308,
+       "op": "write",
+       "via": "raw-sql",
+       "quote": "DELETE FROM movie_match_queue_entries WHERE queued_at < $1"
+      },
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 311,
+       "op": "write",
+       "via": "querybuilder",
+       "quote": "manager .createQueryBuilder() .insert() .into(MovieMatchQueueEntry)"
+      },
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 320,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "T user_id FROM movie_match_queue_entries WHERE user_id <> $1 ORDER BY queued_at ASC, user_i"
+      },
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 332,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.delete(MovieMatchQueueEntry, { userId: candidate.user_id, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 345,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.findOneByOrFail(MovieMatchQueueEntry, { userId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 355,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.delete(MovieMatchQueueEntry, [userId, partnerId])"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "movie_session_active_participants": {
+   "owner": "movie-match",
+   "entity": "MovieSessionActiveParticipant",
+   "entityFile": "apps/core-api/src/modules/movie-match/entities/movie-session-active-participant.entity.ts",
+   "entityLine": 18,
+   "accessors": [
+    {
+     "module": "movie-match",
+     "read": 4,
+     "write": 7,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "querybuilder"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 153,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.insert(MovieSessionActiveParticipant, [ { userId: userLowId, sessionId: session.id }, { userId: userHighId, sessionId: session.id }, ])"
+      },
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 259,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.delete(MovieSessionActiveParticipant, { sessionId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 327,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.findOneBy( MovieSessionActiveParticipant, { userId: candidate.user_id }, )"
+      },
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 356,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.insert(MovieSessionActiveParticipant, [ { userId, sessionId: session.id }, { userId: partnerId, sessionId: session.id }, ])"
+      },
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 393,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.findOneBy(MovieSessionActiveParticipant, { userId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 409,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.delete(MovieSessionActiveParticipant, { userId })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "movie_session_messages": {
+   "owner": "movie-match",
+   "entity": "MovieSessionMessage",
+   "entityFile": "apps/core-api/src/modules/movie-match/entities/movie-match-anon.entities.ts",
+   "entityLine": 25,
+   "accessors": [
+    {
+     "module": "movie-match",
+     "read": 2,
+     "write": 2,
+     "lock": 0,
+     "vias": [
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 553,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.messageRepo.save( this.messageRepo.create({ sessionId, senderUserId: userId, content, idempotencyKey: prefixedKey, }), )"
+      },
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 554,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.messageRepo.create({ sessionId, senderUserId: userId, content, idempotencyKey: prefixedKey, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 563,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.messageRepo.findOneBy({ idempotencyKey: prefixedKey, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 600,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.messageRepo .createQueryBuilder('m')"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "movie_sessions": {
+   "owner": "movie-match",
+   "entity": "MovieSession",
+   "entityFile": "apps/core-api/src/modules/movie-match/entities/movie-session.entity.ts",
+   "entityLine": 53,
+   "accessors": [
+    {
+     "module": "movie-match",
+     "read": 7,
+     "write": 12,
+     "lock": 3,
+     "vias": [
+      "manager",
+      "manager(lock option)",
+      "manager.save(instance)",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 141,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(MovieSession, { userLowId, userHighId, videoUrl, positionSeconds: 0, isPlaying: false, positionUpdatedAt: now,"
+      },
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 209,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.sessionRepo.update( { id: sessionId }, { positionSeconds, isPlaying, positionUpdatedAt }, )"
+      },
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 250,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.update( MovieSession, { id: sessionId }, { status: MovieSessionStatus.Ended, endedAt, endReason: MovieSessionEndReason.Left, },"
+      },
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 398,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.findOne(MovieSession, { where: { id: active.sessionId }, lock: { mode: 'pessimistic_write' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 650,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.sessionRepo.findOneBy({ userLowId, userHighId, status: MovieSessionStatus.Active, mode: MovieSessionMode.Friend, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+       "line": 663,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.sessionRepo.findOneBy({ id: sessionId })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "notifications": {
+   "owner": "notification",
+   "entity": "Notification",
+   "entityFile": "apps/core-api/src/modules/notification/entities/notification.entity.ts",
+   "entityLine": 26,
+   "accessors": [
+    {
+     "module": "notification",
+     "read": 3,
+     "write": 5,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "manager.save(instance)",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/notification/notification.service.ts",
+       "line": 60,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(Notification, { ...input, readAt: null })"
+      },
+      {
+       "file": "apps/core-api/src/modules/notification/notification.service.ts",
+       "line": 75,
+       "op": "write",
+       "via": "repository",
+       "quote": "repo.save( userIds.map((userId) => repo.create({ userId, type: NotificationType.AdminBroadcast, payload: { title: input.title, body: input.body },"
+      },
+      {
+       "file": "apps/core-api/src/modules/notification/notification.service.ts",
+       "line": 77,
+       "op": "write",
+       "via": "repository",
+       "quote": "repo.create({ userId, type: NotificationType.AdminBroadcast, payload: { title: input.title, body: input.body }, readAt: null, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/notification/notification.service.ts",
+       "line": 160,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.notificationRepo .createQueryBuilder('n')"
+      },
+      {
+       "file": "apps/core-api/src/modules/notification/notification.service.ts",
+       "line": 184,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.notificationRepo .createQueryBuilder('n')"
+      },
+      {
+       "file": "apps/core-api/src/modules/notification/notification.service.ts",
+       "line": 192,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.notificationRepo.findOneBy({ id: notificationId, })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "outbox_events": {
+   "owner": "economy",
+   "entity": "OutboxEvent",
+   "entityFile": "apps/core-api/src/modules/economy/entities/outbox-event.entity.ts",
+   "entityLine": 10,
+   "accessors": [
+    {
+     "module": "economy",
+     "read": 0,
+     "write": 7,
+     "lock": 1,
+     "vias": [
+      "manager",
+      "manager.save(instance)",
+      "querybuilder"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 429,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(OutboxEvent, { topic: ECONOMY_EVENTS_TOPIC, eventType: 'economy.vip.purchased', payload: { version: 1, userId,"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 648,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(OutboxEvent, { topic: ECONOMY_EVENTS_TOPIC, eventType: 'economy.gift.sent', payload: { version: 1, transactionId: txn.id,"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/jobs/outbox-relay.service.ts",
+       "line": 68,
+       "op": "lock",
+       "via": "querybuilder",
+       "quote": "manager .getRepository(OutboxEvent) .createQueryBuilder('e')"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+       "line": 478,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(OutboxEvent, { topic: ECONOMY_EVENTS_TOPIC, eventType: outboxEventTypeOverride ?? (balanceDelta > 0n ? 'economy.diamo"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 428,
+       "op": "write",
+       "via": "manager.save(instance)",
+       "quote": "manager.save( manager.create(OutboxEvent, { topic: ECONOMY_EVENTS_TOPIC, eventType: 'economy.vip.purchased', paylo"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 647,
+       "op": "write",
+       "via": "manager.save(instance)",
+       "quote": "manager.save( manager.create(OutboxEvent, { topic: ECONOMY_EVENTS_TOPIC, eventType: 'economy.gift.sent', payload:"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "palm_match_active_participants": {
+   "owner": "palm-match",
+   "entity": "PalmMatchActiveParticipant",
+   "entityFile": "apps/core-api/src/modules/palm-match/entities/palm-match-session.entity.ts",
+   "entityLine": 89,
+   "accessors": [
+    {
+     "module": "palm-match",
+     "read": 5,
+     "write": 4,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "querybuilder"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 147,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.findOneBy( PalmMatchActiveParticipant, { userId: candidate.user_id }, )"
+      },
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 180,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.insert(PalmMatchActiveParticipant, [ { userId, sessionId: session.id }, { userId: partnerId, sessionId: session.id }, ])"
+      },
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 308,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.findOneBy(PalmMatchActiveParticipant, { userId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 321,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.delete(PalmMatchActiveParticipant, { userId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 387,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.findOneBy(PalmMatchActiveParticipant, { userId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 395,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.delete(PalmMatchActiveParticipant, { userId })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "palm_match_queue_entries": {
+   "owner": "palm-match",
+   "entity": "PalmMatchQueueEntry",
+   "entityFile": "apps/core-api/src/modules/palm-match/entities/palm-match-session.entity.ts",
+   "entityLine": 76,
+   "accessors": [
+    {
+     "module": "palm-match",
+     "read": 3,
+     "write": 6,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "querybuilder",
+      "raw-sql"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 128,
+       "op": "write",
+       "via": "raw-sql",
+       "quote": "DELETE FROM palm_match_queue_entries WHERE queued_at < $1"
+      },
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 131,
+       "op": "write",
+       "via": "querybuilder",
+       "quote": "manager .createQueryBuilder() .insert() .into(PalmMatchQueueEntry)"
+      },
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 140,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "T user_id FROM palm_match_queue_entries WHERE user_id <> $1 ORDER BY queued_at ASC, user_id"
+      },
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 152,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.delete(PalmMatchQueueEntry, { userId: candidate.user_id, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 165,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.findOneByOrFail(PalmMatchQueueEntry, { userId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 179,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.delete(PalmMatchQueueEntry, [userId, partnerId])"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "palm_match_sessions": {
+   "owner": "palm-match",
+   "entity": "PalmMatchSession",
+   "entityFile": "apps/core-api/src/modules/palm-match/entities/palm-match-session.entity.ts",
+   "entityLine": 26,
+   "accessors": [
+    {
+     "module": "palm-match",
+     "read": 4,
+     "write": 6,
+     "lock": 3,
+     "vias": [
+      "manager",
+      "manager(lock option)",
+      "manager.save(instance)"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 313,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.findOne(PalmMatchSession, { where: { id: active.sessionId }, lock: { mode: 'pessimistic_write' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 363,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(PalmMatchSession, { id, userLowId, userHighId, lowSign: PALM_ZODIAC_SIGNS[lowSeed % PALM_ZODIAC_SIGNS.length].key, highSign: PALM_ZODIAC_SIGNS[hi"
+      },
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 391,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.findOneBy(PalmMatchSession, { id: active.sessionId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 409,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.findOne(PalmMatchSession, { where: { id: active.sessionId }, lock: { mode: 'pessimistic_write' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 445,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.findOne(PalmMatchSession, { where: { id: sessionId }, lock: { mode: 'pessimistic_write' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 229,
+       "op": "write",
+       "via": "manager.save(instance)",
+       "quote": "manager.save(session)"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "palm_reading_templates": {
+   "owner": "palm-match",
+   "entity": "PalmReadingTemplate",
+   "entityFile": "apps/core-api/src/modules/palm-match/entities/palm-reading-template.entity.ts",
+   "entityLine": 16,
+   "accessors": [
+    {
+     "module": "palm-match",
+     "read": 2,
+     "write": 0,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 86,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.templateRepo.find({ where: { category, isActive: true }, order: { id: 'ASC' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+       "line": 339,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.find(PalmReadingTemplate, { where: { category: PalmMatchCategory.Love, isActive: true }, order: { id: 'ASC' }, })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "party_room_comments": {
+   "owner": "party-room",
+   "entity": "PartyRoomComment",
+   "entityFile": "apps/core-api/src/modules/party-room/entities/party-room-comment.entity.ts",
+   "entityLine": 13,
+   "accessors": [
+    {
+     "module": "party-room",
+     "read": 2,
+     "write": 2,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "manager.save(instance)",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+       "line": 815,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(PartyRoomComment, { roomId, senderUserId: user.userId, content, idempotencyKey: prefixedKey, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+       "line": 842,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.commentRepo.findOneBy({ idempotencyKey: prefixedKey, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+       "line": 883,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.commentRepo .createQueryBuilder('comment')"
+      },
+      {
+       "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+       "line": 814,
+       "op": "write",
+       "via": "manager.save(instance)",
+       "quote": "manager.save( manager.create(PartyRoomComment, { roomId, senderUserId: user.userId, content, idempoten"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "party_room_members": {
+   "owner": "party-room",
+   "entity": "PartyRoomMember",
+   "entityFile": "apps/core-api/src/modules/party-room/entities/party-room-member.entity.ts",
+   "entityLine": 21,
+   "accessors": [
+    {
+     "module": "party-room",
+     "read": 23,
+     "write": 15,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "manager.save(instance)",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/party-room/jobs/party-room-sweeper.service.ts",
+       "line": 152,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.dataSource .getRepository(PartyRoomMember) .find({ where: { leftAt: IsNull(), disconnectedAt: LessThan(cutoff), }, order: { disconnectedAt:"
+      },
+      {
+       "file": "apps/core-api/src/modules/party-room/jobs/party-room-sweeper.service.ts",
+       "line": 195,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.dataSource .getRepository(PartyRoomMember) .countBy({ roomId: room.id, leftAt: IsNull() })"
+      },
+      {
+       "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+       "line": 178,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(PartyRoomMember, { roomId: createdRoom.id, userId: user.userId, role: PartyRole.Host, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+       "line": 246,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.findOneBy(PartyRoomMember, { roomId, userId: user.userId, leftAt: IsNull(), })"
+      },
+      {
+       "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+       "line": 279,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.countBy(PartyRoomMember, { roomId, leftAt: IsNull(), })"
+      },
+      {
+       "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+       "line": 296,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(PartyRoomMember, { roomId, userId: user.userId, role: PartyRole.Audience, })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "party_rooms": {
+   "owner": "party-room",
+   "entity": "PartyRoom",
+   "entityFile": "apps/core-api/src/modules/party-room/entities/party-room.entity.ts",
+   "entityLine": 41,
+   "accessors": [
+    {
+     "module": "party-room",
+     "read": 14,
+     "write": 5,
+     "lock": 6,
+     "vias": [
+      "manager",
+      "manager(lock option)",
+      "manager.save(instance)",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/party-room/jobs/party-room-sweeper.service.ts",
+       "line": 117,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.dataSource.getRepository(PartyRoom).find({ where: { status: PartyRoomStatus.Active, hostDisconnectedAt: LessThan(cutoff), }, order: { hostDisconnectedAt: '"
+      },
+      {
+       "file": "apps/core-api/src/modules/party-room/jobs/party-room-sweeper.service.ts",
+       "line": 184,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.dataSource.getRepository(PartyRoom).find({ where: { status: PartyRoomStatus.Active, createdAt: LessThan(cutoff), }, order: { createdAt: 'ASC', id: 'ASC' },"
+      },
+      {
+       "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+       "line": 165,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(PartyRoom, { hostUserId: user.userId, title: cleanTitle, category, status: PartyRoomStatus.Active, // snapshot conf"
+      },
+      {
+       "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+       "line": 369,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.roomRepo.findOneBy({ id: roomId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+       "line": 380,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.findOne(PartyRoom, { where: { id: roomId }, lock: { mode: 'pessimistic_write' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+       "line": 685,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.roomRepo.findOneBy({ id: roomId })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "payos_packages": {
+   "owner": "economy",
+   "entity": "PayosPackage",
+   "entityFile": "apps/core-api/src/modules/economy/entities/payos.entities.ts",
+   "entityLine": 12,
+   "accessors": [
+    {
+     "module": "economy",
+     "read": 2,
+     "write": 0,
+     "lock": 0,
+     "vias": [
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+       "line": 69,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.packageRepo.find({ where: { active: true }, order: { amountVnd: 'ASC' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+       "line": 92,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.packageRepo.findOneBy({ packageId, active: true })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "payos_payment_orders": {
+   "owner": "economy",
+   "entity": "PayosPaymentOrder",
+   "entityFile": "apps/core-api/src/modules/economy/entities/payos.entities.ts",
+   "entityLine": 41,
+   "accessors": [
+    {
+     "module": "economy",
+     "read": 6,
+     "write": 6,
+     "lock": 1,
+     "vias": [
+      "manager",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+       "line": 87,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.orderRepo.findOneBy({ idempotencyKey })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+       "line": 108,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.orderRepo.save( this.orderRepo.create({ userId, packageId: pkg.packageId, amountVnd: pkg.amountVnd, diamonds: pkg.diamonds, c"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+       "line": 109,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.orderRepo.create({ userId, packageId: pkg.packageId, amountVnd: pkg.amountVnd, diamonds: pkg.diamonds, currency: PAYOS_CURRENCY_VND,"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+       "line": 127,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.orderRepo.findOneByOrFail({ idempotencyKey })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+       "line": 145,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.orderRepo.findOneBy({ id: orderId, userId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+       "line": 151,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.orderRepo.update( { id: order.id, userId, status: PayosPaymentOrderStatus.Pending, }, { status: PayosPaymentOrderStatus.Expired }, )"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "phone_otps": {
+   "owner": "auth",
+   "entity": "PhoneOtp",
+   "entityFile": "apps/core-api/src/modules/auth/entities/phone-otp.entity.ts",
+   "entityLine": 10,
+   "accessors": [
+    {
+     "module": "auth",
+     "read": 2,
+     "write": 5,
+     "lock": 0,
+     "vias": [
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
+       "line": 32,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.otpRepo.countBy({ phone, createdAt: MoreThan(oneHourAgo), })"
+      },
+      {
+       "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
+       "line": 52,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.otpRepo.update( { phone, consumedAt: IsNull() }, { consumedAt: new Date() }, )"
+      },
+      {
+       "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
+       "line": 56,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.otpRepo.save( this.otpRepo.create({ phone, codeHash: this.hash(phone, code), expiresAt: new Date(Date.now() + ttlSeconds * 1000), }), )"
+      },
+      {
+       "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
+       "line": 57,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.otpRepo.create({ phone, codeHash: this.hash(phone, code), expiresAt: new Date(Date.now() + ttlSeconds * 1000), })"
+      },
+      {
+       "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
+       "line": 74,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.otpRepo.findOne({ where: { phone, consumedAt: IsNull() }, order: { createdAt: 'DESC' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
+       "line": 89,
+       "op": "write",
+       "via": "querybuilder",
+       "quote": "this.otpRepo .createQueryBuilder()"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "posts": {
+   "owner": "feed",
+   "entity": "Post",
+   "entityFile": "apps/core-api/src/modules/feed/entities/post.entity.ts",
+   "entityLine": 26,
+   "accessors": [
+    {
+     "module": "feed",
+     "read": 4,
+     "write": 7,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/feed/feed.service.ts",
+       "line": 66,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.postRepo.save( this.postRepo.create({ authorUserId: user.userId, content: dto.content ?? null, imageUrl: dto.imageUrl ?? null, audience: dto.audien"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/feed.service.ts",
+       "line": 67,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.postRepo.create({ authorUserId: user.userId, content: dto.content ?? null, imageUrl: dto.imageUrl ?? null, audience: dto.audience ?? PostAudience.Public,"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/feed.service.ts",
+       "line": 77,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.postRepo.findOneBy({ idempotencyKey: key })"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/feed.service.ts",
+       "line": 105,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.postRepo .createQueryBuilder('p')"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/feed.service.ts",
+       "line": 163,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.postRepo .createQueryBuilder('p')"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/feed.service.ts",
+       "line": 196,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.postRepo.findOneBy({ id: postId })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "profile_chat_contacts": {
+   "owner": "friend",
+   "entity": "ProfileChatContact",
+   "entityFile": "apps/core-api/src/modules/friend/entities/profile-chat-contact.entity.ts",
+   "entityLine": 9,
+   "accessors": [
+    {
+     "module": "friend",
+     "read": 1,
+     "write": 1,
+     "lock": 0,
+     "vias": [
+      "querybuilder"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+       "line": 531,
+       "op": "write",
+       "via": "querybuilder",
+       "quote": "manager .createQueryBuilder() .insert() .into(ProfileChatContact)"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+       "line": 608,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "manager .getRepository(ProfileChatContact) .createQueryBuilder('contact')"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "profile_follows": {
+   "owner": "friend",
+   "entity": "ProfileFollow",
+   "entityFile": "apps/core-api/src/modules/friend/entities/profile-follow.entity.ts",
+   "entityLine": 6,
+   "accessors": [
+    {
+     "module": "friend",
+     "read": 8,
+     "write": 3,
+     "lock": 0,
+     "vias": [
+      "querybuilder",
+      "raw-sql",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+       "line": 92,
+       "op": "write",
+       "via": "querybuilder",
+       "quote": "this.followRepo .createQueryBuilder() .insert() .into(ProfileFollow)"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+       "line": 116,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.followRepo.update( { followerUserId, followeeUserId }, { active: false }, )"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+       "line": 130,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.followRepo.exists({ where: { followerUserId: userAId, followeeUserId: userBId, active: true, }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+       "line": 137,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.followRepo.exists({ where: { followerUserId: userBId, followeeUserId: userAId, active: true, }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+       "line": 168,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.followRepo.findOneBy({ followerUserId: viewerUserId, followeeUserId: profileUserId, active: true, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+       "line": 221,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": ") FROM profile_follows a JOIN profile_follows b ON b.follower_user_id = a."
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "reactions": {
+   "owner": "feed",
+   "entity": "Reaction",
+   "entityFile": "apps/core-api/src/modules/feed/entities/reaction.entity.ts",
+   "entityLine": 14,
+   "accessors": [
+    {
+     "module": "feed",
+     "read": 1,
+     "write": 3,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "manager.save(instance)",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/feed/feed.service.ts",
+       "line": 355,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(Reaction, { postId, userId: user.userId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/feed.service.ts",
+       "line": 385,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.delete(Reaction, { postId, userId: user.userId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/feed.service.ts",
+       "line": 405,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.reactionRepo.exists({ where: { postId, userId: user.userId }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/feed.service.ts",
+       "line": 354,
+       "op": "write",
+       "via": "manager.save(instance)",
+       "quote": "manager.save( manager.create(Reaction, { postId, userId: user.userId }), )"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "refresh_tokens": {
+   "owner": "auth",
+   "entity": "RefreshToken",
+   "entityFile": "apps/core-api/src/modules/auth/entities/refresh-token.entity.ts",
+   "entityLine": 14,
+   "accessors": [
+    {
+     "module": "auth",
+     "read": 2,
+     "write": 14,
+     "lock": 1,
+     "vias": [
+      "manager",
+      "manager(lock option)",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/auth/repositories/typeorm-refresh-session.adapter.ts",
+       "line": 18,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.dataSource.getRepository(RefreshToken).insert({ userId: input.userId, tokenHash: input.tokenHash, familyId: input.familyId, expiresAt: input.expiresAt, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/auth/repositories/typeorm-refresh-session.adapter.ts",
+       "line": 29,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.dataSource .getRepository(RefreshToken) .findOneBy({ tokenHash })"
+      },
+      {
+       "file": "apps/core-api/src/modules/auth/repositories/typeorm-refresh-session.adapter.ts",
+       "line": 40,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.findOne(RefreshToken, { where: { id: input.tokenId }, lock: { mode: 'pessimistic_write' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/auth/repositories/typeorm-refresh-session.adapter.ts",
+       "line": 48,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.update( RefreshToken, { familyId: session.familyId, revokedAt: IsNull() }, { revokedAt: new Date() }, )"
+      },
+      {
+       "file": "apps/core-api/src/modules/auth/repositories/typeorm-refresh-session.adapter.ts",
+       "line": 56,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.update( RefreshToken, { id: session.id, rotatedAt: IsNull(), revokedAt: IsNull() }, { rotatedAt: new Date() }, )"
+      },
+      {
+       "file": "apps/core-api/src/modules/auth/repositories/typeorm-refresh-session.adapter.ts",
+       "line": 62,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.update( RefreshToken, { familyId: session.familyId, revokedAt: IsNull() }, { revokedAt: new Date() }, )"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "reports": {
+   "owner": "safety",
+   "entity": "Report",
+   "entityFile": "apps/core-api/src/modules/safety/entities/report.entity.ts",
+   "entityLine": 42,
+   "accessors": [
+    {
+     "module": "safety",
+     "read": 8,
+     "write": 5,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "manager.querybuilder",
+      "manager.save(instance)",
+      "querybuilder",
+      "raw-sql",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/safety/safety.service.ts",
+       "line": 94,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.count(Report, { where: { reporterUserId, targetUserId, createdAt: MoreThanOrEqual(pairCutoff), trustPenaltyApplied: MoreThan(0),"
+      },
+      {
+       "file": "apps/core-api/src/modules/safety/safety.service.ts",
+       "line": 104,
+       "op": "read",
+       "via": "manager.querybuilder",
+       "quote": "manager .createQueryBuilder(Report, 'r')"
+      },
+      {
+       "file": "apps/core-api/src/modules/safety/safety.service.ts",
+       "line": 118,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(Report, { reporterUserId, targetUserId, reason, description: description ?? null, trustPenaltyApplied: penalty, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/safety/safety.service.ts",
+       "line": 159,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.reportRepo.save( this.reportRepo.create({ reporterUserId, targetType: ReportTargetType.Video, targetUserId: null, targetVideoId: videoId,"
+      },
+      {
+       "file": "apps/core-api/src/modules/safety/safety.service.ts",
+       "line": 160,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.reportRepo.create({ reporterUserId, targetType: ReportTargetType.Video, targetUserId: null, targetVideoId: videoId, reason, description"
+      },
+      {
+       "file": "apps/core-api/src/modules/safety/safety.service.ts",
+       "line": 172,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.reportRepo.findOneByOrFail({ targetType: ReportTargetType.Video, targetVideoId: videoId, reporterUserId, })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "soul_chat_messages": {
+   "owner": "soul-match",
+   "entity": "SoulChatMessage",
+   "entityFile": "apps/core-api/src/modules/soul-match/entities/soul-chat-message.entity.ts",
+   "entityLine": 14,
+   "accessors": [
+    {
+     "module": "soul-match",
+     "read": 3,
+     "write": 2,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "manager.save(instance)",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+       "line": 187,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(SoulChatMessage, { sessionId, senderUserId: user.userId, content: dto.content, idempotencyKey: prefixedKey, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+       "line": 226,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.messageRepo.findOneBy({ idempotencyKey: prefixedKey, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+       "line": 275,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.messageRepo .createQueryBuilder('m')"
+      },
+      {
+       "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+       "line": 350,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.find(SoulChatMessage, { where: { sessionId }, order: { seq: 'ASC' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+       "line": 186,
+       "op": "write",
+       "via": "manager.save(instance)",
+       "quote": "manager.save( manager.create(SoulChatMessage, { sessionId, senderUserId: user.userId, content: dto.content,"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "soul_match_ratings": {
+   "owner": "soul-match",
+   "entity": "SoulMatchRating",
+   "entityFile": "apps/core-api/src/modules/soul-match/entities/soul-match-rating.entity.ts",
+   "entityLine": 22,
+   "accessors": [
+    {
+     "module": "soul-match",
+     "read": 4,
+     "write": 2,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "manager.save(instance)",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+       "line": 92,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.ratingRepo.findOneBy({ sessionId, raterUserId: user.userId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+       "line": 316,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.findOneBy(SoulMatchRating, { sessionId, raterUserId: user.userId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+       "line": 332,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(SoulMatchRating, { sessionId, raterUserId: user.userId, verdict: dto.verdict, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+       "line": 345,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.findOneBy(SoulMatchRating, { sessionId, raterUserId: partnerId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+       "line": 378,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.ratingRepo.findOneBy({ sessionId, raterUserId: user.userId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+       "line": 331,
+       "op": "write",
+       "via": "manager.save(instance)",
+       "quote": "manager.save( manager.create(SoulMatchRating, { sessionId, raterUserId: user.userId, verdict: dto.verdict,"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "stories": {
+   "owner": "feed",
+   "entity": "Story",
+   "entityFile": "apps/core-api/src/modules/feed/entities/story.entity.ts",
+   "entityLine": 22,
+   "accessors": [
+    {
+     "module": "feed",
+     "read": 5,
+     "write": 3,
+     "lock": 0,
+     "vias": [
+      "querybuilder",
+      "raw-sql",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/feed/jobs/story-sweeper.service.ts",
+       "line": 61,
+       "op": "write",
+       "via": "raw-sql",
+       "quote": "DELETE FROM stories WHERE id IN ( SELECT id FROM stori"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/services/story.service.ts",
+       "line": 61,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.storyRepo.save( this.storyRepo.create({ authorUserId: user.userId, mediaUrl: dto.mediaUrl, caption: dto.caption ?? null, audience: dto.audience ??"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/services/story.service.ts",
+       "line": 62,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.storyRepo.create({ authorUserId: user.userId, mediaUrl: dto.mediaUrl, caption: dto.caption ?? null, audience: dto.audience ?? StoryAudience.Friends,"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/services/story.service.ts",
+       "line": 73,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.storyRepo.findOneBy({ idempotencyKey: key })"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/services/story.service.ts",
+       "line": 101,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.storyRepo .createQueryBuilder('s')"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/services/story.service.ts",
+       "line": 119,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.storyRepo.findOneBy({ id: storyId })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "story_views": {
+   "owner": "feed",
+   "entity": "StoryView",
+   "entityFile": "apps/core-api/src/modules/feed/entities/story-view.entity.ts",
+   "entityLine": 13,
+   "accessors": [
+    {
+     "module": "feed",
+     "read": 1,
+     "write": 2,
+     "lock": 0,
+     "vias": [
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/feed/services/story.service.ts",
+       "line": 151,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.viewRepo.save( this.viewRepo.create({ storyId, viewerId: user.userId }), )"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/services/story.service.ts",
+       "line": 152,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.viewRepo.create({ storyId, viewerId: user.userId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/feed/services/story.service.ts",
+       "line": 177,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.viewRepo.find({ where: { storyId }, order: { createdAt: 'DESC', viewerId: 'ASC' }, take: STORY_VIEWER_BATCH_LIMIT, })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "support_tickets": {
+   "owner": "support",
+   "entity": "SupportTicket",
+   "entityFile": "apps/core-api/src/modules/support/entities/support-ticket.entity.ts",
+   "entityLine": 18,
+   "accessors": [
+    {
+     "module": "support",
+     "read": 3,
+     "write": 3,
+     "lock": 1,
+     "vias": [
+      "manager",
+      "manager(lock option)",
+      "manager.save(instance)",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/support/support.service.ts",
+       "line": 36,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.ticketRepo.save( this.ticketRepo.create({ userId, category: input.category, message, status: SupportTicketStatus.Open, staffResponse: nul"
+      },
+      {
+       "file": "apps/core-api/src/modules/support/support.service.ts",
+       "line": 37,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.ticketRepo.create({ userId, category: input.category, message, status: SupportTicketStatus.Open, staffResponse: null, idempotencyKey,"
+      },
+      {
+       "file": "apps/core-api/src/modules/support/support.service.ts",
+       "line": 53,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.ticketRepo.findOneByOrFail({ userId, idempotencyKey, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/support/support.service.ts",
+       "line": 81,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.findOne(SupportTicket, { where: { id: ticketId }, lock: { mode: 'pessimistic_write' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/support/support.service.ts",
+       "line": 111,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.ticketRepo .createQueryBuilder('ticket')"
+      },
+      {
+       "file": "apps/core-api/src/modules/support/support.service.ts",
+       "line": 103,
+       "op": "write",
+       "via": "manager.save(instance)",
+       "quote": "manager.save(ticket)"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "transactions": {
+   "owner": "economy",
+   "entity": "LedgerTransaction",
+   "entityFile": "apps/core-api/src/modules/economy/entities/transaction.entity.ts",
+   "entityLine": 36,
+   "accessors": [
+    {
+     "module": "economy",
+     "read": 7,
+     "write": 3,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 674,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.txnRepo .createQueryBuilder('t')"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+       "line": 59,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.dataSource .getRepository(LedgerTransaction) .findOneBy({ idempotencyKey: input.idempotencyKey })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+       "line": 84,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.dataSource .getRepository(LedgerTransaction) .findOneByOrFail({ idempotencyKey: input.idempotencyKey })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+       "line": 107,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.findOne(LedgerTransaction, { where: { idempotencyKey: input.idempotencyKey }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+       "line": 120,
+       "op": "write",
+       "via": "querybuilder",
+       "quote": "manager .createQueryBuilder() .insert() .into(LedgerTransaction)"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+       "line": 139,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.findOneByOrFail(LedgerTransaction, { idempotencyKey: input.idempotencyKey, })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "user_avatar_configs": {
+   "owner": "avatar",
+   "entity": "UserAvatarConfig",
+   "entityFile": "apps/core-api/src/modules/avatar/entities/user-avatar-config.entity.ts",
+   "entityLine": 8,
+   "accessors": [
+    {
+     "module": "avatar",
+     "read": 4,
+     "write": 3,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "manager.save(instance)",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+       "line": 121,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.configRepo.findOneBy({ userId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+       "line": 123,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.configRepo.update( { userId }, this.slotColumnPatch(slot, assetId), )"
+      },
+      {
+       "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+       "line": 133,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.configRepo.findOneBy({ userId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+       "line": 140,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.configRepo.findOneBy({ userId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+       "line": 239,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(UserAvatarConfig, { userId, baseAssetId: bySlot.get(AvatarSlot.Base)?.id ?? null, hairAssetId: bySlot.get(AvatarSlot.Hair)?.id ?? null, f"
+      },
+      {
+       "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+       "line": 251,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.configRepo.findOneByOrFail({ userId })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "user_avatar_items": {
+   "owner": "avatar",
+   "entity": "UserAvatarItem",
+   "entityFile": "apps/core-api/src/modules/avatar/entities/user-avatar-item.entity.ts",
+   "entityLine": 13,
+   "accessors": [
+    {
+     "module": "avatar",
+     "read": 2,
+     "write": 1,
+     "lock": 0,
+     "vias": [
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+       "line": 46,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.itemRepo.findBy({ userId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+       "line": 110,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.itemRepo.exists({ where: { userId, avatarAssetId: assetId }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+       "line": 176,
+       "op": "write",
+       "via": "querybuilder",
+       "quote": "manager .createQueryBuilder() .insert() .into(UserAvatarItem)"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "user_locations": {
+   "owner": "discovery",
+   "entity": "UserLocation",
+   "entityFile": "apps/core-api/src/modules/discovery/entities/user-location.entity.ts",
+   "entityLine": 14,
+   "accessors": [
+    {
+     "module": "discovery",
+     "read": 2,
+     "write": 2,
+     "lock": 0,
+     "vias": [
+      "raw-sql",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+       "line": 99,
+       "op": "write",
+       "via": "raw-sql",
+       "quote": "INSERT INTO user_locations (user_id, lat_quantized, lon_quantized, updated_at) VALU"
+      },
+      {
+       "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+       "line": 117,
+       "op": "write",
+       "via": "raw-sql",
+       "quote": "DELETE FROM user_locations WHERE user_id = $1"
+      },
+      {
+       "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+       "line": 155,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.locationRepo.findOne({ where: { userId: user.userId }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+       "line": 315,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "at FROM user_locations ul JOIN discovery_settings ds ON ds.user_id = ul.user_id"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "user_privacy_settings": {
+   "owner": "user",
+   "entity": "PrivacySetting",
+   "entityFile": "apps/core-api/src/modules/user/entities/privacy-setting.entity.ts",
+   "entityLine": 4,
+   "accessors": [
+    {
+     "module": "user",
+     "read": 4,
+     "write": 1,
+     "lock": 0,
+     "vias": [
+      "raw-sql",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/user/services/privacy-settings.service.ts",
+       "line": 21,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.settingRepo.findOneBy({ userId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/user/services/privacy-settings.service.ts",
+       "line": 29,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.settingRepo.upsert( { userId, ...DEFAULT_PRIVACY_SETTINGS, ...dto, }, ['userId'], )"
+      },
+      {
+       "file": "apps/core-api/src/modules/user/services/privacy-settings.service.ts",
+       "line": 45,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.settingRepo.find({ where: { userId: In(uniqueIds) }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/user/user.service.ts",
+       "line": 308,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "(SELECT 1 FROM user_privacy_settings ups WHERE ups.user_id = u.id AND ups.hide_profile = true)"
+      },
+      {
+       "file": "apps/core-api/src/modules/user/user.service.ts",
+       "line": 369,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "(SELECT 1 FROM user_privacy_settings ups WHERE ups.user_id = u.id AND ups.hide_profile = true)"
+      }
+     ]
+    },
+    {
+     "module": "discovery",
+     "read": 1,
+     "write": 0,
+     "lock": 0,
+     "vias": [
+      "raw-sql"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+       "line": 315,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "LEFT JOIN user_privacy_settings ups ON ups.user_id = ul.user_id WHERE ds.nearby_visible"
+      }
+     ]
+    },
+    {
+     "module": "feed",
+     "read": 1,
+     "write": 0,
+     "lock": 0,
+     "vias": [
+      "raw-sql"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/feed/feed.service.ts",
+       "line": 110,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "(SELECT 1 FROM user_privacy_settings ups WHERE ups.user_id = p.author_user_id AND ups.hide_profile ="
+      }
+     ]
+    }
+   ],
+   "crossModule": [
+    "discovery",
+    "feed"
+   ]
+  },
+  "users": {
+   "owner": "user",
+   "entity": "User",
+   "entityFile": "apps/core-api/src/modules/user/entities/user.entity.ts",
+   "entityLine": 27,
+   "accessors": [
+    {
+     "module": "user",
+     "read": 11,
+     "write": 7,
+     "lock": 1,
+     "vias": [
+      "manager",
+      "manager.save(instance)",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/user/user.service.ts",
+       "line": 75,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(User, { nickname: input.nickname, gender: Gender.Unknown, avatarId: this.config.getOrThrow('USER_DEFAULT_AVATAR_ID', { infer: true, }), isGuest: "
+      },
+      {
+       "file": "apps/core-api/src/modules/user/user.service.ts",
+       "line": 88,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.userRepo.findOneBy({ id })"
+      },
+      {
+       "file": "apps/core-api/src/modules/user/user.service.ts",
+       "line": 106,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.userRepo.find({ where: { id: In(uniqueIds) } })"
+      },
+      {
+       "file": "apps/core-api/src/modules/user/user.service.ts",
+       "line": 111,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.userRepo.find({ select: { id: true }, where: { status: UserStatus.Active }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/user/user.service.ts",
+       "line": 119,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.userRepo.find({ where: { role: In([Roles.Moderator, Roles.Admin]) }, order: { createdAt: 'ASC' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/user/user.service.ts",
+       "line": 131,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.userRepo.countBy({ status: UserStatus.Active })"
+      }
+     ]
+    },
+    {
+     "module": "auth",
+     "read": 1,
+     "write": 3,
+     "lock": 1,
+     "vias": [
+      "manager",
+      "manager(lock option)",
+      "manager.save(instance)",
+      "querybuilder"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/auth/auth.service.ts",
+       "line": 225,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.findOne(User, { where: { id: userId }, lock: { mode: 'pessimistic_write' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/auth/auth.service.ts",
+       "line": 286,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.update( User, { id: userId, isGuest: true }, { isGuest: false }, )"
+      },
+      {
+       "file": "apps/core-api/src/modules/auth/auth.service.ts",
+       "line": 265,
+       "op": "write",
+       "via": "manager.save(instance)",
+       "quote": "manager.save(user)"
+      }
+     ]
+    },
+    {
+     "module": "friend",
+     "read": 3,
+     "write": 0,
+     "lock": 1,
+     "vias": [
+      "manager",
+      "manager(lock option)",
+      "querybuilder",
+      "raw-sql"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+       "line": 221,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": ") c JOIN users u ON u.id = c.partner_id AND u.status = $2 WHERE c.partner_id <> ALL($3::"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+       "line": 325,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.followRepo .createQueryBuilder('follow') .innerJoin(User, 'other', `other.id = follow.${otherColumn}`)"
+      },
+      {
+       "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+       "line": 467,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.findOne(User, { where: { id: profileUserId }, lock: { mode: 'pessimistic_write' }, })"
+      }
+     ]
+    },
+    {
+     "module": "matching",
+     "read": 3,
+     "write": 0,
+     "lock": 1,
+     "vias": [
+      "manager",
+      "manager(lock option)"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+       "line": 246,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.find(User, { where: { id: In(userIds) } })"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+       "line": 53,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.findOneOrFail(User, { where: { id: userId }, lock: { mode: 'pessimistic_write' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+       "line": 336,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.find(User, { where: { id: In([invite.inviterUserId, invite.inviteeUserId]) }, })"
+      }
+     ]
+    },
+    {
+     "module": "safety",
+     "read": 1,
+     "write": 0,
+     "lock": 1,
+     "vias": [
+      "repository",
+      "repository(lock option)"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/safety/safety.service.ts",
+       "line": 87,
+       "op": "lock",
+       "via": "repository(lock option)",
+       "quote": "manager.getRepository(User).findOne({ where: { id: targetUserId }, lock: { mode: 'pessimistic_write' }, })"
+      }
+     ]
+    }
+   ],
+   "crossModule": [
+    "auth",
+    "friend",
+    "matching",
+    "safety"
+   ]
+  },
+  "video_comments": {
+   "owner": "short-video",
+   "entity": "VideoComment",
+   "entityFile": "apps/core-api/src/modules/short-video/entities/video-comment.entity.ts",
+   "entityLine": 10,
+   "accessors": [
+    {
+     "module": "short-video",
+     "read": 2,
+     "write": 4,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "manager.save(instance)",
+      "querybuilder",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+       "line": 352,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(VideoComment, { videoId, authorUserId: user.userId, content, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+       "line": 370,
+       "op": "read",
+       "via": "querybuilder",
+       "quote": "this.commentRepo .createQueryBuilder('c')"
+      },
+      {
+       "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+       "line": 391,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.commentRepo.findOneBy({ id: commentId, videoId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+       "line": 413,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.update( VideoComment, { id: commentId }, { deletedAt: new Date() }, )"
+      },
+      {
+       "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+       "line": 351,
+       "op": "write",
+       "via": "manager.save(instance)",
+       "quote": "manager.save( manager.create(VideoComment, { videoId, authorUserId: user.userId, content, }), )"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "video_reactions": {
+   "owner": "short-video",
+   "entity": "VideoReaction",
+   "entityFile": "apps/core-api/src/modules/short-video/entities/video-reaction.entity.ts",
+   "entityLine": 10,
+   "accessors": [
+    {
+     "module": "short-video",
+     "read": 0,
+     "write": 3,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "manager.save(instance)"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+       "line": 312,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(VideoReaction, { videoId, userId: user.userId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+       "line": 329,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.delete(VideoReaction, { videoId, userId: user.userId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+       "line": 311,
+       "op": "write",
+       "via": "manager.save(instance)",
+       "quote": "manager.save( manager.create(VideoReaction, { videoId, userId: user.userId }), )"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "video_views": {
+   "owner": "short-video",
+   "entity": "VideoView",
+   "entityFile": "apps/core-api/src/modules/short-video/entities/video-view.entity.ts",
+   "entityLine": 15,
+   "accessors": [
+    {
+     "module": "short-video",
+     "read": 1,
+     "write": 3,
+     "lock": 1,
+     "vias": [
+      "manager",
+      "manager(lock option)",
+      "querybuilder"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+       "line": 272,
+       "op": "write",
+       "via": "querybuilder",
+       "quote": "manager .createQueryBuilder() .insert() .into(VideoView)"
+      },
+      {
+       "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+       "line": 284,
+       "op": "lock",
+       "via": "manager(lock option)",
+       "quote": "manager.findOneOrFail(VideoView, { where: { videoId, viewerId: user.userId }, lock: { mode: 'pessimistic_write' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+       "line": 289,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.update( VideoView, { id: view.id }, { watchTimeMs: Math.max(view.watchTimeMs, watchTimeMs), qualified: view.qualified || nowQualifies, },"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "videos": {
+   "owner": "short-video",
+   "entity": "Video",
+   "entityFile": "apps/core-api/src/modules/short-video/entities/video.entity.ts",
+   "entityLine": 23,
+   "accessors": [
+    {
+     "module": "short-video",
+     "read": 9,
+     "write": 12,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "querybuilder",
+      "raw-sql",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/short-video/jobs/video-ranking.service.ts",
+       "line": 76,
+       "op": "write",
+       "via": "raw-sql",
+       "quote": "UPDATE videos SET rank_score = (view_count * $1 + like_count * $2 + comment_coun"
+      },
+      {
+       "file": "apps/core-api/src/modules/short-video/jobs/video-sweeper.service.ts",
+       "line": 70,
+       "op": "write",
+       "via": "raw-sql",
+       "quote": "UPDATE videos SET status = $1, updated_at = now() WHERE status = $2"
+      },
+      {
+       "file": "apps/core-api/src/modules/short-video/jobs/video-sweeper.service.ts",
+       "line": 88,
+       "op": "read",
+       "via": "raw-sql",
+       "quote": "FROM videos WHERE status = $1 AND storage_cleaned_at IS NULL ORDER BY"
+      },
+      {
+       "file": "apps/core-api/src/modules/short-video/jobs/video-sweeper.service.ts",
+       "line": 103,
+       "op": "write",
+       "via": "raw-sql",
+       "quote": "UPDATE videos SET storage_cleaned_at = now() WHERE id = $1 AND status = $2 A"
+      },
+      {
+       "file": "apps/core-api/src/modules/short-video/jobs/video-sweeper.service.ts",
+       "line": 122,
+       "op": "write",
+       "via": "raw-sql",
+       "quote": "UPDATE videos SET updated_at = now() WHERE id = $1 AND status = $2 AND storage_c"
+      },
+      {
+       "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+       "line": 81,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.videoRepo.save( this.videoRepo.create({ authorUserId: user.userId, status: VideoStatus.Uploading, storageKey, caption: dto.caption ?? null,"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "vip_plans": {
+   "owner": "economy",
+   "entity": "VipPlan",
+   "entityFile": "apps/core-api/src/modules/economy/entities/vip-plan.entity.ts",
+   "entityLine": 6,
+   "accessors": [
+    {
+     "module": "economy",
+     "read": 5,
+     "write": 2,
+     "lock": 0,
+     "vias": [
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 134,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.planRepo.find({ where: { active: true }, order: { priceDiamond: 'ASC' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 153,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.planRepo.find({ order: { priceDiamond: 'ASC' } })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 178,
+       "op": "read",
+       "via": "repository",
+       "quote": "repo.findOneBy({ productId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 187,
+       "op": "write",
+       "via": "repository",
+       "quote": "repo.save(product)"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 202,
+       "op": "read",
+       "via": "repository",
+       "quote": "repo.findOneBy({ id: planId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 211,
+       "op": "write",
+       "via": "repository",
+       "quote": "repo.save(plan)"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "voice_match_reactions": {
+   "owner": "calling",
+   "entity": "VoiceMatchReaction",
+   "entityFile": "apps/core-api/src/modules/calling/entities/voice-match-reaction.entity.ts",
+   "entityLine": 10,
+   "accessors": [
+    {
+     "module": "calling",
+     "read": 3,
+     "write": 2,
+     "lock": 0,
+     "vias": [
+      "manager",
+      "manager.save(instance)",
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/calling/calling.service.ts",
+       "line": 293,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.reactionRepo.existsBy({ callId: call.id, raterUserId: user.userId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/calling/calling.service.ts",
+       "line": 387,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.findOneBy(VoiceMatchReaction, { callId, raterUserId: user.userId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/calling/calling.service.ts",
+       "line": 393,
+       "op": "write",
+       "via": "manager",
+       "quote": "manager.create(VoiceMatchReaction, { callId, raterUserId: user.userId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/calling/calling.service.ts",
+       "line": 399,
+       "op": "read",
+       "via": "manager",
+       "quote": "manager.existsBy(VoiceMatchReaction, { callId, raterUserId: partnerId, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/calling/calling.service.ts",
+       "line": 392,
+       "op": "write",
+       "via": "manager.save(instance)",
+       "quote": "manager.save( manager.create(VoiceMatchReaction, { callId, raterUserId: user.userId, }), )"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "wallets": {
+   "owner": "economy",
+   "entity": "Wallet",
+   "entityFile": "apps/core-api/src/modules/economy/entities/wallet.entity.ts",
+   "entityLine": 16,
+   "accessors": [
+    {
+     "module": "economy",
+     "read": 9,
+     "write": 5,
+     "lock": 2,
+     "vias": [
+      "manager",
+      "manager.save(instance)",
+      "querybuilder",
+      "raw-sql",
+      "repository",
+      "repository(lock option)"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 85,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.walletRepo.findOneBy({ userId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 102,
+       "op": "lock",
+       "via": "repository(lock option)",
+       "quote": "manager.getRepository(Wallet).findOne({ where: { userId }, lock: { mode: 'pessimistic_write' }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 106,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.walletRepo.findOneBy({ userId })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 223,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.walletRepo.find({ select: { userId: true }, where: { vipExpiresAt: MoreThan(new Date()) }, })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 271,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.walletRepo.countBy({ vipTier: VipTier.Vip, vipExpiresAt: MoreThan(now), })"
+      },
+      {
+       "file": "apps/core-api/src/modules/economy/economy.service.ts",
+       "line": 275,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.walletRepo.countBy({ vipTier: VipTier.Svip, vipExpiresAt: MoreThan(now), })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  },
+  "web_push_subscriptions": {
+   "owner": "notification",
+   "entity": "WebPushSubscription",
+   "entityFile": "apps/core-api/src/modules/notification/entities/web-push-subscription.entity.ts",
+   "entityLine": 11,
+   "accessors": [
+    {
+     "module": "notification",
+     "read": 1,
+     "write": 3,
+     "lock": 0,
+     "vias": [
+      "repository"
+     ],
+     "samples": [
+      {
+       "file": "apps/core-api/src/modules/notification/services/web-push-subscription.service.ts",
+       "line": 20,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.subscriptionRepo.upsert( { userId, endpoint: input.endpoint, p256dh: input.keys.p256dh, auth: input.keys.auth, }, ['endpoint'], )"
+      },
+      {
+       "file": "apps/core-api/src/modules/notification/services/web-push-subscription.service.ts",
+       "line": 32,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.subscriptionRepo.delete({ userId, endpoint })"
+      },
+      {
+       "file": "apps/core-api/src/modules/notification/services/web-push-subscription.service.ts",
+       "line": 36,
+       "op": "read",
+       "via": "repository",
+       "quote": "this.subscriptionRepo.find({ where: { userId } })"
+      },
+      {
+       "file": "apps/core-api/src/modules/notification/services/web-push-subscription.service.ts",
+       "line": 40,
+       "op": "write",
+       "via": "repository",
+       "quote": "this.subscriptionRepo.delete({ id })"
+      }
+     ]
+    }
+   ],
+   "crossModule": []
+  }
+ },
+ "crossModuleEntityImports": [
+  {
+   "module": "admin",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/admin/admin.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, Post, Query, UseGuards, } from '@nestjs/common';"
+  },
+  {
+   "module": "admin",
+   "entity": "User",
+   "table": "users",
+   "ownerModule": "user",
+   "file": "apps/core-api/src/modules/admin/admin.service.ts",
+   "line": 9,
+   "quote": "import { User, UserService } from '../user';"
+  },
+  {
+   "module": "admin",
+   "entity": "Report",
+   "table": "reports",
+   "ownerModule": "safety",
+   "file": "apps/core-api/src/modules/admin/admin.service.ts",
+   "line": 10,
+   "quote": "import { Report, ReportStatus, SafetyService } from '../safety';"
+  },
+  {
+   "module": "admin",
+   "entity": "Gift",
+   "table": "gifts",
+   "ownerModule": "gift",
+   "file": "apps/core-api/src/modules/admin/admin.service.ts",
+   "line": 11,
+   "quote": "import { Gift, GiftService } from '../gift';"
+  },
+  {
+   "module": "admin",
+   "entity": "Video",
+   "table": "videos",
+   "ownerModule": "short-video",
+   "file": "apps/core-api/src/modules/admin/admin.service.ts",
+   "line": 13,
+   "quote": "import { ShortVideoService, Video } from '../short-video';"
+  },
+  {
+   "module": "admin",
+   "entity": "Gift",
+   "table": "gifts",
+   "ownerModule": "gift",
+   "file": "apps/core-api/src/modules/admin/dto/admin-gift.dto.ts",
+   "line": 11,
+   "quote": "import { Gift } from '../../gift';"
+  },
+  {
+   "module": "admin",
+   "entity": "User",
+   "table": "users",
+   "ownerModule": "user",
+   "file": "apps/core-api/src/modules/admin/dto/admin-permission.dto.ts",
+   "line": 8,
+   "quote": "import type { User } from '../../user';"
+  },
+  {
+   "module": "admin",
+   "entity": "Report",
+   "table": "reports",
+   "ownerModule": "safety",
+   "file": "apps/core-api/src/modules/admin/dto/admin-report.dto.ts",
+   "line": 4,
+   "quote": "import { Report, ReportReason, ReportStatus, ReportTargetType, } from '../../safety';"
+  },
+  {
+   "module": "admin",
+   "entity": "PartyRoom",
+   "table": "party_rooms",
+   "ownerModule": "party-room",
+   "file": "apps/core-api/src/modules/admin/dto/admin-room.dto.ts",
+   "line": 9,
+   "quote": "import type { PartyRoom, PartyRoomSummary } from '../../party-room';"
+  },
+  {
+   "module": "admin",
+   "entity": "User",
+   "table": "users",
+   "ownerModule": "user",
+   "file": "apps/core-api/src/modules/admin/dto/admin-user.dto.ts",
+   "line": 3,
+   "quote": "import { Gender, User, UserStatus } from '../../user';"
+  },
+  {
+   "module": "admin",
+   "entity": "Video",
+   "table": "videos",
+   "ownerModule": "short-video",
+   "file": "apps/core-api/src/modules/admin/dto/admin-video.dto.ts",
+   "line": 3,
+   "quote": "import { Video, VideoStatus } from '../../short-video';"
+  },
+  {
+   "module": "auth",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/auth/auth.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards, } from '@nestjs/common';"
+  },
+  {
+   "module": "auth",
+   "entity": "User",
+   "table": "users",
+   "ownerModule": "user",
+   "file": "apps/core-api/src/modules/auth/auth.service.ts",
+   "line": 10,
+   "quote": "import { User, UserService, UserStatus } from '../user';"
+  },
+  {
+   "module": "auth",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/auth/controllers/auth-upgrade.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, HttpCode, HttpStatus, Post, Res, } from '@nestjs/common';"
+  },
+  {
+   "module": "avatar",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/avatar/avatar.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Put, Query, } from '@nestjs/common';"
+  },
+  {
+   "module": "calling",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/calling/calling.controller.ts",
+   "line": 1,
+   "quote": "import { Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, } from '@nestjs/common';"
+  },
+  {
+   "module": "calling",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/calling/webhooks/livekit-webhook.controller.ts",
+   "line": 1,
+   "quote": "import { Controller, Headers, HttpCode, HttpStatus, Post, Req, } from '@nestjs/common';"
+  },
+  {
+   "module": "discovery",
+   "entity": "User",
+   "table": "users",
+   "ownerModule": "user",
+   "file": "apps/core-api/src/modules/discovery/discovery.service.ts",
+   "line": 13,
+   "quote": "import type { UserBrowseCursorPosition, UserBrowseFilter, User } from '../user';"
+  },
+  {
+   "module": "discovery",
+   "entity": "User",
+   "table": "users",
+   "ownerModule": "user",
+   "file": "apps/core-api/src/modules/discovery/dto/discovery.dtos.ts",
+   "line": 9,
+   "quote": "import type { User } from '../../user';"
+  },
+  {
+   "module": "discovery",
+   "entity": "User",
+   "table": "users",
+   "ownerModule": "user",
+   "file": "apps/core-api/src/modules/discovery/dto/nearby.dtos.ts",
+   "line": 17,
+   "quote": "import type { User } from '../../user';"
+  },
+  {
+   "module": "discovery",
+   "entity": "User",
+   "table": "users",
+   "ownerModule": "user",
+   "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+   "line": 31,
+   "quote": "import type { User } from '../user';"
+  },
+  {
+   "module": "economy",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/economy/economy.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Query, } from '@nestjs/common';"
+  },
+  {
+   "module": "economy",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/economy/webhooks/economy-webhooks.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, Headers, HttpCode, HttpStatus, Logger, Post, } from '@nestjs/common';"
+  },
+  {
+   "module": "feed",
+   "entity": "Notification",
+   "table": "notifications",
+   "ownerModule": "notification",
+   "file": "apps/core-api/src/modules/feed/feed.service.ts",
+   "line": 25,
+   "quote": "import type { Notification } from '../notification';"
+  },
+  {
+   "module": "feed",
+   "entity": "Message",
+   "table": "messages",
+   "ownerModule": "friend",
+   "file": "apps/core-api/src/modules/feed/services/story.service.ts",
+   "line": 17,
+   "quote": "import type { Message } from '../../friend';"
+  },
+  {
+   "module": "friend",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/friend/controllers/profile-social.controller.ts",
+   "line": 1,
+   "quote": "import { Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Query, } from '@nestjs/common';"
+  },
+  {
+   "module": "friend",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/friend/friend.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Query, } from '@nestjs/common';"
+  },
+  {
+   "module": "friend",
+   "entity": "User",
+   "table": "users",
+   "ownerModule": "user",
+   "file": "apps/core-api/src/modules/friend/friend.module.ts",
+   "line": 27,
+   "quote": "import { User } from '../user';"
+  },
+  {
+   "module": "friend",
+   "entity": "User",
+   "table": "users",
+   "ownerModule": "user",
+   "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+   "line": 14,
+   "quote": "import { User, UserService, UserStatus } from '../../user';"
+  },
+  {
+   "module": "gift",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/gift/gift.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, } from '@nestjs/common';"
+  },
+  {
+   "module": "gift",
+   "entity": "Notification",
+   "table": "notifications",
+   "ownerModule": "notification",
+   "file": "apps/core-api/src/modules/gift/gift.service.ts",
+   "line": 39,
+   "quote": "import type { Notification } from '../notification';"
+  },
+  {
+   "module": "matching",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/matching/controllers/invite.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Query, } from '@nestjs/common';"
+  },
+  {
+   "module": "matching",
+   "entity": "User",
+   "table": "users",
+   "ownerModule": "user",
+   "file": "apps/core-api/src/modules/matching/controllers/invite.controller.ts",
+   "line": 35,
+   "quote": "import type { User } from '../../user';"
+  },
+  {
+   "module": "matching",
+   "entity": "User",
+   "table": "users",
+   "ownerModule": "user",
+   "file": "apps/core-api/src/modules/matching/dto/invite.dtos.ts",
+   "line": 11,
+   "quote": "import type { User } from '../../user';"
+  },
+  {
+   "module": "matching",
+   "entity": "User",
+   "table": "users",
+   "ownerModule": "user",
+   "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+   "line": 33,
+   "quote": "import { User, UserStatus } from '../../user';"
+  },
+  {
+   "module": "matching",
+   "entity": "Notification",
+   "table": "notifications",
+   "ownerModule": "notification",
+   "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+   "line": 40,
+   "quote": "import type { Notification } from '../../notification';"
+  },
+  {
+   "module": "matching",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/matching/matching.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, Delete, Get, Headers, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Req, } from '@nestjs/common';"
+  },
+  {
+   "module": "matching",
+   "entity": "Notification",
+   "table": "notifications",
+   "ownerModule": "notification",
+   "file": "apps/core-api/src/modules/matching/matching.service.ts",
+   "line": 54,
+   "quote": "import type { Notification } from '../notification';"
+  },
+  {
+   "module": "matching",
+   "entity": "User",
+   "table": "users",
+   "ownerModule": "user",
+   "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+   "line": 8,
+   "quote": "import { User } from '../../user';"
+  },
+  {
+   "module": "matching",
+   "entity": "User",
+   "table": "users",
+   "ownerModule": "user",
+   "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+   "line": 43,
+   "quote": "import { User, UserService, UserStatus } from '../../user';"
+  },
+  {
+   "module": "media",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/media/media.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, Post } from '@nestjs/common';"
+  },
+  {
+   "module": "mini-game",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/mini-game/mini-game.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, } from '@nestjs/common';"
+  },
+  {
+   "module": "mood",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/mood/mood.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, } from '@nestjs/common';"
+  },
+  {
+   "module": "movie-match",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/movie-match/movie-match.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, Post, Query, } from '@nestjs/common';"
+  },
+  {
+   "module": "notification",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/notification/notification.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Query, } from '@nestjs/common';"
+  },
+  {
+   "module": "palm-match",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/palm-match/palm-match.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Query, } from '@nestjs/common';"
+  },
+  {
+   "module": "party-room",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/party-room/party-room.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Query, } from '@nestjs/common';"
+  },
+  {
+   "module": "party-room",
+   "entity": "User",
+   "table": "users",
+   "ownerModule": "user",
+   "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+   "line": 72,
+   "quote": "import type { User } from '../user';"
+  },
+  {
+   "module": "party-room",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/party-room/webhooks/party-livekit-webhook.controller.ts",
+   "line": 1,
+   "quote": "import { Controller, Headers, HttpCode, HttpStatus, Post, Req, } from '@nestjs/common';"
+  },
+  {
+   "module": "safety",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/safety/safety.controller.ts",
+   "line": 1,
+   "quote": "import { Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Body, } from '@nestjs/common';"
+  },
+  {
+   "module": "safety",
+   "entity": "User",
+   "table": "users",
+   "ownerModule": "user",
+   "file": "apps/core-api/src/modules/safety/safety.service.ts",
+   "line": 16,
+   "quote": "import { User, UserService } from '../user';"
+  },
+  {
+   "module": "short-video",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/short-video/short-video.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Query, } from '@nestjs/common';"
+  },
+  {
+   "module": "soul-match",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/soul-match/soul-match.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Query, } from '@nestjs/common';"
+  },
+  {
+   "module": "soul-match",
+   "entity": "MatchSession",
+   "table": "match_sessions",
+   "ownerModule": "matching",
+   "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+   "line": 32,
+   "quote": "import { MatchSession, MatchSessionStatus, MatchType, MatchingService, } from '../matching';"
+  },
+  {
+   "module": "soul-match",
+   "entity": "MatchSession",
+   "table": "match_sessions",
+   "ownerModule": "matching",
+   "file": "apps/core-api/src/modules/soul-match/soul-match.types.ts",
+   "line": 1,
+   "quote": "import type { MatchSession } from '../matching';"
+  },
+  {
+   "module": "support",
+   "entity": "Post",
+   "table": "posts",
+   "ownerModule": "feed",
+   "file": "apps/core-api/src/modules/support/support.controller.ts",
+   "line": 1,
+   "quote": "import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, } from '@nestjs/common';"
+  }
+ ],
+ "unownedTables": []
+}

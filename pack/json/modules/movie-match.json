@@ -1,0 +1,209 @@
+{
+ "id": "movie-match",
+ "kind": "core-api module",
+ "dir": "apps/core-api/src/modules/movie-match",
+ "mapAnchor": "svc-movie-match",
+ "role": "Sở hữu phiên xem chung 2 người (friend mode: 2 bạn tự chọn URL YouTube; anonymous mode: hàng đợi ghép người lạ, server chọn video, chat + rating, chỉ mutual-like mới mở Friendship) và là nguồn sự thật duy nhất của playback state. KHÔNG stream/proxy video (client tự phát từ URL), KHÔNG có SFU/LiveKit hay tiền, KHÔNG sở hữu quan hệ bạn (Friend) hay block/report (Safety).",
+ "tagline": "Phiên xem chung 2 người, playback state",
+ "owns": [
+  "bảng movie_sessions (cặp canonical low/high, videoUrl, positionSeconds, isPlaying, positionUpdatedAt, status, mode friend|anonymous, expiresAt, watchEndedAt, low/highRating, outcome)",
+  "bảng movie_session_active_participants (PK user_id: 1 user chỉ có 1 phiên active, ghi/xoá cùng transaction với movie_sessions.status)",
+  "bảng movie_match_queue_entries (PK user_id: hàng chờ ghép ẩn danh riêng của module, không dùng queue của Matching)",
+  "bảng movie_session_messages (chat ẩn danh append-only, idempotency_key UNIQUE dạng movie:msg:{userId}:{key}, cursor theo seq)",
+  "Postgres advisory lock 'litmatch:movie-match:pairing' (tuần tự hoá matcher ẩn danh)",
+  "client ioredis riêng MOVIE_MATCH_REDIS chỉ để PUBLISH realtime:user:{userId}; module không lưu key nào trong Redis"
+ ],
+ "tables": [
+  {
+   "name": "movie_match_queue_entries",
+   "columns": 2,
+   "otherModules": []
+  },
+  {
+   "name": "movie_session_active_participants",
+   "columns": 2,
+   "otherModules": []
+  },
+  {
+   "name": "movie_session_messages",
+   "columns": 7,
+   "otherModules": []
+  },
+  {
+   "name": "movie_sessions",
+   "columns": 18,
+   "otherModules": []
+  }
+ ],
+ "tablesTouchedOfOthers": [],
+ "endpoints": {
+  "total": 13,
+  "public": 0,
+  "adminOnly": 0,
+  "idempotent": 1,
+  "webhooks": 0,
+  "explicitThrottle": 1
+ },
+ "endpointPaths": [
+  "/movie-match"
+ ],
+ "realtimeProduced": [
+  "movie.session.started",
+  "movie.state.changed",
+  "movie.session.ended",
+  "movie.reaction.sent"
+ ],
+ "jobs": [],
+ "redisCallSites": 0,
+ "redisOps": [],
+ "envVars": [
+  {
+   "name": "MOVIE_MATCH_QUEUE_MAX_WAIT_SECONDS",
+   "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+   "line": 302,
+   "quote": "const maxWaitSeconds = this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "120",
+   "required": false
+  },
+  {
+   "name": "MOVIE_MATCH_MESSAGE_MAX_LENGTH",
+   "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+   "line": 539,
+   "quote": "const maxLength = this.config.getOrThrow('MOVIE_MATCH_MESSAGE_MAX_LENGTH', {",
+   "class": "tuning",
+   "default": "500",
+   "required": false
+  },
+  {
+   "name": "MOVIE_MATCH_ANON_VIDEO_URLS",
+   "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+   "line": 690,
+   "quote": "const pool = this.config",
+   "class": "other",
+   "default": " 'https://www.youtube.com/watch?v=aqz-KE-bpKQ,https://www.youtube.com/watch?v=eRsGyueVLvQ', ",
+   "required": false
+  },
+  {
+   "name": "MOVIE_MATCH_ANON_DURATION_SECONDS",
+   "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+   "line": 705,
+   "quote": "const durationSeconds = this.config.getOrThrow(",
+   "class": "tuning",
+   "default": "1080",
+   "required": false
+  },
+  {
+   "name": "MOVIE_MATCH_URL_MAX_LENGTH",
+   "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+   "line": 902,
+   "quote": "const maxLength = this.config.getOrThrow('MOVIE_MATCH_URL_MAX_LENGTH', {",
+   "class": "tuning",
+   "default": "2048",
+   "required": false
+  },
+  {
+   "name": "MOVIE_MATCH_ALLOWED_VIDEO_HOSTS",
+   "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+   "line": 933,
+   "quote": "const allowedHosts = this.config",
+   "class": "other",
+   "default": "youtube.com,youtu.be",
+   "required": false
+  },
+  {
+   "name": "REDIS_URL",
+   "file": "apps/core-api/src/modules/movie-match/redis/movie-match-redis.provider.ts",
+   "line": 14,
+   "quote": "createCoreRedisClient(config.getOrThrow('REDIS_URL', { infer: true })),",
+   "class": "endpoint",
+   "default": "redis://localhost:6379",
+   "required": false
+  }
+ ],
+ "errorGroups": [
+  "MovieMatchErrors"
+ ],
+ "errorCodes": 11,
+ "errorCodesUnused": 0,
+ "tests": {
+  "unit": 1,
+  "integration": 1
+ },
+ "docs": {
+  "path": "docs/services/movie-match-service.md",
+  "lastChanged": "2026-10-09",
+  "commitsSince": 0
+ },
+ "features": [
+  {
+   "id": "movie-match",
+   "title": "Shared video playback and anonymous movie match",
+   "status": "implemented"
+  }
+ ],
+ "churn": {
+  "commits": 6,
+  "recent": 0,
+  "fixes": 0,
+  "last": "2026-08-13"
+ },
+ "issues": [
+  {
+   "id": "P094",
+   "title": "Giới hạn đã biết: advisory lock Palm/Movie Match, outbox chưa có consumer/retention",
+   "status": "open",
+   "tier": "B"
+  }
+ ],
+ "mapCollaborators": [
+  {
+   "with": "friend",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "safety",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "signaling-gateway",
+   "kind": "service",
+   "mechanism": "redis-pubsub",
+   "direction": "out"
+  },
+  {
+   "with": "redis",
+   "kind": "infra",
+   "mechanism": "redis-pubsub",
+   "direction": "out"
+  },
+  {
+   "with": "postgres",
+   "kind": "infra",
+   "mechanism": "shared-db",
+   "direction": "out"
+  },
+  {
+   "with": "web",
+   "kind": "client",
+   "mechanism": "http",
+   "direction": "in"
+  },
+  {
+   "with": "web",
+   "kind": "client",
+   "mechanism": "socket",
+   "direction": "out"
+  },
+  {
+   "with": "external:youtube",
+   "kind": "external",
+   "mechanism": "config",
+   "direction": "both"
+  }
+ ]
+}

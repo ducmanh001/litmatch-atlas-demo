@@ -1,0 +1,101 @@
+{
+ "id": "avatar",
+ "kind": "core-api module",
+ "dir": "apps/core-api/src/modules/avatar",
+ "mapAnchor": "svc-avatar",
+ "role": "Sở hữu catalog layer avatar (avatar_assets, giá là DATA), quyền sở hữu item (user_avatar_items) và cấu hình đang trang bị (user_avatar_configs, 5 slot). Mua item trả phí là việc của Economy (Avatar chỉ gọi spendDiamond), Avatar không ghi ví/sổ cái và không đụng User.avatarId.",
+ "tagline": "Catalog, sở hữu và trang bị avatar",
+ "owns": [
+  "bảng avatar_assets (slot, code, imageUrl, zIndex, priceDiamond, active)",
+  "bảng user_avatar_items (unique userId+avatarAssetId = nguồn sự thật 'đã sở hữu')",
+  "bảng user_avatar_configs (1 dòng/user, 5 cột asset id đang trang bị, lazy-init)"
+ ],
+ "tables": [
+  {
+   "name": "avatar_assets",
+   "columns": 9,
+   "otherModules": []
+  },
+  {
+   "name": "user_avatar_configs",
+   "columns": 7,
+   "otherModules": []
+  },
+  {
+   "name": "user_avatar_items",
+   "columns": 4,
+   "otherModules": []
+  }
+ ],
+ "tablesTouchedOfOthers": [],
+ "endpoints": {
+  "total": 7,
+  "public": 0,
+  "adminOnly": 0,
+  "idempotent": 1,
+  "webhooks": 0,
+  "explicitThrottle": 0
+ },
+ "endpointPaths": [
+  "/avatar"
+ ],
+ "realtimeProduced": [],
+ "jobs": [],
+ "redisCallSites": 0,
+ "redisOps": [],
+ "envVars": [],
+ "errorGroups": [
+  "AvatarErrors"
+ ],
+ "errorCodes": 5,
+ "errorCodesUnused": 0,
+ "tests": {
+  "unit": 1,
+  "integration": 1
+ },
+ "docs": {
+  "path": "docs/services/avatar-service.md",
+  "lastChanged": "2026-07-13",
+  "commitsSince": 5
+ },
+ "features": [
+  {
+   "id": "avatar-discovery-mood",
+   "title": "Avatar, discovery/nearby and mood",
+   "status": "implemented"
+  }
+ ],
+ "churn": {
+  "commits": 6,
+  "recent": 0,
+  "fixes": 0,
+  "last": "2026-08-12"
+ },
+ "issues": [],
+ "mapCollaborators": [
+  {
+   "with": "economy",
+   "kind": "service",
+   "mechanism": "di-call",
+   "direction": "out"
+  },
+  {
+   "with": "postgres",
+   "kind": "infra",
+   "mechanism": "shared-db",
+   "direction": "out"
+  },
+  {
+   "with": "web",
+   "kind": "client",
+   "mechanism": "http",
+   "direction": "both"
+  },
+  {
+   "with": "web",
+   "kind": "client",
+   "mechanism": "config",
+   "direction": "in"
+  }
+ ]
+}

@@ -1,0 +1,185 @@
+{
+ "metrics": [
+  {
+   "name": "event_bus_publish_total",
+   "instrument": "Counter",
+   "description": "Events sent to the broker by outcome and topic.",
+   "unit": null,
+   "file": "apps/core-api/src/common/events/kafka-event-bus.adapter.ts",
+   "line": 85,
+   "module": "core-api(common)",
+   "quote": "meter.createCounter('event_bus_publish_total', {"
+  },
+  {
+   "name": "event_bus_publish_failure_total",
+   "instrument": "Counter",
+   "description": "Event publish failures handed back to the outbox relay.",
+   "unit": null,
+   "file": "apps/core-api/src/common/events/kafka-event-bus.adapter.ts",
+   "line": 88,
+   "module": "core-api(common)",
+   "quote": "meter.createCounter("
+  },
+  {
+   "name": "event_bus_consumer_failure_total",
+   "instrument": "Counter",
+   "description": "Consumer handler failures before retry or dead-letter handling.",
+   "unit": null,
+   "file": "apps/core-api/src/common/events/kafka-event-bus.adapter.ts",
+   "line": 94,
+   "module": "core-api(common)",
+   "quote": "meter.createCounter("
+  },
+  {
+   "name": "event_bus_dead_letter_total",
+   "instrument": "Counter",
+   "description": "Events moved to a broker dead-letter topic.",
+   "unit": null,
+   "file": "apps/core-api/src/common/events/kafka-event-bus.adapter.ts",
+   "line": 101,
+   "module": "core-api(common)",
+   "quote": "meter.createCounter('event_bus_dead_letter_total', {"
+  },
+  {
+   "name": "runtime_active",
+   "instrument": "ObservableGauge",
+   "description": "Whether recent business/API traffic keeps the runtime active",
+   "unit": "1",
+   "file": "apps/core-api/src/common/runtime/runtime-activity.ts",
+   "line": 64,
+   "module": "core-api(common)",
+   "quote": "meter.createObservableGauge('runtime_active', {"
+  },
+  {
+   "name": "runtime_last_meaningful_request_age_seconds",
+   "instrument": "ObservableGauge",
+   "description": "Age of the last non-probe request",
+   "unit": "s",
+   "file": "apps/core-api/src/common/runtime/runtime-activity.ts",
+   "line": 72,
+   "module": "core-api(common)",
+   "quote": "meter.createObservableGauge("
+  },
+  {
+   "name": "runtime_meaningful_requests",
+   "instrument": "ObservableGauge",
+   "description": "Business/API requests that keep best-effort jobs warm",
+   "unit": "1",
+   "file": "apps/core-api/src/common/runtime/runtime-activity.ts",
+   "line": 84,
+   "module": "core-api(common)",
+   "quote": "meter.createObservableGauge("
+  },
+  {
+   "name": "runtime_background_skipped",
+   "instrument": "ObservableGauge",
+   "description": "Best-effort background ticks skipped while runtime is idle",
+   "unit": "1",
+   "file": "apps/core-api/src/common/runtime/runtime-activity.ts",
+   "line": 97,
+   "module": "core-api(common)",
+   "quote": "meter.createObservableGauge('runtime_background_skipped', {"
+  },
+  {
+   "name": "call_ended_total",
+   "instrument": "Counter",
+   "description": "Tổng số call kết thúc, theo lý do (CallEndReason)",
+   "unit": null,
+   "file": "apps/core-api/src/modules/calling/calling.metrics.ts",
+   "line": 19,
+   "module": "calling",
+   "quote": "meter.createCounter('call_ended_total', {"
+  },
+  {
+   "name": "economy_transaction_total",
+   "instrument": "Counter",
+   "description": "Tổng giao dịch ledger, theo type và kết quả (success|replayed|failed)",
+   "unit": null,
+   "file": "apps/core-api/src/modules/economy/economy.metrics.ts",
+   "line": 36,
+   "module": "economy",
+   "quote": "meter.createCounter('economy_transaction_total', {"
+  },
+  {
+   "name": "economy_reconciliation_mismatch_total",
+   "instrument": "Counter",
+   "description": "Số lệch đối soát phát hiện được, theo check và currency. Alert: increase(...) > 0.",
+   "unit": null,
+   "file": "apps/core-api/src/modules/economy/economy.metrics.ts",
+   "line": 40,
+   "module": "economy",
+   "quote": "meter.createCounter("
+  },
+  {
+   "name": "economy_reconciliation_last_run_status",
+   "instrument": "ObservableGauge",
+   "description": "Trạng thái run đối soát gần nhất theo tier: 1 = cân, 0 = lệch hoặc lỗi",
+   "unit": "1",
+   "file": "apps/core-api/src/modules/economy/economy.metrics.ts",
+   "line": 47,
+   "module": "economy",
+   "quote": "meter.createObservableGauge("
+  },
+  {
+   "name": "economy_reconciliation_run_duration_seconds",
+   "instrument": "Histogram",
+   "description": "Thời gian 1 run đối soát (giây) theo tier — theo dõi chi phí khi ledger lớn dần",
+   "unit": "s",
+   "file": "apps/core-api/src/modules/economy/economy.metrics.ts",
+   "line": 60,
+   "module": "economy",
+   "quote": "meter.createHistogram("
+  },
+  {
+   "name": "matching_ticket_wait_seconds",
+   "instrument": "Histogram",
+   "description": "Thời gian ticket chờ từ enqueue tới matched (giây), theo matchType",
+   "unit": "s",
+   "file": "apps/core-api/src/modules/matching/matching.metrics.ts",
+   "line": 17,
+   "module": "matching",
+   "quote": "meter.createHistogram("
+  },
+  {
+   "name": "http_request_duration_seconds",
+   "instrument": "Histogram",
+   "description": "Thời gian xử lý HTTP request tính bằng giây, theo method/route/status_code",
+   "unit": "s",
+   "file": "libs/observability/src/lib/http-metrics.ts",
+   "line": 17,
+   "module": "libs/observability",
+   "quote": "meter.createHistogram('http_request_duration_seconds', {"
+  },
+  {
+   "name": "litmatch_up",
+   "instrument": "ObservableGauge",
+   "description": "Process đang chạy và có thể export metrics",
+   "unit": "1",
+   "file": "libs/observability/src/lib/metrics-registry.ts",
+   "line": 17,
+   "module": "libs/observability",
+   "quote": "meter.createObservableGauge('litmatch_up', {"
+  },
+  {
+   "name": "process_uptime_seconds",
+   "instrument": "ObservableGauge",
+   "description": "Thời gian process đã chạy, tính bằng giây",
+   "unit": "s",
+   "file": "libs/observability/src/lib/metrics-registry.ts",
+   "line": 23,
+   "module": "libs/observability",
+   "quote": "meter.createObservableGauge('process_uptime_seconds', {"
+  },
+  {
+   "name": "process_resident_memory_bytes",
+   "instrument": "ObservableGauge",
+   "description": "Resident memory của process, tính bằng bytes",
+   "unit": "By",
+   "file": "libs/observability/src/lib/metrics-registry.ts",
+   "line": 31,
+   "module": "libs/observability",
+   "quote": "meter.createObservableGauge("
+  }
+ ],
+ "constants": {}
+}

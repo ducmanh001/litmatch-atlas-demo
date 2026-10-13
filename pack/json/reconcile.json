@@ -1,0 +1,103 @@
+{
+ "checks": [
+  {
+   "id": "endpoints",
+   "what": "Số endpoint REST và webhook",
+   "atlas": "196 (AST controller)",
+   "map": "199 dòng, 196 route khác nhau",
+   "verdict": "khớp",
+   "detail": "3 route health nằm ở cả app-shell lẫn signaling-gateway (hai deployable cùng phục vụ).",
+   "action": "Không cần sửa."
+  },
+  {
+   "id": "auth",
+   "what": "Route không cần JWT",
+   "atlas": "15 route @Public",
+   "map": "auth ghi jwt, public, admin, webhook-signature hoặc refresh-cookie",
+   "verdict": "khác cách phân loại",
+   "detail": "7 route map ghi webhook-signature hoặc refresh-cookie còn AST thấy @Public ở cấp controller: cả hai đúng (public với guard JWT, xác thực bằng chữ ký hoặc cookie). POST /auth/refresh (refresh-cookie); POST /auth/logout (refresh-cookie); POST /calling/webhooks/livekit (webhook-signature); POST /economy/webhooks/apple (webhook-signature); POST /economy/webhooks/google/rtdn (webhook-signature); POST /economy/webhooks/payos (webhook-signature); POST /party/webhooks/livekit (webhook-signature)",
+   "action": "Hiển thị cả hai nhãn (atlas đã làm)."
+  },
+  {
+   "id": "idempotency",
+   "what": "Idempotency",
+   "atlas": "19 route bắt buộc header Idempotency-Key",
+   "map": "25 route có kỹ thuật idempotency",
+   "verdict": "khác định nghĩa",
+   "detail": "Map tính cả idempotency theo khoá nhà cung cấp, trạng thái hoặc unique constraint: POST /admin/economy/transactions/:p/refund, POST /economy/iap/verify, POST /economy/webhooks/apple, POST /economy/webhooks/payos, POST /matching/invites/:p/accept, POST /soul-match/sessions/:p/rating",
+   "action": "Khi gộp, ghi rõ hai nghĩa: \"bắt buộc header\" và \"idempotent theo cơ chế khác\"."
+  },
+  {
+   "id": "throttle",
+   "what": "Rate limit",
+   "atlas": "26 route có @Throttle riêng; còn lại dùng mặc định toàn cục",
+   "map": "189 route (mọi route qua ThrottlerGuard)",
+   "verdict": "khác định nghĩa",
+   "detail": "Map tính hạn mức mặc định của guard toàn cục; atlas tách hạn mức riêng khỏi mặc định.",
+   "action": "Ghi cả hai trong bản gộp."
+  },
+  {
+   "id": "events",
+   "what": "Sự kiện realtime",
+   "atlas": "26 khai báo trong libs/common-dtos",
+   "map": "25 sự kiện có tên",
+   "verdict": "atlas thấy thêm 1",
+   "detail": "Thiếu trong map: match.matched (khai báo nhưng không có chỗ phát nào trong core-api; comment cũ trong matching.metrics.ts vẫn nhắc nó).",
+   "action": "Thêm vào mục \"Điểm đáng chú ý\" của map."
+  },
+  {
+   "id": "producers",
+   "what": "Module phát realtime",
+   "atlas": "8: calling, friend, gift, matching, mini-game, movie-match, party-room, soul-match",
+   "map": "8 cạnh redis-pubsub, nhưng chú thích tổng quan của map ghi \"Cả 10 module\"",
+   "verdict": "map sai chú thích",
+   "detail": "Chú thích đếm mọi cạnh tới signaling-gateway, gồm auth (dùng chung JWT_SECRET) và user (gateway ghi presence): chỉ 8 module thật sự phát sự kiện.",
+   "action": "Sửa chú thích tổng quan của map: 8, không phải 10."
+  },
+  {
+   "id": "jobs",
+   "what": "Job nền",
+   "atlas": "15 (14 ManagedInterval + 1 setInterval ở gateway)",
+   "map": "15",
+   "verdict": "khớp",
+   "detail": "",
+   "action": "Không cần sửa."
+  },
+  {
+   "id": "postgres",
+   "what": "Module ghi PostgreSQL",
+   "atlas": "22 module ghi, cộng bảng audit chung ((common)); gateway không có DB",
+   "map": "chú thích ghi \"23 service ghi PostgreSQL\"",
+   "verdict": "map sai nhẹ",
+   "detail": "app-shell chỉ chạy kiểm tra kết nối (readiness), không ghi dữ liệu nghiệp vụ.",
+   "action": "Sửa chú thích: 22 module ghi, app-shell chỉ kiểm tra kết nối."
+  },
+  {
+   "id": "shared-db",
+   "what": "Cặp module dùng chung bảng",
+   "atlas": "7 cặp: auth - user, discovery - user, feed - user, friend - user, matching - soul-match, matching - user, safety - user",
+   "map": "6 cặp: auth - user, discovery - user, friend - user, matching - soul-match, matching - user, safety - user",
+   "verdict": "map thiếu 1 cạnh",
+   "detail": "Thiếu: feed - user (feed đọc user_privacy_settings bằng SQL thô).",
+   "action": "Thêm cạnh feed → user (shared-db) vào map."
+  },
+  {
+   "id": "locks",
+   "what": "Module dùng khoá DB",
+   "atlas": "13 module khoá hàng trực tiếp (setLock, FOR UPDATE, lock option)",
+   "map": "16 module có kỹ thuật khoá hoặc singleton",
+   "verdict": "khác phạm vi",
+   "detail": "Map tính cả advisory lock của job (ManagedInterval clusterSingleton) và khoá gián tiếp qua service khác: admin, feed, gift.",
+   "action": "Giữ cả hai, ghi rõ phạm vi."
+  },
+  {
+   "id": "redis",
+   "what": "Module dùng Redis",
+   "atlas": "4 nơi có lệnh Redis trực tiếp: core-api(common), matching, signaling-gateway, user",
+   "map": "10 service có cạnh tới Redis",
+   "verdict": "khác phạm vi",
+   "detail": "Map tính cả module phát realtime qua RealtimePublisherPort (không gọi Redis trực tiếp).",
+   "action": "Giữ cả hai, ghi rõ phạm vi."
+  }
+ ]
+}

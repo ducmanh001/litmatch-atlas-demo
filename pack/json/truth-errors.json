@@ -1,0 +1,3409 @@
+{
+ "codes": [
+  {
+   "group": "AdminErrors",
+   "key": "CANNOT_BAN_SELF",
+   "code": "ADMIN_CANNOT_BAN_SELF",
+   "doc": "Admin không được tự ban chính mình — tránh tự khoá mất quyền truy cập.",
+   "file": "apps/core-api/src/modules/admin/admin.errors.ts",
+   "line": 4,
+   "module": "admin",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 1,
+   "quote": "CANNOT_BAN_SELF: 'ADMIN_CANNOT_BAN_SELF'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/admin/admin.service.ts",
+    "line": 70,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AdminErrors",
+   "key": "PERMISSION_FORBIDDEN",
+   "code": "ADMIN_PERMISSION_FORBIDDEN",
+   "doc": null,
+   "file": "apps/core-api/src/modules/admin/admin.errors.ts",
+   "line": 5,
+   "module": "admin",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 1,
+   "quote": "PERMISSION_FORBIDDEN: 'ADMIN_PERMISSION_FORBIDDEN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/admin/services/admin-permission.guard.ts",
+    "line": 45,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AdminErrors",
+   "key": "PERMISSION_UNKNOWN",
+   "code": "ADMIN_PERMISSION_UNKNOWN",
+   "doc": null,
+   "file": "apps/core-api/src/modules/admin/admin.errors.ts",
+   "line": 6,
+   "module": "admin",
+   "statuses": [
+    "BAD_REQUEST",
+    "NOT_FOUND"
+   ],
+   "throwSites": 3,
+   "quote": "PERMISSION_UNKNOWN: 'ADMIN_PERMISSION_UNKNOWN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/admin/admin.service.ts",
+    "line": 514,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AdminErrors",
+   "key": "CANNOT_DISABLE_PERMISSION_CONTROL",
+   "code": "ADMIN_CANNOT_DISABLE_PERMISSION_CONTROL",
+   "doc": null,
+   "file": "apps/core-api/src/modules/admin/admin.errors.ts",
+   "line": 7,
+   "module": "admin",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "CANNOT_DISABLE_PERMISSION_CONTROL: 'ADMIN_CANNOT_DISABLE_PERMISSION_CONTROL'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/admin/admin.service.ts",
+    "line": 532,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AdminErrors",
+   "key": "CANNOT_CHANGE_OWN_ROLE",
+   "code": "ADMIN_CANNOT_CHANGE_OWN_ROLE",
+   "doc": null,
+   "file": "apps/core-api/src/modules/admin/admin.errors.ts",
+   "line": 8,
+   "module": "admin",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "CANNOT_CHANGE_OWN_ROLE: 'ADMIN_CANNOT_CHANGE_OWN_ROLE'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/admin/admin.service.ts",
+    "line": 574,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AdminErrors",
+   "key": "CANNOT_DEMOTE_LAST_ADMIN",
+   "code": "ADMIN_CANNOT_DEMOTE_LAST_ADMIN",
+   "doc": null,
+   "file": "apps/core-api/src/modules/admin/admin.errors.ts",
+   "line": 9,
+   "module": "admin",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "CANNOT_DEMOTE_LAST_ADMIN: 'ADMIN_CANNOT_DEMOTE_LAST_ADMIN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/admin/admin.service.ts",
+    "line": 590,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AuthErrors",
+   "key": "PHONE_OTP_DISABLED",
+   "code": "AUTH_PHONE_OTP_DISABLED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/auth/auth.errors.ts",
+   "line": 3,
+   "module": "auth",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 1,
+   "quote": "PHONE_OTP_DISABLED: 'AUTH_PHONE_OTP_DISABLED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/auth/auth.service.ts",
+    "line": 325,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AuthErrors",
+   "key": "OTP_INVALID",
+   "code": "AUTH_OTP_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/auth/auth.errors.ts",
+   "line": 4,
+   "module": "auth",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 2,
+   "quote": "OTP_INVALID: 'AUTH_OTP_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
+    "line": 112,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AuthErrors",
+   "key": "OTP_EXPIRED",
+   "code": "AUTH_OTP_EXPIRED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/auth/auth.errors.ts",
+   "line": 5,
+   "module": "auth",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 1,
+   "quote": "OTP_EXPIRED: 'AUTH_OTP_EXPIRED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
+    "line": 79,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AuthErrors",
+   "key": "OTP_TOO_MANY_ATTEMPTS",
+   "code": "AUTH_OTP_TOO_MANY_ATTEMPTS",
+   "doc": null,
+   "file": "apps/core-api/src/modules/auth/auth.errors.ts",
+   "line": 6,
+   "module": "auth",
+   "statuses": [
+    "TOO_MANY_REQUESTS"
+   ],
+   "throwSites": 1,
+   "quote": "OTP_TOO_MANY_ATTEMPTS: 'AUTH_OTP_TOO_MANY_ATTEMPTS'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
+    "line": 99,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AuthErrors",
+   "key": "OTP_REQUEST_RATE_LIMITED",
+   "code": "AUTH_OTP_REQUEST_RATE_LIMITED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/auth/auth.errors.ts",
+   "line": 7,
+   "module": "auth",
+   "statuses": [
+    "TOO_MANY_REQUESTS"
+   ],
+   "throwSites": 1,
+   "quote": "OTP_REQUEST_RATE_LIMITED: 'AUTH_OTP_REQUEST_RATE_LIMITED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
+    "line": 37,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AuthErrors",
+   "key": "REFRESH_TOKEN_INVALID",
+   "code": "AUTH_REFRESH_TOKEN_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/auth/auth.errors.ts",
+   "line": 8,
+   "module": "auth",
+   "statuses": [
+    "UNAUTHORIZED"
+   ],
+   "throwSites": 2,
+   "quote": "REFRESH_TOKEN_INVALID: 'AUTH_REFRESH_TOKEN_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/auth/auth.cookies.ts",
+    "line": 87,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AuthErrors",
+   "key": "REFRESH_TOKEN_REUSED",
+   "code": "AUTH_REFRESH_TOKEN_REUSED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/auth/auth.errors.ts",
+   "line": 9,
+   "module": "auth",
+   "statuses": [
+    "UNAUTHORIZED"
+   ],
+   "throwSites": 1,
+   "quote": "REFRESH_TOKEN_REUSED: 'AUTH_REFRESH_TOKEN_REUSED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/auth/services/token.service.ts",
+    "line": 95,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AuthErrors",
+   "key": "SOCIAL_TOKEN_INVALID",
+   "code": "AUTH_SOCIAL_TOKEN_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/auth/auth.errors.ts",
+   "line": 10,
+   "module": "auth",
+   "statuses": [
+    "UNAUTHORIZED"
+   ],
+   "throwSites": 2,
+   "quote": "SOCIAL_TOKEN_INVALID: 'AUTH_SOCIAL_TOKEN_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/auth/services/social-verifier.ts",
+    "line": 82,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AuthErrors",
+   "key": "SOCIAL_PROVIDER_NOT_SUPPORTED",
+   "code": "AUTH_SOCIAL_PROVIDER_NOT_SUPPORTED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/auth/auth.errors.ts",
+   "line": 11,
+   "module": "auth",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 3,
+   "quote": "SOCIAL_PROVIDER_NOT_SUPPORTED: 'AUTH_SOCIAL_PROVIDER_NOT_SUPPORTED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/auth/services/social-verifier.ts",
+    "line": 45,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AuthErrors",
+   "key": "IDENTITY_ALREADY_LINKED",
+   "code": "AUTH_IDENTITY_ALREADY_LINKED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/auth/auth.errors.ts",
+   "line": 12,
+   "module": "auth",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 3,
+   "quote": "IDENTITY_ALREADY_LINKED: 'AUTH_IDENTITY_ALREADY_LINKED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/auth/auth.service.ts",
+    "line": 211,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AuthErrors",
+   "key": "GUEST_DEVICE_TOKEN_INVALID",
+   "code": "AUTH_GUEST_DEVICE_TOKEN_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/auth/auth.errors.ts",
+   "line": 13,
+   "module": "auth",
+   "statuses": [
+    "UNAUTHORIZED"
+   ],
+   "throwSites": 1,
+   "quote": "GUEST_DEVICE_TOKEN_INVALID: 'AUTH_GUEST_DEVICE_TOKEN_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/auth/services/guest-device-token.service.ts",
+    "line": 63,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AuthErrors",
+   "key": "GUEST_IDENTITY_RETIRED",
+   "code": "AUTH_GUEST_IDENTITY_RETIRED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/auth/auth.errors.ts",
+   "line": 14,
+   "module": "auth",
+   "statuses": [
+    "UNAUTHORIZED"
+   ],
+   "throwSites": 1,
+   "quote": "GUEST_IDENTITY_RETIRED: 'AUTH_GUEST_IDENTITY_RETIRED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/auth/auth.service.ts",
+    "line": 315,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AuthErrors",
+   "key": "GUEST_UPGRADE_NOT_ALLOWED",
+   "code": "AUTH_GUEST_UPGRADE_NOT_ALLOWED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/auth/auth.errors.ts",
+   "line": 15,
+   "module": "auth",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "GUEST_UPGRADE_NOT_ALLOWED: 'AUTH_GUEST_UPGRADE_NOT_ALLOWED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/auth/auth.service.ts",
+    "line": 244,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AuthErrors",
+   "key": "USER_BANNED",
+   "code": "AUTH_USER_BANNED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/auth/auth.errors.ts",
+   "line": 16,
+   "module": "auth",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 1,
+   "quote": "USER_BANNED: 'AUTH_USER_BANNED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/auth/auth.service.ts",
+    "line": 301,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AvatarErrors",
+   "key": "ASSET_NOT_FOUND",
+   "code": "AVATAR_ASSET_NOT_FOUND",
+   "doc": null,
+   "file": "apps/core-api/src/modules/avatar/avatar.errors.ts",
+   "line": 3,
+   "module": "avatar",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 1,
+   "quote": "ASSET_NOT_FOUND: 'AVATAR_ASSET_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+    "line": 162,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AvatarErrors",
+   "key": "ASSET_REQUIRES_PURCHASE",
+   "code": "AVATAR_ASSET_REQUIRES_PURCHASE",
+   "doc": "claim() gọi nhầm item phải mua — dùng buy() thay vì claim().",
+   "file": "apps/core-api/src/modules/avatar/avatar.errors.ts",
+   "line": 5,
+   "module": "avatar",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 1,
+   "quote": "ASSET_REQUIRES_PURCHASE: 'AVATAR_ASSET_REQUIRES_PURCHASE'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+    "line": 58,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AvatarErrors",
+   "key": "ASSET_IS_FREE",
+   "code": "AVATAR_ASSET_IS_FREE",
+   "doc": "buy() gọi nhầm item free — dùng claim() thay vì buy().",
+   "file": "apps/core-api/src/modules/avatar/avatar.errors.ts",
+   "line": 7,
+   "module": "avatar",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 1,
+   "quote": "ASSET_IS_FREE: 'AVATAR_ASSET_IS_FREE'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+    "line": 79,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AvatarErrors",
+   "key": "ASSET_SLOT_MISMATCH",
+   "code": "AVATAR_ASSET_SLOT_MISMATCH",
+   "doc": null,
+   "file": "apps/core-api/src/modules/avatar/avatar.errors.ts",
+   "line": 8,
+   "module": "avatar",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 1,
+   "quote": "ASSET_SLOT_MISMATCH: 'AVATAR_ASSET_SLOT_MISMATCH'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+    "line": 104,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "AvatarErrors",
+   "key": "ITEM_NOT_OWNED",
+   "code": "AVATAR_ITEM_NOT_OWNED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/avatar/avatar.errors.ts",
+   "line": 9,
+   "module": "avatar",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 1,
+   "quote": "ITEM_NOT_OWNED: 'AVATAR_ITEM_NOT_OWNED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+    "line": 114,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "CallingErrors",
+   "key": "SESSION_NOT_FOUND",
+   "code": "CALLING_SESSION_NOT_FOUND",
+   "doc": "MatchSession/call không tồn tại HOẶC caller không phải thành viên — gộp, chống oracle (docs/10 § 10.1.D).",
+   "file": "apps/core-api/src/modules/calling/calling.errors.ts",
+   "line": 4,
+   "module": "calling",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 3,
+   "quote": "SESSION_NOT_FOUND: 'CALLING_SESSION_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/calling/calling.service.ts",
+    "line": 110,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "CallingErrors",
+   "key": "CALL_NOT_FOUND",
+   "code": "CALLING_CALL_NOT_FOUND",
+   "doc": null,
+   "file": "apps/core-api/src/modules/calling/calling.errors.ts",
+   "line": 5,
+   "module": "calling",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 3,
+   "quote": "CALL_NOT_FOUND: 'CALLING_CALL_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/calling/calling.service.ts",
+    "line": 271,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "CallingErrors",
+   "key": "SESSION_NOT_CALLABLE",
+   "code": "CALLING_SESSION_NOT_CALLABLE",
+   "doc": "Session không phải voice đã confirmed — chưa có quyền mở phòng.",
+   "file": "apps/core-api/src/modules/calling/calling.errors.ts",
+   "line": 7,
+   "module": "calling",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "SESSION_NOT_CALLABLE: 'CALLING_SESSION_NOT_CALLABLE'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/calling/calling.service.ts",
+    "line": 135,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "CallingErrors",
+   "key": "CALL_ENDED",
+   "code": "CALLING_CALL_ENDED",
+   "doc": "Call đã kết thúc — không mint token/join lại được.",
+   "file": "apps/core-api/src/modules/calling/calling.errors.ts",
+   "line": 9,
+   "module": "calling",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 3,
+   "quote": "CALL_ENDED: 'CALLING_CALL_ENDED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/calling/calling.service.ts",
+    "line": 125,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "CallingErrors",
+   "key": "CALL_NOT_ENDED",
+   "code": "CALLING_CALL_NOT_ENDED",
+   "doc": "Like chỉ hợp lệ sau khi call đã terminal; tránh lộ danh tính trong lúc đang nói.",
+   "file": "apps/core-api/src/modules/calling/calling.errors.ts",
+   "line": 11,
+   "module": "calling",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "CALL_NOT_ENDED: 'CALLING_CALL_NOT_ENDED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/calling/calling.service.ts",
+    "line": 379,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "CallingErrors",
+   "key": "WEBHOOK_INVALID",
+   "code": "CALLING_WEBHOOK_INVALID",
+   "doc": "Webhook LiveKit không verify được chữ ký.",
+   "file": "apps/core-api/src/modules/calling/calling.errors.ts",
+   "line": 13,
+   "module": "calling",
+   "statuses": [
+    "UNAUTHORIZED"
+   ],
+   "throwSites": 2,
+   "quote": "WEBHOOK_INVALID: 'CALLING_WEBHOOK_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/calling/webhooks/livekit-webhook.controller.ts",
+    "line": 43,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "DiscoveryErrors",
+   "key": "CURSOR_INVALID",
+   "code": "DISCOVERY_CURSOR_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/discovery/discovery.errors.ts",
+   "line": 3,
+   "module": "discovery",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 1,
+   "quote": "CURSOR_INVALID: 'DISCOVERY_CURSOR_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/discovery/discovery.service.ts",
+    "line": 83,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "DiscoveryErrors",
+   "key": "FILTER_INVALID",
+   "code": "DISCOVERY_FILTER_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/discovery/discovery.errors.ts",
+   "line": 4,
+   "module": "discovery",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 1,
+   "quote": "FILTER_INVALID: 'DISCOVERY_FILTER_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/discovery/discovery.service.ts",
+    "line": 41,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "DiscoveryErrors",
+   "key": "NEARBY_NOT_OPTED_IN",
+   "code": "DISCOVERY_NEARBY_NOT_OPTED_IN",
+   "doc": null,
+   "file": "apps/core-api/src/modules/discovery/discovery.errors.ts",
+   "line": 5,
+   "module": "discovery",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 1,
+   "quote": "NEARBY_NOT_OPTED_IN: 'DISCOVERY_NEARBY_NOT_OPTED_IN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+    "line": 148,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "DiscoveryErrors",
+   "key": "NEARBY_LOCATION_MISSING",
+   "code": "DISCOVERY_NEARBY_LOCATION_MISSING",
+   "doc": null,
+   "file": "apps/core-api/src/modules/discovery/discovery.errors.ts",
+   "line": 6,
+   "module": "discovery",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "NEARBY_LOCATION_MISSING: 'DISCOVERY_NEARBY_LOCATION_MISSING'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+    "line": 163,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "DiscoveryErrors",
+   "key": "NEARBY_RATE_LIMITED",
+   "code": "DISCOVERY_NEARBY_RATE_LIMITED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/discovery/discovery.errors.ts",
+   "line": 7,
+   "module": "discovery",
+   "statuses": [
+    "TOO_MANY_REQUESTS"
+   ],
+   "throwSites": 2,
+   "quote": "NEARBY_RATE_LIMITED: 'DISCOVERY_NEARBY_RATE_LIMITED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+    "line": 85,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "DiscoveryErrors",
+   "key": "NEARBY_CURSOR_INVALID",
+   "code": "DISCOVERY_NEARBY_CURSOR_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/discovery/discovery.errors.ts",
+   "line": 8,
+   "module": "discovery",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 1,
+   "quote": "NEARBY_CURSOR_INVALID: 'DISCOVERY_NEARBY_CURSOR_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+    "line": 284,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "DiscoveryErrors",
+   "key": "LOCATION_INVALID",
+   "code": "DISCOVERY_LOCATION_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/discovery/discovery.errors.ts",
+   "line": 9,
+   "module": "discovery",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 1,
+   "quote": "LOCATION_INVALID: 'DISCOVERY_LOCATION_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+    "line": 69,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "IAP_DISABLED",
+   "code": "ECONOMY_IAP_DISABLED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 3,
+   "module": "economy",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 1,
+   "quote": "IAP_DISABLED: 'ECONOMY_IAP_DISABLED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/economy/ports/iap-verifier.ts",
+    "line": 42,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "WALLET_INSUFFICIENT_BALANCE",
+   "code": "ECONOMY_WALLET_INSUFFICIENT_BALANCE",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 4,
+   "module": "economy",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 2,
+   "quote": "WALLET_INSUFFICIENT_BALANCE: 'ECONOMY_WALLET_INSUFFICIENT_BALANCE'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+    "line": 456,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "IDEMPOTENCY_CONFLICT",
+   "code": "ECONOMY_TRANSACTION_IDEMPOTENCY_CONFLICT",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 5,
+   "module": "economy",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "IDEMPOTENCY_CONFLICT: 'ECONOMY_TRANSACTION_IDEMPOTENCY_CONFLICT'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+    "line": 368,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "TRANSACTION_NOT_FOUND",
+   "code": "ECONOMY_TRANSACTION_NOT_FOUND",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 6,
+   "module": "economy",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 1,
+   "quote": "TRANSACTION_NOT_FOUND: 'ECONOMY_TRANSACTION_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+    "line": 208,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "TRANSACTION_ALREADY_REVERSED",
+   "code": "ECONOMY_TRANSACTION_ALREADY_REVERSED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 7,
+   "module": "economy",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 2,
+   "quote": "TRANSACTION_ALREADY_REVERSED: 'ECONOMY_TRANSACTION_ALREADY_REVERSED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+    "line": 215,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "IAP_RECEIPT_INVALID",
+   "code": "ECONOMY_IAP_RECEIPT_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 8,
+   "module": "economy",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 8,
+   "quote": "IAP_RECEIPT_INVALID: 'ECONOMY_IAP_RECEIPT_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/economy/clients/apple-receipt-api.adapter.ts",
+    "line": 58,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "IAP_PROVIDER_UNAVAILABLE",
+   "code": "ECONOMY_IAP_PROVIDER_UNAVAILABLE",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 9,
+   "module": "economy",
+   "statuses": [],
+   "throwSites": 0,
+   "quote": "IAP_PROVIDER_UNAVAILABLE: 'ECONOMY_IAP_PROVIDER_UNAVAILABLE'"
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "IAP_PRODUCT_UNKNOWN",
+   "code": "ECONOMY_IAP_PRODUCT_UNKNOWN",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 10,
+   "module": "economy",
+   "statuses": [
+    "NOT_FOUND",
+    "BAD_REQUEST"
+   ],
+   "throwSites": 2,
+   "quote": "IAP_PRODUCT_UNKNOWN: 'ECONOMY_IAP_PRODUCT_UNKNOWN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/economy/economy.service.ts",
+    "line": 180,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "VIP_PLAN_UNKNOWN",
+   "code": "ECONOMY_VIP_PLAN_UNKNOWN",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 11,
+   "module": "economy",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 2,
+   "quote": "VIP_PLAN_UNKNOWN: 'ECONOMY_VIP_PLAN_UNKNOWN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/economy/economy.service.ts",
+    "line": 204,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "WEBHOOK_SIGNATURE_INVALID",
+   "code": "ECONOMY_WEBHOOK_SIGNATURE_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 12,
+   "module": "economy",
+   "statuses": [
+    "UNAUTHORIZED"
+   ],
+   "throwSites": 5,
+   "quote": "WEBHOOK_SIGNATURE_INVALID: 'ECONOMY_WEBHOOK_SIGNATURE_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/economy/ports/notification-verifier.ts",
+    "line": 109,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "PAYOS_DISABLED",
+   "code": "ECONOMY_PAYOS_DISABLED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 13,
+   "module": "economy",
+   "statuses": [],
+   "throwSites": 0,
+   "quote": "PAYOS_DISABLED: 'ECONOMY_PAYOS_DISABLED'"
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "PAYOS_PACKAGE_UNKNOWN",
+   "code": "ECONOMY_PAYOS_PACKAGE_UNKNOWN",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 14,
+   "module": "economy",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 1,
+   "quote": "PAYOS_PACKAGE_UNKNOWN: 'ECONOMY_PAYOS_PACKAGE_UNKNOWN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+    "line": 94,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "PAYOS_ORDER_NOT_FOUND",
+   "code": "ECONOMY_PAYOS_ORDER_NOT_FOUND",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 15,
+   "module": "economy",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 1,
+   "quote": "PAYOS_ORDER_NOT_FOUND: 'ECONOMY_PAYOS_ORDER_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+    "line": 337,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "PAYOS_ORDER_IDEMPOTENCY_CONFLICT",
+   "code": "ECONOMY_PAYOS_ORDER_IDEMPOTENCY_CONFLICT",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 16,
+   "module": "economy",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "PAYOS_ORDER_IDEMPOTENCY_CONFLICT: 'ECONOMY_PAYOS_ORDER_IDEMPOTENCY_CONFLICT'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+    "line": 284,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "PAYOS_PROVIDER_UNAVAILABLE",
+   "code": "ECONOMY_PAYOS_PROVIDER_UNAVAILABLE",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 17,
+   "module": "economy",
+   "statuses": [],
+   "throwSites": 0,
+   "quote": "PAYOS_PROVIDER_UNAVAILABLE: 'ECONOMY_PAYOS_PROVIDER_UNAVAILABLE'"
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "PAYOS_WEBHOOK_INVALID",
+   "code": "ECONOMY_PAYOS_WEBHOOK_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 18,
+   "module": "economy",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 1,
+   "quote": "PAYOS_WEBHOOK_INVALID: 'ECONOMY_PAYOS_WEBHOOK_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
+    "line": 158,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "PAYOS_WEBHOOK_MISMATCH",
+   "code": "ECONOMY_PAYOS_WEBHOOK_MISMATCH",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 19,
+   "module": "economy",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 1,
+   "quote": "PAYOS_WEBHOOK_MISMATCH: 'ECONOMY_PAYOS_WEBHOOK_MISMATCH'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+    "line": 345,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "PAYOS_GUEST_FORBIDDEN",
+   "code": "ECONOMY_PAYOS_GUEST_FORBIDDEN",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 20,
+   "module": "economy",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 1,
+   "quote": "PAYOS_GUEST_FORBIDDEN: 'ECONOMY_PAYOS_GUEST_FORBIDDEN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/economy/economy.controller.ts",
+    "line": 169,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "EconomyErrors",
+   "key": "CURSOR_INVALID",
+   "code": "ECONOMY_TRANSACTION_CURSOR_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 21,
+   "module": "economy",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 1,
+   "quote": "CURSOR_INVALID: 'ECONOMY_TRANSACTION_CURSOR_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/economy/economy.service.ts",
+    "line": 699,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "FeedErrors",
+   "key": "POST_NOT_FOUND",
+   "code": "FEED_POST_NOT_FOUND",
+   "doc": null,
+   "file": "apps/core-api/src/modules/feed/feed.errors.ts",
+   "line": 3,
+   "module": "feed",
+   "statuses": [
+    "NOT_FOUND",
+    "FORBIDDEN"
+   ],
+   "throwSites": 3,
+   "quote": "POST_NOT_FOUND: 'FEED_POST_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/feed/feed.service.ts",
+    "line": 198,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "FeedErrors",
+   "key": "COMMENT_NOT_FOUND",
+   "code": "FEED_COMMENT_NOT_FOUND",
+   "doc": null,
+   "file": "apps/core-api/src/modules/feed/feed.errors.ts",
+   "line": 4,
+   "module": "feed",
+   "statuses": [
+    "NOT_FOUND",
+    "FORBIDDEN"
+   ],
+   "throwSites": 2,
+   "quote": "COMMENT_NOT_FOUND: 'FEED_COMMENT_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/feed/feed.service.ts",
+    "line": 316,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "FeedErrors",
+   "key": "POST_CONTENT_REQUIRED",
+   "code": "FEED_POST_CONTENT_REQUIRED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/feed/feed.errors.ts",
+   "line": 5,
+   "module": "feed",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 1,
+   "quote": "POST_CONTENT_REQUIRED: 'FEED_POST_CONTENT_REQUIRED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/feed/feed.service.ts",
+    "line": 58,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "FeedErrors",
+   "key": "GUEST_FORBIDDEN",
+   "code": "FEED_GUEST_FORBIDDEN",
+   "doc": null,
+   "file": "apps/core-api/src/modules/feed/feed.errors.ts",
+   "line": 6,
+   "module": "feed",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 2,
+   "quote": "GUEST_FORBIDDEN: 'FEED_GUEST_FORBIDDEN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/feed/feed.service.ts",
+    "line": 413,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "FeedErrors",
+   "key": "CURSOR_INVALID",
+   "code": "FEED_CURSOR_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/feed/feed.errors.ts",
+   "line": 7,
+   "module": "feed",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 3,
+   "quote": "CURSOR_INVALID: 'FEED_CURSOR_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/feed/feed.service.ts",
+    "line": 117,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "FeedErrors",
+   "key": "POST_IDEMPOTENCY_CONFLICT",
+   "code": "FEED_POST_IDEMPOTENCY_CONFLICT",
+   "doc": null,
+   "file": "apps/core-api/src/modules/feed/feed.errors.ts",
+   "line": 8,
+   "module": "feed",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 2,
+   "quote": "POST_IDEMPOTENCY_CONFLICT: 'FEED_POST_IDEMPOTENCY_CONFLICT'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/feed/feed.service.ts",
+    "line": 85,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "FeedErrors",
+   "key": "STORY_NOT_FOUND",
+   "code": "FEED_STORY_NOT_FOUND",
+   "doc": null,
+   "file": "apps/core-api/src/modules/feed/feed.errors.ts",
+   "line": 9,
+   "module": "feed",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 3,
+   "quote": "STORY_NOT_FOUND: 'FEED_STORY_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/feed/services/story.service.ts",
+    "line": 121,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "FeedErrors",
+   "key": "STORY_MEDIA_URL_REQUIRED",
+   "code": "FEED_STORY_MEDIA_URL_REQUIRED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/feed/feed.errors.ts",
+   "line": 10,
+   "module": "feed",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 1,
+   "quote": "STORY_MEDIA_URL_REQUIRED: 'FEED_STORY_MEDIA_URL_REQUIRED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/feed/services/story.service.ts",
+    "line": 50,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "FeedErrors",
+   "key": "STORY_REPLY_REQUIRES_FRIENDSHIP",
+   "code": "FEED_STORY_REPLY_REQUIRES_FRIENDSHIP",
+   "doc": null,
+   "file": "apps/core-api/src/modules/feed/feed.errors.ts",
+   "line": 11,
+   "module": "feed",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 1,
+   "quote": "STORY_REPLY_REQUIRES_FRIENDSHIP: 'FEED_STORY_REPLY_REQUIRES_FRIENDSHIP'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/feed/services/story.service.ts",
+    "line": 206,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "FriendErrors",
+   "key": "NOT_FRIEND",
+   "code": "FRIEND_NOT_FRIEND",
+   "doc": "Không có conversation với profile (gộp not-found + chưa mở chat, chống oracle).",
+   "file": "apps/core-api/src/modules/friend/friend.errors.ts",
+   "line": 4,
+   "module": "friend",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 2,
+   "quote": "NOT_FRIEND: 'FRIEND_NOT_FRIEND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/friend/friend.service.ts",
+    "line": 283,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "FriendErrors",
+   "key": "CONVERSATION_NOT_FOUND",
+   "code": "FRIEND_CONVERSATION_NOT_FOUND",
+   "doc": "Conversation không tồn tại HOẶC caller không phải thành viên — cùng 1 mã (docs/10 § 10.1.D).",
+   "file": "apps/core-api/src/modules/friend/friend.errors.ts",
+   "line": 6,
+   "module": "friend",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 2,
+   "quote": "CONVERSATION_NOT_FOUND: 'FRIEND_CONVERSATION_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/friend/friend.service.ts",
+    "line": 349,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "FriendErrors",
+   "key": "MESSAGE_IDEMPOTENCY_CONFLICT",
+   "code": "FRIEND_MESSAGE_IDEMPOTENCY_CONFLICT",
+   "doc": "Cùng Idempotency-Key nhưng nội dung/conversation khác (docs/05 § 5.10).",
+   "file": "apps/core-api/src/modules/friend/friend.errors.ts",
+   "line": 8,
+   "module": "friend",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "MESSAGE_IDEMPOTENCY_CONFLICT: 'FRIEND_MESSAGE_IDEMPOTENCY_CONFLICT'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/friend/services/conversation.service.ts",
+    "line": 183,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "FriendErrors",
+   "key": "MESSAGE_TOO_LONG",
+   "code": "FRIEND_MESSAGE_TOO_LONG",
+   "doc": null,
+   "file": "apps/core-api/src/modules/friend/friend.errors.ts",
+   "line": 9,
+   "module": "friend",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 1,
+   "quote": "MESSAGE_TOO_LONG: 'FRIEND_MESSAGE_TOO_LONG'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/friend/friend.service.ts",
+    "line": 359,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "FriendErrors",
+   "key": "MESSAGE_EMPTY",
+   "code": "FRIEND_MESSAGE_EMPTY",
+   "doc": "Message không có cả text lẫn ảnh — không có gì để gửi.",
+   "file": "apps/core-api/src/modules/friend/friend.errors.ts",
+   "line": 11,
+   "module": "friend",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 1,
+   "quote": "MESSAGE_EMPTY: 'FRIEND_MESSAGE_EMPTY'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/friend/friend.service.ts",
+    "line": 368,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "FriendErrors",
+   "key": "CURSOR_INVALID",
+   "code": "FRIEND_CURSOR_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/friend/friend.errors.ts",
+   "line": 12,
+   "module": "friend",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 2,
+   "quote": "CURSOR_INVALID: 'FRIEND_CURSOR_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/friend/services/conversation.service.ts",
+    "line": 206,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "ProfileSocialErrors",
+   "key": "PROFILE_NOT_AVAILABLE",
+   "code": "PROFILE_SOCIAL_PROFILE_NOT_AVAILABLE",
+   "doc": null,
+   "file": "apps/core-api/src/modules/friend/friend.errors.ts",
+   "line": 16,
+   "module": "friend",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 2,
+   "quote": "PROFILE_NOT_AVAILABLE: 'PROFILE_SOCIAL_PROFILE_NOT_AVAILABLE'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+    "line": 472,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "ProfileSocialErrors",
+   "key": "SELF_PROFILE_ACTION",
+   "code": "PROFILE_SOCIAL_SELF_ACTION",
+   "doc": null,
+   "file": "apps/core-api/src/modules/friend/friend.errors.ts",
+   "line": 17,
+   "module": "friend",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 3,
+   "quote": "SELF_PROFILE_ACTION: 'PROFILE_SOCIAL_SELF_ACTION'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+    "line": 490,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "ProfileSocialErrors",
+   "key": "MESSAGE_GIFT_REQUIRED",
+   "code": "PROFILE_SOCIAL_MESSAGE_GIFT_REQUIRED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/friend/friend.errors.ts",
+   "line": 18,
+   "module": "friend",
+   "statuses": [
+    "PAYMENT_REQUIRED"
+   ],
+   "throwSites": 1,
+   "quote": "MESSAGE_GIFT_REQUIRED: 'PROFILE_SOCIAL_MESSAGE_GIFT_REQUIRED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+    "line": 439,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "GiftErrors",
+   "key": "GIFT_NOT_FOUND",
+   "code": "GIFT_GIFT_NOT_FOUND",
+   "doc": "Quà không tồn tại hoặc đã tắt khỏi catalog.",
+   "file": "apps/core-api/src/modules/gift/gift.errors.ts",
+   "line": 4,
+   "module": "gift",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 4,
+   "quote": "GIFT_NOT_FOUND: 'GIFT_GIFT_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/gift/gift.service.ts",
+    "line": 142,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "GiftErrors",
+   "key": "SELF_GIFT_FORBIDDEN",
+   "code": "GIFT_SELF_GIFT_FORBIDDEN",
+   "doc": "Không tự tặng quà cho chính mình (không có ý nghĩa kinh tế, chỉ để farm điểm).",
+   "file": "apps/core-api/src/modules/gift/gift.errors.ts",
+   "line": 6,
+   "module": "gift",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 3,
+   "quote": "SELF_GIFT_FORBIDDEN: 'GIFT_SELF_GIFT_FORBIDDEN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/gift/gift.service.ts",
+    "line": 164,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "GiftErrors",
+   "key": "SENDER_NOT_IN_ROOM",
+   "code": "GIFT_SENDER_NOT_IN_ROOM",
+   "doc": "Người tặng không phải member active của phòng.",
+   "file": "apps/core-api/src/modules/gift/gift.errors.ts",
+   "line": 8,
+   "module": "gift",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 1,
+   "quote": "SENDER_NOT_IN_ROOM: 'GIFT_SENDER_NOT_IN_ROOM'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/gift/gift.service.ts",
+    "line": 186,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "GiftErrors",
+   "key": "RECEIVER_NOT_IN_ROOM",
+   "code": "GIFT_RECEIVER_NOT_IN_ROOM",
+   "doc": "Người nhận không phải member active của phòng.",
+   "file": "apps/core-api/src/modules/gift/gift.errors.ts",
+   "line": 10,
+   "module": "gift",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "RECEIVER_NOT_IN_ROOM: 'GIFT_RECEIVER_NOT_IN_ROOM'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/gift/gift.service.ts",
+    "line": 193,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "GiftErrors",
+   "key": "CODE_ALREADY_EXISTS",
+   "code": "GIFT_CODE_ALREADY_EXISTS",
+   "doc": "Admin tạo quà với `code` đã tồn tại (unique constraint `uq_gifts_code`).",
+   "file": "apps/core-api/src/modules/gift/gift.errors.ts",
+   "line": 12,
+   "module": "gift",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "CODE_ALREADY_EXISTS: 'GIFT_CODE_ALREADY_EXISTS'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/gift/gift.service.ts",
+    "line": 120,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "TICKET_NOT_FOUND",
+   "code": "MATCHING_TICKET_NOT_FOUND",
+   "doc": null,
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 3,
+   "module": "matching",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 2,
+   "quote": "TICKET_NOT_FOUND: 'MATCHING_TICKET_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/matching.service.ts",
+    "line": 231,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "TICKET_ALREADY_QUEUED",
+   "code": "MATCHING_TICKET_ALREADY_QUEUED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 4,
+   "module": "matching",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "TICKET_ALREADY_QUEUED: 'MATCHING_TICKET_ALREADY_QUEUED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/matching.service.ts",
+    "line": 189,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "TICKET_INVALID_TRANSITION",
+   "code": "MATCHING_TICKET_INVALID_TRANSITION",
+   "doc": null,
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 5,
+   "module": "matching",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 4,
+   "quote": "TICKET_INVALID_TRANSITION: 'MATCHING_TICKET_INVALID_TRANSITION'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/matching.service.ts",
+    "line": 314,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "TICKET_FORBIDDEN",
+   "code": "MATCHING_TICKET_FORBIDDEN",
+   "doc": "Ticket không thuộc user đang gọi — chống IDOR (docs/10 § 10.1.D).",
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 7,
+   "module": "matching",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 1,
+   "quote": "TICKET_FORBIDDEN: 'MATCHING_TICKET_FORBIDDEN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/matching.service.ts",
+    "line": 651,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "TICKET_IDEMPOTENCY_CONFLICT",
+   "code": "MATCHING_TICKET_IDEMPOTENCY_CONFLICT",
+   "doc": "Cùng Idempotency-Key nhưng nội dung request khác (docs/05 § 5.10).",
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 9,
+   "module": "matching",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "TICKET_IDEMPOTENCY_CONFLICT: 'MATCHING_TICKET_IDEMPOTENCY_CONFLICT'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/matching.service.ts",
+    "line": 218,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "SESSION_NOT_FOUND",
+   "code": "MATCHING_SESSION_NOT_FOUND",
+   "doc": "Session không tồn tại hoặc caller không phải một trong hai thành viên (gộp, chống oracle).",
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 11,
+   "module": "matching",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 2,
+   "quote": "SESSION_NOT_FOUND: 'MATCHING_SESSION_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/matching.service.ts",
+    "line": 511,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "SESSION_NOT_CALLABLE",
+   "code": "MATCHING_SESSION_NOT_CALLABLE",
+   "doc": null,
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 12,
+   "module": "matching",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 2,
+   "quote": "SESSION_NOT_CALLABLE: 'MATCHING_SESSION_NOT_CALLABLE'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/matching.service.ts",
+    "line": 518,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "SESSION_NOT_PENDING",
+   "code": "MATCHING_SESSION_NOT_PENDING",
+   "doc": null,
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 13,
+   "module": "matching",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 3,
+   "quote": "SESSION_NOT_PENDING: 'MATCHING_SESSION_NOT_PENDING'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/matching.service.ts",
+    "line": 333,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "USER_BANNED",
+   "code": "MATCHING_USER_BANNED",
+   "doc": "User bị ban không được vào hàng đợi (re-verify lại lần nữa tại thời điểm ghép).",
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 15,
+   "module": "matching",
+   "statuses": [
+    "FORBIDDEN",
+    "CONFLICT"
+   ],
+   "throwSites": 2,
+   "quote": "USER_BANNED: 'MATCHING_USER_BANNED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/matching.service.ts",
+    "line": 110,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "GUEST_DEVICE_TOKEN_REQUIRED",
+   "code": "MATCHING_GUEST_DEVICE_TOKEN_REQUIRED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 16,
+   "module": "matching",
+   "statuses": [
+    "UNAUTHORIZED"
+   ],
+   "throwSites": 1,
+   "quote": "GUEST_DEVICE_TOKEN_REQUIRED: 'MATCHING_GUEST_DEVICE_TOKEN_REQUIRED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+    "line": 61,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "GUEST_DAILY_QUOTA_EXCEEDED",
+   "code": "MATCHING_GUEST_DAILY_QUOTA_EXCEEDED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 17,
+   "module": "matching",
+   "statuses": [
+    "TOO_MANY_REQUESTS"
+   ],
+   "throwSites": 1,
+   "quote": "GUEST_DAILY_QUOTA_EXCEEDED: 'MATCHING_GUEST_DAILY_QUOTA_EXCEEDED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+    "line": 112,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "DAILY_QUOTA_EXCEEDED",
+   "code": "MATCHING_DAILY_QUOTA_EXCEEDED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 18,
+   "module": "matching",
+   "statuses": [
+    "TOO_MANY_REQUESTS"
+   ],
+   "throwSites": 1,
+   "quote": "DAILY_QUOTA_EXCEEDED: 'MATCHING_DAILY_QUOTA_EXCEEDED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+    "line": 186,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "INVITE_TARGET_UNAVAILABLE",
+   "code": "MATCHING_INVITE_TARGET_UNAVAILABLE",
+   "doc": "Không mời được người đang nằm trong hidden-set (banned/guest/block/report) — oracle-safe, cùng mã bất kể lý do.",
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 20,
+   "module": "matching",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY",
+    "FORBIDDEN"
+   ],
+   "throwSites": 4,
+   "quote": "INVITE_TARGET_UNAVAILABLE: 'MATCHING_INVITE_TARGET_UNAVAILABLE'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+    "line": 98,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "INVITE_NOT_FOUND",
+   "code": "MATCHING_INVITE_NOT_FOUND",
+   "doc": null,
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 21,
+   "module": "matching",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 2,
+   "quote": "INVITE_NOT_FOUND: 'MATCHING_INVITE_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+    "line": 173,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "INVITE_FORBIDDEN",
+   "code": "MATCHING_INVITE_FORBIDDEN",
+   "doc": "Invite không thuộc user đang gọi (không phải inviter/invitee tương ứng hành động).",
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 23,
+   "module": "matching",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 5,
+   "quote": "INVITE_FORBIDDEN: 'MATCHING_INVITE_FORBIDDEN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+    "line": 183,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "INVITE_INVALID_TRANSITION",
+   "code": "MATCHING_INVITE_INVALID_TRANSITION",
+   "doc": null,
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 24,
+   "module": "matching",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 2,
+   "quote": "INVITE_INVALID_TRANSITION: 'MATCHING_INVITE_INVALID_TRANSITION'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+    "line": 626,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "INVITE_ALREADY_PENDING",
+   "code": "MATCHING_INVITE_ALREADY_PENDING",
+   "doc": "Đã có 1 invite PENDING khác tới đúng người này (unique DB, không phải rate-limit chính).",
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 26,
+   "module": "matching",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "INVITE_ALREADY_PENDING: 'MATCHING_INVITE_ALREADY_PENDING'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+    "line": 144,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "INVITE_RATE_LIMITED",
+   "code": "MATCHING_INVITE_RATE_LIMITED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 27,
+   "module": "matching",
+   "statuses": [
+    "TOO_MANY_REQUESTS"
+   ],
+   "throwSites": 1,
+   "quote": "INVITE_RATE_LIMITED: 'MATCHING_INVITE_RATE_LIMITED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+    "line": 115,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "INVITE_ACCEPT_USER_BUSY",
+   "code": "MATCHING_INVITE_ACCEPT_USER_BUSY",
+   "doc": "1 trong 2 bên (inviter/invitee) đang có ticket active khác tại thời điểm accept (docs/06).",
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 29,
+   "module": "matching",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "INVITE_ACCEPT_USER_BUSY: 'MATCHING_INVITE_ACCEPT_USER_BUSY'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+    "line": 518,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MatchingErrors",
+   "key": "INVITE_CURSOR_INVALID",
+   "code": "MATCHING_INVITE_CURSOR_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/matching/matching.errors.ts",
+   "line": 30,
+   "module": "matching",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 1,
+   "quote": "INVITE_CURSOR_INVALID: 'MATCHING_INVITE_CURSOR_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+    "line": 654,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MediaErrors",
+   "key": "GUEST_FORBIDDEN",
+   "code": "MEDIA_GUEST_FORBIDDEN",
+   "doc": null,
+   "file": "apps/core-api/src/modules/media/media.errors.ts",
+   "line": 2,
+   "module": "media",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 1,
+   "quote": "GUEST_FORBIDDEN: 'MEDIA_GUEST_FORBIDDEN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/media/media.service.ts",
+    "line": 226,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MediaErrors",
+   "key": "INVALID_CONTENT_TYPE",
+   "code": "MEDIA_INVALID_CONTENT_TYPE",
+   "doc": null,
+   "file": "apps/core-api/src/modules/media/media.errors.ts",
+   "line": 3,
+   "module": "media",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 1,
+   "quote": "INVALID_CONTENT_TYPE: 'MEDIA_INVALID_CONTENT_TYPE'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/media/media.service.ts",
+    "line": 216,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MediaErrors",
+   "key": "FILE_TOO_LARGE",
+   "code": "MEDIA_FILE_TOO_LARGE",
+   "doc": null,
+   "file": "apps/core-api/src/modules/media/media.errors.ts",
+   "line": 4,
+   "module": "media",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 1,
+   "quote": "FILE_TOO_LARGE: 'MEDIA_FILE_TOO_LARGE'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/media/media.service.ts",
+    "line": 47,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MediaErrors",
+   "key": "ASSET_NOT_FOUND",
+   "code": "MEDIA_ASSET_NOT_FOUND",
+   "doc": null,
+   "file": "apps/core-api/src/modules/media/media.errors.ts",
+   "line": 5,
+   "module": "media",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 2,
+   "quote": "ASSET_NOT_FOUND: 'MEDIA_ASSET_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/media/media.service.ts",
+    "line": 89,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MediaErrors",
+   "key": "ASSET_NOT_READY",
+   "code": "MEDIA_ASSET_NOT_READY",
+   "doc": null,
+   "file": "apps/core-api/src/modules/media/media.errors.ts",
+   "line": 6,
+   "module": "media",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 2,
+   "quote": "ASSET_NOT_READY: 'MEDIA_ASSET_NOT_READY'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/media/media.service.ts",
+    "line": 142,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MiniGameErrors",
+   "key": "NOT_FRIEND",
+   "code": "MINI_GAME_NOT_FRIEND",
+   "doc": "`friendUserId` không phải bạn của caller HOẶC caller tự nhắm chính mình — gộp 1 mã, cùng 404 (chống oracle dò userId, cùng pattern `MovieMatchErrors.NOT_FRIEND`).",
+   "file": "apps/core-api/src/modules/mini-game/mini-game.errors.ts",
+   "line": 7,
+   "module": "mini-game",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 2,
+   "quote": "NOT_FRIEND: 'MINI_GAME_NOT_FRIEND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
+    "line": 65,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MiniGameErrors",
+   "key": "ALREADY_WAITING",
+   "code": "MINI_GAME_ALREADY_WAITING",
+   "doc": "Caller đang chờ move ở 1 CẶP KHÁC — không tự ý huỷ ván cũ thay user.",
+   "file": "apps/core-api/src/modules/mini-game/mini-game.errors.ts",
+   "line": 9,
+   "module": "mini-game",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "ALREADY_WAITING: 'MINI_GAME_ALREADY_WAITING'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
+    "line": 113,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MiniGameErrors",
+   "key": "NOT_FOUND",
+   "code": "MINI_GAME_SESSION_NOT_FOUND",
+   "doc": "Session không tồn tại HOẶC caller không phải participant — cùng 1 mã (docs/10 § 10.1.D).",
+   "file": "apps/core-api/src/modules/mini-game/mini-game.errors.ts",
+   "line": 11,
+   "module": "mini-game",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 1,
+   "quote": "NOT_FOUND: 'MINI_GAME_SESSION_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
+    "line": 318,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MiniGameErrors",
+   "key": "MOVE_ALREADY_SUBMITTED",
+   "code": "MINI_GAME_MOVE_ALREADY_SUBMITTED",
+   "doc": "Nộp move lần 2 (đã nộp trước đó) HOẶC session không còn `waiting_moves` (đã `resolved`/`cancelled`) — update có điều kiện thấy 0 row ảnh hưởng (docs/10 § 10.1.C).",
+   "file": "apps/core-api/src/modules/mini-game/mini-game.errors.ts",
+   "line": 16,
+   "module": "mini-game",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "MOVE_ALREADY_SUBMITTED: 'MINI_GAME_MOVE_ALREADY_SUBMITTED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
+    "line": 167,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MiniGameErrors",
+   "key": "NOT_CANCELLABLE",
+   "code": "MINI_GAME_NOT_CANCELLABLE",
+   "doc": "Huỷ ván đã `resolved`/`cancelled` — chỉ huỷ được ván đang `waiting_moves`.",
+   "file": "apps/core-api/src/modules/mini-game/mini-game.errors.ts",
+   "line": 18,
+   "module": "mini-game",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 2,
+   "quote": "NOT_CANCELLABLE: 'MINI_GAME_NOT_CANCELLABLE'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
+    "line": 253,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MoodErrors",
+   "key": "PRESET_NOT_FOUND",
+   "code": "MOOD_PRESET_NOT_FOUND",
+   "doc": null,
+   "file": "apps/core-api/src/modules/mood/mood.errors.ts",
+   "line": 3,
+   "module": "mood",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 1,
+   "quote": "PRESET_NOT_FOUND: 'MOOD_PRESET_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/mood/mood.service.ts",
+    "line": 68,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MovieMatchErrors",
+   "key": "NOT_FRIEND",
+   "code": "MOVIE_SESSION_NOT_FRIEND",
+   "doc": "`friendUserId` không phải bạn của caller HOẶC caller tự nhắm chính mình — gộp 1 mã, cùng 404 (chống oracle dò userId, cùng pattern `FriendErrors.NOT_FRIEND`).",
+   "file": "apps/core-api/src/modules/movie-match/movie-match.errors.ts",
+   "line": 7,
+   "module": "movie-match",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 2,
+   "quote": "NOT_FRIEND: 'MOVIE_SESSION_NOT_FRIEND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+    "line": 117,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MovieMatchErrors",
+   "key": "ALREADY_ACTIVE",
+   "code": "MOVIE_SESSION_ALREADY_ACTIVE",
+   "doc": "Caller đang active với 1 cặp KHÁC — không tự ý kết thúc session cũ thay user (spec § 3).",
+   "file": "apps/core-api/src/modules/movie-match/movie-match.errors.ts",
+   "line": 9,
+   "module": "movie-match",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 2,
+   "quote": "ALREADY_ACTIVE: 'MOVIE_SESSION_ALREADY_ACTIVE'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+    "line": 165,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MovieMatchErrors",
+   "key": "NOT_FOUND",
+   "code": "MOVIE_SESSION_NOT_FOUND",
+   "doc": "Session không tồn tại HOẶC caller không phải participant — cùng 1 mã (docs/10 § 10.1.D).",
+   "file": "apps/core-api/src/modules/movie-match/movie-match.errors.ts",
+   "line": 11,
+   "module": "movie-match",
+   "statuses": [
+    "BAD_REQUEST",
+    "NOT_FOUND"
+   ],
+   "throwSites": 4,
+   "quote": "NOT_FOUND: 'MOVIE_SESSION_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+    "line": 592,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MovieMatchErrors",
+   "key": "ENDED",
+   "code": "MOVIE_SESSION_ENDED",
+   "doc": "Session đã `ended` mà vẫn thao tác state.",
+   "file": "apps/core-api/src/modules/movie-match/movie-match.errors.ts",
+   "line": 13,
+   "module": "movie-match",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 5,
+   "quote": "ENDED: 'MOVIE_SESSION_ENDED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+    "line": 201,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MovieMatchErrors",
+   "key": "INVALID_VIDEO_URL",
+   "code": "MOVIE_SESSION_INVALID_VIDEO_URL",
+   "doc": "`videoUrl` sai format, quá dài, hoặc domain không nằm trong whitelist.",
+   "file": "apps/core-api/src/modules/movie-match/movie-match.errors.ts",
+   "line": 15,
+   "module": "movie-match",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 4,
+   "quote": "INVALID_VIDEO_URL: 'MOVIE_SESSION_INVALID_VIDEO_URL'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+    "line": 906,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MovieMatchErrors",
+   "key": "RATING_NOT_OPEN",
+   "code": "MOVIE_SESSION_RATING_NOT_OPEN",
+   "doc": "Rating gọi trước khi phase xem kết thúc (chưa \"Kết thúc\"/chưa hết giờ).",
+   "file": "apps/core-api/src/modules/movie-match/movie-match.errors.ts",
+   "line": 17,
+   "module": "movie-match",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "RATING_NOT_OPEN: 'MOVIE_SESSION_RATING_NOT_OPEN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+    "line": 494,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MovieMatchErrors",
+   "key": "RATING_CONFLICT",
+   "code": "MOVIE_SESSION_RATING_CONFLICT",
+   "doc": "Đổi rating đã chốt — mỗi bên chỉ đánh giá một lần.",
+   "file": "apps/core-api/src/modules/movie-match/movie-match.errors.ts",
+   "line": 19,
+   "module": "movie-match",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "RATING_CONFLICT: 'MOVIE_SESSION_RATING_CONFLICT'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+    "line": 479,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MovieMatchErrors",
+   "key": "MESSAGE_TOO_LONG",
+   "code": "MOVIE_SESSION_MESSAGE_TOO_LONG",
+   "doc": "Chat quá MOVIE_MATCH_MESSAGE_MAX_LENGTH.",
+   "file": "apps/core-api/src/modules/movie-match/movie-match.errors.ts",
+   "line": 21,
+   "module": "movie-match",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 1,
+   "quote": "MESSAGE_TOO_LONG: 'MOVIE_SESSION_MESSAGE_TOO_LONG'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+    "line": 543,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MovieMatchErrors",
+   "key": "MESSAGE_IDEMPOTENCY_CONFLICT",
+   "code": "MOVIE_SESSION_MESSAGE_IDEMPOTENCY_CONFLICT",
+   "doc": "Cùng Idempotency-Key nhưng nội dung/session khác (docs/05 § 5.10).",
+   "file": "apps/core-api/src/modules/movie-match/movie-match.errors.ts",
+   "line": 23,
+   "module": "movie-match",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "MESSAGE_IDEMPOTENCY_CONFLICT: 'MOVIE_SESSION_MESSAGE_IDEMPOTENCY_CONFLICT'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+    "line": 573,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MovieMatchErrors",
+   "key": "REACTION_INVALID",
+   "code": "MOVIE_SESSION_REACTION_INVALID",
+   "doc": "Reaction emoji ngoài whitelist.",
+   "file": "apps/core-api/src/modules/movie-match/movie-match.errors.ts",
+   "line": 25,
+   "module": "movie-match",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 1,
+   "quote": "REACTION_INVALID: 'MOVIE_SESSION_REACTION_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+    "line": 617,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "MovieMatchErrors",
+   "key": "ANON_VIDEO_POOL_EMPTY",
+   "code": "MOVIE_SESSION_ANON_VIDEO_POOL_EMPTY",
+   "doc": "Không có video nào trong MOVIE_MATCH_ANON_VIDEO_URLS — lỗi cấu hình vận hành.",
+   "file": "apps/core-api/src/modules/movie-match/movie-match.errors.ts",
+   "line": 27,
+   "module": "movie-match",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "ANON_VIDEO_POOL_EMPTY: 'MOVIE_SESSION_ANON_VIDEO_POOL_EMPTY'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+    "line": 696,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "NotificationErrors",
+   "key": "NOTIFICATION_NOT_FOUND",
+   "code": "NOTIFICATION_NOTIFICATION_NOT_FOUND",
+   "doc": null,
+   "file": "apps/core-api/src/modules/notification/notification.errors.ts",
+   "line": 3,
+   "module": "notification",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 1,
+   "quote": "NOTIFICATION_NOT_FOUND: 'NOTIFICATION_NOTIFICATION_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/notification/notification.service.ts",
+    "line": 196,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "NotificationErrors",
+   "key": "CURSOR_INVALID",
+   "code": "NOTIFICATION_CURSOR_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/notification/notification.errors.ts",
+   "line": 4,
+   "module": "notification",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 1,
+   "quote": "CURSOR_INVALID: 'NOTIFICATION_CURSOR_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/notification/notification.service.ts",
+    "line": 167,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PalmMatchErrors",
+   "key": "CATEGORY_EMPTY",
+   "code": "PALM_MATCH_CATEGORY_EMPTY",
+   "doc": "Không có template active nào cho category — tránh 500/mảng rỗng khi chọn phần tử.",
+   "file": "apps/core-api/src/modules/palm-match/palm-match.errors.ts",
+   "line": 4,
+   "module": "palm-match",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 2,
+   "quote": "CATEGORY_EMPTY: 'PALM_MATCH_CATEGORY_EMPTY'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+    "line": 91,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PalmMatchErrors",
+   "key": "TARGET_NAME_TOO_LONG",
+   "code": "PALM_MATCH_TARGET_NAME_TOO_LONG",
+   "doc": "`targetName` vượt quá `PALM_MATCH_TARGET_NAME_MAX_LENGTH`.",
+   "file": "apps/core-api/src/modules/palm-match/palm-match.errors.ts",
+   "line": 6,
+   "module": "palm-match",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 1,
+   "quote": "TARGET_NAME_TOO_LONG: 'PALM_MATCH_TARGET_NAME_TOO_LONG'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+    "line": 539,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PalmMatchErrors",
+   "key": "SESSION_NOT_FOUND",
+   "code": "PALM_MATCH_SESSION_NOT_FOUND",
+   "doc": "Session không tồn tại, caller không còn active trong session hoặc không phải participant.",
+   "file": "apps/core-api/src/modules/palm-match/palm-match.errors.ts",
+   "line": 8,
+   "module": "palm-match",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 2,
+   "quote": "SESSION_NOT_FOUND: 'PALM_MATCH_SESSION_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+    "line": 439,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PalmMatchErrors",
+   "key": "SESSION_FINISHED",
+   "code": "PALM_MATCH_SESSION_FINISHED",
+   "doc": "Session đã terminal nên không nhận thêm flip/rating.",
+   "file": "apps/core-api/src/modules/palm-match/palm-match.errors.ts",
+   "line": 10,
+   "module": "palm-match",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "SESSION_FINISHED: 'PALM_MATCH_SESSION_FINISHED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+    "line": 464,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PalmMatchErrors",
+   "key": "RATING_NOT_OPEN",
+   "code": "PALM_MATCH_RATING_NOT_OPEN",
+   "doc": "Rating chỉ mở sau khi cả hai participant tự lật lá của mình.",
+   "file": "apps/core-api/src/modules/palm-match/palm-match.errors.ts",
+   "line": 12,
+   "module": "palm-match",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "RATING_NOT_OPEN: 'PALM_MATCH_RATING_NOT_OPEN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+    "line": 261,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PalmMatchErrors",
+   "key": "RATING_CONFLICT",
+   "code": "PALM_MATCH_RATING_CONFLICT",
+   "doc": "Một rating đã chốt không được đổi verdict khi retry.",
+   "file": "apps/core-api/src/modules/palm-match/palm-match.errors.ts",
+   "line": 14,
+   "module": "palm-match",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 2,
+   "quote": "RATING_CONFLICT: 'PALM_MATCH_RATING_CONFLICT'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+    "line": 252,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PartyRoomErrors",
+   "key": "ROOM_NOT_FOUND",
+   "code": "PARTY_ROOM_NOT_FOUND",
+   "doc": "Phòng không tồn tại HOẶC đã đóng với người ngoài — gộp, chống oracle (docs/10 § 10.1.D).",
+   "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+   "line": 4,
+   "module": "party-room",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 4,
+   "quote": "ROOM_NOT_FOUND: 'PARTY_ROOM_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+    "line": 371,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PartyRoomErrors",
+   "key": "ROOM_CLOSED",
+   "code": "PARTY_ROOM_CLOSED",
+   "doc": "Phòng đã đóng — không join/đổi role/tặng quà được nữa.",
+   "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+   "line": 6,
+   "module": "party-room",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 3,
+   "quote": "ROOM_CLOSED: 'PARTY_ROOM_CLOSED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+    "line": 712,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PartyRoomErrors",
+   "key": "ROOM_FULL",
+   "code": "PARTY_ROOM_FULL",
+   "doc": "Phòng đã đủ PARTY_MAX_MEMBERS.",
+   "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+   "line": 8,
+   "module": "party-room",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "ROOM_FULL: 'PARTY_ROOM_FULL'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+    "line": 287,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PartyRoomErrors",
+   "key": "ALREADY_IN_ANOTHER_ROOM",
+   "code": "PARTY_MEMBER_ALREADY_IN_ANOTHER_ROOM",
+   "doc": "User đang ở 1 phòng active khác — 1 user 1 phòng (party-room-service.md § 3).",
+   "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+   "line": 10,
+   "module": "party-room",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 2,
+   "quote": "ALREADY_IN_ANOTHER_ROOM: 'PARTY_MEMBER_ALREADY_IN_ANOTHER_ROOM'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+    "line": 193,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PartyRoomErrors",
+   "key": "NOT_A_MEMBER",
+   "code": "PARTY_MEMBER_NOT_A_MEMBER",
+   "doc": "Caller không phải member active của phòng.",
+   "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+   "line": 12,
+   "module": "party-room",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 4,
+   "quote": "NOT_A_MEMBER: 'PARTY_MEMBER_NOT_A_MEMBER'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+    "line": 581,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PartyRoomErrors",
+   "key": "TARGET_NOT_A_MEMBER",
+   "code": "PARTY_TARGET_NOT_A_MEMBER",
+   "doc": "Target không phải member active của phòng.",
+   "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+   "line": 14,
+   "module": "party-room",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 2,
+   "quote": "TARGET_NOT_A_MEMBER: 'PARTY_TARGET_NOT_A_MEMBER'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+    "line": 455,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PartyRoomErrors",
+   "key": "NOT_HOST",
+   "code": "PARTY_MEMBER_NOT_HOST",
+   "doc": "Chỉ host mới được cấp/thu quyền speaker (docs/06).",
+   "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+   "line": 16,
+   "module": "party-room",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 2,
+   "quote": "NOT_HOST: 'PARTY_MEMBER_NOT_HOST'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+    "line": 442,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PartyRoomErrors",
+   "key": "CANNOT_CHANGE_HOST_ROLE",
+   "code": "PARTY_MEMBER_CANNOT_CHANGE_HOST_ROLE",
+   "doc": "Không đổi role của chính host.",
+   "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+   "line": 18,
+   "module": "party-room",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "CANNOT_CHANGE_HOST_ROLE: 'PARTY_MEMBER_CANNOT_CHANGE_HOST_ROLE'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+    "line": 462,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PartyRoomErrors",
+   "key": "SPEAKER_LIMIT_REACHED",
+   "code": "PARTY_SPEAKER_LIMIT_REACHED",
+   "doc": "Đã chạm speaker_limit của phòng (giới hạn cứng — docs/03 § 3.8.A).",
+   "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+   "line": 20,
+   "module": "party-room",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "SPEAKER_LIMIT_REACHED: 'PARTY_SPEAKER_LIMIT_REACHED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+    "line": 605,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PartyRoomErrors",
+   "key": "SPEAKER_INVITE_NOT_PENDING",
+   "code": "PARTY_SPEAKER_INVITE_NOT_PENDING",
+   "doc": "Target chưa đồng ý lời mời lên speaker.",
+   "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+   "line": 22,
+   "module": "party-room",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "SPEAKER_INVITE_NOT_PENDING: 'PARTY_SPEAKER_INVITE_NOT_PENDING'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+    "line": 593,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PartyRoomErrors",
+   "key": "SPEAKER_INVITE_TARGET_INVALID",
+   "code": "PARTY_SPEAKER_INVITE_TARGET_INVALID",
+   "doc": "Target đã là speaker/host hoặc không thể nhận lời mời.",
+   "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+   "line": 24,
+   "module": "party-room",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "SPEAKER_INVITE_TARGET_INVALID: 'PARTY_SPEAKER_INVITE_TARGET_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+    "line": 542,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PartyRoomErrors",
+   "key": "TITLE_TOO_LONG",
+   "code": "PARTY_ROOM_TITLE_TOO_LONG",
+   "doc": "Title vượt PARTY_TITLE_MAX_LENGTH.",
+   "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+   "line": 26,
+   "module": "party-room",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 1,
+   "quote": "TITLE_TOO_LONG: 'PARTY_ROOM_TITLE_TOO_LONG'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+    "line": 148,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PartyRoomErrors",
+   "key": "WEBHOOK_INVALID",
+   "code": "PARTY_WEBHOOK_INVALID",
+   "doc": "Webhook LiveKit không verify được chữ ký.",
+   "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+   "line": 28,
+   "module": "party-room",
+   "statuses": [
+    "UNAUTHORIZED"
+   ],
+   "throwSites": 2,
+   "quote": "WEBHOOK_INVALID: 'PARTY_WEBHOOK_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/party-room/webhooks/party-livekit-webhook.controller.ts",
+    "line": 43,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PartyRoomErrors",
+   "key": "MEDIA_ROOM_CREATE_FAILED",
+   "code": "PARTY_MEDIA_ROOM_CREATE_FAILED",
+   "doc": "Tạo room trên SFU thất bại — thử lại sau.",
+   "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+   "line": 30,
+   "module": "party-room",
+   "statuses": [],
+   "throwSites": 0,
+   "quote": "MEDIA_ROOM_CREATE_FAILED: 'PARTY_MEDIA_ROOM_CREATE_FAILED'"
+  },
+  {
+   "group": "PartyRoomErrors",
+   "key": "CURSOR_INVALID",
+   "code": "PARTY_ROOM_CURSOR_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+   "line": 31,
+   "module": "party-room",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 2,
+   "quote": "CURSOR_INVALID: 'PARTY_ROOM_CURSOR_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+    "line": 745,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PartyRoomErrors",
+   "key": "COMMENT_INVALID",
+   "code": "PARTY_ROOM_COMMENT_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+   "line": 32,
+   "module": "party-room",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 1,
+   "quote": "COMMENT_INVALID: 'PARTY_ROOM_COMMENT_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+    "line": 785,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "PartyRoomErrors",
+   "key": "COMMENT_IDEMPOTENCY_CONFLICT",
+   "code": "PARTY_ROOM_COMMENT_IDEMPOTENCY_CONFLICT",
+   "doc": null,
+   "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+   "line": 33,
+   "module": "party-room",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "COMMENT_IDEMPOTENCY_CONFLICT: 'PARTY_ROOM_COMMENT_IDEMPOTENCY_CONFLICT'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+    "line": 853,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "SafetyErrors",
+   "key": "SELF_REPORT_FORBIDDEN",
+   "code": "SAFETY_SELF_REPORT_FORBIDDEN",
+   "doc": null,
+   "file": "apps/core-api/src/modules/safety/safety.errors.ts",
+   "line": 3,
+   "module": "safety",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 1,
+   "quote": "SELF_REPORT_FORBIDDEN: 'SAFETY_SELF_REPORT_FORBIDDEN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/safety/safety.service.ts",
+    "line": 60,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "SafetyErrors",
+   "key": "SELF_BLOCK_FORBIDDEN",
+   "code": "SAFETY_SELF_BLOCK_FORBIDDEN",
+   "doc": null,
+   "file": "apps/core-api/src/modules/safety/safety.errors.ts",
+   "line": 4,
+   "module": "safety",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 1,
+   "quote": "SELF_BLOCK_FORBIDDEN: 'SAFETY_SELF_BLOCK_FORBIDDEN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/safety/safety.service.ts",
+    "line": 193,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "SafetyErrors",
+   "key": "REPORT_NOT_FOUND",
+   "code": "SAFETY_REPORT_NOT_FOUND",
+   "doc": null,
+   "file": "apps/core-api/src/modules/safety/safety.errors.ts",
+   "line": 5,
+   "module": "safety",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 1,
+   "quote": "REPORT_NOT_FOUND: 'SAFETY_REPORT_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/safety/safety.service.ts",
+    "line": 362,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "ShortVideoErrors",
+   "key": "VIDEO_UPLOAD_DISABLED",
+   "code": "SHORT_VIDEO_UPLOAD_DISABLED",
+   "doc": null,
+   "file": "apps/core-api/src/modules/short-video/short-video.errors.ts",
+   "line": 3,
+   "module": "short-video",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 1,
+   "quote": "VIDEO_UPLOAD_DISABLED: 'SHORT_VIDEO_UPLOAD_DISABLED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+    "line": 191,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "ShortVideoErrors",
+   "key": "VIDEO_NOT_FOUND",
+   "code": "SHORT_VIDEO_NOT_FOUND",
+   "doc": null,
+   "file": "apps/core-api/src/modules/short-video/short-video.errors.ts",
+   "line": 4,
+   "module": "short-video",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 3,
+   "quote": "VIDEO_NOT_FOUND: 'SHORT_VIDEO_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+    "line": 180,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "ShortVideoErrors",
+   "key": "VIDEO_FORBIDDEN",
+   "code": "SHORT_VIDEO_FORBIDDEN",
+   "doc": null,
+   "file": "apps/core-api/src/modules/short-video/short-video.errors.ts",
+   "line": 5,
+   "module": "short-video",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 2,
+   "quote": "VIDEO_FORBIDDEN: 'SHORT_VIDEO_FORBIDDEN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+    "line": 406,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "ShortVideoErrors",
+   "key": "VIDEO_INVALID_TRANSITION",
+   "code": "SHORT_VIDEO_INVALID_TRANSITION",
+   "doc": null,
+   "file": "apps/core-api/src/modules/short-video/short-video.errors.ts",
+   "line": 6,
+   "module": "short-video",
+   "statuses": [
+    "CONFLICT",
+    "video ? CONFLICT : HttpStatus.NOT_FOUND"
+   ],
+   "throwSites": 3,
+   "quote": "VIDEO_INVALID_TRANSITION: 'SHORT_VIDEO_INVALID_TRANSITION'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+    "line": 106,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "ShortVideoErrors",
+   "key": "VIDEO_UPLOAD_IDEMPOTENCY_CONFLICT",
+   "code": "SHORT_VIDEO_UPLOAD_IDEMPOTENCY_CONFLICT",
+   "doc": null,
+   "file": "apps/core-api/src/modules/short-video/short-video.errors.ts",
+   "line": 7,
+   "module": "short-video",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "VIDEO_UPLOAD_IDEMPOTENCY_CONFLICT: 'SHORT_VIDEO_UPLOAD_IDEMPOTENCY_CONFLICT'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+    "line": 96,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "ShortVideoErrors",
+   "key": "CAPTION_TOO_LONG",
+   "code": "SHORT_VIDEO_CAPTION_TOO_LONG",
+   "doc": null,
+   "file": "apps/core-api/src/modules/short-video/short-video.errors.ts",
+   "line": 8,
+   "module": "short-video",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 1,
+   "quote": "CAPTION_TOO_LONG: 'SHORT_VIDEO_CAPTION_TOO_LONG'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+    "line": 69,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "ShortVideoErrors",
+   "key": "CURSOR_INVALID",
+   "code": "SHORT_VIDEO_CURSOR_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/short-video/short-video.errors.ts",
+   "line": 9,
+   "module": "short-video",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 2,
+   "quote": "CURSOR_INVALID: 'SHORT_VIDEO_CURSOR_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+    "line": 581,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "SoulMatchErrors",
+   "key": "SESSION_NOT_FOUND",
+   "code": "SOUL_MATCH_SESSION_NOT_FOUND",
+   "doc": "Session không tồn tại HOẶC caller không phải thành viên — gộp 1 mã, không làm oracle dò sessionId.",
+   "file": "apps/core-api/src/modules/soul-match/soul-match.errors.ts",
+   "line": 4,
+   "module": "soul-match",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 2,
+   "quote": "SESSION_NOT_FOUND: 'SOUL_MATCH_SESSION_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+    "line": 172,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "SoulMatchErrors",
+   "key": "CHAT_NOT_OPEN",
+   "code": "SOUL_MATCH_CHAT_NOT_OPEN",
+   "doc": "Phòng chưa mở (chưa đủ 2 confirm / không phải soul) hoặc đã qua phase cho phép.",
+   "file": "apps/core-api/src/modules/soul-match/soul-match.errors.ts",
+   "line": 6,
+   "module": "soul-match",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 4,
+   "quote": "CHAT_NOT_OPEN: 'SOUL_MATCH_CHAT_NOT_OPEN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+    "line": 129,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "SoulMatchErrors",
+   "key": "RATING_NOT_OPEN",
+   "code": "SOUL_MATCH_RATING_NOT_OPEN",
+   "doc": "Hết cửa sổ rating (phase closed).",
+   "file": "apps/core-api/src/modules/soul-match/soul-match.errors.ts",
+   "line": 8,
+   "module": "soul-match",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "RATING_NOT_OPEN: 'SOUL_MATCH_RATING_NOT_OPEN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+    "line": 298,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "SoulMatchErrors",
+   "key": "RATING_CONFLICT",
+   "code": "SOUL_MATCH_RATING_CONFLICT",
+   "doc": "Đã rate verdict khác — rating immutable (docs/10 § Soul Match).",
+   "file": "apps/core-api/src/modules/soul-match/soul-match.errors.ts",
+   "line": 10,
+   "module": "soul-match",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "RATING_CONFLICT: 'SOUL_MATCH_RATING_CONFLICT'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+    "line": 507,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "SoulMatchErrors",
+   "key": "MESSAGE_IDEMPOTENCY_CONFLICT",
+   "code": "SOUL_MATCH_MESSAGE_IDEMPOTENCY_CONFLICT",
+   "doc": "Cùng Idempotency-Key nhưng nội dung/session khác (docs/05 § 5.10).",
+   "file": "apps/core-api/src/modules/soul-match/soul-match.errors.ts",
+   "line": 12,
+   "module": "soul-match",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "MESSAGE_IDEMPOTENCY_CONFLICT: 'SOUL_MATCH_MESSAGE_IDEMPOTENCY_CONFLICT'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+    "line": 236,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "SoulMatchErrors",
+   "key": "MESSAGE_TOO_LONG",
+   "code": "SOUL_MATCH_MESSAGE_TOO_LONG",
+   "doc": "Vượt SOUL_CHAT_MESSAGE_MAX_LENGTH (config) — DTO chỉ chặn sanity cap.",
+   "file": "apps/core-api/src/modules/soul-match/soul-match.errors.ts",
+   "line": 14,
+   "module": "soul-match",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 1,
+   "quote": "MESSAGE_TOO_LONG: 'SOUL_MATCH_MESSAGE_TOO_LONG'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+    "line": 150,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "SoulMatchErrors",
+   "key": "PARTNER_LOCKED",
+   "code": "SOUL_MATCH_PARTNER_LOCKED",
+   "doc": "Chưa match (chưa có Friendship) — profile đối phương còn khoá (docs/01 #1).",
+   "file": "apps/core-api/src/modules/soul-match/soul-match.errors.ts",
+   "line": 16,
+   "module": "soul-match",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 1,
+   "quote": "PARTNER_LOCKED: 'SOUL_MATCH_PARTNER_LOCKED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+    "line": 413,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "SoulMatchErrors",
+   "key": "CURSOR_INVALID",
+   "code": "SOUL_MATCH_CURSOR_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/soul-match/soul-match.errors.ts",
+   "line": 17,
+   "module": "soul-match",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 1,
+   "quote": "CURSOR_INVALID: 'SOUL_MATCH_CURSOR_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+    "line": 266,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "SoulMatchErrors",
+   "key": "USER_BANNED",
+   "code": "SOUL_MATCH_USER_BANNED",
+   "doc": "Bị ban giữa chừng — re-check tại thời điểm gửi (docs/10 § 10.0.C).",
+   "file": "apps/core-api/src/modules/soul-match/soul-match.errors.ts",
+   "line": 19,
+   "module": "soul-match",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 1,
+   "quote": "USER_BANNED: 'SOUL_MATCH_USER_BANNED'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+    "line": 139,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "SupportErrors",
+   "key": "CURSOR_INVALID",
+   "code": "SUPPORT_CURSOR_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/support/support.errors.ts",
+   "line": 2,
+   "module": "support",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 1,
+   "quote": "CURSOR_INVALID: 'SUPPORT_CURSOR_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/support/support.service.ts",
+    "line": 130,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "SupportErrors",
+   "key": "TICKET_NOT_FOUND",
+   "code": "SUPPORT_TICKET_NOT_FOUND",
+   "doc": null,
+   "file": "apps/core-api/src/modules/support/support.errors.ts",
+   "line": 3,
+   "module": "support",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 1,
+   "quote": "TICKET_NOT_FOUND: 'SUPPORT_TICKET_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/support/support.service.ts",
+    "line": 86,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "SupportErrors",
+   "key": "IDEMPOTENCY_CONFLICT",
+   "code": "SUPPORT_IDEMPOTENCY_CONFLICT",
+   "doc": null,
+   "file": "apps/core-api/src/modules/support/support.errors.ts",
+   "line": 4,
+   "module": "support",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "IDEMPOTENCY_CONFLICT: 'SUPPORT_IDEMPOTENCY_CONFLICT'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/support/support.service.ts",
+    "line": 58,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "SupportErrors",
+   "key": "INVALID_TRANSITION",
+   "code": "SUPPORT_INVALID_TRANSITION",
+   "doc": null,
+   "file": "apps/core-api/src/modules/support/support.errors.ts",
+   "line": 5,
+   "module": "support",
+   "statuses": [
+    "CONFLICT"
+   ],
+   "throwSites": 1,
+   "quote": "INVALID_TRANSITION: 'SUPPORT_INVALID_TRANSITION'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/support/support.service.ts",
+    "line": 93,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "UserErrors",
+   "key": "PROFILE_NOT_FOUND",
+   "code": "USER_PROFILE_NOT_FOUND",
+   "doc": null,
+   "file": "apps/core-api/src/modules/user/user.errors.ts",
+   "line": 3,
+   "module": "user",
+   "statuses": [
+    "NOT_FOUND"
+   ],
+   "throwSites": 3,
+   "quote": "PROFILE_NOT_FOUND: 'USER_PROFILE_NOT_FOUND'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/user/user.service.ts",
+    "line": 90,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "UserErrors",
+   "key": "PROFILE_BIRTH_DATE_INVALID",
+   "code": "USER_PROFILE_BIRTH_DATE_INVALID",
+   "doc": null,
+   "file": "apps/core-api/src/modules/user/user.errors.ts",
+   "line": 4,
+   "module": "user",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 1,
+   "quote": "PROFILE_BIRTH_DATE_INVALID: 'USER_PROFILE_BIRTH_DATE_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/user/user.service.ts",
+    "line": 409,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "UserErrors",
+   "key": "SEEKING_AGE_RANGE_INVALID",
+   "code": "USER_SEEKING_AGE_RANGE_INVALID",
+   "doc": "Khoảng tuổi \"Đang tìm kiếm\" min > max sau khi gộp giá trị mới với giá trị đã lưu.",
+   "file": "apps/core-api/src/modules/user/user.errors.ts",
+   "line": 6,
+   "module": "user",
+   "statuses": [
+    "UNPROCESSABLE_ENTITY"
+   ],
+   "throwSites": 1,
+   "quote": "SEEKING_AGE_RANGE_INVALID: 'USER_SEEKING_AGE_RANGE_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/modules/user/user.service.ts",
+    "line": 284,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "CommonErrors",
+   "key": "VALIDATION_FAILED",
+   "code": "COMMON_VALIDATION_FAILED",
+   "doc": null,
+   "file": "libs/common-exceptions/src/lib/common.errors.ts",
+   "line": 3,
+   "module": "libs/common-exceptions",
+   "statuses": [],
+   "throwSites": 0,
+   "quote": "VALIDATION_FAILED: 'COMMON_VALIDATION_FAILED'"
+  },
+  {
+   "group": "CommonErrors",
+   "key": "ROUTE_NOT_FOUND",
+   "code": "COMMON_ROUTE_NOT_FOUND",
+   "doc": null,
+   "file": "libs/common-exceptions/src/lib/common.errors.ts",
+   "line": 4,
+   "module": "libs/common-exceptions",
+   "statuses": [],
+   "throwSites": 0,
+   "quote": "ROUTE_NOT_FOUND: 'COMMON_ROUTE_NOT_FOUND'"
+  },
+  {
+   "group": "CommonErrors",
+   "key": "RATE_LIMITED",
+   "code": "COMMON_RATE_LIMITED",
+   "doc": null,
+   "file": "libs/common-exceptions/src/lib/common.errors.ts",
+   "line": 5,
+   "module": "libs/common-exceptions",
+   "statuses": [],
+   "throwSites": 0,
+   "quote": "RATE_LIMITED: 'COMMON_RATE_LIMITED'"
+  },
+  {
+   "group": "CommonErrors",
+   "key": "UNAUTHORIZED",
+   "code": "COMMON_UNAUTHORIZED",
+   "doc": null,
+   "file": "libs/common-exceptions/src/lib/common.errors.ts",
+   "line": 6,
+   "module": "libs/common-exceptions",
+   "statuses": [],
+   "throwSites": 0,
+   "quote": "UNAUTHORIZED: 'COMMON_UNAUTHORIZED'"
+  },
+  {
+   "group": "CommonErrors",
+   "key": "FORBIDDEN",
+   "code": "COMMON_FORBIDDEN",
+   "doc": null,
+   "file": "libs/common-exceptions/src/lib/common.errors.ts",
+   "line": 7,
+   "module": "libs/common-exceptions",
+   "statuses": [
+    "FORBIDDEN"
+   ],
+   "throwSites": 1,
+   "quote": "FORBIDDEN: 'COMMON_FORBIDDEN'",
+   "firstThrow": {
+    "file": "apps/core-api/src/common/guards/roles.guard.ts",
+    "line": 37,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "CommonErrors",
+   "key": "INTERNAL_ERROR",
+   "code": "COMMON_INTERNAL_ERROR",
+   "doc": null,
+   "file": "libs/common-exceptions/src/lib/common.errors.ts",
+   "line": 8,
+   "module": "libs/common-exceptions",
+   "statuses": [],
+   "throwSites": 0,
+   "quote": "INTERNAL_ERROR: 'COMMON_INTERNAL_ERROR'"
+  },
+  {
+   "group": "CommonErrors",
+   "key": "IDEMPOTENCY_KEY_MISSING",
+   "code": "COMMON_IDEMPOTENCY_KEY_MISSING",
+   "doc": null,
+   "file": "libs/common-exceptions/src/lib/common.errors.ts",
+   "line": 9,
+   "module": "libs/common-exceptions",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 1,
+   "quote": "IDEMPOTENCY_KEY_MISSING: 'COMMON_IDEMPOTENCY_KEY_MISSING'",
+   "firstThrow": {
+    "file": "apps/core-api/src/common/decorators/idempotency-key.decorator.ts",
+    "line": 24,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "CommonErrors",
+   "key": "IDEMPOTENCY_KEY_INVALID",
+   "code": "COMMON_IDEMPOTENCY_KEY_INVALID",
+   "doc": null,
+   "file": "libs/common-exceptions/src/lib/common.errors.ts",
+   "line": 10,
+   "module": "libs/common-exceptions",
+   "statuses": [
+    "BAD_REQUEST"
+   ],
+   "throwSites": 1,
+   "quote": "IDEMPOTENCY_KEY_INVALID: 'COMMON_IDEMPOTENCY_KEY_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/common/decorators/idempotency-key.decorator.ts",
+    "line": 31,
+    "quote": "throw new DomainException("
+   }
+  },
+  {
+   "group": "CommonErrors",
+   "key": "CSRF_TOKEN_INVALID",
+   "code": "COMMON_CSRF_TOKEN_INVALID",
+   "doc": null,
+   "file": "libs/common-exceptions/src/lib/common.errors.ts",
+   "line": 11,
+   "module": "libs/common-exceptions",
+   "statuses": [
+    "UNAUTHORIZED"
+   ],
+   "throwSites": 1,
+   "quote": "CSRF_TOKEN_INVALID: 'COMMON_CSRF_TOKEN_INVALID'",
+   "firstThrow": {
+    "file": "apps/core-api/src/common/guards/csrf.guard.ts",
+    "line": 25,
+    "quote": "throw new DomainException("
+   }
+  }
+ ],
+ "unresolvedThrowSites": [],
+ "throwSiteCount": 287
+}

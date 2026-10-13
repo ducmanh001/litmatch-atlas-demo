@@ -1,0 +1,181 @@
+{
+ "jobs": [
+  {
+   "kind": "ManagedInterval",
+   "class": "CallTickerService",
+   "module": "calling",
+   "file": "apps/core-api/src/modules/calling/jobs/call-ticker.service.ts",
+   "line": 49,
+   "jobName": "TICKER_JOB",
+   "intervalMs": "this.config.getOrThrow('CALLING_TICKER_INTERVAL_MS', { infer: true, })",
+   "skipWhenIdle": null,
+   "clusterSingleton": true,
+   "quote": "this.job.start(this.scheduler, {"
+  },
+  {
+   "kind": "ManagedInterval",
+   "class": "IapRefundPollService",
+   "module": "economy",
+   "file": "apps/core-api/src/modules/economy/jobs/iap-refund-poll.service.ts",
+   "line": 66,
+   "jobName": "JOB",
+   "intervalMs": "this.config.getOrThrow('ECONOMY_REFUND_POLL_INTERVAL_MS', { infer: true, })",
+   "skipWhenIdle": null,
+   "clusterSingleton": false,
+   "quote": "this.job.start(this.scheduler, {"
+  },
+  {
+   "kind": "ManagedInterval",
+   "class": "OutboxRelayService",
+   "module": "economy",
+   "file": "apps/core-api/src/modules/economy/jobs/outbox-relay.service.ts",
+   "line": 48,
+   "jobName": "RELAY_JOB",
+   "intervalMs": "this.config.getOrThrow('ECONOMY_OUTBOX_RELAY_INTERVAL_MS', { infer: true, })",
+   "skipWhenIdle": null,
+   "clusterSingleton": false,
+   "quote": "this.job.start(this.scheduler, {"
+  },
+  {
+   "kind": "ManagedInterval",
+   "class": "ReconciliationService",
+   "module": "economy",
+   "file": "apps/core-api/src/modules/economy/jobs/reconciliation.service.ts",
+   "line": 85,
+   "jobName": "JOB_FAST",
+   "intervalMs": "this.config.getOrThrow( 'ECONOMY_RECONCILIATION_FAST_INTERVAL_MS', { infer: true }, )",
+   "skipWhenIdle": null,
+   "clusterSingleton": true,
+   "quote": "this.fastJob.start(this.scheduler, {"
+  },
+  {
+   "kind": "ManagedInterval",
+   "class": "ReconciliationService",
+   "module": "economy",
+   "file": "apps/core-api/src/modules/economy/jobs/reconciliation.service.ts",
+   "line": 96,
+   "jobName": "JOB_DEEP",
+   "intervalMs": "this.config.getOrThrow('ECONOMY_RECONCILIATION_INTERVAL_MS', { infer: true, })",
+   "skipWhenIdle": null,
+   "clusterSingleton": true,
+   "quote": "this.deepJob.start(this.scheduler, {"
+  },
+  {
+   "kind": "ManagedInterval",
+   "class": "StorySweeperService",
+   "module": "feed",
+   "file": "apps/core-api/src/modules/feed/jobs/story-sweeper.service.ts",
+   "line": 40,
+   "jobName": "STORY_SWEEPER_JOB",
+   "intervalMs": "this.config.getOrThrow('STORY_SWEEPER_INTERVAL_MS', { infer: true, })",
+   "skipWhenIdle": "true",
+   "clusterSingleton": true,
+   "quote": "this.job.start(this.scheduler, {"
+  },
+  {
+   "kind": "ManagedInterval",
+   "class": "StreakWarningJob",
+   "module": "friend",
+   "file": "apps/core-api/src/modules/friend/jobs/streak-warning.job.ts",
+   "line": 54,
+   "jobName": "STREAK_WARNING_JOB",
+   "intervalMs": "this.config.getOrThrow('STREAK_WARNING_CHECK_INTERVAL_MS', { infer: true, })",
+   "skipWhenIdle": null,
+   "clusterSingleton": true,
+   "quote": "this.job.start(this.scheduler, {"
+  },
+  {
+   "kind": "ManagedInterval",
+   "class": "InviteSweeperService",
+   "module": "matching",
+   "file": "apps/core-api/src/modules/matching/jobs/invite-sweeper.service.ts",
+   "line": 40,
+   "jobName": "INVITE_SWEEPER_JOB",
+   "intervalMs": "this.config.getOrThrow( 'MATCHING_INVITE_SWEEPER_INTERVAL_MS', { infer: true, }, )",
+   "skipWhenIdle": "true",
+   "clusterSingleton": true,
+   "quote": "this.job.start(this.scheduler, {"
+  },
+  {
+   "kind": "ManagedInterval",
+   "class": "MatcherWorkerService",
+   "module": "matching",
+   "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+   "line": 100,
+   "jobName": "MATCHER_JOB",
+   "intervalMs": "this.config.getOrThrow('MATCHING_MATCHER_INTERVAL_MS', { infer: true, })",
+   "skipWhenIdle": "true",
+   "clusterSingleton": true,
+   "quote": "this.job.start(this.scheduler, {"
+  },
+  {
+   "kind": "ManagedInterval",
+   "class": "TicketSweeperService",
+   "module": "matching",
+   "file": "apps/core-api/src/modules/matching/jobs/ticket-sweeper.service.ts",
+   "line": 63,
+   "jobName": "SWEEPER_JOB",
+   "intervalMs": "this.config.getOrThrow('MATCHING_SWEEPER_INTERVAL_MS', { infer: true, })",
+   "skipWhenIdle": "true",
+   "clusterSingleton": true,
+   "quote": "this.job.start(this.scheduler, {"
+  },
+  {
+   "kind": "ManagedInterval",
+   "class": "PartyRoomSweeperService",
+   "module": "party-room",
+   "file": "apps/core-api/src/modules/party-room/jobs/party-room-sweeper.service.ts",
+   "line": 62,
+   "jobName": "SWEEPER_JOB",
+   "intervalMs": "this.config.getOrThrow('PARTY_SWEEPER_INTERVAL_MS', { infer: true, })",
+   "skipWhenIdle": null,
+   "clusterSingleton": true,
+   "quote": "this.sweeperJob.start(this.scheduler, {"
+  },
+  {
+   "kind": "ManagedInterval",
+   "class": "PartyRoomSweeperService",
+   "module": "party-room",
+   "file": "apps/core-api/src/modules/party-room/jobs/party-room-sweeper.service.ts",
+   "line": 73,
+   "jobName": "HOST_GRACE_JOB",
+   "intervalMs": "this.config.getOrThrow('PARTY_HOST_GRACE_CHECK_INTERVAL_MS', { infer: true, })",
+   "skipWhenIdle": null,
+   "clusterSingleton": true,
+   "quote": "this.hostGraceJob.start(this.scheduler, {"
+  },
+  {
+   "kind": "ManagedInterval",
+   "class": "VideoRankingService",
+   "module": "short-video",
+   "file": "apps/core-api/src/modules/short-video/jobs/video-ranking.service.ts",
+   "line": 41,
+   "jobName": "VIDEO_RANKING_JOB",
+   "intervalMs": "this.config.getOrThrow('VIDEO_RANKING_JOB_INTERVAL_MS', { infer: true, })",
+   "skipWhenIdle": "true",
+   "clusterSingleton": true,
+   "quote": "this.job.start(this.scheduler, {"
+  },
+  {
+   "kind": "ManagedInterval",
+   "class": "VideoSweeperService",
+   "module": "short-video",
+   "file": "apps/core-api/src/modules/short-video/jobs/video-sweeper.service.ts",
+   "line": 45,
+   "jobName": "VIDEO_SWEEPER_JOB",
+   "intervalMs": "this.config.getOrThrow('VIDEO_SWEEPER_INTERVAL_MS', { infer: true, })",
+   "skipWhenIdle": "true",
+   "clusterSingleton": true,
+   "quote": "this.job.start(this.scheduler, {"
+  },
+  {
+   "kind": "setInterval",
+   "class": "SignalingGateway",
+   "module": "signaling-gateway",
+   "file": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+   "line": 287,
+   "intervalMs": "Math.floor(this.connectionQuota.leaseMs / 3)",
+   "quote": "setInterval("
+  }
+ ]
+}

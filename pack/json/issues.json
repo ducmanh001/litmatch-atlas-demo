@@ -1,0 +1,5312 @@
+[
+ {
+  "key": "g01",
+  "title": "Guard ledger chặn nhầm bút toán đảo (refund/chargeback)",
+  "date": "2026-07-10",
+  "area": "economy-payment",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "CHECK (balance >= 0) ở DB và guard ledger.service chặn cả bút toán Reversal hợp lệ, nên refund/chargeback Apple/Google sau khi user đã tiêu diamond không ghi được.",
+  "root_cause": "Spec Economy giả định balance không bao giờ âm; gift 2 currency (DIA/PTS) cũng không cân được trong 1 cặp Nợ/Có.",
+  "resolution": "Bỏ CHECK trong migration economy-ledger và wallet.entity; ledger.service cho riêng Reversal/Adjustment đẩy balance âm, vẫn chặn chi tiêu thường. Chốt gift 2 chân, thêm actor_user_id, bổ sung entity LedgerAccount vào docs.",
+  "resolution_type": [
+   "code-fix",
+   "design-doc-adr"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "57f04de",
+    "quote": "CHECK (balance >= 0) ở DB + guard ledger.service chặn cả bút toán Reversal hợp lệ",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "git"
+  ],
+  "id": "P001",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "ci1",
+  "title": "CI main đỏ ngay từ commit đầu: \"Multiple versions of pnpm specified\"",
+  "task": "ci",
+  "date": "2026-07-11",
+  "area": "ci-cd",
+  "kind": "ci-build",
+  "status": "fixed",
+  "unconfirmed": false,
+  "problem": "Ba run CI đầu tiên trên main (11-12/07) fail ở job verify với lỗi \"Multiple versions of pnpm specified\".",
+  "root_cause": "Phiên bản pnpm bị khai báo ở hai nơi (packageManager trong package.json và bước pnpm/action-setup) nên action từ chối chạy.",
+  "resolution": "Workflow CI được sửa trong các commit CI ngày 12-13/07 (không xác định đúng commit); lỗi không lặp lại sau 12/07.",
+  "resolution_type": [
+   "ci-config"
+  ],
+  "confidence": "medium",
+  "evidence": [
+   {
+    "kind": "ci-run",
+    "ref": "29169060725",
+    "quote": "Multiple versions of pnpm specified",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "ci-run",
+    "ref": "29169210862",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "ci-run",
+    "ref": "29179402029",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "keywords": [],
+  "tasks": [
+   "ci"
+  ],
+  "merged_from": 1,
+  "tier": "A",
+  "sources": [
+   "github-actions"
+  ],
+  "id": "P002",
+  "ev_total": 3,
+  "ev_ref_ok": 3,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g02",
+  "title": "Commit \"harden phase 2A\" quá lớn phải revert khỏi main",
+  "date": "2026-07-11",
+  "area": "ai-agent-process",
+  "kind": "process",
+  "status": "fixed",
+  "problem": "Commit lớn 'feat(codex): refactor specs and harden phase 2A' (migration matching, token.service, env validation, economy) vào main rồi bị revert sau 1 ngày.",
+  "root_cause": "Chưa ro: bằng chứng chỉ có subject revert, không có lý do trong body.",
+  "resolution": "Revert toàn bộ phase 2A hardening khỏi main (d09be35).",
+  "resolution_type": [
+   "revert"
+  ],
+  "confidence": "low",
+  "tasks": [
+   "A1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "0f51134",
+    "quote": "feat(codex): refactor specs and harden phase 2A",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "d09be35",
+    "quote": "revert(codex): remove phase 2A hardening from main",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "git"
+  ],
+  "id": "P003",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "g03",
+  "title": "Adapter CLAUDE.md / skills lệch bản canonical (symlink tay)",
+  "date": "2026-07-12",
+  "area": "ai-agent-process",
+  "kind": "design-flaw",
+  "status": "fixed",
+  "problem": "CLAUDE.md và .claude/skills là file văn bản trỏ tay, nội dung lệch bản canonical (AGENTS.md, .agents/skills); mô tả review-module đã trôi thật và phải Read thêm để lấy luật.",
+  "root_cause": "Adapter là bản sao thủ công nên dễ drift khi canonical đổi.",
+  "resolution": "Chuyển thành symlink thật; thêm validateSymlinks() vào agent:check; tách vendor-wording.mjs có test và escape-hatch; ưu tiên $CLAUDE_PROJECT_DIR trong settings. Sau đó 46623e4 hỗ trợ symlink trên Windows.",
+  "resolution_type": [
+   "ci-config",
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "b40267b",
+    "quote": "mô tả review-module ở .claude/skills đã lệch với bản canonical",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "46623e4",
+    "quote": "fix(agent): support symlink adapters on Windows",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "git"
+  ],
+  "id": "P004",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "g04",
+  "title": "Swagger thiếu cursor pagination → client sinh kiểu never",
+  "date": "2026-07-13",
+  "area": "frontend-ux",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "CursorPageQueryDto và meta CursorPageMeta thiếu @ApiProperty/@ApiQuery nên openapi-typescript sinh query/meta thành never/object rỗng, FE phải ép kiểu tay.",
+  "root_cause": "DTO nằm ở entry common-dtos dùng chung FE nên không kéo @nestjs/swagger vào.",
+  "resolution": "Thêm ApiCursorPageQuery()/ApiCursorPageMeta() trong common/decorators, gắn vào 7 controller, regenerate openapi/core-api.json và libs/api-client. Chỉ annotation, không đổi runtime.",
+  "resolution_type": [
+   "code-fix"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "800a9e8",
+    "quote": "openapi-typescript emit query/meta thành `never`/object rỗng",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "pr",
+    "ref": "#14",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "git"
+  ],
+  "id": "P006",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g05",
+  "title": "CI hosted lệch CI local (runner sạch)",
+  "date": "2026-07-13",
+  "area": "ci-cd",
+  "kind": "ci-build",
+  "status": "fixed",
+  "problem": "CI hosted lệch local: @eslint/js không resolve trên runner sạch, Next build thiếu 3 NEXT_PUBLIC_*, gitleaks chặn secret giả lịch sử, Docker job bị skipped, actionlint bắt ShellCheck mà local bỏ sót, action dùng Node 20.",
+  "root_cause": "@eslint/js chỉ có qua dependency bắc cầu; local có cache/env nên pass; local gate không cài ShellCheck.",
+  "resolution": "Thêm pnpm ci:preflight và hook pre-push chạy Node 22 container sạch; .gitleaks-baseline theo fingerprint; local tự cài ShellCheck pin SHA-256; nâng pnpm/action-setup và upload-artifact lên bản Node 24; workflow-policy.mjs có test.",
+  "resolution_type": [
+   "ci-config",
+   "dependency-bump",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "pr",
+    "ref": "#16",
+    "quote": "Build Next.js trên runner sạch thiếu ba `NEXT_PUBLIC_*`",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "pr",
+    "ref": "#19",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "d8676be",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "f7186b6",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "git"
+  ],
+  "id": "P007",
+  "ev_total": 4,
+  "ev_ref_ok": 4,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g06",
+  "title": "CodeQL: log rõ thông tin nhạy cảm ở runner CI local",
+  "date": "2026-07-13",
+  "area": "auth-security",
+  "kind": "security",
+  "status": "fixed",
+  "problem": "scripts/ci/local.mjs in command arguments chứa giá trị nhạy cảm, CodeQL báo 'Clear-text logging of sensitive information'; test cũ còn đòi chuỗi thô.",
+  "root_cause": "Runner log nguyên command arguments, không che dữ liệu nhạy cảm.",
+  "resolution": "Hai lần Copilot Autofix che log, rồi 966c92a đơn giản hoá redaction và sửa local.test.mjs.",
+  "resolution_type": [
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "97aae36",
+    "quote": "Potential fix for pull request finding 'CodeQL / Clear-text logging of sensitive information'",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "5bcb175",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "966c92a",
+    "quote": "harden ci local log redaction",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "pr",
+    "ref": "#16",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "git"
+  ],
+  "id": "P008",
+  "ev_total": 4,
+  "ev_ref_ok": 4,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "g07",
+  "title": "Cookie refresh token: 2 lỗi chỉ lộ khi test trình duyệt thật",
+  "date": "2026-07-13",
+  "area": "auth-security",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "Verify bằng browser thật khi chuyển refresh token sang httpOnly cookie phát hiện 2 lỗi mà unit test không bắt: createApiClient thiếu credentials:'include' nên browser bỏ Set-Cookie.",
+  "root_cause": "Thiếu credentials:'include' mặc định trong createApiClient; lỗi thứ hai bị cắt trong gói bằng chứng.",
+  "resolution": "Sửa client mặc định credentials:'include' và lỗi còn lại, thêm Playwright E2E thật (apps/web/e2e) làm bằng chứng browser bắt buộc theo ADR 0003/0007.",
+  "resolution_type": [
+   "code-fix",
+   "design-doc-adr",
+   "test-added"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "A1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "pr",
+    "ref": "#26",
+    "quote": "phát hiện và sửa 2 lỗi thật không unit test nào bắt được",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "git"
+  ],
+  "id": "P009",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g08",
+  "title": "Bộ lọc vùng Discovery cho độ chính xác giả (LRN-001)",
+  "date": "2026-07-13",
+  "area": "matching",
+  "kind": "design-flaw",
+  "status": "fixed",
+  "problem": "Discovery W1 định lọc theo city-region nhưng không có đường ghi city thật, filter sẽ cho độ chính xác giả.",
+  "root_cause": "Giả định thiết kế không khớp vòng đời dữ liệu.",
+  "resolution": "Bỏ region filtering khỏi W1; Nearby có mô hình location/settings riêng.",
+  "resolution_type": [
+   "code-fix",
+   "design-doc-adr"
+  ],
+  "confidence": "low",
+  "tasks": [
+   "A1",
+   "A2"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "doc",
+    "ref": "docs/reference/lessons-registry.md",
+    "quote": "LRN-2026-001",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "doc",
+    "ref": "docs/reference/project-handoff.md",
+    "quote": "Do not expose precision that the data lifecycle cannot support.",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "docs"
+  ],
+  "id": "P010",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "g09",
+  "title": "Transaction Postgres bị aborted sau unique violation (LRN-002)",
+  "date": "2026-07-13",
+  "area": "database-concurrency",
+  "kind": "bug",
+  "status": "mitigated",
+  "problem": "Bắt unique violation rồi đọc lại trong cùng transaction PostgreSQL tường minh thì transaction đã aborted, mất đường phục hồi.",
+  "root_cause": "PostgreSQL đánh dấu transaction aborted sau câu lệnh lỗi.",
+  "resolution": "Insert/catch/read nằm ngoài transaction tường minh (safety.service). Vẫn thiếu regression test; sau đó d506ca2 áp dụng cùng nguyên tắc cho short-video.",
+  "resolution_type": [
+   "code-fix",
+   "process-rule"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "A1",
+   "A2"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "doc",
+    "ref": "docs/reference/lessons-registry.md",
+    "quote": "LRN-2026-002",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "doc",
+    "ref": "docs/reference/project-handoff.md",
+    "quote": "focused regression test remains a gap",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "docs"
+  ],
+  "id": "P011",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "g10",
+  "title": "Job định kỳ chồng lấp khi tick chậm/reject (LRN-003)",
+  "date": "2026-07-18",
+  "area": "database-concurrency",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "Tick định kỳ chậm hoặc reject có thể chồng lấp, gây unhandled error hoặc việc trùng trong process.",
+  "root_cause": "Timer không có kỷ luật vòng đời/overlap dùng chung.",
+  "resolution": "ManagedInterval bắt lỗi ở ranh giới timer, nhả cờ running trong finally; có managed-interval.spec.ts; khoá DB/idempotency vẫn bảo vệ liên process.",
+  "resolution_type": [
+   "code-fix",
+   "design-doc-adr",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A1",
+   "A2"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "doc",
+    "ref": "docs/reference/lessons-registry.md",
+    "quote": "LRN-2026-003",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "apps/core-api/src/common/scheduling/managed-interval.ts",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "doc",
+    "ref": "docs/plans/2026-07-18-managed-interval-refactor-plan.md",
+    "quote": "`ManagedInterval.runExclusive`, có `finally` nhả cờ kể cả task throw",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "doc",
+    "ref": "docs/reference/project-handoff.md",
+    "quote": "LRN-2026-003",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "docs"
+  ],
+  "id": "P013",
+  "ev_total": 4,
+  "ev_ref_ok": 4,
+  "ev_quote_total": 3,
+  "ev_quote_ok": 3,
+  "flags": []
+ },
+ {
+  "key": "g11",
+  "title": "Cấu hình theo máy (tunnel/IP/credential) nằm trong repo (LRN-004)",
+  "date": "2026-07-18",
+  "area": "deploy-config",
+  "kind": "config-deploy",
+  "status": "fixed",
+  "problem": "ID tunnel, IP LAN hoặc credential theo máy nằm trong cấu hình runtime được track, làm local/release không portable và lộ giả định môi trường.",
+  "root_cause": "Giá trị cấu hình không do đường env chuẩn sở hữu.",
+  "resolution": "Root .env và interpolation có validate sở hữu giá trị local; scripts/agent/config-single-source.test.mjs quét động các bề mặt cấu hình được track.",
+  "resolution_type": [
+   "code-fix",
+   "process-rule",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A1",
+   "A2"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "doc",
+    "ref": "docs/reference/lessons-registry.md",
+    "quote": "LRN-2026-004",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "scripts/agent/config-single-source.test.mjs",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "doc",
+    "ref": "docs/plans/2026-07-18-config-refactor-review.md",
+    "quote": "Regression test chặn machine-specific tunnel/IP/credential quay lại.",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "doc",
+    "ref": "docs/reference/project-handoff.md",
+    "quote": "LRN-2026-004",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "docs"
+  ],
+  "id": "P014",
+  "ev_total": 4,
+  "ev_ref_ok": 4,
+  "ev_quote_total": 3,
+  "ev_quote_ok": 3,
+  "flags": []
+ },
+ {
+  "key": "g12",
+  "title": "Socket reconnect không khôi phục state bền (LRN-005)",
+  "date": "2026-07-18",
+  "area": "realtime-gateway",
+  "kind": "bug",
+  "status": "mitigated",
+  "problem": "Chỉ reconnect socket realtime có thể để state bền phía server cũ sau khi lỡ sự kiện.",
+  "root_cause": "Đường reconnect coi phục hồi transport là phục hồi state.",
+  "resolution": "Handler reconnect ở apps/web layout refetch state REST. Test hành vi cho missed-event recovery vẫn còn thiếu.",
+  "resolution_type": [
+   "code-fix"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "A1",
+   "A2"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "doc",
+    "ref": "docs/reference/lessons-registry.md",
+    "quote": "LRN-2026-005",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "doc",
+    "ref": "docs/reference/project-handoff.md",
+    "quote": "focused behavior test remains open.",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "docs"
+  ],
+  "id": "P015",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "g13",
+  "title": "PASS cục bộ bị hiểu thành PASS toàn repo (LRN-006)",
+  "date": "2026-07-18",
+  "area": "ai-agent-process",
+  "kind": "process",
+  "status": "mitigated",
+  "problem": "Test trong phạm vi task pass nhưng gate format toàn repo fail vì file có sẵn ngoài phạm vi, nên không thể khẳng định kết quả toàn repo.",
+  "root_cause": "Gate repo kiểm toàn worktree, không theo quyền sở hữu file của task.",
+  "resolution": "Quy tắc: giữ nguyên sửa đổi của người khác, báo va chạm, tách bằng chứng theo phạm vi và toàn repo.",
+  "resolution_type": [
+   "design-doc-adr",
+   "none-yet",
+   "process-rule"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "A1",
+   "A2",
+   "B5"
+  ],
+  "merged_from": 3,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "doc",
+    "ref": "docs/reference/lessons-registry.md",
+    "quote": "LRN-2026-006",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "doc",
+    "ref": "docs/reference/project-handoff.md",
+    "quote": "A targeted PASS and a repository-wide PASS are different claims",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "019fff93",
+    "quote": "toàn gate bị FAIL bởi lỗi format có sẵn ở `scripts/jest-resolver.cjs`",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "codex",
+   "docs"
+  ],
+  "id": "P016",
+  "ev_total": 3,
+  "ev_ref_ok": 3,
+  "ev_quote_total": 3,
+  "ev_quote_ok": 3,
+  "flags": []
+ },
+ {
+  "key": "g14",
+  "title": "OTLP exporter nhận endpoint Prometheus remote_write (LRN-007)",
+  "date": "2026-07-18",
+  "area": "observability",
+  "kind": "config-deploy",
+  "status": "fixed",
+  "problem": "OTLP metrics exporter nhận endpoint Prometheus remote_write nên gửi OTLP tới endpoint không tương thích và export hỏng.",
+  "root_cause": "Tên biến môi trường làm mờ giao thức của endpoint.",
+  "resolution": "Resolver trong libs/observability/src/lib/tracing.ts từ chối /api/prom/push, chấp nhận dạng endpoint OTLP; có tracing.spec.ts.",
+  "resolution_type": [
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A1",
+   "A2"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "doc",
+    "ref": "docs/reference/lessons-registry.md",
+    "quote": "LRN-2026-007",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "07c90f9",
+    "quote": "",
+    "_ref_ok": false,
+    "_quote_ok": null
+   },
+   {
+    "kind": "doc",
+    "ref": "docs/reference/project-handoff.md",
+    "quote": "OTLP resolver and regression test.",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "docs",
+   "git"
+  ],
+  "id": "P017",
+  "ev_total": 3,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": [
+   "bad-ref"
+  ]
+ },
+ {
+  "key": "g15",
+  "title": "JWT access token trùng nhau khi cấp trong cùng giây (LRN-010)",
+  "date": "2026-07-18",
+  "area": "auth-security",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "Login rồi refresh ngay có thể ra access JWT giống hệt nhau, phạm hợp đồng rotation khi cùng một giây.",
+  "root_cause": "iat/exp độ phân giải giây và payload không có ID duy nhất.",
+  "resolution": "Mỗi access token thêm jti ngẫu nhiên trong token.service.ts; thêm test cùng giây ở token.service.spec.ts; xoay refresh family giữ nguyên.",
+  "resolution_type": [
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A1",
+   "A2"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "doc",
+    "ref": "docs/reference/lessons-registry.md",
+    "quote": "LRN-2026-010",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "apps/core-api/src/modules/auth/services/token.service.ts",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "doc",
+    "ref": "docs/reference/project-handoff.md",
+    "quote": "`jti` implementation and auth E2E/regression tests.",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "docs"
+  ],
+  "id": "P018",
+  "ev_total": 3,
+  "ev_ref_ok": 3,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "g16",
+  "title": "Chữ ký DisabledIapVerifier không khớp port",
+  "date": "2026-07-18",
+  "area": "economy-payment",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "Full gate phát hiện signature DisabledIapVerifier không khớp abstract port.",
+  "root_cause": "Implementation của DisabledIapVerifier lệch số tham số so với port IapVerifier.",
+  "resolution": "Sửa implementation giữ nguyên ba tham số; full core gate và integration DB PASS lại.",
+  "resolution_type": [
+   "code-fix"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "doc",
+    "ref": "docs/plans/2026-07-18-zero-cost-production-review.md",
+    "quote": "signature của `DisabledIapVerifier` không khớp abstract port",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "docs"
+  ],
+  "id": "P019",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g17",
+  "title": "Vòng phụ thuộc Soul DTO ↔ service",
+  "date": "2026-07-18",
+  "area": "other",
+  "kind": "design-flaw",
+  "status": "fixed",
+  "problem": "Dependency cycle Soul DTO -> Soul service (DTO import enum từ service implementation).",
+  "root_cause": "Enum đặt trong service nên DTO phải import ngược boundary.",
+  "resolution": "Chuyển kiểu sang soul-match.types.ts; Madge quét 801 file TS/TSX còn 0 cycle.",
+  "resolution_type": [
+   "code-fix"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "doc",
+    "ref": "docs/plans/2026-07-18-whole-source-refactor-review.md",
+    "quote": "từ 1 vòng `Soul DTO → Soul service` về 0 vòng trên 801 file",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "docs"
+  ],
+  "id": "P020",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g18",
+  "title": "Redis TLS rediss:// có nguy cơ bị Joi từ chối khi boot",
+  "date": "2026-07-20",
+  "area": "deploy-config",
+  "kind": "config-deploy",
+  "status": "fixed",
+  "problem": "Profile hosted-free dùng Upstash rediss:// có nguy cơ bị validation Joi từ chối trước bootstrap.",
+  "root_cause": "Env validation chỉ chấp nhận scheme redis.",
+  "resolution": "Core và signaling chấp nhận cả redis và rediss, từ chối scheme khác; unit test khoá hành vi.",
+  "resolution_type": [
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "A2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "doc",
+    "ref": "docs/plans/2026-07-22-hosted-free-release-review.md",
+    "quote": "cho phép `redis` và `rediss`; unit test khóa hành vi",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "doc",
+    "ref": "docs/plans/2026-07-20-hosted-free-release-plan.md",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "docs"
+  ],
+  "id": "P021",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g19",
+  "title": "CVE ở runtime image mà pre-push local bỏ sót",
+  "date": "2026-07-22",
+  "area": "ci-cd",
+  "kind": "security",
+  "status": "fixed",
+  "problem": "CVE ở runtime image (Web/Edge, Go cũ, toolchain thừa) bị GitHub phát hiện trong khi pre-push local vẫn xanh vì bỏ sót image.",
+  "root_cause": "Pre-push local không build/scan đủ bốn runtime image; Edge build bằng Go cũ, Web image giữ package manager.",
+  "resolution": "Pre-push gọi pnpm ci:preflight (build+scan đủ 4 image); Web xoá package manager; Edge build Caddy bằng Go đã vá, chạy nobody; pin bản vá trong pnpm-workspace.yaml; pnpm audit high PASS.",
+  "resolution_type": [
+   "ci-config",
+   "code-fix",
+   "dependency-bump"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "A2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "doc",
+    "ref": "docs/plans/2026-07-22-hosted-free-release-review.md",
+    "quote": "Local bỏ sót Web/Edge image nên xanh trước khi GitHub phát hiện CVE",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "docs"
+  ],
+  "id": "P022",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g20",
+  "title": "Integration test race do schema/Redis dùng chung",
+  "date": "2026-07-22",
+  "area": "ci-cd",
+  "kind": "ci-build",
+  "status": "fixed",
+  "problem": "Integration test core-api race trên schema/Redis dùng chung khi nhiều Jest worker reset tài nguyên cùng lúc.",
+  "root_cause": "Nhiều worker Jest chạy song song cùng schema Postgres và Redis.",
+  "resolution": "jest.config.cts đặt maxWorkers: 1; hai lần chạy liên tiếp PASS 65 suite/716 test.",
+  "resolution_type": [
+   "ci-config"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "A2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "doc",
+    "ref": "docs/plans/2026-07-22-hosted-free-release-review.md",
+    "quote": "`apps/core-api/jest.config.cts:9` giới hạn `maxWorkers: 1`",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "docs"
+  ],
+  "id": "P023",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g21",
+  "title": "Build web OpenNext/ESM hỏng, phải sửa 3 lần",
+  "date": "2026-07-22",
+  "area": "ci-cd",
+  "kind": "ci-build",
+  "status": "fixed",
+  "problem": "Build web OpenNext/ESM cho deploy edge (Cloudflare) hỏng, phải sửa lặp lại ba lần liên tiếp (#32, #36, #37).",
+  "root_cause": "Chưa rõ chi tiết (body commit rỗng): chỉ thấy đổi package.json/pnpm-lock và cấu hình build edge; commit 82dd0f7 còn lỡ commit cache .wrangler.",
+  "resolution": "Ghim/nâng dependency (package.json, pnpm-lock) và chỉnh Dockerfile.edge / apps/web/project.json qua ba lần sửa liên tiếp.",
+  "resolution_type": [
+   "dependency-bump",
+   "code-fix"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "A1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "81864a3",
+    "quote": "fix: opennext-esm-build (#32)",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "4b29328",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "82dd0f7",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "git"
+  ],
+  "id": "P024",
+  "ev_total": 3,
+  "ev_ref_ok": 3,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g22",
+  "title": "Audit dependency báo lỗi brace-expansion",
+  "date": "2026-07-22",
+  "area": "dependencies",
+  "kind": "dependency",
+  "status": "fixed",
+  "problem": "pnpm audit báo cảnh báo dependency liên quan brace-expansion nên CI/audit gate đỏ.",
+  "root_cause": "Phiên bản dependency bị audit cảnh báo trong cây phụ thuộc (chi tiết CVE không có trong commit).",
+  "resolution": "Một commit lớn đổi package.json, pnpm-workspace.yaml và pnpm-lock.yaml (1176 dòng) để loại phiên bản bị cảnh báo (#35).",
+  "resolution_type": [
+   "dependency-bump"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "A1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "0d657c9",
+    "quote": "fix: deps-brace-expansion-audit (#35)",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "git"
+  ],
+  "id": "P025",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g23",
+  "title": "Production thiếu biến môi trường đăng nhập",
+  "date": "2026-07-24",
+  "area": "deploy-config",
+  "kind": "config-deploy",
+  "status": "fixed",
+  "problem": "Production thiếu biến môi trường của luồng đăng nhập nên đăng nhập hỏng.",
+  "root_cause": "Workflow ci.yml / hosted-release.yml không truyền đủ biến môi trường vào bước build/deploy (chi tiết tên biến không có trong commit).",
+  "resolution": "Sửa .github/workflows/ci.yml (120 dòng) và hosted-release.yml để truyền đủ biến (#39).",
+  "resolution_type": [
+   "ci-config",
+   "env-config"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "A1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "fe2aa01",
+    "quote": "fix:resolve missing login env variable on production (#39)",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "git"
+  ],
+  "id": "P026",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g24",
+  "title": "CI quality-result đỏ do comment/param env trong workflow",
+  "date": "2026-07-24",
+  "area": "ci-cd",
+  "kind": "ci-build",
+  "status": "fixed",
+  "problem": "Job quality-result của CI fail vì comment/param env trong workflow.",
+  "root_cause": "Cú pháp/giá trị env trong ci.yml làm bước tổng hợp kết quả quality fail.",
+  "resolution": "Gỡ comment param env (#40) rồi chỉnh bước tổng hợp kết quả quality trong ci.yml (#41).",
+  "resolution_type": [
+   "ci-config"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "A1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "8b28c91",
+    "quote": "fix(ci): remove param env comment (#40)",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "4e53ca1",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "git"
+  ],
+  "id": "P027",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g25",
+  "title": "Đăng nhập SMS \"accepted\" của admin còn bật ở production",
+  "date": "2026-07-24",
+  "area": "auth-security",
+  "kind": "config-deploy",
+  "status": "fixed",
+  "problem": "Cấu hình hosted-release còn 'accepted login sms' ở production cho admin.",
+  "root_cause": "Chưa ro: chỉ có subject, diff 2 dòng ở hosted-release.yml.",
+  "resolution": "Gỡ cấu hình accepted login sms khỏi hosted-release.yml (#44).",
+  "resolution_type": [
+   "ci-config"
+  ],
+  "confidence": "low",
+  "tasks": [
+   "A1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "daaaa4f",
+    "quote": "fix(admin): remove accepted login sms production (#44)",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "pr",
+    "ref": "#44",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "git"
+  ],
+  "id": "P028",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g26",
+  "title": "Nhiều đường bypass gate CI (hook local / GitHub / hosted lệch nhau)",
+  "date": "2026-07-30",
+  "area": "ci-cd",
+  "kind": "design-flaw",
+  "status": "fixed",
+  "problem": "Hook local, GitHub Actions và hosted release dùng gate khác nhau, còn đường bypass; release không bắt buộc ci.yml push run thành công trên main.",
+  "root_cause": "Contract CI không thống nhất, gate chạy được ở chế độ không fail-closed.",
+  "resolution": "Hợp nhất 1 contract fail-closed, bỏ bypass, release yêu cầu run ci.yml thành công đúng commit, gate check-only deterministic (NX_TUI=false, frozen lockfile), cô lập Nx state; thêm test workflow-policy.",
+  "resolution_type": [
+   "ci-config",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "ab57f9b",
+    "quote": "remove CI/hosted bypass paths and require an exact successful `ci.yml` push run on `main`",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "pr",
+    "ref": "#50",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "git"
+  ],
+  "id": "P029",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g27",
+  "title": "Reviewer độc lập tìm ra 3 vấn đề khi tổ chức lại tài liệu",
+  "date": "2026-07-30",
+  "area": "docs-tooling",
+  "kind": "process",
+  "status": "fixed",
+  "problem": "Counterexample reviewer tìm ra ba vấn đề actionable khi tổ chức lại tài liệu; baseline có các finding cần sửa.",
+  "root_cause": "chua ro (trích đoạn không nêu chi tiết)",
+  "resolution": "Sửa theo bảng Baseline findings/Correction; dùng progressive-disclosure indexes và evidence ladder.",
+  "resolution_type": [
+   "design-doc-adr"
+  ],
+  "confidence": "low",
+  "tasks": [
+   "A2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "doc",
+    "ref": "docs/plans/2026-07-30-documentation-reorganization-review.md",
+    "quote": "The counterexample reviewer found three actionable issues:",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "docs"
+  ],
+  "id": "P030",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g28",
+  "title": "Wrapper OTel cho OpenNext Cloudflare handler lỗi sau khi thêm Loki",
+  "date": "2026-08-02",
+  "area": "observability",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "Wrapper OTel cho OpenNext Cloudflare handler lỗi 'do not object cloudflare' sau khi thêm Loki export.",
+  "root_cause": "Chưa ro: diff 10 dòng ở apps/web/open-next.config.ts.",
+  "resolution": "Sửa open-next.config.ts (#58) để wrapper @microlabs/otel-cf-workers tương thích Cloudflare.",
+  "resolution_type": [
+   "code-fix"
+  ],
+  "confidence": "low",
+  "tasks": [
+   "A1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "59356ec",
+    "quote": "fix(observability): wrapper do not object cloudflare (#58)",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "git"
+  ],
+  "id": "P031",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g29",
+  "title": "Lỗi boot production khi chạy profile local (Matching capability)",
+  "date": "2026-08-12",
+  "area": "matching",
+  "kind": "config-deploy",
+  "status": "fixed",
+  "problem": "Lỗi production boot khi chạy local deployment profile cho Matching capability boundary.",
+  "root_cause": "Chưa ro chi tiết; review chỉ nói thiếu adapter S3 tường minh cho profile local.",
+  "resolution": "Sửa ở local deployment profile bằng S3 adapter explicit; verify PASS với runtime Docker smoke.",
+  "resolution_type": [
+   "code-fix",
+   "env-config"
+  ],
+  "confidence": "low",
+  "tasks": [
+   "A2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "doc",
+    "ref": "docs/plans/2026-08-12-matching-capability-boundary-verify.md",
+    "quote": "lỗi production boot ban đầu đã được sửa ở local deployment profile bằng S3 adapter",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "docs"
+  ],
+  "id": "P032",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g30",
+  "title": "Khe hở đồng thời ở feed / party-room / safety",
+  "date": "2026-08-13",
+  "area": "database-concurrency",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "Các luồng core (feed, party-room, safety) có khe hở đồng thời.",
+  "root_cause": "Chi tiết chưa ro từ body; thay đổi tập trung vào party-room.service (164 dòng), feed.service, safety.service.",
+  "resolution": "Sửa 3 service, thêm integration/unit spec cho feed, party-room, safety, cập nhật docs/services/party-room-service.md; gộp qua #65.",
+  "resolution_type": [
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "A1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "53eef5d",
+    "quote": "fix: close concurrency gaps in core flows",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "c04b41e",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "pr",
+    "ref": "#65",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "git"
+  ],
+  "id": "P033",
+  "ev_total": 3,
+  "ev_ref_ok": 3,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g31",
+  "title": "Matching trả 400 (useDiamond) + nút CTA sai trạng thái",
+  "date": "2026-08-14",
+  "area": "matching",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "Bấm ghép đôi trả 400 COMMON_VALIDATION_FAILED vì frontend gửi useDiamond:false.",
+  "root_cause": "PR #64 (db82c67) cho FE gửi useDiamond:false; API runtime chạy bản cũ còn forbidNonWhitelisted nên coi field là input thừa.",
+  "resolution": "apps/web/src/features/matching/api.ts: chỉ gửi useDiamond khi true, false thì bỏ field; thêm test api.spec.ts và queue-status-panel.spec.tsx. Đã commit 71f9e17 và push.",
+  "resolution_type": [
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A1",
+   "B2"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffebd",
+    "quote": "API đang chạy bản trước PR này vẫn bật `forbidNonWhitelisted`, nên coi field đó là input thừa",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "01a0015f",
+    "quote": "property useDiamond should not exist",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "71f9e17",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "db82c67",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "pr",
+    "ref": "#64",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "be681db",
+    "quote": "fix(matching): fix CTA buttons and 400 payload error",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "0571a07",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "pr",
+    "ref": "#67",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "codex",
+   "git"
+  ],
+  "id": "P034",
+  "ev_total": 8,
+  "ev_ref_ok": 8,
+  "ev_quote_total": 3,
+  "ev_quote_ok": 3,
+  "flags": []
+ },
+ {
+  "key": "g32",
+  "title": "Generated client lệch OpenAPI làm CI đỏ (#188)",
+  "date": "2026-08-14",
+  "area": "ci-cd",
+  "kind": "ci-build",
+  "status": "fixed",
+  "problem": "CI PR #66 job Test, build and E2E fail (kéo CI required fail): openapi:check phát hiện generated client lệch OpenAPI.",
+  "root_cause": "libs/api-client/src/generated/core-api.ts khai useDiamond/genderPreference optional trong khi OpenAPI yêu cầu bắt buộc.",
+  "resolution": "Regenerate từ openapi/core-api.json (đổi 2 dòng), commit 0ffd61f; nâng ci:preflight/pre-push lên profile all để bắt lỗi này trước GitHub.",
+  "resolution_type": [
+   "ci-config",
+   "code-fix",
+   "process-rule"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B1",
+   "B2"
+  ],
+  "merged_from": 3,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffec1",
+    "quote": "`openapi:check` phát hiện `libs/api-client/src/generated/core-api.ts` lệch",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "0ffd61f",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "pr",
+    "ref": "#66",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "019ffee6",
+    "quote": "**generated API client bị drift/stale**, không phải lỗi Docker/Postgres/Redis",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "2ee78c2",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "019ffec1",
+    "quote": "`apps/web/src/features/matching/api.ts` thiếu `useDiamond`",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "codex",
+   "git"
+  ],
+  "id": "P035",
+  "ev_total": 6,
+  "ev_ref_ok": 6,
+  "ev_quote_total": 3,
+  "ev_quote_ok": 3,
+  "flags": []
+ },
+ {
+  "key": "g33",
+  "title": "Windows: hook/runner không chạy được pnpm (.cmd: 127 / EINVAL)",
+  "date": "2026-08-14",
+  "area": "windows-toolchain",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "git push bị hook pre-push chặn: 'pnpm: command not found' (code 127), sau đó spawn EINVAL khi chạy pnpm.cmd.",
+  "root_cause": "Git Bash/Husky nhận PATH cũ thiếu %APPDATA%/npm; run-stage.mjs spawn trực tiếp pnpm.cmd không qua shell trên Windows.",
+  "resolution": "Hook pre-commit/pre-push tự thêm %APPDATA%/npm và Program Files/nodejs vào PATH; scripts/ci/run-stage.mjs dùng shell cho .cmd/.bat (test 5/5). Commit 3f231ca, eba5763.",
+  "resolution_type": [
+   "code-fix"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B1",
+   "B2"
+  ],
+  "merged_from": 3,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffee6",
+    "quote": "Git Bash/Husky nhận được một PATH cũ, không có thư mục pnpm global",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "3f231ca",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "eba5763",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "019ffec1",
+    "quote": "`spawnSync pnpm.cmd EINVAL`",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "c261afe",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "file",
+    "ref": "scripts/ci/local.mjs",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "019fff81",
+    "quote": "trên Windows `pnpm.cmd` cần chạy qua shell, nên trước đó doctor báo “pnpm missing”",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "scripts/agent/verify.mjs",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "d0524ea",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "f6c0b03",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "codex",
+   "git"
+  ],
+  "id": "P036",
+  "ev_total": 10,
+  "ev_ref_ok": 10,
+  "ev_quote_total": 3,
+  "ev_quote_ok": 3,
+  "flags": []
+ },
+ {
+  "key": "g34",
+  "title": "Windows/Docker: CRLF + symlink thành file thường làm format/agent:check đỏ",
+  "date": "2026-08-14",
+  "area": "windows-toolchain",
+  "kind": "config-deploy",
+  "status": "fixed",
+  "problem": "Trên Windows pnpm format:check báo ~1.428 file và 9 alias symlink (CLAUDE.md, SKILL.md) bị checkout thành file thường, trong khi CI Linux chỉ báo 2 file.",
+  "root_cause": "Checkout Windows lẫn CRLF/LF, chưa có rule eol; symlink bị materialize thành file làm Prettier đòi newline và agent:check fail.",
+  "resolution": "Thêm .gitattributes ép LF, .prettierignore loại alias symlink, bật core.symlinks; adapter-parity chỉ chấp nhận file materialized khi nội dung khớp target trong index. Commit f717299, 86e1a45.",
+  "resolution_type": [
+   "code-fix",
+   "env-config"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B1",
+   "B2"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffee6",
+    "quote": "toàn bộ checkout Windows đang bị line-ending mixed",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "f717299",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "86e1a45",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "019ffec1",
+    "quote": "Docker mount workspace Windows vào container Linux làm symlink bị “materialize” thành file text",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "scripts/agent/repository-check.mjs",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "8b2c13c",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "codex",
+   "git"
+  ],
+  "id": "P037",
+  "ev_total": 6,
+  "ev_ref_ok": 6,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "g35",
+  "title": "Windows: Jest không chạy (thiếu VC++ runtime, resolver native)",
+  "date": "2026-08-14",
+  "area": "windows-toolchain",
+  "kind": "ci-build",
+  "status": "fixed",
+  "problem": "Jest trên Windows/pnpm không tìm được preset/ts-jest/resolver; core-api và signaling jest không chạy; thiếu vcruntime140.dll.",
+  "root_cause": "preset resolve tương đối từ app root, <rootDir> của resolver đổi khi spread; unrs-resolver binding native ERR_DLOPEN_FAILED do thiếu VC++ runtime.",
+  "resolution": "Nạp preset bằng require, override resolver về scripts/jest/resolver.cjs (fallback Node/TS), cài VC++ Redistributable; Jest E2E config chuyển sang ESM import + fileURLToPath; signaling 8 suite PASS.",
+  "resolution_type": [
+   "code-fix",
+   "env-config",
+   "none-yet"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "B1",
+   "B2"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffec1",
+    "quote": "Jest 30 đang gọi `unrs-resolver`, nhưng binding native Windows",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "scripts/jest/resolver.cjs",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "c261afe",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "019fff81",
+    "quote": "Jest cần Visual C++ Runtime, còn Nx build gặp lỗi quyền hệ điều hành `1314`",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "codex",
+   "git"
+  ],
+  "id": "P038",
+  "ev_total": 4,
+  "ev_ref_ok": 4,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "g36",
+  "title": "Pre-push trên Windows đỏ giả do giả định POSIX / công cụ Linux-only",
+  "date": "2026-08-14",
+  "area": "windows-toolchain",
+  "kind": "ci-build",
+  "status": "fixed",
+  "problem": "Local gate trên Windows đỏ giả: security-tools 16 test, markdown-links, pre-tool-guard, module-boundaries 14 test fail do path/platform.",
+  "root_cause": "Test giả định path POSIX/$HOME, URL.pathname thành /C:/..., snapshot boundary dùng dấu \\ thay vì /.",
+  "resolution": "Sửa test dùng path separator/homedir đa nền tảng, chuẩn hóa POSIX trong module-boundaries.spec.ts; dry-run không đòi Linux/Docker. Trước đó push --no-verify có kiểm soát.",
+  "resolution_type": [
+   "code-fix",
+   "process-rule",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B1",
+   "B2"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffec1",
+    "quote": "16 test nền ở `scripts/ci/security-tools.test.mjs`",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "0ffd61f",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "file",
+    "ref": "apps/core-api/src/arch/module-boundaries.spec.ts",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "01a0015f",
+    "quote": "Container smoke dùng Docker host networking giống GitHub Actions; chạy lệnh này trên Linux/WSL.",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "019ffee6",
+    "quote": "Agent guard tests: 113 pass, 16 fail",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "f0e32ad",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "e03b278",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "codex",
+   "git"
+  ],
+  "id": "P039",
+  "ev_total": 7,
+  "ev_ref_ok": 7,
+  "ev_quote_total": 3,
+  "ev_quote_ok": 3,
+  "flags": []
+ },
+ {
+  "key": "g38",
+  "title": "Watchdog CI quá thô cắt gate giữa chừng (LRN-008)",
+  "date": "2026-08-14",
+  "area": "ci-cd",
+  "kind": "design-flaw",
+  "status": "fixed",
+  "problem": "Wrapper 45 giây chung cắt gate CI tổng hợp trước khi thấy lỗi thật, chẩn đoán mơ hồ và tiến trình con còn chạy.",
+  "root_cause": "Chính sách timeout cho probe ngắn bị áp cho lệnh install/test/build nhiều stage.",
+  "resolution": "stage-policy.mjs đặt timeout theo task, run-stage.mjs kill cả process group, in marker TIMED_OUT; có test và runbook quality-gates.",
+  "resolution_type": [
+   "ci-config",
+   "code-fix",
+   "process-rule",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A1",
+   "A2",
+   "B1"
+  ],
+  "merged_from": 3,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "8ba9ef9",
+    "quote": "fix(ci): use task-aware stage timeouts",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "doc",
+    "ref": "docs/reference/lessons-registry.md",
+    "quote": "LRN-2026-008",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "1ba5b54",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "file",
+    "ref": "scripts/ci/stage-policy.mjs",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "doc",
+    "ref": "docs/reference/project-handoff.md",
+    "quote": "Stage runner and timeout tests.",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "doc",
+    "ref": "docs/plans/2026-07-29-payos-diamond-verify.md",
+    "quote": "bị wrapper `timeout 45s` kết",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "code",
+   "docs",
+   "git"
+  ],
+  "id": "P040",
+  "ev_total": 6,
+  "ev_ref_ok": 6,
+  "ev_quote_total": 4,
+  "ev_quote_ok": 4,
+  "flags": []
+ },
+ {
+  "key": "g39",
+  "title": "Timeout cứng quá chặt / chạy song song làm test flaky",
+  "date": "2026-08-14",
+  "area": "ci-cd",
+  "kind": "ci-build",
+  "status": "fixed",
+  "problem": "Pre-push fail lặp do timeout cứng: web friend-picker.spec 5s trong Docker, 2 test run-stage deadline 2s (127 pass/2 fail), frontend test 5s khi nhiều Vitest worker.",
+  "root_cause": "Deadline test quá sát trên Windows bind mount/Docker chậm; hai container preflight stale chạy đồng thời trên cùng workspace.",
+  "resolution": "friend-picker timeout 15s (bacd2f3); run-stage test deadline 10s (5beb6f8); Vitest timeout 15s khi CI=true ở admin/web vite config; dọn container stale.",
+  "resolution_type": [
+   "ci-config",
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B1"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "bacd2f3",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "5beb6f8",
+    "quote": "test(ci): tolerate slow clean container startup",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "019ffec1",
+    "quote": "deadline cứng 2 giây cho child process",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "a91d73d",
+    "quote": "perf(ci): cache local tasks and guard parallel stages",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "019ffec1",
+    "quote": "hai nhánh “độc lập về file/database” vẫn tranh CPU/RAM",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "codex",
+   "git"
+  ],
+  "id": "P041",
+  "ev_total": 5,
+  "ev_ref_ok": 5,
+  "ev_quote_total": 4,
+  "ev_quote_ok": 4,
+  "flags": []
+ },
+ {
+  "key": "g40",
+  "title": "Test gia hạn lease bị đói timer khi chạy cạnh pool lớn (LRN-009)",
+  "date": "2026-08-14",
+  "area": "ci-cd",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "Test gia hạn lease của signaling pass riêng nhưng fail khi chạy cạnh pool coverage của Core API vì timer starvation giống replica chết.",
+  "root_cause": "Scheduler CI xếp test Redis TTL nhạy thời gian chung với Jest pool lớn.",
+  "resolution": "Local/GitHub CI chạy signaling-gateway:test ở stage Nx cô lập trước phần test song song; TTL tối thiểu production và hành vi fail-closed giữ nguyên.",
+  "resolution_type": [
+   "ci-config",
+   "process-rule",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A1",
+   "A2"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "doc",
+    "ref": "docs/reference/lessons-registry.md",
+    "quote": "LRN-2026-009",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "scripts/ci/local.mjs",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "doc",
+    "ref": "docs/reference/project-handoff.md",
+    "quote": "CI scheduler and real Redis integration test.",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "60269c6",
+    "quote": "fix(ci): isolate nx cache flags in dry-run tests",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "docs",
+   "git"
+  ],
+  "id": "P042",
+  "ev_total": 4,
+  "ev_ref_ok": 4,
+  "ev_quote_total": 3,
+  "ev_quote_ok": 3,
+  "flags": []
+ },
+ {
+  "key": "g41",
+  "title": "Nx cache bật cho test có state → có thể trả kết quả cũ",
+  "date": "2026-08-14",
+  "area": "ci-cd",
+  "kind": "design-flaw",
+  "status": "fixed",
+  "problem": "Nx cache đang bật cho test tích hợp có state (core-api, signaling Redis) và E2E, có thể trả kết quả cũ dù DB/Redis đổi.",
+  "root_cause": "Nx hash không bao gồm trạng thái DB/Redis runtime; target e2e/test stateful vẫn cache mặc định.",
+  "resolution": "Tắt cache cho core-api/signaling-gateway test, toàn bộ E2E và target web atomized; thêm LOCAL_CI_STRICT_CLEAN và Docker Buildx GHA cache. Commit 79bea23.",
+  "resolution_type": [
+   "ci-config",
+   "code-fix"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "B1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "79bea23",
+    "quote": "ci: add strict clean and stateful cache policy",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "nx.json",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "code",
+   "git"
+  ],
+  "id": "P043",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g43",
+  "title": "E2E local: server cũ còn sống, reset DB chồng, thiếu baseUrl",
+  "date": "2026-08-14",
+  "area": "ci-cd",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "E2E local fail lẫn lộn: server core-api/signaling cũ còn sống, Core E2E reset DB khi Web E2E đang đăng nhập; web E2E thiếu baseUrl alias và lệnh PORT không chạy trên Windows.",
+  "root_cause": "Teardown dùng process.kill(-pid) kiểu Unix; --parallel=2 chung DB; tsconfig.base mất baseUrl; PORT=... không tương thích Windows.",
+  "resolution": "isolated-node-server.ts dùng taskkill /T /F; E2E --parallel=1; khôi phục baseUrl trong tsconfig.base.json; sửa playwright.config.mts. Signaling 2/2, core 12/12, web 1/1 PASS.",
+  "resolution_type": [
+   "ci-config",
+   "code-fix"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffec1",
+    "quote": "`--parallel=2` làm Core E2E reset DB trong lúc Web E2E đăng nhập",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "c261afe",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "file",
+    "ref": "libs/e2e-support/src/lib/isolated-node-server.ts",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "codex",
+   "git"
+  ],
+  "id": "P044",
+  "ev_total": 3,
+  "ev_ref_ok": 3,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g44",
+  "title": "Lint: config E2E import vi phạm ranh giới Nx",
+  "date": "2026-08-14",
+  "area": "ci-cd",
+  "kind": "ci-build",
+  "status": "fixed",
+  "problem": "Lint fail 2 lỗi ở core-api-e2e/jest.config.ts và signaling-gateway-e2e/jest.config.ts.",
+  "root_cause": "Nx cấm import relative/absolute từ config E2E.",
+  "resolution": "Sửa hai config theo pattern preset canonical, thêm ngoại lệ eslint đúng dòng chỉ cho config Jest; lint từng project PASS.",
+  "resolution_type": [
+   "code-fix"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffec1",
+    "quote": "Nx cấm import relative/absolute từ config E2E",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "apps/core-api-e2e/jest.config.ts",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "codex"
+  ],
+  "id": "P045",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g45",
+  "title": "Guest bấm Matching → 401 vì thiếu X-Guest-Device-Token",
+  "date": "2026-08-14",
+  "area": "matching",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "Guest bấm Matching trên web luôn lỗi 401 MATCHING_GUEST_DEVICE_TOKEN_REQUIRED dù guest login thành công.",
+  "root_cause": "Backend bắt header X-Guest-Device-Token nhưng frontend chỉ lưu accessToken/csrfToken, không lưu và không gửi guestDeviceToken.",
+  "resolution": "Lưu guestDeviceToken trong memory ở token-store (libs/api-client) và client.ts tự gắn header cho Matching; thêm test token-store/client. Hard reload chưa giữ token (ghi nhận là hạn chế).",
+  "resolution_type": [
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffec1",
+    "quote": "401 MATCHING_GUEST_DEVICE_TOKEN_REQUIRED",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "a3f0f61",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "pr",
+    "ref": "#66",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "0dc42d5",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "codex",
+   "git"
+  ],
+  "id": "P046",
+  "ev_total": 4,
+  "ev_ref_ok": 4,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g46",
+  "title": "Ảnh avatar trỏ cdn.litmatch.example không phân giải DNS",
+  "date": "2026-08-14",
+  "area": "deploy-config",
+  "kind": "config-deploy",
+  "status": "fixed",
+  "problem": "Ảnh avatar/catalog/layer không tải: API trả URL cdn.litmatch.example, domain .example không phân giải DNS.",
+  "root_cause": "Seed avatar trỏ CDN giả cdn.litmatch.example.",
+  "resolution": "Thêm 8 SVG local ở apps/web/public/avatar và migration mới 1757300000000-avatar-public-assets; sửa migration cũ bị hook chặn (migration bất biến) nên hoàn tác.",
+  "resolution_type": [
+   "code-fix"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffec1",
+    "quote": "Domain `.example` không phân giải được DNS",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "apps/core-api/src/database/migrations/1757300000000-avatar-public-assets.ts",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "a3f0f61",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "codex",
+   "git"
+  ],
+  "id": "P047",
+  "ev_total": 3,
+  "ev_ref_ok": 3,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g47",
+  "title": "Guest thấy nút đăng bài/like/comment nhưng backend luôn 403",
+  "date": "2026-08-14",
+  "area": "frontend-ux",
+  "kind": "ux",
+  "status": "fixed",
+  "problem": "Guest vẫn thấy nút tạo bài/comment/like ở Feed nhưng backend luôn trả 403; người dùng chỉ biết sau khi submit.",
+  "root_cause": "UI không phản ánh domain rule cấm guest thao tác Feed.",
+  "resolution": "post-composer, like-button, comment-composer không hiện form cho guest và báo rõ lý do; thêm spec cho like-button/post-composer.",
+  "resolution_type": [
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffec1",
+    "quote": "Đây là lỗi trải nghiệm, không phải lỗi bypass bảo mật.",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "a3f0f61",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "codex",
+   "git"
+  ],
+  "id": "P048",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g48",
+  "title": "Thông báo Facebook gõ sai \"ckhả dụng\"",
+  "date": "2026-08-14",
+  "area": "frontend-ux",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "Thông báo API Facebook sai chính tả: 'Đăng nhập Facebook ckhả dụng.'",
+  "root_cause": "Lỗi gõ chuỗi trong capabilities.service.ts.",
+  "resolution": "Sửa thành 'chưa khả dụng' tại apps/core-api/src/app/capabilities.service.ts.",
+  "resolution_type": [
+   "code-fix"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B1"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffec1",
+    "quote": "Đăng nhập Facebook ckhả dụng.",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "a3f0f61",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "codex",
+   "git"
+  ],
+  "id": "P049",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g49",
+  "title": "Không push được vì môi trường (thiếu gh, Docker/WSL2, hook)",
+  "date": "2026-08-14",
+  "area": "ai-agent-process",
+  "kind": "process",
+  "status": "mitigated",
+  "problem": "Không push được ban đầu: thiếu gh, chưa login ducmanh001, pre-push security-tools fail, Docker/WSL2 chưa chạy do virtualization tắt; process pre-push/container mồ côi chạy chồng.",
+  "root_cause": "Máy thiếu công cụ (gh, WSL2/virtualization), terminal giữ PATH cũ; wrapper timeout bỏ lại tiến trình CI stale.",
+  "resolution": "Cài gh/Docker, đăng nhập đúng tài khoản chỉ cấu hình local repo, bật Windows feature WSL2; dọn process/container stale; một lần push --no-verify có kiểm soát, sau đó pre-push đầy đủ PASS.",
+  "resolution_type": [
+   "env-config",
+   "process-rule"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "B1",
+   "B4"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffec1",
+    "quote": "WSL2 is unable to start since virtualization is not enabled",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "a3f0f61",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "01a11bf9",
+    "quote": "push với `--no-verify`",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "01a11dea",
+    "quote": "b90a46b",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "pr",
+    "ref": "#75",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "codex",
+   "git"
+  ],
+  "id": "P050",
+  "ev_total": 5,
+  "ev_ref_ok": 5,
+  "ev_quote_total": 3,
+  "ev_quote_ok": 3,
+  "flags": []
+ },
+ {
+  "key": "g51",
+  "title": "ci:preflight treo làm mất thay đổi chưa commit",
+  "date": "2026-08-14",
+  "area": "ai-agent-process",
+  "kind": "process",
+  "status": "mitigated",
+  "problem": "Tiến trình pnpm ci:preflight chạy song song bị treo và làm mất các thay đổi chưa commit (fix button + payload) trong working tree.",
+  "root_cause": "Preflight chạy nền làm worktree quay về sạch giữa lúc agent làm việc; chạy gate song song gây race cache.",
+  "resolution": "Dừng đúng hai PID preflight, khôi phục lại 8 file bằng patch, chỉ chạy test targeted sau đó.",
+  "resolution_type": [
+   "process-rule"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "B2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a0015f",
+    "quote": "`ci:preflight` vẫn treo và đã chứng minh nó có thể xoá thay đổi untracked/unstaged",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "codex"
+  ],
+  "id": "P051",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g52",
+  "title": "Sửa nhầm migration đã commit (guard bất biến chặn)",
+  "date": "2026-08-14",
+  "area": "database-concurrency",
+  "kind": "process",
+  "status": "fixed",
+  "problem": "pre-push fail ở agent:check: migration đã commit 1753100000000-avatar.ts bị sửa (guard migration bất biến).",
+  "root_cause": "Chỉnh seed trực tiếp trong migration cũ thay vì đặt trong migration mới 1757300000000-avatar-public-assets.ts.",
+  "resolution": "Khôi phục migration cũ về bản đã commit, giữ migration mới; pnpm agent:check PASS. Guard hoạt động đúng, không tạo commit mới.",
+  "resolution_type": [
+   "code-fix"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffee6",
+    "quote": "Migration đã commit là bất biến; tạo migration mới thay vì sửa/xoá.",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "apps/core-api/src/database/migrations/1753100000000-avatar.ts",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "code",
+   "codex"
+  ],
+  "id": "P052",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g53",
+  "title": "Conflict nhánh matching với main",
+  "date": "2026-08-14",
+  "area": "ci-cd",
+  "kind": "process",
+  "status": "fixed",
+  "problem": "Branch feat/matching-voice-friend-monetization conflict với main tại scripts/ci/local.test.mjs.",
+  "root_cause": "Cả hai nhánh cùng thêm test 'Economy E2E fixtures'; feature đổi thêm contract prepush.",
+  "resolution": "Merge origin/main, giữ một bản test Economy và toàn bộ test prepush/database của feature; merge commit 2d1fa02, chưa push.",
+  "resolution_type": [
+   "code-fix"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffeb6",
+    "quote": "Conflict duy nhất: `scripts/ci/local.test.mjs`",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "2d1fa02",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "codex",
+   "git"
+  ],
+  "id": "P053",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g54",
+  "title": "Hook pre-push chỉ chạy affected nên lỗi lọt lên CI",
+  "date": "2026-08-14",
+  "area": "ci-cd",
+  "kind": "design-flaw",
+  "status": "fixed",
+  "problem": "Local hook pre-push chỉ chạy affected (prepush) nên lỗi vẫn lọt lên CI GitHub, user thấy CI đỏ nhiều.",
+  "root_cause": "ci:preflight dùng profile affected, không phủ quality toàn repo/test/build/E2E như CI.",
+  "resolution": "Đổi ci:preflight sang profile ci trong package.json, cập nhật scripts/ci/local.test.mjs, README và docs quality-gates; giữ Docker smoke ở GitHub vì Windows không ổn định.",
+  "resolution_type": [
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffebd",
+    "quote": "`ci:preflight` đã chuyển sang profile `ci`: quality toàn repo + toàn bộ test/build/E2E",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "package.json",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "code",
+   "codex"
+  ],
+  "id": "P054",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g55",
+  "title": "Chưa bắt buộc required checks: PR vẫn merge được khi CI đỏ",
+  "date": "2026-08-14",
+  "area": "ci-cd",
+  "kind": "process",
+  "status": "open",
+  "problem": "PR #66 vẫn có thể merge khi CI đỏ; user hỏi cách bắt buộc phải pass hết mới merge.",
+  "root_cause": "Chưa có bằng chứng branch protection được bật; job con skipped có thể bị coi hợp lệ nếu require trực tiếp.",
+  "resolution": "Khuyến nghị bật branch protection main yêu cầu check 'CI / CI required', up-to-date, không bypass; chưa thấy bằng chứng đã cấu hình.",
+  "resolution_type": [
+   "none-yet"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "B2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffee6",
+    "quote": "Chỉ cần require `CI / CI required` là đúng nhất",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": ".github/workflows/ci.yml",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "code",
+   "codex"
+  ],
+  "id": "P055",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g56",
+  "title": "Báo động giả: push nhánh không thấy CI chạy",
+  "date": "2026-08-14",
+  "area": "ci-cd",
+  "kind": "false-alarm",
+  "status": "false-alarm",
+  "problem": "User thắc mắc git push lên branch fix/matching-payload-400 không thấy CI chạy.",
+  "root_cause": "Không phải lỗi: ci.yml chỉ chạy push trên main, branch tính năng chạy qua pull_request; PR #66 đã có CI run #188.",
+  "resolution": "Giải thích; không đổi workflow, giữ mở PR sớm.",
+  "resolution_type": [
+   "none-yet"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffebd",
+    "quote": "Không phải CI không chạy.",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": ".github/workflows/ci.yml",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "C",
+  "sources": [
+   "code",
+   "codex"
+  ],
+  "id": "P056",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g57",
+  "title": "Màn matching PC: CTA tĩnh, không có trạng thái chọn",
+  "date": "2026-08-14",
+  "area": "frontend-ux",
+  "kind": "ux",
+  "status": "fixed",
+  "problem": "Màn matching PC: hai CTA Soul/Voice là span/Link tĩnh, không chọn được, không đổi màu khi chọn như mobile; kích thước nút mobile không đồng nhất.",
+  "root_cause": "CTA desktop (từ PR #29, 41bc055) là phần tử tĩnh không đọc query ?match=; mobile mới có aria-pressed/màu selected.",
+  "resolution": "Desktop và mobile dùng chung state match trong match-actions.tsx; CTA nối với form, có aria-current/màu active; hai CTA mobile h-13 min-h-13 w-full. Thêm match-actions.spec.tsx, commit 71f9e17.",
+  "resolution_type": [
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a0015f",
+    "quote": "desktop đang dùng hai `<Link>` với màu tĩnh, không đọc `?match=...`",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "019ffebd",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "41bc055",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "71f9e17",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "codex",
+   "git"
+  ],
+  "id": "P057",
+  "ev_total": 4,
+  "ev_ref_ok": 4,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g58",
+  "title": "Nhiều nút action thiếu cursor pointer",
+  "date": "2026-08-14",
+  "area": "frontend-ux",
+  "kind": "ux",
+  "status": "fixed",
+  "problem": "Nhiều nút action không hiện con trỏ pointer khi hover.",
+  "root_cause": "Native button và shared Button không đặt cursor:pointer.",
+  "resolution": "Thêm cursor:pointer ở apps/web/src/app/global.css và shared/ui/button.tsx.",
+  "resolution_type": [
+   "code-fix"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffebd",
+    "quote": "Bổ sung `cursor: pointer` cho native button và shared `Button`",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "apps/web/src/shared/ui/button.tsx",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "codex"
+  ],
+  "id": "P058",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g59",
+  "title": "Test Feed đỏ do thiếu setup session",
+  "date": "2026-08-14",
+  "area": "frontend-ux",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "Hai test Feed (like-button.spec, post-composer.spec) đỏ vì giao diện hiện trạng thái guest.",
+  "root_cause": "Test mock /users/me nhưng quên bật session trong tokenStore nên hook không gọi API.",
+  "resolution": "Sửa setup test bật session authenticated; 6/6 PASS, không đổi business code.",
+  "resolution_type": [
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019fff81",
+    "quote": "quên bật session trong `tokenStore`",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "apps/web/src/features/feed/components/like-button.spec.tsx",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "codex"
+  ],
+  "id": "P059",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g60",
+  "title": "tsconfig baseUrl deprecated → mất alias lúc runtime",
+  "date": "2026-08-14",
+  "area": "windows-toolchain",
+  "kind": "config-deploy",
+  "status": "fixed",
+  "problem": "VS Code đỏ vì cảnh báo baseUrl/moduleResolution 'node' deprecated; sau khi bỏ baseUrl, openapi:check không resolve @litmatch/logger.",
+  "root_cause": "tsconfig.base.json dùng baseUrl deprecated; tsconfig-paths/register cũ không rebase paths từ file extends nên runtime mất alias sau khi bỏ baseUrl.",
+  "resolution": "Xoá baseUrl khỏi tsconfig.base.json, moduleResolution thành node10 ở core-api/signaling-gateway; thêm scripts/register-tsconfig-paths.cjs và sửa apps/core-api/project.json, openapi-check.mjs. OpenAPI check PASS.",
+  "resolution_type": [
+   "code-fix"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "B2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019fff81",
+    "quote": "`tsconfig-paths/register` cũ không rebasing `paths` từ file `extends`",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "scripts/register-tsconfig-paths.cjs",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "file",
+    "ref": "tsconfig.base.json",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "codex"
+  ],
+  "id": "P060",
+  "ev_total": 3,
+  "ev_ref_ok": 3,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g61",
+  "title": "Lỗi TS ở tsconfig.spec không làm build fail",
+  "date": "2026-08-14",
+  "area": "observability",
+  "kind": "design-flaw",
+  "status": "mitigated",
+  "problem": "Lỗi/cảnh báo TypeScript ở tsconfig.spec.json của signaling-gateway vẫn cho build qua; user muốn tắt tạm cảnh báo.",
+  "root_cause": "Target build chỉ chạy webpack-cli với tsconfig.app.json, không có target typecheck; VS Code có thể dùng TypeScript khác bản workspace 5.9.3.",
+  "resolution": "Tạm thời ép VS Code dùng TS workspace qua .vscode/settings.json (typescript.tsdk); ignoreDeprecations 6.0 bị gỡ vì không hợp TS 5.9. Đề xuất thêm target typecheck cho build phụ thuộc, chưa làm.",
+  "resolution_type": [
+   "env-config",
+   "none-yet"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019fffde",
+    "quote": "`build` và `typecheck` đang là hai luồng khác nhau",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": ".vscode/settings.json",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "code",
+   "codex"
+  ],
+  "id": "P061",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g62",
+  "title": "Prettier lỗi bảng markdown → CI #189 đỏ",
+  "date": "2026-08-14",
+  "area": "ci-cd",
+  "kind": "ci-build",
+  "status": "fixed",
+  "problem": "CI #189 đỏ ở Format and lint: Prettier báo README.md và docs/runbooks/quality-gates.md; test/docker bị skipped, CI required fail.",
+  "root_cause": "Hai bảng Markdown vừa sửa không đúng format Prettier; commit trước không chạy hook vì máy chưa pnpm install nên Husky chưa đăng ký.",
+  "resolution": "Format lại hai file, commit d794cc0; cài Node 22 + pnpm, pnpm install để Husky bật core.hooksPath=.husky/_ cho pre-commit lint-staged.",
+  "resolution_type": [
+   "code-fix",
+   "env-config"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "019ffee6",
+    "quote": "`Format and lint` fail vì Prettier báo 2 file: `README.md` và `docs/runbooks/quality-gates.md`",
+    "_ref_ok": true,
+    "_quote_ok": false
+   },
+   {
+    "kind": "commit",
+    "ref": "d794cc0",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "codex",
+   "git"
+  ],
+  "id": "P062",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 0,
+  "flags": [
+   "quote-not-found"
+  ]
+ },
+ {
+  "key": "g63",
+  "title": "Test frontend (admin/web) timeout lặp lại",
+  "date": "2026-08-14",
+  "area": "ci-cd",
+  "kind": "bug",
+  "status": "open",
+  "problem": "Full frontend gate fail: admin:test 4 test và web help/page.spec.tsx 1 timeout; nhiều gate bị runner timeout 124.",
+  "root_cause": "Nghi flaky/race khi Nx run-many chạy song song (fast gate chạy lại toàn bộ test PASS 82 files/302 tests); chưa chứng minh chắc.",
+  "resolution": "Chưa sửa test; thử lại NX_PARALLEL=1 bị ngắt, không kết luận được. Ghi nhận không liên quan thay đổi.",
+  "resolution_type": [
+   "none-yet"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "B2",
+   "B4"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a0015f",
+    "quote": "`admin:test` có 4 test fail và `web` có 1 timeout trong `help/page.spec.tsx`",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "01a06739",
+    "quote": "`admin/web` có 9 test fail (8 timeout, 1 assertion accessibility notification badge)",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "codex"
+  ],
+  "id": "P063",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "g37",
+  "title": "Container smoke Linux-only chạy trên Windows chặn push",
+  "date": "2026-08-19",
+  "area": "ci-cd",
+  "kind": "ci-build",
+  "status": "fixed",
+  "problem": "git push bị husky pre-push chặn: ci-local all fail ở container smoke dù test/E2E đã PASS.",
+  "root_cause": "Container smoke dùng Docker host networking, chỉ hỗ trợ Linux/WSL, nên fail trên Windows native.",
+  "resolution": "scripts/ci/local.mjs: profile all/pre-push trên Windows native skip riêng container smoke (có log); ci:local:docker chạy trực tiếp vẫn fail rõ. Thêm regression test local.test.mjs, cập nhật quality-gates.md; ci:local:all PASS.",
+  "resolution_type": [
+   "ci-config",
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B3"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a01908",
+    "quote": "Container smoke dùng Docker host networking giống GitHub Actions; chạy lệnh này trên Linux/WSL.",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "scripts/ci/local.mjs",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "file",
+    "ref": "docs/runbooks/quality-gates.md",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "cf17e22",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "codex",
+   "git"
+  ],
+  "id": "P064",
+  "ev_total": 4,
+  "ev_ref_ok": 4,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g66",
+  "title": "Hiểu sai luật cổng quà (follower/ngày vs người bắt chuyện lần đầu)",
+  "date": "2026-08-19",
+  "area": "economy-payment",
+  "kind": "design-flaw",
+  "status": "fixed",
+  "problem": "Ngưỡng tặng quà ban đầu tính theo số follower trong ngày, sai ý user (phải tính số người bắt chuyện lần đầu: 10 đầu miễn phí, từ người 11 cần quà).",
+  "root_cause": "Hiểu sai yêu cầu nghiệp vụ; thiết kế profile_follows làm bộ đếm thay vì bảng first-contact.",
+  "resolution": "Đổi sang bảng ProfileChatContact (migration 1757600000000), mỗi cặp ghi một lần theo ngày UTC; follow không tăng bộ đếm; gift unlock ghi contact trong transaction Economy; sửa race conversation sẵn có. Matching gate 98 suites/968 tests PASS.",
+  "resolution_type": [
+   "code-fix",
+   "design-doc-adr",
+   "test-added"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "B3"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a01908",
+    "quote": "ngưỡng phải tính theo số người lần đầu mở cuộc trò chuyện trực tiếp với profile trong ngày",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "apps/core-api/src/database/migrations/1757600000000-profile-chat-contact.ts",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "code",
+   "codex"
+  ],
+  "id": "P066",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g67",
+  "title": "Toast đỏ sai ngữ cảnh khi hồ sơ yêu cầu tặng quà",
+  "date": "2026-08-19",
+  "area": "frontend-ux",
+  "kind": "ux",
+  "status": "fixed",
+  "problem": "Nút Nhắn tin gọi mutation dù server báo requiresGift gây toast đỏ sai ngữ cảnh; Discovery còn modal trung gian và 2 nút Voice/Soul Match cũ.",
+  "root_cause": "UI không dùng state messageAvailable/requiresGift của server; card Discovery mở DiscoveryDetailSheet thay vì đi thẳng profile.",
+  "resolution": "public-profile-view không gọi mở chat khi requiresGift (hiện khu tặng quà), bỏ 2 nút cũ; discovery-card thành Link tới /users/{id}, bỏ sheet; thêm regression test profile/discovery.",
+  "resolution_type": [
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "B3"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a01990",
+    "quote": "Nút Voice Match/Soul Match đã bị loại khỏi profile page",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "apps/web/src/features/profile/components/public-profile-view.tsx",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "codex"
+  ],
+  "id": "P067",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g68",
+  "title": "Migration gộp gây phụ thuộc chéo + gate kiến trúc đỏ",
+  "date": "2026-08-19",
+  "area": "database-concurrency",
+  "kind": "design-flaw",
+  "status": "fixed",
+  "problem": "Migration gộp follow + gift context khiến suite Friend phụ thuộc bảng gift_events; gate kiến trúc báo file lỗi sai thư mục và Gift test import nội bộ Friend; notification service sai layout.",
+  "root_cause": "Vi phạm boundary giữa domain/migration và quy ước thư mục services/errors của module.",
+  "resolution": "Tách migration thành profile-follow và profile-gift-context; chuyển errors/service vào thư mục hợp lệ, Gift test import qua public API; architecture test PASS (116 và 103 assertions).",
+  "resolution_type": [
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "B3"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a01908",
+    "quote": "Hai kiểm tra kiến trúc hiện đã PASS (116 assertions)",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "01a01990",
+    "quote": "`notification` chỉ cho production service nằm trong thư mục `services/`",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "codex"
+  ],
+  "id": "P068",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "g42",
+  "title": "Dry-run test rò cờ Nx cache làm pre-push fail",
+  "date": "2026-08-20",
+  "area": "ci-cd",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "Pre-push fail: local.test.mjs dry-run không khớp /Reuse persistent Nx cache/ dù đã dọn cache Docker.",
+  "root_cause": "Test thiếu isolation: LOCAL_CI_STRICT_CLEAN/LOCAL_CI_RESET_NX còn bật trong terminal làm dry-run đi nhánh 'Reset Nx'.",
+  "resolution": "Loại hai biến khỏi env của helper dry-run trong scripts/ci/local.test.mjs; kiểm chứng với hai biến bật (22/22 PASS), commit hotfix 60269c6 và push thành công.",
+  "resolution_type": [
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B3"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "60269c6",
+    "quote": "fix(ci): isolate nx cache flags in dry-run tests",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "scripts/ci/local.test.mjs",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "01a01990",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "60269c6",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "pr",
+    "ref": "#69",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "codex",
+   "git"
+  ],
+  "id": "P069",
+  "ev_total": 5,
+  "ev_ref_ok": 5,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g69",
+  "title": "Inbox không hiện hội thoại trực tiếp",
+  "date": "2026-08-20",
+  "area": "frontend-ux",
+  "kind": "ux",
+  "status": "fixed",
+  "problem": "Bấm Nhắn tin từ profile báo đã có conversation nhưng trang Tin nhắn trống; chat với người chưa kết bạn không hiện trong inbox.",
+  "root_cause": "/friends chỉ query bảng friendship (friend.service.ts) và friends-list chỉ hiện conversation có lastMessageAt, nên direct conversation chưa friend/chưa có tin bị ẩn.",
+  "resolution": "Inbox đọc mọi conversation (listForUser), hiển thị cả conversation chưa có message; canCall derive từ follow hai chiều; thêm test unit/integration. Calling gate 98 suites/973 tests PASS.",
+  "resolution_type": [
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "B3"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a01990",
+    "quote": "inbox vẫn trống",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "01a01990",
+    "quote": "Inbox hiển thị cả cuộc trò chuyện chưa có tin nhắn",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "codex"
+  ],
+  "id": "P070",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "g70",
+  "title": "Cổng gọi điện có thể bypass sau khi block (bắt được khi tự review)",
+  "date": "2026-08-20",
+  "area": "auth-security",
+  "kind": "security",
+  "status": "fixed",
+  "problem": "Self-review thấy block không tự tắt follow cũ, nên cặp đã block vẫn có thể gọi nếu chỉ kiểm tra follow hai chiều.",
+  "root_cause": "Quyền gọi chỉ dựa trên hai bản ghi follow active, không kiểm tra block.",
+  "resolution": "Thêm canCall ở ProfileSocialService kiểm tra block + follow hai chiều tại POST join trong calling.service.ts; thêm unit/integration test (33 test PASS, gate Calling 973 PASS).",
+  "resolution_type": [
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "B3"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a01990",
+    "quote": "block hiện không tự tắt các row follow cũ",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "apps/core-api/src/modules/calling/calling.service.ts",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "codex"
+  ],
+  "id": "P071",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g71",
+  "title": "Windows: Nx build lỗi 1314 + runner timeout (exit 124)",
+  "date": "2026-08-20",
+  "area": "windows-toolchain",
+  "kind": "process",
+  "status": "mitigated",
+  "problem": "Trên Windows: quality gate/nx build/test bị runner timeout không log (exit 124), Nx build báo os error 1314, next build ngoài Nx thiếu NEXT_PUBLIC_*, next-env.d.ts bị sinh đổi, lệnh cài package chạy nhầm thư mục cha.",
+  "root_cause": "Giới hạn watchdog tool, dev server giữ .next, build direct thiếu env, workdir lệch; không phải lỗi logic.",
+  "resolution": "Chạy tách target, tắt dev server rồi build lại, cấp env NEXT_PUBLIC_* local, hoàn tác next-env.d.ts, gỡ package cài nhầm ở thư mục cha.",
+  "resolution_type": [
+   "process-rule"
+  ],
+  "confidence": "low",
+  "tasks": [
+   "B3"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a01990",
+    "quote": "Windows `os error 1314`",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "01a01990",
+    "quote": "nhầm ở thư mục cha",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "codex"
+  ],
+  "id": "P072",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "g72",
+  "title": "Báo động giả: clean container fail ở agent-check không có assertion",
+  "date": "2026-08-20",
+  "area": "ci-cd",
+  "kind": "false-alarm",
+  "status": "false-alarm",
+  "problem": "Pre-push clean Linux container fail ở repository-check/agent check, log không có assertion cụ thể.",
+  "root_cause": "Không tái hiện: replay PASS (~48s); nghi run bị gián đoạn/chậm do bind mount Docker từ Windows hoặc cache, không phải code web-push.",
+  "resolution": "Không sửa code; chạy lại profile clean PASS (repository check, 137 agent tests, format, lint 14 project). Lỗi thật xuất hiện sau đó là env leak của test.",
+  "resolution_type": [
+   "none-yet"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "B3"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a01990",
+    "quote": "Profile `clean` chính thức đã PASS hoàn toàn",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "C",
+  "sources": [
+   "codex"
+  ],
+  "id": "P073",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g74",
+  "title": "Rate limit trong bộ nhớ từng pod + trần kết nối Postgres",
+  "date": "2026-09-03",
+  "area": "deploy-config",
+  "kind": "design-flaw",
+  "status": "fixed",
+  "problem": "Chạy nhiều replica core-api: hạn mức rate limit nhân N lần, mất khi deploy; tổng kết nối Postgres có thể vượt max_connections.",
+  "root_cause": "Throttler mặc định đếm trong bộ nhớ từng process; pool kết nối mỗi pod không có trần cấu hình, HPA maxReplicas nhân pool vượt ngân sách.",
+  "resolution": "Thêm RedisThrottlerStorage (THROTTLE_STORAGE=redis, Lua script, fallback bộ nhớ khi Redis lỗi) và DATABASE_POOL_MAX; ghi ngân sách 10x10=100 trong k8s/README.md; k8s base đặt redis. Bổ sung sau rà soát độc lập (09/10): K8s base đặt HTTP_TRUST_PROXY_HOPS=1 (trước đó req.ip là IP ingress nên mọi người dùng chung một bucket mỗi route) và core-api cảnh báo lúc boot khi redis + production + hops 0; sàn DATABASE_POOL_MAX 5 vì job singleton giữ 1 kết nối cho advisory lock và cần thêm 1 (đã chứng minh trên Postgres thật); DATABASE_POOL_ACQUIRE_TIMEOUT_MS (mặc định 10 giây) để hết kết nối thì lỗi thay vì treo; sửa số học ngân sách kết nối trong k8s/README.md.",
+  "resolution_type": [
+   "code-fix",
+   "design-doc-adr",
+   "env-config",
+   "none-yet"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A2",
+   "B4"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "c1284fc",
+    "quote": "rate limit dùng chung qua Redis và trần kết nối Postgres mỗi pod",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "doc",
+    "ref": "docs/plans/2026-10-08-capacity-and-scaling-plan.md",
+    "quote": "tổng DB connection tăng theo số replica",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "01a06739",
+    "quote": "Rate limit core-api chưa phân tán",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "claude-session",
+    "ref": "1f780174",
+    "quote": "Rate limit nằm trong bộ nhớ từng pod",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "apps/core-api/src/app/app.module.ts",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "1ffebf3",
+    "quote": "THROTTLE_STORAGE=redis khoá theo req.ip",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "claude",
+   "code",
+   "codex",
+   "docs",
+   "git"
+  ],
+  "id": "P076",
+  "ev_total": 6,
+  "ev_ref_ok": 6,
+  "ev_quote_total": 5,
+  "ev_quote_ok": 5,
+  "flags": []
+ },
+ {
+  "key": "g75",
+  "title": "Test hard-kill của run-stage lỗi trên Windows (exit 124)",
+  "date": "2026-09-03",
+  "area": "windows-toolchain",
+  "kind": "ci-build",
+  "status": "open",
+  "problem": "pnpm agent:verify media FAIL trên Windows: test hard-kill trong scripts/ci/run-stage.test.mjs kỳ vọng exit 124 nhưng nhận rỗng (2 test lần đầu, 3 test khi retry).",
+  "root_cause": "Test harness chung không portable trên Windows (cơ chế kill/timeout); không phải lỗi LiveKit.",
+  "resolution": "Chỉ chẩn đoán là finding độ ổn định CI portability; chưa thấy sửa trong bằng chứng.",
+  "resolution_type": [
+   "none-yet"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B4"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a06739",
+    "quote": "Gate media chưa PASS, nhưng lỗi nằm ở test harness chung `scripts/ci/run-stage.test.mjs` trên Windows",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "scripts/ci/run-stage.test.mjs",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "codex"
+  ],
+  "id": "P077",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "ci2",
+  "title": "PR Dependabot đỏ vì chính sách minimumReleaseAge của pnpm",
+  "task": "ci",
+  "date": "2026-09-09",
+  "area": "dependencies",
+  "kind": "dependency",
+  "status": "open",
+  "unconfirmed": false,
+  "problem": "Các PR bump dependency của Dependabot (next, vitest, joi, axios...) fail ở bước quality preflight với ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION nên không merge được.",
+  "root_cause": "Chính sách chuỗi cung ứng của pnpm 11 từ chối các bản phát hành quá mới, trong khi Dependabot đề xuất đúng các bản mới nhất.",
+  "resolution": "Đúng thiết kế nhưng chưa xử lý: chờ bản đủ tuổi hoặc cấu hình ngoại lệ có chủ đích cho gói cần cập nhật gấp.",
+  "resolution_type": [
+   "none-yet"
+  ],
+  "confidence": "high",
+  "evidence": [
+   {
+    "kind": "ci-run",
+    "ref": "37845423227",
+    "quote": "ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "ci-run",
+    "ref": "37405486552",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "keywords": [],
+  "tasks": [
+   "ci"
+  ],
+  "merged_from": 1,
+  "tier": "A",
+  "sources": [
+   "github-actions"
+  ],
+  "id": "P078",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g50",
+  "title": "Push bị GitHub từ chối 403 (sai tài khoản)",
+  "date": "2026-10-08",
+  "area": "ci-cd",
+  "kind": "config-deploy",
+  "status": "fixed",
+  "problem": "Push bị GitHub từ chối 403: remote xác thực bằng tài khoản manhpv-3661 không có quyền ghi repo ducmanh001/litmatch.",
+  "root_cause": "gh đang active sai tài khoản; tài khoản owner ducmanh001 đang inactive.",
+  "resolution": "Chuyển tài khoản active của gh sang ducmanh001 rồi push thành công, mở PR #75.",
+  "resolution_type": [
+   "env-config"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B4"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a11bf9",
+    "quote": "Quyền push đã được sửa bằng cách chuyển `gh` sang tài khoản owner",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "pr",
+    "ref": "#75",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "codex",
+   "git"
+  ],
+  "id": "P079",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g87",
+  "title": "Chạm session limit vì workflow nhiều agent (đốt ~2,9M token)",
+  "date": "2026-10-08",
+  "area": "ai-agent-process",
+  "kind": "process",
+  "status": "fixed",
+  "problem": "Workflow 10 agent song song đốt ~2.9M token trong 16 phút, chạm session limit hai lần (1:50am, 05:57), giết toàn bộ agent không có kết quả; từng mở 3 sub-agent vượt giới hạn 2.",
+  "root_cause": "Chạy nhiều agent đồng thời, không ghi kết quả từng phần, vượt trần 2 agent của AGENTS.md.",
+  "resolution": "Quy tắc mới: trích xuất tất định bằng AST/validator trước, tối đa 2 agent, ghi partial output, dừng khi lỗi limit, sao lưu, publish sớm; lưu memory feedback-keep-work-cheap-and-fast.",
+  "resolution_type": [
+   "process-rule"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B4"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "memory",
+    "ref": "feedback-keep-work-cheap-and-fast.md",
+    "quote": "burned ~2.9M subagent tokens in 16 minutes and hit the account \"session limit\"",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "claude-session",
+    "ref": "9353f1cf",
+    "quote": "You've hit your session limit · resets 1:50am (Asia/Bangkok)",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "claude-session",
+    "ref": "1f780174",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "claude",
+   "claude-memory"
+  ],
+  "id": "P080",
+  "ev_total": 3,
+  "ev_ref_ok": 3,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "f1",
+  "title": "Báo động giả: /metrics trả 404 (đúng thiết kế OTLP)",
+  "date": "2026-10-09",
+  "area": "observability",
+  "kind": "false-alarm",
+  "status": "false-alarm",
+  "problem": "Prometheus /metrics public trả 404.",
+  "root_cause": "Đúng thiết kế: core-api/signaling-gateway đẩy metrics OTLP lên Grafana, Alloy chỉ scrape LiveKit; không expose /metrics.",
+  "resolution": "Kết luận không phải lỗi, không mở /metrics public; chỉ cần xác nhận biến GRAFANA_CLOUD_* và log '[metrics] gửi thành công'.",
+  "resolution_type": [
+   "none-yet"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B4"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a11dea",
+    "quote": "`/metrics` hiện trả `404` là đúng với kiến trúc repo hiện tại",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "observability/alloy/config.alloy",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "C",
+  "sources": [
+   "code",
+   "codex"
+  ],
+  "id": "P081",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "f2",
+  "title": "Báo động giả: Nearby 403 / Feed chặn guest là đúng chính sách",
+  "date": "2026-10-09",
+  "area": "auth-security",
+  "kind": "false-alarm",
+  "status": "false-alarm",
+  "problem": "Discovery Nearby trả 403 và Feed chặn guest đăng bài khi test bằng tài khoản khách.",
+  "root_cause": "Đúng chính sách: chưa bật hiển thị vị trí; tài khoản guest bị giới hạn tính năng.",
+  "resolution": "Kết luận không phải lỗi; UI đã hướng dẫn bật vị trí. Đề xuất test bằng 2 user thật để phủ đủ tính năng.",
+  "resolution_type": [
+   "none-yet"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B4"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a11dea",
+    "quote": "Discovery Nearby trả `403` khi chưa bật hiển thị vị trí: đúng policy",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "C",
+  "sources": [
+   "codex"
+  ],
+  "id": "P082",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "f3",
+  "title": "Báo động giả: Party media lỗi khi headless không cấp mic",
+  "date": "2026-10-09",
+  "area": "realtime-gateway",
+  "kind": "false-alarm",
+  "status": "false-alarm",
+  "problem": "Party media báo lỗi khi chạy browser headless.",
+  "root_cause": "Không cấp quyền microphone cho browser test; cấp quyền thì PASS.",
+  "resolution": "Chạy lại với quyền microphone, kết nối LiveKit thành công.",
+  "resolution_type": [
+   "none-yet"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B4"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a11dea",
+    "quote": "Party media chỉ báo lỗi khi chạy headless browser không cấp quyền microphone",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "C",
+  "sources": [
+   "codex"
+  ],
+  "id": "P083",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "f4",
+  "title": "Báo động giả: throttle đăng nhập guest 5 lần/phút chặn retest",
+  "date": "2026-10-09",
+  "area": "auth-security",
+  "kind": "false-alarm",
+  "status": "false-alarm",
+  "problem": "Retest sâu bị API guest login chặn tạm thời do rate limit 5 lần/phút từ IP test.",
+  "root_cause": "Rate limit đăng nhập hoạt động đúng; test chạy quá nhiều lần login.",
+  "resolution": "Chờ hết cửa sổ rate limit rồi chạy lại, không kết luận từ lần retry lỗi.",
+  "resolution_type": [
+   "process-rule"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "B4"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a11dea",
+    "quote": "rate limit đăng nhập (5 lần/phút) từ IP test",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "C",
+  "sources": [
+   "codex"
+  ],
+  "id": "P084",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g76",
+  "title": "Guest reload mất device token → Matching 401",
+  "date": "2026-10-09",
+  "area": "frontend-ux",
+  "kind": "bug",
+  "status": "open",
+  "problem": "Guest reload trang rồi vào Matching: POST /matching/tickets trả 401; GET /support/tickets/me cũng có thể 401. SPA navigation không reload thì 201.",
+  "root_cause": "guestDeviceToken chỉ lưu trong memory (token-store.ts), mất sau reload; matching.controller yêu cầu header X-Guest-Device-Token.",
+  "resolution": "Chỉ chẩn đoán: cần lưu/reissue guest token khi restore session và guard query support trước khi có phiên; chưa thấy commit sửa.",
+  "resolution_type": [
+   "none-yet"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B4"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a11dea",
+    "quote": "Guest reload làm Matching trả `401` — mức độ cao",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "libs/api-client/src/lib/token-store.ts",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "codex"
+  ],
+  "id": "P085",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g77",
+  "title": "Relay realtime gửi trùng event theo số pod (LRN-011)",
+  "date": "2026-10-09",
+  "area": "realtime-gateway",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "Relay realtime của signaling-gateway gửi trùng event: mỗi socket nhận N bản (N = số pod).",
+  "root_cause": "Mọi pod PSUBSCRIBE realtime:user:* và relay bằng server.to(room).emit; Redis cluster adapter lại chuyển tiếp broadcast sang các pod khác.",
+  "resolution": "Dùng server.local khi emit. Test hai pod chạy mã thật @socket.io/redis-adapter trên bus giả + 1 case Redis thật (đã xác nhận đỏ khi bỏ fix). Ghi LRN-2026-011. Đánh đổi của relay cục bộ khi pod mất subscription đã được ghi vào docs/services/realtime-gateway.md (3888a32).",
+  "resolution_type": [
+   "code-fix",
+   "design-doc-adr",
+   "test-added"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A2",
+   "B4"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "d639899",
+    "quote": "relay realtime chỉ emit cho room cục bộ để không gửi trùng theo số pod",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "memory",
+    "ref": "project-litmatch-service-map.md",
+    "quote": "relay in signaling-gateway may duplicate events across pods",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "claude-session",
+    "ref": "1f780174",
+    "quote": "với 2 pod, socket nhận 2 bản của cùng một sự kiện",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "3888a32",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "claude",
+   "claude-memory",
+   "code",
+   "git"
+  ],
+  "id": "P086",
+  "ev_total": 5,
+  "ev_ref_ok": 5,
+  "ev_quote_total": 3,
+  "ev_quote_ok": 3,
+  "flags": []
+ },
+ {
+  "key": "g78",
+  "title": "Bỏ qua kiểm bundleId Apple khi env rỗng",
+  "date": "2026-10-09",
+  "area": "auth-security",
+  "kind": "security",
+  "status": "fixed",
+  "problem": "Webhook Apple bỏ qua kiểm tra bundleId khi ECONOMY_APPLE_BUNDLE_ID rỗng ở chế độ store, nên app khác dùng chung chuỗi chứng chỉ Apple có thể qua.",
+  "root_cause": "Env validation cho phép bundle id rỗng ở ECONOMY_IAP_VERIFIER=store.",
+  "resolution": "Env validation từ chối boot ở chế độ store nếu thiếu ECONOMY_APPLE_BUNDLE_ID; dev/disabled vẫn cho rỗng. Mở rộng sau rà soát (09/10): webhook dùng ECONOMY_APPLE_WEBHOOK_VERIFIER (mặc định store) chứ không phải ECONOMY_IAP_VERIFIER, nên bắt buộc giờ gồm IAP store HOẶC (webhook store và đã điền ECONOMY_APPLE_ROOT_CA_PEM). Docs ghi rõ kiểm receipt hiện chưa so bundle_id.",
+  "resolution_type": [
+   "code-fix",
+   "env-config"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A2",
+   "B4"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "5a56d6a",
+    "quote": "bắt buộc ECONOMY_APPLE_BUNDLE_ID khi ECONOMY_IAP_VERIFIER=store",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "memory",
+    "ref": "project-litmatch-service-map.md",
+    "quote": "Apple bundleId check skipped when ECONOMY_APPLE_BUNDLE_ID empty",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "5a56d6a",
+    "quote": "fix(economy): bắt buộc ECONOMY_APPLE_BUNDLE_ID khi ECONOMY_IAP_VERIFIER=store",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "claude-session",
+    "ref": "1f780174",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "commit",
+    "ref": "fb29385",
+    "quote": "cũng bắt buộc khi webhook Apple store có Root CA",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "claude",
+   "claude-memory",
+   "git"
+  ],
+  "id": "P087",
+  "ev_total": 5,
+  "ev_ref_ok": 5,
+  "ev_quote_total": 4,
+  "ev_quote_ok": 4,
+  "flags": []
+ },
+ {
+  "key": "g79",
+  "title": "View count video cộng đôi khi đồng thời",
+  "date": "2026-10-09",
+  "area": "short-video",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "recordView có thể cộng đôi view count khi đồng thời; đường save() bắt unique violation trong transaction bị Postgres huỷ.",
+  "root_cause": "Check-then-act với save() + bắt unique violation trong transaction đã aborted.",
+  "resolution": "INSERT ... ON CONFLICT DO NOTHING rồi SELECT ... FOR UPDATE, bỏ đường save()+catch (liên hệ LRN-2026-002).",
+  "resolution_type": [
+   "code-fix"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A2",
+   "B4"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "d506ca2",
+    "quote": "view count không cộng đôi khi đồng thời",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "memory",
+    "ref": "project-litmatch-service-map.md",
+    "quote": "short-video view-count race",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "d506ca2",
+    "quote": "fix(short-video): view count không cộng đôi khi đồng thời; sweeper không đói video failed mới",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "claude-memory",
+   "git"
+  ],
+  "id": "P088",
+  "ev_total": 3,
+  "ev_ref_ok": 3,
+  "ev_quote_total": 3,
+  "ev_quote_ok": 3,
+  "flags": []
+ },
+ {
+  "key": "g80",
+  "title": "Sweeper video lỗi bị đói (lặp 200 hàng cũ nhất)",
+  "date": "2026-10-09",
+  "area": "short-video",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "Sweeper video lặp lại 200 hàng cũ nhất nên video failed mới bị bỏ đói, không được dọn storage.",
+  "root_cause": "Không có cột đánh dấu đã dọn; hàng lỗi luôn nằm đầu hàng đợi.",
+  "resolution": "Thêm cột videos.storage_cleaned_at (migration mới) để hàng đã dọn rời hàng đợi, hàng lỗi bị đẩy về cuối.",
+  "resolution_type": [
+   "code-fix"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A2",
+   "B4"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "d506ca2",
+    "quote": "sweeper không đói video failed mới",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "memory",
+    "ref": "project-litmatch-service-map.md",
+    "quote": "failed-video sweeper starvation",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "d506ca2",
+    "quote": "fix(short-video): view count không cộng đôi khi đồng thời; sweeper không đói video failed mới",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "claude-memory",
+   "git"
+  ],
+  "id": "P089",
+  "ev_total": 3,
+  "ev_ref_ok": 3,
+  "ev_quote_total": 3,
+  "ev_quote_ok": 3,
+  "flags": []
+ },
+ {
+  "key": "g81",
+  "title": "Huỷ ván mini-game ghi đè ván đã resolved",
+  "date": "2026-10-09",
+  "area": "matching",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "Huỷ ván mini-game có thể ghi đè ván đã resolved thành cancelled khi thua race.",
+  "root_cause": "Cancel không phải conditional update (check-then-act).",
+  "resolution": "UPDATE ... WHERE status = waiting_moves; thua race trả 409 (đã có kết quả) hoặc trạng thái cancelled idempotent.",
+  "resolution_type": [
+   "code-fix"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A2",
+   "B4"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "d4f3e81",
+    "quote": "huỷ ván là conditional update, không ghi đè ván đã resolved",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "memory",
+    "ref": "project-litmatch-service-map.md",
+    "quote": "mini-game cancel can overwrite resolved",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "d4f3e81",
+    "quote": "fix(mini-game): huỷ ván là conditional update, không ghi đè ván đã resolved",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "claude-session",
+    "ref": "1f780174",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "claude",
+   "claude-memory",
+   "git"
+  ],
+  "id": "P090",
+  "ev_total": 4,
+  "ev_ref_ok": 4,
+  "ev_quote_total": 3,
+  "ev_quote_ok": 3,
+  "flags": []
+ },
+ {
+  "key": "g82",
+  "title": "Xoay JWT_SECRET đăng xuất mọi người",
+  "date": "2026-10-09",
+  "area": "auth-security",
+  "kind": "design-flaw",
+  "status": "fixed",
+  "problem": "Xoay JWT_SECRET sẽ đăng xuất toàn bộ người dùng vì không có khoá cũ để xác minh token đang sống.",
+  "root_cause": "Chỉ hỗ trợ một khoá ký/xác minh.",
+  "resolution": "Thêm JWT_SECRET_PREVIOUS: ký bằng khoá mới, core-api và gateway chỉ thử khoá cũ khi chữ ký không khớp; quy trình xoay (gateway trước, rồi core-api) ở k8s/README.md. Sau rà soát (09/10): xoay theo 3 bước (phân phối khoá mới làm khoá phụ, đổi vai, gỡ khoá phụ) vì rollout cuốn chiếu làm pod cũ từ chối token do pod mới ký; env validation từ chối JWT_SECRET_PREVIOUS trùng AUTH_GUEST_DEVICE_TOKEN_SECRET (nếu trùng, guest-device token sống nhiều ngày sẽ verify được như access token).",
+  "resolution_type": [
+   "code-fix",
+   "process-rule"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "A2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "6d1082f",
+    "quote": "xoay JWT_SECRET không đăng xuất mọi người (JWT_SECRET_PREVIOUS)",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "commit",
+    "ref": "54c66ab",
+    "quote": "JWT_SECRET_PREVIOUS trùng AUTH_GUEST_DEVICE_TOKEN_SECRET",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "git"
+  ],
+  "id": "P091",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "g83",
+  "title": "Windows thiếu zip/unzip nên docs:check không chạy",
+  "date": "2026-10-09",
+  "area": "windows-toolchain",
+  "kind": "ci-build",
+  "status": "mitigated",
+  "problem": "Máy Windows thiếu zip/unzip nên pnpm docs:check/generate DOCX không chạy; unzip Git không đọc entry có bracket.",
+  "root_cause": "Generator dựa vào zip/unzip không có trên Windows.",
+  "resolution": "Dùng shim tạm (.NET ZipArchive tạo, 7-Zip kiểm tra) trong temp/PATH của lệnh, không sửa tooling repo; pnpm docs:check PASS.",
+  "resolution_type": [
+   "env-config"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "50f7dc9",
+    "quote": "DOCX sinh bằng shim 7-Zip vì máy Windows không có zip/unzip",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "doc",
+    "ref": "docs/plans/2026-10-08-capacity-and-scaling-plan.md",
+    "quote": "thiếu `zip` và Git `unzip` không đọc được entry có bracket",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "docs",
+   "git"
+  ],
+  "id": "P092",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "g84",
+  "title": "Báo cáo bằng chứng generated bị stale",
+  "date": "2026-10-09",
+  "area": "docs-tooling",
+  "kind": "bug",
+  "status": "fixed",
+  "problem": "Báo cáo bằng chứng generated bị stale vì vị trí source dịch chuyển.",
+  "root_cause": "Source dịch chuyển nhưng báo cáo sinh tự động chưa chạy lại.",
+  "resolution": "Chạy pnpm docs:generate để sinh lại; docs:check PASS; không đổi status capability.",
+  "resolution_type": [
+   "code-fix"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "A2"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "50f7dc9",
+    "quote": "sinh lại báo cáo bằng chứng product/spec sau khi vị trí source dịch chuyển",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "git"
+  ],
+  "id": "P093",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g85",
+  "title": "Giới hạn đã biết: advisory lock Palm/Movie Match, outbox chưa có consumer/retention",
+  "date": "2026-10-09",
+  "area": "matching",
+  "kind": "design-flaw",
+  "status": "open",
+  "problem": "Khoá advisory toàn cục của Palm/Movie Match là giới hạn scale; outbox Economy chưa có consumer và retention.",
+  "root_cause": "Thiết kế ban đầu chấp nhận khoá toàn cục; outbox relay tắt ở profile hosted-free nên chưa có consumer.",
+  "resolution": "Mới ghi tài liệu giới hạn đã biết, điều kiện đổi và quyết định cần chốt trước khi bật relay ở production; chưa đổi code.",
+  "resolution_type": [
+   "design-doc-adr",
+   "none-yet"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "A2",
+   "B4"
+  ],
+  "merged_from": 2,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "67742ff",
+    "quote": "Outbox Economy: chưa có consumer và chưa có ⏎ retention",
+    "_ref_ok": true,
+    "_quote_ok": false
+   },
+   {
+    "kind": "commit",
+    "ref": "67742ff",
+    "quote": "docs(core-api): ghi giới hạn đã biết của hàng đợi ghép ẩn danh và của outbox",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "git"
+  ],
+  "id": "P094",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g88",
+  "title": "Bước prune xoá nhầm 15 kết luận hợp lệ (pipeline service-map)",
+  "date": "2026-10-09",
+  "area": "ai-agent-process",
+  "kind": "process",
+  "status": "fixed",
+  "problem": "Bước dọn dữ liệu (validate-localconf --prune) xoá nhầm 15 kết luận hợp lệ sau khi flow-packets3 chia lại packet.",
+  "root_cause": "Prune chạy trên manifest đã bị flow-packets3.cjs.re-partition, lệch với agent output.",
+  "resolution": "Khôi phục từ bản sao lưu; validators dùng packets/localconf-manifest.run1.json và build-all không còn prune localconf.",
+  "resolution_type": [
+   "process-rule"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B4"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "memory",
+    "ref": "project-litmatch-service-map.md",
+    "quote": "validate-localconf --prune",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "claude-session",
+    "ref": "1f780174",
+    "quote": "xoá nhầm 15 kết luận hợp lệ",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "claude",
+   "claude-memory"
+  ],
+  "id": "P095",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "g89",
+  "title": "Heuristic độ phủ khớp đuôi đường dẫn ngắn → dương tính giả",
+  "date": "2026-10-09",
+  "area": "ai-agent-process",
+  "kind": "process",
+  "status": "fixed",
+  "problem": "Heuristic kiểm độ phủ khớp đuôi đường dẫn ngắn (vd 'end') gây dương tính giả, khai báo phủ sai (có 2 khai báo sai ở sơ đồ cũ).",
+  "root_cause": "check-covers khớp suffix đường dẫn quá lỏng, không kèm METHOD.",
+  "resolution": "check-covers.cjs yêu cầu METHOD + path suffix, có covers-override.json cho 3 ngoại lệ; sửa 2 khai báo sai.",
+  "resolution_type": [
+   "code-fix",
+   "process-rule"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B4"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "memory",
+    "ref": "project-litmatch-service-map.md",
+    "quote": "check-covers now requires METHOD + path suffix",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "claude-session",
+    "ref": "1f780174",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "claude",
+   "claude-memory"
+  ],
+  "id": "P096",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g90",
+  "title": "Sửa script qua shell lồng quote làm hỏng regex; Workflow scriptPath bị từ chối",
+  "date": "2026-10-09",
+  "area": "ai-agent-process",
+  "kind": "process",
+  "status": "fixed",
+  "problem": "Sửa script build qua shell lồng quote làm hỏng regex; swap-limits cắt luôn hàm renderFindings; Workflow scriptPath bị từ chối; sơ đồ cắt nhãn >3 dòng (64/1007 bước).",
+  "root_cause": "Dùng sed/node -e với quoting lồng nhau; scriptPath phải là file do tool trả về; renderer giới hạn 3 dòng.",
+  "resolution": "Dùng Write/Edit thay shell, chèn lại renderFindings, truyền args.tasks cho Workflow, nâng giới hạn nhãn lên 7 dòng.",
+  "resolution_type": [
+   "code-fix",
+   "process-rule"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "B4"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "memory",
+    "ref": "project-litmatch-service-map.md",
+    "quote": "build scripts edited through nested shell quoting corrupt regexes",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "claude-session",
+    "ref": "1f780174",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "claude",
+   "claude-memory"
+  ],
+  "id": "P097",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g91",
+  "title": "Báo cáo đầu chỉ là smoke test, bỏ sót lỗi profile",
+  "date": "2026-10-09",
+  "area": "ai-agent-process",
+  "kind": "process",
+  "status": "fixed",
+  "problem": "Báo cáo đầu của agent chỉ là smoke test route nhưng bị hiểu là kiểm thử đầy đủ, nên bỏ sót lỗi profile follow/nhắn tin.",
+  "root_cause": "Phạm vi test mới là route + vài flow chính, không test từng nút/action.",
+  "resolution": "Agent thừa nhận, chạy lại functional sweep 2 tài khoản guest và tìm ra lỗi 404 profile; kết luận lại 'chưa PASS toàn bộ'.",
+  "resolution_type": [
+   "process-rule"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "B4"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a11dea",
+    "quote": "website đã qua smoke test, chưa phải full functional test",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "B",
+  "sources": [
+   "codex"
+  ],
+  "id": "P098",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "o1",
+  "title": "Ranked sort loại hàng có rankScore IS NULL",
+  "task": "memory",
+  "date": "2026-10-09",
+  "area": "other",
+  "kind": "design-flaw",
+  "status": "open",
+  "unconfirmed": true,
+  "problem": "Quan sát từ audit tĩnh service-map: Ranked sort loại hàng có rankScore IS NULL. Chưa xác nhận ở runtime, chưa có commit sửa.",
+  "root_cause": "Suy ra từ đọc code (audit tĩnh), chưa tái hiện.",
+  "resolution": "Chưa xử lý; được ghi trong memory như quan sát cho dev team.",
+  "resolution_type": [
+   "none-yet"
+  ],
+  "confidence": "medium",
+  "evidence": [
+   {
+    "kind": "memory",
+    "ref": "project-litmatch-service-map.md",
+    "quote": "ranked sort excludes rankScore IS NULL",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "keywords": [],
+  "tasks": [
+   "memory"
+  ],
+  "merged_from": 1,
+  "tier": "B",
+  "sources": [
+   "claude-memory"
+  ],
+  "id": "P099",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "o2",
+  "title": "getHiddenUserIds không có cửa sổ thời gian (cần quyết định sản phẩm)",
+  "task": "memory",
+  "date": "2026-10-09",
+  "area": "other",
+  "kind": "design-flaw",
+  "status": "open",
+  "unconfirmed": true,
+  "problem": "Quan sát từ audit tĩnh service-map: getHiddenUserIds không có cửa sổ thời gian (cần quyết định sản phẩm). Chưa xác nhận ở runtime, chưa có commit sửa.",
+  "root_cause": "Suy ra từ đọc code (audit tĩnh), chưa tái hiện.",
+  "resolution": "Chưa xử lý; được ghi trong memory như quan sát cho dev team.",
+  "resolution_type": [
+   "none-yet"
+  ],
+  "confidence": "medium",
+  "evidence": [
+   {
+    "kind": "memory",
+    "ref": "project-litmatch-service-map.md",
+    "quote": "getHiddenUserIds has no time window",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "keywords": [],
+  "tasks": [
+   "memory"
+  ],
+  "merged_from": 1,
+  "tier": "B",
+  "sources": [
+   "claude-memory"
+  ],
+  "id": "P100",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "o3",
+  "title": "Lời mời hết hạn kiểu lazy-expire không được persist",
+  "task": "memory",
+  "date": "2026-10-09",
+  "area": "other",
+  "kind": "design-flaw",
+  "status": "open",
+  "unconfirmed": true,
+  "problem": "Quan sát từ audit tĩnh service-map: Lời mời hết hạn kiểu lazy-expire không được persist. Chưa xác nhận ở runtime, chưa có commit sửa.",
+  "root_cause": "Suy ra từ đọc code (audit tĩnh), chưa tái hiện.",
+  "resolution": "Chưa xử lý; được ghi trong memory như quan sát cho dev team.",
+  "resolution_type": [
+   "none-yet"
+  ],
+  "confidence": "medium",
+  "evidence": [
+   {
+    "kind": "memory",
+    "ref": "project-litmatch-service-map.md",
+    "quote": "invite lazy-expire not persisted",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "keywords": [],
+  "tasks": [
+   "memory"
+  ],
+  "merged_from": 1,
+  "tier": "B",
+  "sources": [
+   "claude-memory"
+  ],
+  "id": "P101",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "o4",
+  "title": "Comment k8s lỗi thời",
+  "task": "memory",
+  "date": "2026-10-09",
+  "area": "other",
+  "kind": "design-flaw",
+  "status": "open",
+  "unconfirmed": true,
+  "problem": "Quan sát từ audit tĩnh service-map: Comment k8s lỗi thời. Chưa xác nhận ở runtime, chưa có commit sửa.",
+  "root_cause": "Suy ra từ đọc code (audit tĩnh), chưa tái hiện.",
+  "resolution": "Chưa xử lý; được ghi trong memory như quan sát cho dev team.",
+  "resolution_type": [
+   "none-yet"
+  ],
+  "confidence": "medium",
+  "evidence": [
+   {
+    "kind": "memory",
+    "ref": "project-litmatch-service-map.md",
+    "quote": "stale k8s comment",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "keywords": [],
+  "tasks": [
+   "memory"
+  ],
+  "merged_from": 1,
+  "tier": "B",
+  "sources": [
+   "claude-memory"
+  ],
+  "id": "P102",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "o5",
+  "title": "Phân trang cursor video-queue admin (pending_review tăng dần nhưng cursor dùng less-than; suy luận)",
+  "task": "memory",
+  "date": "2026-10-09",
+  "area": "other",
+  "kind": "design-flaw",
+  "status": "open",
+  "unconfirmed": true,
+  "problem": "Quan sát từ audit tĩnh service-map: Phân trang cursor video-queue admin (pending_review tăng dần nhưng cursor dùng less-than; suy luận). Chưa xác nhận ở runtime, chưa có commit sửa.",
+  "root_cause": "Suy ra từ đọc code (audit tĩnh), chưa tái hiện.",
+  "resolution": "Chưa xử lý; được ghi trong memory như quan sát cho dev team.",
+  "resolution_type": [
+   "none-yet"
+  ],
+  "confidence": "medium",
+  "evidence": [
+   {
+    "kind": "memory",
+    "ref": "project-litmatch-service-map.md",
+    "quote": "admin video-queue cursor pagination",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "keywords": [],
+  "tasks": [
+   "memory"
+  ],
+  "merged_from": 1,
+  "tier": "B",
+  "sources": [
+   "claude-memory"
+  ],
+  "id": "P103",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "o6",
+  "title": "soul-match end phát lại soul.ended khi replay",
+  "task": "memory",
+  "date": "2026-10-09",
+  "area": "other",
+  "kind": "design-flaw",
+  "status": "open",
+  "unconfirmed": true,
+  "problem": "Quan sát từ audit tĩnh service-map: soul-match end phát lại soul.ended khi replay. Chưa xác nhận ở runtime, chưa có commit sửa.",
+  "root_cause": "Suy ra từ đọc code (audit tĩnh), chưa tái hiện.",
+  "resolution": "Chưa xử lý; được ghi trong memory như quan sát cho dev team.",
+  "resolution_type": [
+   "none-yet"
+  ],
+  "confidence": "medium",
+  "evidence": [
+   {
+    "kind": "memory",
+    "ref": "project-litmatch-service-map.md",
+    "quote": "soul-match end republishes soul.ended on replay",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "keywords": [],
+  "tasks": [
+   "memory"
+  ],
+  "merged_from": 1,
+  "tier": "B",
+  "sources": [
+   "claude-memory"
+  ],
+  "id": "P104",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "t1",
+  "title": "Spec integration liệt kê migration tường minh: migration mới phải đăng ký ở 2 spec",
+  "task": "memory",
+  "date": "2026-10-09",
+  "area": "ai-agent-process",
+  "kind": "process",
+  "status": "fixed",
+  "unconfirmed": false,
+  "problem": "Thêm migration mới (videos.storage_cleaned_at) mà không đăng ký vào short-video.integration.spec.ts và demo-short-videos.integration.spec.ts thì integration test không thấy cột mới; undoLastMigration của spec sau phải undo 2 lần.",
+  "root_cause": "Spec integration của repo liệt kê migration thủ công thay vì tự quét thư mục.",
+  "resolution": "Đăng ký migration 1757800000000 vào cả hai spec và sửa số lần undo.",
+  "resolution_type": [
+   "process-rule"
+  ],
+  "confidence": "medium",
+  "evidence": [
+   {
+    "kind": "memory",
+    "ref": "project-litmatch-multi-pod-readiness-branch.md",
+    "quote": "the repo's integration specs list migrations explicitly",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "keywords": [],
+  "tasks": [
+   "memory"
+  ],
+  "merged_from": 1,
+  "tier": "B",
+  "sources": [
+   "claude-memory"
+  ],
+  "id": "P105",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "t2",
+  "title": "git apply --unidiff-zero đặt sai vị trí hunk chèn thuần",
+  "task": "memory",
+  "date": "2026-10-09",
+  "area": "ai-agent-process",
+  "kind": "process",
+  "status": "fixed",
+  "unconfirmed": false,
+  "problem": "Tách commit bằng git apply --unidiff-zero làm hunk chỉ-chèn bị đặt lệch 1 dòng.",
+  "root_cause": "Hành vi của git apply với hunk -U0.",
+  "resolution": "Tự áp hunk -U0 lên nội dung nền để tách commit.",
+  "resolution_type": [
+   "process-rule"
+  ],
+  "confidence": "medium",
+  "evidence": [
+   {
+    "kind": "memory",
+    "ref": "project-litmatch-multi-pod-readiness-branch.md",
+    "quote": "`git apply --unidiff-zero` mis-places pure-insertion hunks by one line",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "keywords": [],
+  "tasks": [
+   "memory"
+  ],
+  "merged_from": 1,
+  "tier": "B",
+  "sources": [
+   "claude-memory"
+  ],
+  "id": "P106",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "t3",
+  "title": "File CRLF trong working tree: sửa bằng script phải giữ EOL",
+  "task": "memory",
+  "date": "2026-10-09",
+  "area": "ai-agent-process",
+  "kind": "process",
+  "status": "fixed",
+  "unconfirmed": false,
+  "problem": "Một số file (deploy/production/.env.example) là CRLF trong working tree; script sửa dễ làm đổi EOL và sinh diff nhiễu.",
+  "root_cause": "Repo trộn LF/CRLF trên Windows (.gitattributes chỉ áp một phần).",
+  "resolution": "Script sửa file giữ nguyên EOL của từng file.",
+  "resolution_type": [
+   "process-rule"
+  ],
+  "confidence": "medium",
+  "evidence": [
+   {
+    "kind": "memory",
+    "ref": "project-litmatch-multi-pod-readiness-branch.md",
+    "quote": "some repo files are CRLF in the working tree",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "keywords": [],
+  "tasks": [
+   "memory"
+  ],
+  "merged_from": 1,
+  "tier": "B",
+  "sources": [
+   "claude-memory"
+  ],
+  "id": "P107",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "u1",
+  "title": "Replay upload-intent cấp lại URL sau khi video đã published/failed",
+  "date": "2026-10-09",
+  "area": "short-video",
+  "kind": "bug",
+  "status": "fixed",
+  "unconfirmed": false,
+  "problem": "Replay cùng Idempotency-Key sau khi video đã published hoặc failed vẫn cấp URL upload mới: tác giả thay được file đã duyệt, và object upload muộn của video failed (đã đánh dấu dọn) thành rác vĩnh viễn.",
+  "root_cause": "Đường replay idempotent của upload-intent không kiểm trạng thái video trước khi cấp lại URL.",
+  "resolution": "Chỉ cấp lại URL khi video còn uploading, ngược lại trả 409. Test FOR UPDATE viết lại tất định (giữ khoá hàng ở giao dịch A; xác nhận đỏ khi bỏ khoá) thay cho test bắn nhiều request vốn vẫn xanh khi thiếu khoá.",
+  "resolution_type": [
+   "code-fix",
+   "test-added"
+  ],
+  "confidence": "high",
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "dc32ca0",
+    "quote": "replay upload-intent chỉ cấp lại URL khi còn uploading",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "keywords": [],
+  "tasks": [
+   "git"
+  ],
+  "merged_from": 1,
+  "tier": "A",
+  "sources": [
+   "git"
+  ],
+  "id": "P108",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ }
+]

@@ -1,0 +1,255 @@
+{
+ "id": "app-shell",
+ "kind": "core-api shell",
+ "dir": "apps/core-api/src/app",
+ "mapAnchor": "svc-app-shell",
+ "role": "Cung cấp /health, /health/live, /health/ready (probe cho Docker/k8s) và GET /api/v1/capabilities (hợp đồng tính năng runtime cho web/admin). Không có bảng riêng, không chứa business logic; chỉ kiểm tra Postgres/Redis và phản chiếu cấu hình env của các module khác.",
+ "tagline": "Health probe và hợp đồng capabilities",
+ "owns": [
+  "không sở hữu bảng/khoá Redis nào (readiness mở kết nối ioredis riêng chỉ để PING)"
+ ],
+ "tables": [],
+ "tablesTouchedOfOthers": [],
+ "endpoints": {
+  "total": 4,
+  "public": 4,
+  "adminOnly": 0,
+  "idempotent": 0,
+  "webhooks": 0,
+  "explicitThrottle": 1
+ },
+ "endpointPaths": [
+  "/capabilities",
+  "/health"
+ ],
+ "realtimeProduced": [],
+ "jobs": [],
+ "redisCallSites": 0,
+ "redisOps": [],
+ "envVars": [
+  {
+   "name": "LOG_LEVEL",
+   "file": "apps/core-api/src/app/app.module.ts",
+   "line": 58,
+   "quote": "level: config.getOrThrow('LOG_LEVEL', { infer: true }),",
+   "class": null,
+   "default": null,
+   "required": false
+  },
+  {
+   "name": "NODE_ENV",
+   "file": "apps/core-api/src/app/app.module.ts",
+   "line": 59,
+   "quote": "pretty: config.get('NODE_ENV', { infer: true }) === 'development',",
+   "class": null,
+   "default": null,
+   "required": false
+  },
+  {
+   "name": "DATABASE_URL",
+   "file": "apps/core-api/src/app/app.module.ts",
+   "line": 69,
+   "quote": "url: config.getOrThrow('DATABASE_URL', { infer: true }),",
+   "class": "endpoint",
+   "default": null,
+   "required": true
+  },
+  {
+   "name": "DATABASE_POOL_MAX",
+   "file": "apps/core-api/src/app/app.module.ts",
+   "line": 71,
+   "quote": "poolSize: config.getOrThrow('DATABASE_POOL_MAX', { infer: true }),",
+   "class": "tuning",
+   "default": "10",
+   "required": false
+  },
+  {
+   "name": "DATABASE_POOL_ACQUIRE_TIMEOUT_MS",
+   "file": "apps/core-api/src/app/app.module.ts",
+   "line": 74,
+   "quote": "connectTimeoutMS: config.getOrThrow(",
+   "class": "tuning",
+   "default": "10000",
+   "required": false
+  },
+  {
+   "name": "THROTTLE_STORAGE",
+   "file": "apps/core-api/src/app/app.module.ts",
+   "line": 89,
+   "quote": "config.getOrThrow('THROTTLE_STORAGE', { infer: true }) === 'redis';",
+   "class": "switch",
+   "default": "memory",
+   "required": false
+  },
+  {
+   "name": "HTTP_TRUST_PROXY_HOPS",
+   "file": "apps/core-api/src/app/app.module.ts",
+   "line": 93,
+   "quote": "config.getOrThrow('HTTP_TRUST_PROXY_HOPS', { infer: true }) === 0",
+   "class": "other",
+   "default": "0",
+   "required": false
+  },
+  {
+   "name": "THROTTLE_TTL_SECONDS",
+   "file": "apps/core-api/src/app/app.module.ts",
+   "line": 105,
+   "quote": "config.getOrThrow('THROTTLE_TTL_SECONDS', { infer: true }) *",
+   "class": "tuning",
+   "default": "60",
+   "required": false
+  },
+  {
+   "name": "THROTTLE_LIMIT",
+   "file": "apps/core-api/src/app/app.module.ts",
+   "line": 107,
+   "quote": "limit: config.getOrThrow('THROTTLE_LIMIT', { infer: true }),",
+   "class": "tuning",
+   "default": "100",
+   "required": false
+  },
+  {
+   "name": "REDIS_URL",
+   "file": "apps/core-api/src/app/app.module.ts",
+   "line": 115,
+   "quote": "config.getOrThrow('REDIS_URL', { infer: true }),",
+   "class": "endpoint",
+   "default": "redis://localhost:6379",
+   "required": false
+  },
+  {
+   "name": "CAPABILITY_MAINTENANCE_FEATURES",
+   "file": "apps/core-api/src/app/capabilities.service.ts",
+   "line": 23,
+   "quote": "this.config.getOrThrow('CAPABILITY_MAINTENANCE_FEATURES', {",
+   "class": "switch",
+   "default": "",
+   "required": false
+  },
+  {
+   "name": "ECONOMY_IAP_VERIFIER",
+   "file": "apps/core-api/src/app/capabilities.service.ts",
+   "line": 47,
+   "quote": "const iapVerifier = this.config.getOrThrow('ECONOMY_IAP_VERIFIER', {",
+   "class": "switch",
+   "default": "dev",
+   "required": false
+  },
+  {
+   "name": "VIDEO_UPLOAD_ENABLED",
+   "file": "apps/core-api/src/app/capabilities.service.ts",
+   "line": 60,
+   "quote": "const videoEnabled = this.config.getOrThrow('VIDEO_UPLOAD_ENABLED', {",
+   "class": "switch",
+   "default": "false",
+   "required": false
+  },
+  {
+   "name": "NOTIFICATION_PUSH_PROVIDER",
+   "file": "apps/core-api/src/app/capabilities.service.ts",
+   "line": 63,
+   "quote": "const pushProvider = this.config.getOrThrow('NOTIFICATION_PUSH_PROVIDER', {",
+   "class": "switch",
+   "default": "dev",
+   "required": false
+  },
+  {
+   "name": "AUTH_PHONE_OTP_ENABLED",
+   "file": "apps/core-api/src/app/capabilities.service.ts",
+   "line": 191,
+   "quote": "const configured = this.config.getOrThrow('AUTH_PHONE_OTP_ENABLED', {",
+   "class": "switch",
+   "default": "true",
+   "required": false
+  }
+ ],
+ "errorGroups": [],
+ "errorCodes": 0,
+ "errorCodesUnused": 0,
+ "tests": {
+  "unit": 3,
+  "integration": 0
+ },
+ "docs": {
+  "path": null,
+  "lastChanged": null,
+  "commitsSince": null
+ },
+ "features": [
+  {
+   "id": "runtime-capabilities",
+   "title": "Server-derived runtime availability contract for frontend providers",
+   "status": "implemented"
+  }
+ ],
+ "churn": {
+  "commits": 26,
+  "recent": 2,
+  "fixes": 4,
+  "last": "2026-10-09"
+ },
+ "issues": [
+  {
+   "id": "P076",
+   "title": "Rate limit trong bộ nhớ từng pod + trần kết nối Postgres",
+   "status": "fixed",
+   "tier": "B"
+  }
+ ],
+ "mapCollaborators": [
+  {
+   "with": "postgres",
+   "kind": "infra",
+   "mechanism": "shared-db",
+   "direction": "out"
+  },
+  {
+   "with": "redis",
+   "kind": "infra",
+   "mechanism": "redis-state",
+   "direction": "out"
+  },
+  {
+   "with": "web",
+   "kind": "client",
+   "mechanism": "http",
+   "direction": "in"
+  },
+  {
+   "with": "admin-console",
+   "kind": "client",
+   "mechanism": "http",
+   "direction": "in"
+  },
+  {
+   "with": "auth",
+   "kind": "service",
+   "mechanism": "config",
+   "direction": "out"
+  },
+  {
+   "with": "economy",
+   "kind": "service",
+   "mechanism": "config",
+   "direction": "out"
+  },
+  {
+   "with": "notification",
+   "kind": "service",
+   "mechanism": "config",
+   "direction": "out"
+  },
+  {
+   "with": "short-video",
+   "kind": "service",
+   "mechanism": "config",
+   "direction": "out"
+  },
+  {
+   "with": "external:kubernetes-docker",
+   "kind": "external",
+   "mechanism": "http",
+   "direction": "in"
+  }
+ ]
+}
