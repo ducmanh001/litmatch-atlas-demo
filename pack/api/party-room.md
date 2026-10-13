@@ -13,7 +13,7 @@ Tạo phòng: transaction lưu party_rooms + membership host (speaker_limit và 
 - auth: Bearer JWT; throttle: { default: { limit: 5, ttl: minutes(1) } }
 - body CreatePartyRoomDto: title*:string[maxLength=500], category:enum(talk|sing|friend|study|other)[default="talk"]
 - response 200 JoinPartyRoomDto: room:PartyRoomDto, room.id:string, room.hostUserId:string, room.title:string, room.status:enum(active|closed), room.speakerLimit:number, room.category:enum(talk|sing|friend|study|other), room.memberCount:number, room.closeReason:enum(host_left|finished|swept|error|admin_closed), room.createdAt:string(date-time), room.hostDisconnectedAt:string(date-time), membership:PartyRoomMemberDto, membership.userId:string, membership.role:enum(host|speaker|audience), membership.joinedAt:string(date-time), membership.disconnectedAt:string(date-time), membership.nickname:string, membership.speakerInvitePending:boolean, token:string, livekitUrl:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/party-room/api.ts:90
 
 ### GET /party/rooms
 
@@ -23,7 +23,7 @@ Liệt kê phòng active kèm số member, phân trang cursor, lọc q/category;
 - auth: Bearer JWT
 - params: query:q:string, query:category:enum(talk|sing|friend|study|other), query:limit:number, query:cursor:string
 - response 200 PartyRoomListDto: data:array<PartyRoomDto>, data[].id:string, data[].hostUserId:string, data[].title:string, data[].status:enum(active|closed), data[].speakerLimit:number, data[].category:enum(talk|sing|friend|study|other), data[].memberCount:number, data[].closeReason:enum(host_left|finished|swept|error|admin_closed), data[].createdAt:string(date-time), data[].hostDisconnectedAt:string(date-time), meta:object, meta.nextCursor:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/party-room/api.ts:66; admin apps/admin/src/features/rooms/api.ts:27
 
 ### GET /party/rooms/{id}
 
@@ -33,7 +33,7 @@ Chi tiết phòng + member active, nickname lấy từ User (findByIds); là ngu
 - auth: Bearer JWT
 - params: path:id*:string
 - response 200 PartyRoomDetailDto: room:PartyRoomDto, room.id:string, room.hostUserId:string, room.title:string, room.status:enum(active|closed), room.speakerLimit:number, room.category:enum(talk|sing|friend|study|other), room.memberCount:number, room.closeReason:enum(host_left|finished|swept|error|admin_closed), room.createdAt:string(date-time), room.hostDisconnectedAt:string(date-time), members:array<PartyRoomMemberDto>, members[].userId:string, members[].role:enum(host|speaker|audience), members[].joinedAt:string(date-time), members[].disconnectedAt:string(date-time), members[].nickname:string, members[].speakerInvitePending:boolean
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/party-room/api.ts:107
 
 ### GET /party/rooms/{id}/comments
 
@@ -43,7 +43,7 @@ Lấy comment mới nhất theo cursor (đi lùi); chỉ member của phòng m�
 - auth: Bearer JWT
 - params: path:id*:string, query:limit:number, query:cursor:string
 - response 200 PartyRoomCommentsPageDto: items:array<PartyRoomCommentDto>, items[].id:string, items[].roomId:string, items[].senderUserId:string, items[].content:string, items[].sentAt:string(date-time), meta:object, meta.nextCursor:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/party-room/api.ts:157
 
 ### POST /party/rooms/{id}/comments
 
@@ -54,7 +54,7 @@ Gửi comment: bắt buộc Idempotency-Key (unique DB, replay không bắn lạ
 - params: path:id*:string, header:Idempotency-Key*:string
 - body CreatePartyRoomCommentDto: content*:string[maxLength=1000]
 - response 201 PartyRoomCommentDto: id:string, roomId:string, senderUserId:string, content:string, sentAt:string(date-time)
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/party-room/api.ts:176
 
 ### POST /party/rooms/{id}/join
 
@@ -64,7 +64,7 @@ Join làm audience (token canPublish=false) hoặc rejoin: đếm PARTY_MAX_MEMB
 - auth: Bearer JWT; throttle: { default: { limit: 20, ttl: minutes(1) } }
 - params: path:id*:string
 - response 200 JoinPartyRoomDto: room:PartyRoomDto, room.id:string, room.hostUserId:string, room.title:string, room.status:enum(active|closed), room.speakerLimit:number, room.category:enum(talk|sing|friend|study|other), room.memberCount:number, room.closeReason:enum(host_left|finished|swept|error|admin_closed), room.createdAt:string(date-time), room.hostDisconnectedAt:string(date-time), membership:PartyRoomMemberDto, membership.userId:string, membership.role:enum(host|speaker|audience), membership.joinedAt:string(date-time), membership.disconnectedAt:string(date-time), membership.nickname:string, membership.speakerInvitePending:boolean, token:string, livekitUrl:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/party-room/api.ts:124
 
 ### POST /party/rooms/{id}/leave
 
@@ -74,7 +74,7 @@ Rời phòng idempotent: member thường nhả membership + removeParticipant k
 - auth: Bearer JWT
 - params: path:id*:string
 - response 200: 
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/party-room/api.ts:192
 
 ### POST /party/rooms/{id}/members/{userId}/role
 

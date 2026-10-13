@@ -22,7 +22,7 @@ Vào hàng đợi (idempotent) và thử ghép ngay với entry cũ nhất còn 
 - handler: PalmMatchController.joinQueue (apps/core-api/src/modules/palm-match/palm-match.controller.ts:54); operationId: PalmMatchController_joinQueue
 - auth: Bearer JWT
 - response 200 PalmMatchStateDto: state:enum(idle|queued|active|completed), sessionId:string(uuid), queuedAt:string(date-time), expiresAt:string(date-time), myFlipped:boolean, opponentFlipped:boolean, mySign:PalmZodiacSignDto, mySign.key:string, mySign.symbol:string, mySign.name:string, opponentSign:PalmZodiacSignDto, opponentSign.key:string, opponentSign.symbol:string, opponentSign.name:string, compatibilityPercent:number, fortune:string, myRating:enum(like|skip), outcome:enum(matched|not_matched|expired|cancelled), partnerUserId:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/palm-match/api.ts:52
 
 ### GET /palm-match/current
 
@@ -31,7 +31,7 @@ State phục hồi/poll của queue hoặc phiên hiện tại, đồng thời l
 - handler: PalmMatchController.getCurrent (apps/core-api/src/modules/palm-match/palm-match.controller.ts:66); operationId: PalmMatchController_getCurrent
 - auth: Bearer JWT
 - response 200 PalmMatchStateDto: state:enum(idle|queued|active|completed), sessionId:string(uuid), queuedAt:string(date-time), expiresAt:string(date-time), myFlipped:boolean, opponentFlipped:boolean, mySign:PalmZodiacSignDto, mySign.key:string, mySign.symbol:string, mySign.name:string, opponentSign:PalmZodiacSignDto, opponentSign.key:string, opponentSign.symbol:string, opponentSign.name:string, compatibilityPercent:number, fortune:string, myRating:enum(like|skip), outcome:enum(matched|not_matched|expired|cancelled), partnerUserId:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/palm-match/api.ts:27
 
 ### POST /palm-match/sessions/{id}/flip
 
@@ -61,5 +61,5 @@ Huỷ queue, huỷ phiên đang active cho cả hai hoặc dismiss kết quả t
 - handler: PalmMatchController.dismissCurrent (apps/core-api/src/modules/palm-match/palm-match.controller.ts:102); operationId: PalmMatchController_dismissCurrent
 - auth: Bearer JWT
 - response 200 PalmMatchStateDto: state:enum(idle|queued|active|completed), sessionId:string(uuid), queuedAt:string(date-time), expiresAt:string(date-time), myFlipped:boolean, opponentFlipped:boolean, mySign:PalmZodiacSignDto, mySign.key:string, mySign.symbol:string, mySign.name:string, opponentSign:PalmZodiacSignDto, opponentSign.key:string, opponentSign.symbol:string, opponentSign.name:string, compatibilityPercent:number, fortune:string, myRating:enum(like|skip), outcome:enum(matched|not_matched|expired|cancelled), partnerUserId:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/palm-match/api.ts:84
 

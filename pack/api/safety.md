@@ -13,7 +13,7 @@ Report 1 user: chặn tự report, khoá dòng users của target rồi ghi Repo
 - auth: Bearer JWT; throttle: { default: { limit: 10, ttl: minutes(60) } }
 - body CreateReportDto: targetUserId*:string, reason*:enum(harassment|spam|underage|inappropriate_content|other), description:string
 - response 201 ReportDto: id:string, targetUserId:string, reason:enum(harassment|spam|underage|inappropriate_content|other), createdAt:string(date-time)
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/friend-chat/api.ts:195
 
 ### POST /safety/blocks/{targetUserId}
 
@@ -23,7 +23,7 @@ Block target (idempotent): chặn tự block, xác nhận target tồn tại, gh
 - auth: Bearer JWT
 - params: path:targetUserId*:string
 - response 204: 
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/friend-chat/api.ts:181
 
 ### DELETE /safety/blocks/{targetUserId}
 

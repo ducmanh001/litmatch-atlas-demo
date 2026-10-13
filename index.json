@@ -3174,6 +3174,1131 @@
    "summary": "Where the atlas and the service map disagree.",
    "related": [],
    "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/reconciliation.md"
+  },
+  {
+   "id": "fe:errors",
+   "type": "fe",
+   "title": "Error handling in the frontend",
+   "file": "fe/errors.md",
+   "summary": "The FE references 3 of 182 backend error codes by string. Everything else surfaces through the generic ApiError message path (isApiError(error) ? error.message : fallback i18n key). ## Codes referenc…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/errors.md"
+  },
+  {
+   "id": "fe:feature:admin:config",
+   "type": "fe",
+   "title": "admin feature config",
+   "file": "fe/feature-admin-config.md",
+   "summary": "directory: apps/admin/src/features/config/ (2 source files, 1 components, 1 spec files) routes whose data comes from this feature: [/config](route-admin-config.md) ## Hooks (data layer)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-admin-config.md"
+  },
+  {
+   "id": "fe:feature:admin:dashboard",
+   "type": "fe",
+   "title": "admin feature dashboard",
+   "file": "fe/feature-admin-dashboard.md",
+   "summary": "directory: apps/admin/src/features/dashboard/ (2 source files, 1 components, 1 spec files) routes whose data comes from this feature: [/](route-admin-root.md) ## Hooks (data layer)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-admin-dashboard.md"
+  },
+  {
+   "id": "fe:feature:admin:economy",
+   "type": "fe",
+   "title": "admin feature economy",
+   "file": "fe/feature-admin-economy.md",
+   "summary": "directory: apps/admin/src/features/economy/ (2 source files, 1 components, 1 spec files) routes whose data comes from this feature: [/economy](route-admin-economy.md) ## Hooks (data layer)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-admin-economy.md"
+  },
+  {
+   "id": "fe:feature:admin:gifts",
+   "type": "fe",
+   "title": "admin feature gifts",
+   "file": "fe/feature-admin-gifts.md",
+   "summary": "directory: apps/admin/src/features/gifts/ (3 source files, 1 components, 1 spec files) routes whose data comes from this feature: [/gifts](route-admin-gifts.md) ## Hooks (data layer)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-admin-gifts.md"
+  },
+  {
+   "id": "fe:feature:admin:moderation",
+   "type": "fe",
+   "title": "admin feature moderation",
+   "file": "fe/feature-admin-moderation.md",
+   "summary": "directory: apps/admin/src/features/moderation/ (7 source files, 4 components, 1 spec files) routes whose data comes from this feature: [/](route-admin-root.md), [/moderation](route-admin-moderation.m…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-admin-moderation.md"
+  },
+  {
+   "id": "fe:feature:admin:permissions",
+   "type": "fe",
+   "title": "admin feature permissions",
+   "file": "fe/feature-admin-permissions.md",
+   "summary": "directory: apps/admin/src/features/permissions/ (2 source files, 1 components, 1 spec files) routes whose data comes from this feature: [/permissions](route-admin-permissions.md) ## Hooks (data layer)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-admin-permissions.md"
+  },
+  {
+   "id": "fe:feature:admin:rooms",
+   "type": "fe",
+   "title": "admin feature rooms",
+   "file": "fe/feature-admin-rooms.md",
+   "summary": "directory: apps/admin/src/features/rooms/ (2 source files, 1 components, 1 spec files) routes whose data comes from this feature: [/](route-admin-root.md), [/rooms](route-admin-rooms.md) ## Hooks (da…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-admin-rooms.md"
+  },
+  {
+   "id": "fe:feature:admin:users",
+   "type": "fe",
+   "title": "admin feature users",
+   "file": "fe/feature-admin-users.md",
+   "summary": "directory: apps/admin/src/features/users/ (2 source files, 1 components, 1 spec files) routes whose data comes from this feature: [/users](route-admin-users.md) ## Hooks (data layer)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-admin-users.md"
+  },
+  {
+   "id": "fe:feature:web:avatar",
+   "type": "fe",
+   "title": "web feature avatar",
+   "file": "fe/feature-web-avatar.md",
+   "summary": "directory: apps/web/src/features/avatar/ (2 source files, 1 components, 1 spec files) routes whose data comes from this feature: [/profile/edit](route-web-profile-edit.md) ## Hooks (data layer)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-web-avatar.md"
+  },
+  {
+   "id": "fe:feature:web:discovery",
+   "type": "fe",
+   "title": "web feature discovery",
+   "file": "fe/feature-web-discovery.md",
+   "summary": "directory: apps/web/src/features/discovery/ (5 source files, 4 components, 1 spec files) routes whose data comes from this feature: [/discovery](route-web-discovery.md) ## Hooks (data layer)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-web-discovery.md"
+  },
+  {
+   "id": "fe:feature:web:feed",
+   "type": "fe",
+   "title": "web feature feed",
+   "file": "fe/feature-web-feed.md",
+   "summary": "directory: apps/web/src/features/feed/ (12 source files, 9 components, 8 spec files) routes whose data comes from this feature: [/feed](route-web-feed.md), [/feed/:postId](route-web-feed-postid.md), …",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-web-feed.md"
+  },
+  {
+   "id": "fe:feature:web:friend-chat",
+   "type": "fe",
+   "title": "web feature friend-chat",
+   "file": "fe/feature-web-friend-chat.md",
+   "summary": "directory: apps/web/src/features/friend-chat/ (9 source files, 7 components, 6 spec files) routes whose data comes from this feature: [/chat/:friendUserId](route-web-chat-frienduserid.md), [/chat/:fr…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-web-friend-chat.md"
+  },
+  {
+   "id": "fe:feature:web:home",
+   "type": "fe",
+   "title": "web feature home",
+   "file": "fe/feature-web-home.md",
+   "summary": "directory: apps/web/src/features/home/ (5 source files, 5 components, 0 spec files) routes whose data comes from this feature: none (used as a building block) ## Hooks (data layer)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-web-home.md"
+  },
+  {
+   "id": "fe:feature:web:matching",
+   "type": "fe",
+   "title": "web feature matching",
+   "file": "fe/feature-web-matching.md",
+   "summary": "directory: apps/web/src/features/matching/ (10 source files, 7 components, 6 spec files) routes whose data comes from this feature: [/matching](route-web-matching.md) ## Hooks (data layer)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-web-matching.md"
+  },
+  {
+   "id": "fe:feature:web:more",
+   "type": "fe",
+   "title": "web feature more",
+   "file": "fe/feature-web-more.md",
+   "summary": "directory: apps/web/src/features/more/ (1 source files, 1 components, 1 spec files) routes whose data comes from this feature: none (used as a building block) ## Hooks (data layer)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-web-more.md"
+  },
+  {
+   "id": "fe:feature:web:movie-match",
+   "type": "fe",
+   "title": "web feature movie-match",
+   "file": "fe/feature-web-movie-match.md",
+   "summary": "directory: apps/web/src/features/movie-match/ (8 source files, 4 components, 6 spec files) routes whose data comes from this feature: [/movie-match](route-web-movie-match.md), [/movie-match/:sessionI…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-web-movie-match.md"
+  },
+  {
+   "id": "fe:feature:web:notification",
+   "type": "fe",
+   "title": "web feature notification",
+   "file": "fe/feature-web-notification.md",
+   "summary": "directory: apps/web/src/features/notification/ (5 source files, 2 components, 3 spec files) routes whose data comes from this feature: [/discovery](route-web-discovery.md), [/feed](route-web-feed.md)…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-web-notification.md"
+  },
+  {
+   "id": "fe:feature:web:palm-match",
+   "type": "fe",
+   "title": "web feature palm-match",
+   "file": "fe/feature-web-palm-match.md",
+   "summary": "directory: apps/web/src/features/palm-match/ (2 source files, 1 components, 2 spec files) routes whose data comes from this feature: [/palm-match](route-web-palm-match.md) ## Hooks (data layer)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-web-palm-match.md"
+  },
+  {
+   "id": "fe:feature:web:party-room",
+   "type": "fe",
+   "title": "web feature party-room",
+   "file": "fe/feature-web-party-room.md",
+   "summary": "directory: apps/web/src/features/party-room/ (11 source files, 8 components, 7 spec files) routes whose data comes from this feature: [/feed](route-web-feed.md), [/home](route-web-home.md), [/party](…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-web-party-room.md"
+  },
+  {
+   "id": "fe:feature:web:privacy",
+   "type": "fe",
+   "title": "web feature privacy",
+   "file": "fe/feature-web-privacy.md",
+   "summary": "directory: apps/web/src/features/privacy/ (1 source files, 0 components, 0 spec files) routes whose data comes from this feature: [/privacy](route-web-privacy.md) ## Hooks (data layer)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-web-privacy.md"
+  },
+  {
+   "id": "fe:feature:web:profile",
+   "type": "fe",
+   "title": "web feature profile",
+   "file": "fe/feature-web-profile.md",
+   "summary": "directory: apps/web/src/features/profile/ (10 source files, 8 components, 5 spec files) routes whose data comes from this feature: [/friends](route-web-friends.md), [/profile](route-web-profile.md), …",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-web-profile.md"
+  },
+  {
+   "id": "fe:feature:web:short-video",
+   "type": "fe",
+   "title": "web feature short-video",
+   "file": "fe/feature-web-short-video.md",
+   "summary": "directory: apps/web/src/features/short-video/ (7 source files, 5 components, 4 spec files) routes whose data comes from this feature: [/video](route-web-video.md) ## Hooks (data layer)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-web-short-video.md"
+  },
+  {
+   "id": "fe:feature:web:soul-match",
+   "type": "fe",
+   "title": "web feature soul-match",
+   "file": "fe/feature-web-soul-match.md",
+   "summary": "directory: apps/web/src/features/soul-match/ (9 source files, 7 components, 4 spec files) routes whose data comes from this feature: [/matching/soul/:sessionId](route-web-matching-soul-sessionid.md) …",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-web-soul-match.md"
+  },
+  {
+   "id": "fe:feature:web:support",
+   "type": "fe",
+   "title": "web feature support",
+   "file": "fe/feature-web-support.md",
+   "summary": "directory: apps/web/src/features/support/ (1 source files, 0 components, 0 spec files) routes whose data comes from this feature: [/help](route-web-help.md) ## Hooks (data layer)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-web-support.md"
+  },
+  {
+   "id": "fe:feature:web:voice-match",
+   "type": "fe",
+   "title": "web feature voice-match",
+   "file": "fe/feature-web-voice-match.md",
+   "summary": "directory: apps/web/src/features/voice-match/ (3 source files, 1 components, 3 spec files) routes whose data comes from this feature: [/chat/:friendUserId](route-web-chat-frienduserid.md), [/chat/:fr…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-web-voice-match.md"
+  },
+  {
+   "id": "fe:feature:web:wallet",
+   "type": "fe",
+   "title": "web feature wallet",
+   "file": "fe/feature-web-wallet.md",
+   "summary": "directory: apps/web/src/features/wallet/ (6 source files, 5 components, 4 spec files) routes whose data comes from this feature: [/discovery](route-web-discovery.md), [/feed](route-web-feed.md), [/ho…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/feature-web-wallet.md"
+  },
+  {
+   "id": "fe:i18n:analytics",
+   "type": "fe",
+   "title": "i18n messages analytics.*",
+   "file": "fe/i18n-analytics.md",
+   "summary": "| key | vi | en | |---|---|---| | analytics.consentTitle | Cho phép phân tích trải nghiệm? | Allow experience analytics? | | analytics.settingsSection | Cải thiện trải nghiệm | Experience improvement…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-analytics.md"
+  },
+  {
+   "id": "fe:i18n:app",
+   "type": "fe",
+   "title": "i18n messages app.*",
+   "file": "fe/i18n-app.md",
+   "summary": "| key | vi | en | |---|---|---| | app.back | Quay lại | Go back | | app.videoShort | Video ngắn | Short videos |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-app.md"
+  },
+  {
+   "id": "fe:i18n:auth",
+   "type": "fe",
+   "title": "i18n messages auth.*",
+   "file": "fe/i18n-auth.md",
+   "summary": "| key | vi | en | |---|---|---| | auth.checkingSession | Đang kiểm tra phiên đăng nhập… | Checking your sign-in session… | | auth.otpCreated | Mã xác thực (OTP) của bạn là | Your one-time password (O…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-auth.md"
+  },
+  {
+   "id": "fe:i18n:comments",
+   "type": "fe",
+   "title": "i18n messages comments.*",
+   "file": "fe/i18n-comments.md",
+   "summary": "| key | vi | en | |---|---|---| | comments.loading | Đang tải bình luận… | Loading comments… | | comments.empty | Chưa có bình luận nào. | No comments yet. |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-comments.md"
+  },
+  {
+   "id": "fe:i18n:common",
+   "type": "fe",
+   "title": "i18n messages common.*",
+   "file": "fe/i18n-common.md",
+   "summary": "| key | vi | en | |---|---|---| | common.loading | Đang tải… | Loading… | | common.retry | Thử lại | Try again |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-common.md"
+  },
+  {
+   "id": "fe:i18n:follow",
+   "type": "fe",
+   "title": "i18n messages follow.*",
+   "file": "fe/i18n-follow.md",
+   "summary": "| key | vi | en | |---|---|---| | follow.followers | Người theo dõi | Followers | | follow.following | Đang theo dõi | Following |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-follow.md"
+  },
+  {
+   "id": "fe:i18n:friends",
+   "type": "fe",
+   "title": "i18n messages friends.*",
+   "file": "fe/i18n-friends.md",
+   "summary": "| key | vi | en | |---|---|---| | friends.search | Tìm kiếm bạn bè | Search friends | | friends.searchPlaceholder | Tìm theo tên… | Search by name… |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-friends.md"
+  },
+  {
+   "id": "fe:i18n:friendsPage",
+   "type": "fe",
+   "title": "i18n messages friendsPage.*",
+   "file": "fe/i18n-friendspage.md",
+   "summary": "| key | vi | en | |---|---|---| | friendsPage.title | Bạn bè | Friends | | friendsPage.eyebrow | Những người đã kết nối | People you connected with |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-friendspage.md"
+  },
+  {
+   "id": "fe:i18n:help",
+   "type": "fe",
+   "title": "i18n messages help.*",
+   "file": "fe/i18n-help.md",
+   "summary": "| key | vi | en | |---|---|---| | help.title | Trợ giúp & phản hồi | Help & feedback |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-help.md"
+  },
+  {
+   "id": "fe:i18n:home",
+   "type": "fe",
+   "title": "i18n messages home.*",
+   "file": "fe/i18n-home.md",
+   "summary": "| key | vi | en | |---|---|---| | home.welcome | Rất vui gặp lại 👋 | Good to see you again 👋 | | home.heroLineOne | Trò chuyện chân thành, | Have genuine conversations, |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-home.md"
+  },
+  {
+   "id": "fe:i18n:landing",
+   "type": "fe",
+   "title": "i18n messages landing.*",
+   "file": "fe/i18n-landing.md",
+   "summary": "| key | vi | en | |---|---|---| | landing.badge | Ra mắt 2026 | Launching 2026 | | landing.titleBefore | Ẩn danh trước, | Anonymous first, |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-landing.md"
+  },
+  {
+   "id": "fe:i18n:language",
+   "type": "fe",
+   "title": "i18n messages language.*",
+   "file": "fe/i18n-language.md",
+   "summary": "| key | vi | en | |---|---|---| | language.choose | Chọn ngôn ngữ | Choose language | | language.close | Đóng chọn ngôn ngữ | Close language selector |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-language.md"
+  },
+  {
+   "id": "fe:i18n:more",
+   "type": "fe",
+   "title": "i18n messages more.*",
+   "file": "fe/i18n-more.md",
+   "summary": "| key | vi | en | |---|---|---| | more.profile.description | Xem và chỉnh sửa hồ sơ | View and edit your profile | | more.premium.title | Nâng cấp Premium | Upgrade to Premium |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-more.md"
+  },
+  {
+   "id": "fe:i18n:nav",
+   "type": "fe",
+   "title": "i18n messages nav.*",
+   "file": "fe/i18n-nav.md",
+   "summary": "| key | vi | en | |---|---|---| | nav.home | Trang chủ | Home | | nav.discovery | Quanh đây | Nearby |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-nav.md"
+  },
+  {
+   "id": "fe:i18n:notifications",
+   "type": "fe",
+   "title": "i18n messages notifications.*",
+   "file": "fe/i18n-notifications.md",
+   "summary": "| key | vi | en | |---|---|---| | notifications.title | Thông báo | Notifications | | notifications.unread | | |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-notifications.md"
+  },
+  {
+   "id": "fe:i18n:privacy",
+   "type": "fe",
+   "title": "i18n messages privacy.*",
+   "file": "fe/i18n-privacy.md",
+   "summary": "| key | vi | en | |---|---|---| | privacy.title | Quyền riêng tư, chặn & báo cáo | Privacy, blocks & reports |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-privacy.md"
+  },
+  {
+   "id": "fe:i18n:profile",
+   "type": "fe",
+   "title": "i18n messages profile.*",
+   "file": "fe/i18n-profile.md",
+   "summary": "| key | vi | en | |---|---|---| | profile.eyebrow | Hồ sơ của bạn | Your profile | | profile.loading | Đang tải hồ sơ… | Loading profile… |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-profile.md"
+  },
+  {
+   "id": "fe:i18n:public",
+   "type": "fe",
+   "title": "i18n messages public.*",
+   "file": "fe/i18n-public.md",
+   "summary": "| key | vi | en | |---|---|---| | public.features | Tính năng | Features | | public.howItWorks | Cách hoạt động | How it works |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-public.md"
+  },
+  {
+   "id": "fe:i18n:status",
+   "type": "fe",
+   "title": "i18n messages status.*",
+   "file": "fe/i18n-status.md",
+   "summary": "| key | vi | en | |---|---|---| | status.notFoundTitle | Không tìm thấy trang | Page not found | | status.notFoundDescription | Đường dẫn không tồn tại hoặc đã bị gỡ. | This page does not exist or ha…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-status.md"
+  },
+  {
+   "id": "fe:i18n:theme",
+   "type": "fe",
+   "title": "i18n messages theme.*",
+   "file": "fe/i18n-theme.md",
+   "summary": "| key | vi | en | |---|---|---| | theme.toLight | Chuyển sang giao diện sáng | Switch to light theme | | theme.toDark | Chuyển sang giao diện tối | Switch to dark theme |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-theme.md"
+  },
+  {
+   "id": "fe:i18n:user",
+   "type": "fe",
+   "title": "i18n messages user.*",
+   "file": "fe/i18n-user.md",
+   "summary": "| key | vi | en | |---|---|---| | user.fallback | Người dùng | User |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-user.md"
+  },
+  {
+   "id": "fe:i18n:wallet",
+   "type": "fe",
+   "title": "i18n messages wallet.*",
+   "file": "fe/i18n-wallet.md",
+   "summary": "| key | vi | en | |---|---|---| | wallet.loading | Đang tải ví… | Loading wallet… | | wallet.noData | Không có dữ liệu ví. | No wallet data is available. |",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/i18n-wallet.md"
+  },
+  {
+   "id": "fe:index",
+   "type": "fe",
+   "title": "Frontend map (web = Next.js, admin = Vite)",
+   "file": "fe/index.md",
+   "summary": "Static analysis of apps/web/src and apps/admin/src. Each route file lists the data it reads, the actions that change data, realtime events, navigation, error handling and tests, all with file:line. #…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/index.md"
+  },
+  {
+   "id": "fe:route:admin:/config",
+   "type": "fe",
+   "title": "admin route /config",
+   "file": "fe/route-admin-config.md",
+   "summary": "file: apps/admin/src/features/config/pages/config-page.tsx:78 layout: admin (RequireAuth + role) reached source files: 13 (static import closure); data features: config ## UI action map card (human-a…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-admin-config.md"
+  },
+  {
+   "id": "fe:route:admin:/economy",
+   "type": "fe",
+   "title": "admin route /economy",
+   "file": "fe/route-admin-economy.md",
+   "summary": "file: apps/admin/src/features/economy/pages/economy-page.tsx:62 layout: admin (RequireAuth + role) reached source files: 15 (static import closure); data features: economy ## UI action map card (huma…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-admin-economy.md"
+  },
+  {
+   "id": "fe:route:admin:/gifts",
+   "type": "fe",
+   "title": "admin route /gifts",
+   "file": "fe/route-admin-gifts.md",
+   "summary": "file: apps/admin/src/features/gifts/pages/gifts-page.tsx:54 layout: admin (RequireAuth + role) reached source files: 16 (static import closure); data features: gifts ## UI action map card (human-auth…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-admin-gifts.md"
+  },
+  {
+   "id": "fe:route:admin:/login",
+   "type": "fe",
+   "title": "admin route /login",
+   "file": "fe/route-admin-login.md",
+   "summary": "file: apps/admin/src/shared/auth/login-page.tsx:16 layout: login reached source files: 14 (static import closure); data features: none ## Data it reads (GET)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-admin-login.md"
+  },
+  {
+   "id": "fe:route:admin:/moderation",
+   "type": "fe",
+   "title": "admin route /moderation",
+   "file": "fe/route-admin-moderation.md",
+   "summary": "file: apps/admin/src/features/moderation/pages/moderation-page.tsx:46 layout: admin (RequireAuth + role) reached source files: 21 (static import closure); data features: moderation ## UI action map c…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-admin-moderation.md"
+  },
+  {
+   "id": "fe:route:admin:/permissions",
+   "type": "fe",
+   "title": "admin route /permissions",
+   "file": "fe/route-admin-permissions.md",
+   "summary": "file: apps/admin/src/features/permissions/pages/permissions-page.tsx:86 layout: admin (RequireAuth + role) reached source files: 14 (static import closure); data features: permissions ## UI action ma…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-admin-permissions.md"
+  },
+  {
+   "id": "fe:route:admin:/rooms",
+   "type": "fe",
+   "title": "admin route /rooms",
+   "file": "fe/route-admin-rooms.md",
+   "summary": "file: apps/admin/src/features/rooms/pages/rooms-page.tsx:70 layout: admin (RequireAuth + role) reached source files: 12 (static import closure); data features: rooms ## UI action map card (human-auth…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-admin-rooms.md"
+  },
+  {
+   "id": "fe:route:admin:/",
+   "type": "fe",
+   "title": "admin route /",
+   "file": "fe/route-admin-root.md",
+   "summary": "file: apps/admin/src/features/dashboard/pages/dashboard-page.tsx:30 layout: admin (RequireAuth + role) reached source files: 15 (static import closure); data features: dashboard, rooms ## UI action m…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-admin-root.md"
+  },
+  {
+   "id": "fe:route:admin:/users",
+   "type": "fe",
+   "title": "admin route /users",
+   "file": "fe/route-admin-users.md",
+   "summary": "file: apps/admin/src/features/users/pages/users-page.tsx:38 layout: admin (RequireAuth + role) reached source files: 18 (static import closure); data features: users ## UI action map card (human-auth…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-admin-users.md"
+  },
+  {
+   "id": "fe:route:web:/about",
+   "type": "fe",
+   "title": "web route /about",
+   "file": "fe/route-web-about.md",
+   "summary": "file: apps/web/src/app/(public)/about/page.tsx layout: public reached source files: 6 (static import closure); data features: none ## Data it reads (GET)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-about.md"
+  },
+  {
+   "id": "fe:route:web:/chat/:friendUserId/call",
+   "type": "fe",
+   "title": "web route /chat/:friendUserId/call",
+   "file": "fe/route-web-chat-frienduserid-call.md",
+   "summary": "file: apps/web/src/app/(app)/chat/[friendUserId]/call/page.tsx layout: app (login required: AppChromeWithAuth) title: Cuộc gọi reached source files: 17 (static import closure); data features: friend-…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-chat-frienduserid-call.md"
+  },
+  {
+   "id": "fe:route:web:/chat/:friendUserId",
+   "type": "fe",
+   "title": "web route /chat/:friendUserId",
+   "file": "fe/route-web-chat-frienduserid.md",
+   "summary": "file: apps/web/src/app/(app)/chat/[friendUserId]/page.tsx layout: app (login required: AppChromeWithAuth) title: Chat reached source files: 26 (static import closure); data features: friend-chat, voi…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-chat-frienduserid.md"
+  },
+  {
+   "id": "fe:route:web:/community-guidelines",
+   "type": "fe",
+   "title": "web route /community-guidelines",
+   "file": "fe/route-web-community-guidelines.md",
+   "summary": "file: apps/web/src/app/(public)/community-guidelines/page.tsx layout: public reached source files: 6 (static import closure); data features: none ## Data it reads (GET)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-community-guidelines.md"
+  },
+  {
+   "id": "fe:route:web:/contact",
+   "type": "fe",
+   "title": "web route /contact",
+   "file": "fe/route-web-contact.md",
+   "summary": "file: apps/web/src/app/(public)/contact/page.tsx layout: public reached source files: 6 (static import closure); data features: none ## Data it reads (GET)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-contact.md"
+  },
+  {
+   "id": "fe:route:web:/cookies",
+   "type": "fe",
+   "title": "web route /cookies",
+   "file": "fe/route-web-cookies.md",
+   "summary": "file: apps/web/src/app/(public)/cookies/page.tsx layout: public reached source files: 6 (static import closure); data features: none ## Data it reads (GET)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-cookies.md"
+  },
+  {
+   "id": "fe:route:web:/discovery",
+   "type": "fe",
+   "title": "web route /discovery",
+   "file": "fe/route-web-discovery.md",
+   "summary": "file: apps/web/src/app/(app)/discovery/page.tsx layout: app (login required: AppChromeWithAuth) reached source files: 24 (static import closure); data features: discovery, notification, wallet Access…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-discovery.md"
+  },
+  {
+   "id": "fe:route:web:/features",
+   "type": "fe",
+   "title": "web route /features",
+   "file": "fe/route-web-features.md",
+   "summary": "file: apps/web/src/app/(public)/features/page.tsx layout: public reached source files: 6 (static import closure); data features: none ## Data it reads (GET)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-features.md"
+  },
+  {
+   "id": "fe:route:web:/feed/:postId",
+   "type": "fe",
+   "title": "web route /feed/:postId",
+   "file": "fe/route-web-feed-postid.md",
+   "summary": "file: apps/web/src/app/(app)/feed/[postId]/page.tsx layout: app (login required: AppChromeWithAuth) title: Bài viết reached source files: 23 (static import closure); data features: feed",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-feed-postid.md"
+  },
+  {
+   "id": "fe:route:web:/feed",
+   "type": "fe",
+   "title": "web route /feed",
+   "file": "fe/route-web-feed.md",
+   "summary": "file: apps/web/src/app/(app)/feed/page.tsx layout: app (login required: AppChromeWithAuth) title: Bảng tin reached source files: 41 (static import closure); data features: feed, notification, party-r…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-feed.md"
+  },
+  {
+   "id": "fe:route:web:/friends",
+   "type": "fe",
+   "title": "web route /friends",
+   "file": "fe/route-web-friends.md",
+   "summary": "file: apps/web/src/app/(app)/friends/page.tsx layout: app (login required: AppChromeWithAuth) title: Bạn bè reached source files: 16 (static import closure); data features: friend-chat, profile",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-friends.md"
+  },
+  {
+   "id": "fe:route:web:/help",
+   "type": "fe",
+   "title": "web route /help",
+   "file": "fe/route-web-help.md",
+   "summary": "file: apps/web/src/app/(public)/help/page.tsx layout: public reached source files: 6 (static import closure); data features: support ## UI action map card (human-authored, not verified against code)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-help.md"
+  },
+  {
+   "id": "fe:route:web:/home",
+   "type": "fe",
+   "title": "web route /home",
+   "file": "fe/route-web-home.md",
+   "summary": "file: apps/web/src/app/(app)/home/page.tsx layout: app (login required: AppChromeWithAuth) reached source files: 32 (static import closure); data features: notification, party-room, wallet Access: ev…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-home.md"
+  },
+  {
+   "id": "fe:route:web:/how-it-works",
+   "type": "fe",
+   "title": "web route /how-it-works",
+   "file": "fe/route-web-how-it-works.md",
+   "summary": "file: apps/web/src/app/(public)/how-it-works/page.tsx layout: public reached source files: 6 (static import closure); data features: none ## Data it reads (GET)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-how-it-works.md"
+  },
+  {
+   "id": "fe:route:web:/login",
+   "type": "fe",
+   "title": "web route /login",
+   "file": "fe/route-web-login.md",
+   "summary": "file: apps/web/src/app/login/page.tsx layout: login title: Đăng nhập reached source files: 16 (static import closure); data features: none",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-login.md"
+  },
+  {
+   "id": "fe:route:web:/matching/soul/:sessionId",
+   "type": "fe",
+   "title": "web route /matching/soul/:sessionId",
+   "file": "fe/route-web-matching-soul-sessionid.md",
+   "summary": "file: apps/web/src/app/(app)/matching/soul/[sessionId]/page.tsx layout: app (login required: AppChromeWithAuth) title: Soul Match reached source files: 20 (static import closure); data features: soul…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-matching-soul-sessionid.md"
+  },
+  {
+   "id": "fe:route:web:/matching/voice/:sessionId",
+   "type": "fe",
+   "title": "web route /matching/voice/:sessionId",
+   "file": "fe/route-web-matching-voice-sessionid.md",
+   "summary": "file: apps/web/src/app/(app)/matching/voice/[sessionId]/page.tsx layout: app (login required: AppChromeWithAuth) title: Voice Match reached source files: 18 (static import closure); data features: vo…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-matching-voice-sessionid.md"
+  },
+  {
+   "id": "fe:route:web:/matching",
+   "type": "fe",
+   "title": "web route /matching",
+   "file": "fe/route-web-matching.md",
+   "summary": "file: apps/web/src/app/(app)/matching/page.tsx layout: app (login required: AppChromeWithAuth) title: Ghép đôi reached source files: 36 (static import closure); data features: matching, notification,…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-matching.md"
+  },
+  {
+   "id": "fe:route:web:/messages",
+   "type": "fe",
+   "title": "web route /messages",
+   "file": "fe/route-web-messages.md",
+   "summary": "file: apps/web/src/app/(app)/messages/page.tsx layout: app (login required: AppChromeWithAuth) title: Tin nhắn reached source files: 23 (static import closure); data features: friend-chat, notificati…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-messages.md"
+  },
+  {
+   "id": "fe:route:web:/more",
+   "type": "fe",
+   "title": "web route /more",
+   "file": "fe/route-web-more.md",
+   "summary": "file: apps/web/src/app/(app)/more/page.tsx layout: app (login required: AppChromeWithAuth) title: Thêm reached source files: 27 (static import closure); data features: notification, wallet",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-more.md"
+  },
+  {
+   "id": "fe:route:web:/movie-match/:sessionId",
+   "type": "fe",
+   "title": "web route /movie-match/:sessionId",
+   "file": "fe/route-web-movie-match-sessionid.md",
+   "summary": "file: apps/web/src/app/(app)/movie-match/[sessionId]/page.tsx layout: app (login required: AppChromeWithAuth) title: Movie Match reached source files: 27 (static import closure); data features: frien…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-movie-match-sessionid.md"
+  },
+  {
+   "id": "fe:route:web:/movie-match",
+   "type": "fe",
+   "title": "web route /movie-match",
+   "file": "fe/route-web-movie-match.md",
+   "summary": "file: apps/web/src/app/(app)/movie-match/page.tsx layout: app (login required: AppChromeWithAuth) reached source files: 21 (static import closure); data features: friend-chat, movie-match Access: eve…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-movie-match.md"
+  },
+  {
+   "id": "fe:route:web:/palm-match",
+   "type": "fe",
+   "title": "web route /palm-match",
+   "file": "fe/route-web-palm-match.md",
+   "summary": "file: apps/web/src/app/(app)/palm-match/page.tsx layout: app (login required: AppChromeWithAuth) title: Palm Match reached source files: 7 (static import closure); data features: palm-match",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-palm-match.md"
+  },
+  {
+   "id": "fe:route:web:/party/:roomId",
+   "type": "fe",
+   "title": "web route /party/:roomId",
+   "file": "fe/route-web-party-roomid.md",
+   "summary": "file: apps/web/src/app/(app)/party/[roomId]/page.tsx layout: app (login required: AppChromeWithAuth) title: Phòng nhóm reached source files: 26 (static import closure); data features: party-room",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-party-roomid.md"
+  },
+  {
+   "id": "fe:route:web:/party",
+   "type": "fe",
+   "title": "web route /party",
+   "file": "fe/route-web-party.md",
+   "summary": "file: apps/web/src/app/(app)/party/page.tsx layout: app (login required: AppChromeWithAuth) title: Party Room reached source files: 28 (static import closure); data features: notification, party-room…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-party.md"
+  },
+  {
+   "id": "fe:route:web:/privacy-policy",
+   "type": "fe",
+   "title": "web route /privacy-policy",
+   "file": "fe/route-web-privacy-policy.md",
+   "summary": "file: apps/web/src/app/(public)/privacy-policy/page.tsx layout: public reached source files: 6 (static import closure); data features: none ## Data it reads (GET)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-privacy-policy.md"
+  },
+  {
+   "id": "fe:route:web:/privacy",
+   "type": "fe",
+   "title": "web route /privacy",
+   "file": "fe/route-web-privacy.md",
+   "summary": "file: apps/web/src/app/(public)/privacy/page.tsx layout: public reached source files: 11 (static import closure); data features: privacy ## UI action map card (human-authored, not verified against co…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-privacy.md"
+  },
+  {
+   "id": "fe:route:web:/profile/edit",
+   "type": "fe",
+   "title": "web route /profile/edit",
+   "file": "fe/route-web-profile-edit.md",
+   "summary": "file: apps/web/src/app/(app)/profile/edit/page.tsx layout: app (login required: AppChromeWithAuth) title: Chỉnh sửa hồ sơ reached source files: 19 (static import closure); data features: avatar, prof…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-profile-edit.md"
+  },
+  {
+   "id": "fe:route:web:/profile",
+   "type": "fe",
+   "title": "web route /profile",
+   "file": "fe/route-web-profile.md",
+   "summary": "file: apps/web/src/app/(app)/profile/page.tsx layout: app (login required: AppChromeWithAuth) title: Hồ sơ reached source files: 38 (static import closure); data features: feed, friend-chat, notifica…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-profile.md"
+  },
+  {
+   "id": "fe:route:web:/",
+   "type": "fe",
+   "title": "web route /",
+   "file": "fe/route-web-root.md",
+   "summary": "file: apps/web/src/app/(public)/page.tsx layout: public reached source files: 8 (static import closure); data features: none ## UI action map card (human-authored, not verified against code)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-root.md"
+  },
+  {
+   "id": "fe:route:web:/terms",
+   "type": "fe",
+   "title": "web route /terms",
+   "file": "fe/route-web-terms.md",
+   "summary": "file: apps/web/src/app/(public)/terms/page.tsx layout: public reached source files: 6 (static import closure); data features: none ## Data it reads (GET)",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-terms.md"
+  },
+  {
+   "id": "fe:route:web:/users/:id/followers",
+   "type": "fe",
+   "title": "web route /users/:id/followers",
+   "file": "fe/route-web-users-id-followers.md",
+   "summary": "file: apps/web/src/app/(app)/users/[id]/followers/page.tsx layout: app (login required: AppChromeWithAuth) title: Người theo dõi reached source files: 14 (static import closure); data features: profi…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-users-id-followers.md"
+  },
+  {
+   "id": "fe:route:web:/users/:id/following",
+   "type": "fe",
+   "title": "web route /users/:id/following",
+   "file": "fe/route-web-users-id-following.md",
+   "summary": "file: apps/web/src/app/(app)/users/[id]/following/page.tsx layout: app (login required: AppChromeWithAuth) title: Đang theo dõi reached source files: 14 (static import closure); data features: profile",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-users-id-following.md"
+  },
+  {
+   "id": "fe:route:web:/users/:id",
+   "type": "fe",
+   "title": "web route /users/:id",
+   "file": "fe/route-web-users-id.md",
+   "summary": "file: apps/web/src/app/(app)/users/[id]/page.tsx layout: app (login required: AppChromeWithAuth) title: Hồ sơ người dùng reached source files: 22 (static import closure); data features: feed, profile",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-users-id.md"
+  },
+  {
+   "id": "fe:route:web:/video",
+   "type": "fe",
+   "title": "web route /video",
+   "file": "fe/route-web-video.md",
+   "summary": "file: apps/web/src/app/(app)/video/page.tsx layout: app (login required: AppChromeWithAuth) title: Video reached source files: 24 (static import closure); data features: party-room, short-video",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-video.md"
+  },
+  {
+   "id": "fe:route:web:/wallet",
+   "type": "fe",
+   "title": "web route /wallet",
+   "file": "fe/route-web-wallet.md",
+   "summary": "file: apps/web/src/app/(app)/wallet/page.tsx layout: app (login required: AppChromeWithAuth) title: Ví & VIP reached source files: 28 (static import closure); data features: notification, wallet",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/route-web-wallet.md"
+  },
+  {
+   "id": "fe:state",
+   "type": "fe",
+   "title": "Frontend state, cache and data fetching",
+   "file": "fe/state-and-cache.md",
+   "summary": "Server state is cached by TanStack Query. There is no global client store; browser storage holds only tokens/preferences (below). ## QueryClient configuration",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/state-and-cache.md"
+  },
+  {
+   "id": "fe:ui-action-map",
+   "type": "fe",
+   "title": "UI action map (screen -> actions -> destination)",
+   "file": "fe/ui-action-map.md",
+   "summary": "Source: layouts/litmatch-ui-action-map.svg (human-authored UI action map (layouts/); not verified against code). Use it for intended UX; the route files show what the code really does. ## HOME /home",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/ui-action-map.md"
+  },
+  {
+   "id": "slice:auth-session",
+   "type": "slices",
+   "title": "Feature slice: auth-session",
+   "file": "slices/auth-session.md",
+   "summary": "status: implemented; owner: core-api/auth Guest, OTP, social login, identity upgrade and rotating browser sessions This file follows ONE feature through every layer. Layers are joined by the actual e…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/auth-session.md"
+  },
+  {
+   "id": "slice:avatar-discovery-mood",
+   "type": "slices",
+   "title": "Feature slice: avatar-discovery-mood",
+   "file": "slices/avatar-discovery-mood.md",
+   "summary": "status: implemented; owner: core-api/avatar, core-api/discovery, core-api/mood Avatar, discovery/nearby and mood This file follows ONE feature through every layer. Layers are joined by the actual end…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/avatar-discovery-mood.md"
+  },
+  {
+   "id": "slice:calling",
+   "type": "slices",
+   "title": "Feature slice: calling",
+   "file": "slices/calling.md",
+   "summary": "status: implemented; owner: core-api/calling Voice-call lifecycle and settlement This file follows ONE feature through every layer. Layers are joined by the actual endpoint calls found in the fronten…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/calling.md"
+  },
+  {
+   "id": "slice:economy-ledger",
+   "type": "slices",
+   "title": "Feature slice: economy-ledger",
+   "file": "slices/economy-ledger.md",
+   "summary": "status: implemented; owner: core-api/economy Wallet, IAP catalog, VIP and double-entry ledger This file follows ONE feature through every layer. Layers are joined by the actual endpoint calls found i…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/economy-ledger.md"
+  },
+  {
+   "id": "slice:feed-stories",
+   "type": "slices",
+   "title": "Feature slice: feed-stories",
+   "file": "slices/feed-stories.md",
+   "summary": "status: implemented; owner: core-api/feed Feed, reactions, comments and expiring stories This file follows ONE feature through every layer. Layers are joined by the actual endpoint calls found in the…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/feed-stories.md"
+  },
+  {
+   "id": "slice:friend-chat-streak",
+   "type": "slices",
+   "title": "Feature slice: friend-chat-streak",
+   "file": "slices/friend-chat-streak.md",
+   "summary": "status: implemented; owner: core-api/friend Friendship, direct chat and streak This file follows ONE feature through every layer. Layers are joined by the actual endpoint calls found in the frontend …",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/friend-chat-streak.md"
+  },
+  {
+   "id": "slice:gift",
+   "type": "slices",
+   "title": "Feature slice: gift",
+   "file": "slices/gift.md",
+   "summary": "status: implemented; owner: core-api/gift Party-room gifts through Economy This file follows ONE feature through every layer. Layers are joined by the actual endpoint calls found in the frontend code…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/gift.md"
+  },
+  {
+   "id": "slices:index",
+   "type": "slices",
+   "title": "Feature slices",
+   "file": "slices/index.md",
+   "summary": "One file per product feature of docs/feature-registry.json, following it from the screen to the database and back. Start here when asked to \"follow feature X\". | feature | status | modules | FE route…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/index.md"
+  },
+  {
+   "id": "slice:matching",
+   "type": "slices",
+   "title": "Feature slice: matching",
+   "file": "slices/matching.md",
+   "summary": "status: implemented; owner: core-api/matching Queue ticket, pairing, guest quota and paid speed-up This file follows ONE feature through every layer. Layers are joined by the actual endpoint calls fo…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/matching.md"
+  },
+  {
+   "id": "slice:mini-game",
+   "type": "slices",
+   "title": "Feature slice: mini-game",
+   "file": "slices/mini-game.md",
+   "summary": "status: implemented; owner: core-api/mini-game Two-player rock-paper-scissors mini game This file follows ONE feature through every layer. Layers are joined by the actual endpoint calls found in the …",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/mini-game.md"
+  },
+  {
+   "id": "slice:movie-match",
+   "type": "slices",
+   "title": "Feature slice: movie-match",
+   "file": "slices/movie-match.md",
+   "summary": "status: implemented; owner: core-api/movie-match Shared video playback and anonymous movie match This file follows ONE feature through every layer. Layers are joined by the actual endpoint calls foun…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/movie-match.md"
+  },
+  {
+   "id": "slice:notification",
+   "type": "slices",
+   "title": "Feature slice: notification",
+   "file": "slices/notification.md",
+   "summary": "status: implemented; owner: core-api/notification In-process notification dispatch with isolated push and analytics adapters This file follows ONE feature through every layer. Layers are joined by th…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/notification.md"
+  },
+  {
+   "id": "slice:palm-match",
+   "type": "slices",
+   "title": "Feature slice: palm-match",
+   "file": "slices/palm-match.md",
+   "summary": "status: implemented; owner: core-api/palm-match Deterministic palm reading and anonymous palm match This file follows ONE feature through every layer. Layers are joined by the actual endpoint calls f…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/palm-match.md"
+  },
+  {
+   "id": "slice:party-room",
+   "type": "slices",
+   "title": "Feature slice: party-room",
+   "file": "slices/party-room.md",
+   "summary": "status: implemented; owner: core-api/party-room Party-room lifecycle, LiveKit token and member roles This file follows ONE feature through every layer. Layers are joined by the actual endpoint calls …",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/party-room.md"
+  },
+  {
+   "id": "slice:privacy-analytics-consent",
+   "type": "slices",
+   "title": "Feature slice: privacy-analytics-consent",
+   "file": "slices/privacy-analytics-consent.md",
+   "summary": "status: implemented; owner: web/shared-analytics Hosted analytics with quota controls and an explicit privacy warning This file follows ONE feature through every layer. Layers are joined by the actua…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/privacy-analytics-consent.md"
+  },
+  {
+   "id": "slice:realtime-fanout",
+   "type": "slices",
+   "title": "Feature slice: realtime-fanout",
+   "file": "slices/realtime-fanout.md",
+   "summary": "status: implemented; owner: signaling-gateway with core-api producers Authenticated Socket.IO fanout and distributed connection quota through Redis This file follows ONE feature through every layer. …",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/realtime-fanout.md"
+  },
+  {
+   "id": "slice:runtime-capabilities",
+   "type": "slices",
+   "title": "Feature slice: runtime-capabilities",
+   "file": "slices/runtime-capabilities.md",
+   "summary": "status: implemented; owner: core-api/app with admin/web consumers Server-derived runtime availability contract for frontend providers This file follows ONE feature through every layer. Layers are joi…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/runtime-capabilities.md"
+  },
+  {
+   "id": "slice:safety",
+   "type": "slices",
+   "title": "Feature slice: safety",
+   "file": "slices/safety.md",
+   "summary": "status: implemented; owner: core-api/safety Report, block and trust-safety decisions This file follows ONE feature through every layer. Layers are joined by the actual endpoint calls found in the fro…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/safety.md"
+  },
+  {
+   "id": "slice:short-video",
+   "type": "slices",
+   "title": "Feature slice: short-video",
+   "file": "slices/short-video.md",
+   "summary": "status: implemented; owner: core-api/short-video Short-video lifecycle, moderation and derived ranking This file follows ONE feature through every layer. Layers are joined by the actual endpoint call…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/short-video.md"
+  },
+  {
+   "id": "slice:soul-match",
+   "type": "slices",
+   "title": "Feature slice: soul-match",
+   "file": "slices/soul-match.md",
+   "summary": "status: implemented; owner: core-api/soul-match Anonymous text match, rating and friendship unlock This file follows ONE feature through every layer. Layers are joined by the actual endpoint calls fo…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/soul-match.md"
+  },
+  {
+   "id": "slice:support-tickets",
+   "type": "slices",
+   "title": "Feature slice: support-tickets",
+   "file": "slices/support-tickets.md",
+   "summary": "status: implemented; owner: core-api/support with core-api/admin Idempotent support tickets with customer tracking and staff workflow This file follows ONE feature through every layer. Layers are joi…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/support-tickets.md"
+  },
+  {
+   "id": "slice:user-profile-open-entry",
+   "type": "slices",
+   "title": "Feature slice: user-profile-open-entry",
+   "file": "slices/user-profile-open-entry.md",
+   "summary": "status: implemented; owner: core-api/user Optional profile birth date without an age-based access gate This file follows ONE feature through every layer. Layers are joined by the actual endpoint call…",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/user-profile-open-entry.md"
+  },
+  {
+   "id": "api:index",
+   "type": "index",
+   "title": "Index api",
+   "file": "api/index.md",
+   "summary": "All api files.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/index.md"
+  },
+  {
+   "id": "db:index",
+   "type": "index",
+   "title": "Index db",
+   "file": "db/index.md",
+   "summary": "All db files.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/index.md"
+  },
+  {
+   "id": "errors:index",
+   "type": "index",
+   "title": "Index errors",
+   "file": "errors/index.md",
+   "summary": "All errors files.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/index.md"
+  },
+  {
+   "id": "config:index",
+   "type": "index",
+   "title": "Index config",
+   "file": "config/index.md",
+   "summary": "All config files.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/index.md"
+  },
+  {
+   "id": "events:index",
+   "type": "index",
+   "title": "Index events",
+   "file": "events/index.md",
+   "summary": "All events files.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/events/index.md"
+  },
+  {
+   "id": "service-map:index",
+   "type": "index",
+   "title": "Index service-map",
+   "file": "service-map/index.md",
+   "summary": "All service-map files.",
+   "related": [],
+   "url": "https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/index.md"
   }
  ]
 }

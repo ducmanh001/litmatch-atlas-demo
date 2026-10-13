@@ -14,7 +14,7 @@ Gửi phiếu hỗ trợ (category + message tối đa 2000 ký tự) ở trạn
 - params: header:Idempotency-Key*:string
 - body CreateSupportTicketDto: category*:enum(feedback|bug|idea), message*:string[minLength=5 maxLength=2000]
 - response 201 SupportTicketDto: id:string, userId:string, category:enum(feedback|bug|idea), message:string, status:enum(open|in_progress|resolved|closed), staffResponse:string, createdAt:string(date-time), updatedAt:string(date-time)
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/support/api.ts:35
 
 ### GET /support/tickets/me
 
@@ -24,5 +24,5 @@ Liệt kê phiếu của chính mình theo cursor (createdAt, id) giảm dần �
 - auth: Bearer JWT
 - params: query:limit:number, query:cursor:string
 - response 200 SupportTicketsPageDto: items:array<SupportTicketDto>, items[].id:string, items[].userId:string, items[].category:enum(feedback|bug|idea), items[].message:string, items[].status:enum(open|in_progress|resolved|closed), items[].staffResponse:string, items[].createdAt:string(date-time), items[].updatedAt:string(date-time), meta:object, meta.nextCursor:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/support/api.ts:19
 

@@ -13,7 +13,7 @@ Duyệt user theo gender/tuổi (cursor createdAt,id); loại self + block/repor
 - auth: Bearer JWT
 - params: query:gender:enum(unknown|male|female|other), query:ageMin:number, query:ageMax:number, query:limit:number, query:cursor:string
 - response 200 DiscoveryCardsPageDto: items:array<DiscoveryCardDto>, items[].profile:PublicProfileDto, items[].profile.id:string, items[].profile.nickname:string, items[].profile.gender:enum(unknown|male|female|other), items[].profile.avatarId:string, items[].profile.interests:array<string>, items[].ageBucket:string, nextCursor:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/discovery/api.ts:40
 
 ### PUT /discovery/nearby/location
 
@@ -23,7 +23,7 @@ Ghi vị trí hiện tại, quantize ~500m ngay lúc ghi (không lưu toạ đ�
 - auth: Bearer JWT
 - body SetLocationDto: lat*:number[minimum=-90 maximum=90], lon*:number[minimum=-180 maximum=180]
 - response 204: 
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/discovery/api.ts:92
 
 ### PUT /discovery/nearby/visible
 
@@ -33,7 +33,7 @@ Bật/tắt opt-in Nearby; tắt thì xoá user_locations cùng transaction vớ
 - auth: Bearer JWT
 - body SetNearbyVisibleDto: visible*:boolean
 - response 204: 
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/discovery/api.ts:78
 
 ### GET /discovery/nearby
 
@@ -43,5 +43,5 @@ Liệt kê người gần: yêu cầu caller đã opt-in và vị trí còn tư�
 - auth: Bearer JWT
 - params: query:gender:enum(unknown|male|female|other), query:ageMin:number, query:ageMax:number, query:limit:number, query:cursor:string
 - response 200 NearbyCardsPageDto: items:array<NearbyCardDto>, items[].profile:PublicProfileDto, items[].profile.id:string, items[].profile.nickname:string, items[].profile.gender:enum(unknown|male|female|other), items[].profile.avatarId:string, items[].profile.interests:array<string>, items[].distanceBucket:string, nextCursor:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/discovery/api.ts:61
 

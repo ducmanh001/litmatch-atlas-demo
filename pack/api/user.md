@@ -12,7 +12,7 @@ see: ../modules/user.md
 - handler: UserController.getMe (apps/core-api/src/modules/user/user.controller.ts:41); operationId: UserController_getMe
 - auth: Bearer JWT
 - response 200 MyProfileDto: id:string, nickname:string, gender:enum(unknown|male|female|other), birthDate:string, region:string, avatarId:string, isGuest:boolean, interests:array<string>, seekingGender:enum(male|female|any), seekingAgeMin:number, seekingAgeMax:number
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/shared/auth/use-current-user.ts:20
 
 ### PATCH /users/me
 
@@ -22,7 +22,7 @@ Sửa hồ sơ của mình (nickname, gender, birthDate không ở tương lai, 
 - auth: Bearer JWT
 - body UpdateProfileDto: nickname:string, gender:enum(unknown|male|female|other), birthDate:string, region:string, interests:array<string>, seekingGender:enum(male|female|any), seekingAgeMin:number[minimum=18 maximum=99], seekingAgeMax:number[minimum=18 maximum=99]
 - response 200 MyProfileDto: id:string, nickname:string, gender:enum(unknown|male|female|other), birthDate:string, region:string, avatarId:string, isGuest:boolean, interests:array<string>, seekingGender:enum(male|female|any), seekingAgeMin:number, seekingAgeMax:number
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/profile/api.ts:190
 
 ### GET /users/me/privacy
 
@@ -31,7 +31,7 @@ Sửa hồ sơ của mình (nickname, gender, birthDate không ở tương lai, 
 - handler: UserController.getMyPrivacy (apps/core-api/src/modules/user/user.controller.ts:62); operationId: UserController_getMyPrivacy
 - auth: Bearer JWT
 - response 200 PrivacySettingsDto: showOnlineStatus:boolean, showDistance:boolean, searchableByPhone:boolean, hideProfile:boolean
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/privacy/api.ts:20
 
 ### PUT /users/me/privacy
 
@@ -41,7 +41,7 @@ Ghi privacy settings của mình bằng upsert theo userId (searchableByPhone, h
 - auth: Bearer JWT
 - body UpdatePrivacySettingsDto: showOnlineStatus*:boolean[default=true], showDistance*:boolean[default=true], searchableByPhone*:boolean[default=false], hideProfile*:boolean[default=false]
 - response 200 PrivacySettingsDto: showOnlineStatus:boolean, showDistance:boolean, searchableByPhone:boolean, hideProfile:boolean
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/privacy/api.ts:31
 
 ### GET /users/{id}/presence
 
@@ -51,7 +51,7 @@ Cho biết user khác có đang online không: chỉ true khi họ bật showOnl
 - auth: Bearer JWT
 - params: path:id*:string
 - response 200 UserPresenceDto: isOnline:boolean
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/profile/api.ts:177
 
 ### GET /users/{id}
 
@@ -61,5 +61,5 @@ Hồ sơ công khai tối thiểu (PublicProfileDto) của user khác theo id; k
 - auth: Bearer JWT
 - params: path:id*:string
 - response 200 PublicProfileDto: id:string, nickname:string, gender:enum(unknown|male|female|other), avatarId:string, interests:array<string>
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/friend-chat/api.ts:76; web apps/web/src/features/party-room/api.ts:322; web apps/web/src/features/profile/api.ts:74
 

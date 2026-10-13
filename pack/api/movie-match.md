@@ -13,7 +13,7 @@ Tạo phiên xem chung với 1 bạn (friendUserId + videoUrl): URL phải http/
 - auth: Bearer JWT
 - body CreateMovieSessionDto: friendUserId*:string, videoUrl*:string[maxLength=4096]
 - response 200 MovieSessionDto: id:string, partnerUserId:string, videoUrl:string, positionSeconds:number, isPlaying:boolean, positionUpdatedAt:string(date-time), status:string, endedAt:string(date-time), endReason:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/movie-match/api.ts:26
 
 ### PATCH /movie-match/sessions/{id}/state
 
@@ -44,7 +44,7 @@ Poll fallback cho realtime: trả MovieSessionDto (kèm partnerUserId) cho parti
 - auth: Bearer JWT
 - params: path:id*:string
 - response 200 MovieSessionDto: id:string, partnerUserId:string, videoUrl:string, positionSeconds:number, isPlaying:boolean, positionUpdatedAt:string(date-time), status:string, endedAt:string(date-time), endReason:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/movie-match/api.ts:39
 
 ### POST /movie-match/anon/queue
 
@@ -53,7 +53,7 @@ Vào hàng đợi ghép ẩn danh (idempotent): advisory lock tuần tự hoá m
 - handler: MovieMatchController.joinAnonQueue (apps/core-api/src/modules/movie-match/movie-match.controller.ts:117); operationId: MovieMatchController_joinAnonQueue
 - auth: Bearer JWT
 - response 200 MovieAnonStateDto: state:enum(idle|queued|watching|rating|completed), queuedAt:string, sessionId:string, videoUrl:string, positionSeconds:number, isPlaying:boolean, positionUpdatedAt:string, expiresAt:string, myRating:enum(like|boring|rude), opponentRated:boolean, outcome:enum(matched|not_matched|cancelled|expired), partnerUserId:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/movie-match/anon-api.ts:63
 
 ### GET /movie-match/anon/current
 
@@ -62,7 +62,7 @@ Trả state phục hồi/poll của flow ẩn danh (idle|queued|watching|rating|
 - handler: MovieMatchController.getAnonCurrent (apps/core-api/src/modules/movie-match/movie-match.controller.ts:131); operationId: MovieMatchController_getAnonCurrent
 - auth: Bearer JWT
 - response 200 MovieAnonStateDto: state:enum(idle|queued|watching|rating|completed), queuedAt:string, sessionId:string, videoUrl:string, positionSeconds:number, isPlaying:boolean, positionUpdatedAt:string, expiresAt:string, myRating:enum(like|boring|rude), opponentRated:boolean, outcome:enum(matched|not_matched|cancelled|expired), partnerUserId:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/movie-match/anon-api.ts:38
 
 ### DELETE /movie-match/anon/current
 
@@ -71,7 +71,7 @@ Huỷ hàng đợi hoặc dismiss kết quả/phiên ẩn danh: phiên đang act
 - handler: MovieMatchController.dismissAnonCurrent (apps/core-api/src/modules/movie-match/movie-match.controller.ts:142); operationId: MovieMatchController_dismissAnonCurrent
 - auth: Bearer JWT
 - response 200 MovieAnonStateDto: state:enum(idle|queued|watching|rating|completed), queuedAt:string, sessionId:string, videoUrl:string, positionSeconds:number, isPlaying:boolean, positionUpdatedAt:string, expiresAt:string, myRating:enum(like|boring|rude), opponentRated:boolean, outcome:enum(matched|not_matched|cancelled|expired), partnerUserId:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/movie-match/anon-api.ts:70
 
 ### PATCH /movie-match/anon/sessions/{id}/state
 
@@ -135,5 +135,5 @@ Gửi reaction emoji nổi (whitelist 4 emoji): realtime-only, không persist, k
 - params: path:id*:string
 - body ReactMovieDto: emoji*:enum(😂|😍|😱|👏)
 - response 204: 
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/movie-match/anon-api.ts:160
 

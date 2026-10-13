@@ -65,7 +65,7 @@ Trả lời story thành DM qua FriendService.sendMessage (attachment story_repl
 - params: header:Idempotency-Key*:string
 - body CreatePostDto: content:string, imageAssetId:string, audience:enum(public|friends|only_me)[default="public"]
 - response 201 PostDto: id:string, authorUserId:string, author:PublicProfileDto, author.id:string, author.nickname:string, author.gender:enum(unknown|male|female|other), author.avatarId:string, author.interests:array<string>, content:string, imageUrl:string, audience:enum(public|friends|only_me), likeCount:number, commentCount:number, createdAt:string(date-time)
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/feed/api.ts:70
 
 ### GET /feed/posts
 
@@ -75,7 +75,7 @@ Feed công khai toàn cục (chỉ audience=public), cursor seq giảm dần, lo
 - auth: Bearer JWT
 - params: query:limit:number, query:cursor:string
 - response 200 PostsPageDto: items:array<PostDto>, items[].id:string, items[].authorUserId:string, items[].author:PublicProfileDto, items[].author.id:string, items[].author.nickname:string, items[].author.gender:enum(unknown|male|female|other), items[].author.avatarId:string, items[].author.interests:array<string>, items[].content:string, items[].imageUrl:string, items[].audience:enum(public|friends|only_me), items[].likeCount:number, items[].commentCount:number, items[].createdAt:string(date-time), nextCursor:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/feed/api.ts:33
 
 ### GET /feed/users/{userId}/posts
 
@@ -85,7 +85,7 @@ Timeline một tác giả: audience khớp quan hệ (chính mình thấy hết,
 - auth: Bearer JWT
 - params: path:userId*:string, query:limit:number, query:cursor:string
 - response 200 PostsPageDto: items:array<PostDto>, items[].id:string, items[].authorUserId:string, items[].author:PublicProfileDto, items[].author.id:string, items[].author.nickname:string, items[].author.gender:enum(unknown|male|female|other), items[].author.avatarId:string, items[].author.interests:array<string>, items[].content:string, items[].imageUrl:string, items[].audience:enum(public|friends|only_me), items[].likeCount:number, items[].commentCount:number, items[].createdAt:string(date-time), nextCursor:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/feed/api.ts:51
 
 ### GET /feed/posts/{postId}
 
@@ -95,7 +95,7 @@ Chi tiết 1 bài qua getPostOrThrow: đã xoá, bị block, tác giả ẩn h�
 - auth: Bearer JWT
 - params: path:postId*:string
 - response 200 PostDto: id:string, authorUserId:string, author:PublicProfileDto, author.id:string, author.nickname:string, author.gender:enum(unknown|male|female|other), author.avatarId:string, author.interests:array<string>, content:string, imageUrl:string, audience:enum(public|friends|only_me), likeCount:number, commentCount:number, createdAt:string(date-time)
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/feed/api.ts:112
 
 ### DELETE /feed/posts/{postId}
 
@@ -105,7 +105,7 @@ Xoá mềm bài (deletedAt), chỉ tác giả; đi qua getPostOrThrow nên cũng
 - auth: Bearer JWT
 - params: path:postId*:string
 - response 204: 
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/feed/api.ts:86
 
 ### POST /feed/posts/{postId}/comments
 
@@ -116,7 +116,7 @@ Bình luận: guest bị chặn, guard block/audience, insert Comment + tăng co
 - params: path:postId*:string
 - body CreateCommentDto: content*:string
 - response 201 CommentDto: id:string, postId:string, authorUserId:string, author:PublicProfileDto, author.id:string, author.nickname:string, author.gender:enum(unknown|male|female|other), author.avatarId:string, author.interests:array<string>, content:string, createdAt:string(date-time)
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/feed/api.ts:141
 
 ### GET /feed/posts/{postId}/comments
 
@@ -126,7 +126,7 @@ Liệt kê comment cũ -> mới theo cursor seq sau khi qua getPostOrThrow, kèm
 - auth: Bearer JWT
 - params: path:postId*:string, query:limit:number, query:cursor:string
 - response 200 CommentsPageDto: items:array<CommentDto>, items[].id:string, items[].postId:string, items[].authorUserId:string, items[].author:PublicProfileDto, items[].author.id:string, items[].author.nickname:string, items[].author.gender:enum(unknown|male|female|other), items[].author.avatarId:string, items[].author.interests:array<string>, items[].content:string, items[].createdAt:string(date-time), nextCursor:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/feed/api.ts:124
 
 ### DELETE /feed/comments/{commentId}
 
@@ -146,7 +146,7 @@ Thả tim idempotent: insert Reaction + tăng likeCount + tạo Notification pos
 - auth: Bearer JWT
 - params: path:postId*:string
 - response 200 ReactionStatusDto: liked:boolean, likeCount:number
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/feed/api.ts:176
 
 ### DELETE /feed/posts/{postId}/reactions
 
@@ -156,7 +156,7 @@ Bỏ thả tim idempotent: xoá Reaction và chỉ giảm likeCount khi thực s
 - auth: Bearer JWT
 - params: path:postId*:string
 - response 200 ReactionStatusDto: liked:boolean, likeCount:number
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/feed/api.ts:179
 
 ### GET /feed/posts/{postId}/reactions
 
@@ -166,5 +166,5 @@ Trạng thái thả tim của chính mình + tổng likeCount, qua getPostOrThro
 - auth: Bearer JWT
 - params: path:postId*:string
 - response 200 ReactionStatusDto: liked:boolean, likeCount:number
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/feed/api.ts:163
 

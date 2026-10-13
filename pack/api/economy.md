@@ -12,7 +12,7 @@ see: ../modules/economy.md
 - handler: EconomyController.getWallet (apps/core-api/src/modules/economy/economy.controller.ts:55); operationId: EconomyController_getWallet
 - auth: Bearer JWT
 - response 200 WalletDto: balance:string, earnings:string, vipTier:enum(vip|svip), vipExpiresAt:string(date-time)
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/wallet/api.ts:23
 
 ### GET /economy/iap/products
 
@@ -21,7 +21,7 @@ Catalog gói diamond IAP đang bán (active=true) sắp theo diamonds tăng dầ
 - handler: EconomyController.listIapProducts (apps/core-api/src/modules/economy/economy.controller.ts:62); operationId: EconomyController_listIapProducts
 - auth: Bearer JWT
 - response 200 array<IapProductDto>: [].productId:string, [].provider:enum(apple|google), [].diamonds:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/wallet/api.ts:33
 
 ### GET /economy/payos/packages
 
@@ -30,7 +30,7 @@ Catalog gói nạp payOS (packageId, amountVnd, diamonds) đang bán; client ch�
 - handler: EconomyController.listPayosPackages (apps/core-api/src/modules/economy/economy.controller.ts:69); operationId: EconomyController_listPayosPackages
 - auth: Bearer JWT
 - response 200 array<PayosPackageDto>: [].packageId:string, [].amountVnd:string, [].diamonds:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/wallet/api.ts:45
 
 ### POST /economy/payos/orders
 
@@ -41,7 +41,7 @@ Tạo đơn nạp payOS idempotent (header Idempotency-Key, @Throttle 10/phút, 
 - params: header:Idempotency-Key*:string
 - body CreatePayosOrderDto: packageId*:string
 - response 200 PayosOrderDto: orderId:string, orderCode:string, amountVnd:string, diamonds:string, status:enum(pending|paid|cancelled|expired), checkoutUrl:string(uri), qrCode:string, expiresAt:string(date-time), replayed:boolean
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/wallet/api.ts:74
 
 ### GET /economy/payos/orders/{orderId}
 
@@ -60,7 +60,7 @@ Catalog gói VIP đang bán (planId, tier, số ngày, giá diamond) sắp theo 
 - handler: EconomyController.listVipPlans (apps/core-api/src/modules/economy/economy.controller.ts:111); operationId: EconomyController_listVipPlans
 - auth: Bearer JWT
 - response 200 array<VipPlanDto>: [].id:string, [].tier:enum(vip|svip), [].days:number, [].priceDiamond:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/wallet/api.ts:89
 
 ### POST /economy/iap/verify
 
@@ -70,7 +70,7 @@ Verify receipt IAP Apple/Google ở server rồi credit diamond; idempotency t�
 - auth: Bearer JWT; throttle: { default: { limit: 10, ttl: minutes(1) } }
 - body VerifyIapDto: provider*:enum(apple|google), productId*:string, payload*:object
 - response 200: 
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/wallet/api.ts:122
 
 ### POST /economy/vip/purchase
 
@@ -81,7 +81,7 @@ Mua VIP bằng diamond (header Idempotency-Key): Nợ user_wallet / Có system_r
 - params: header:Idempotency-Key*:string
 - body PurchaseVipDto: planId*:string
 - response 200 VipPurchaseResultDto: transactionId:string, tier:enum(vip|svip), vipExpiresAt:string(date-time), replayed:boolean
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/wallet/api.ts:100
 
 ### GET /economy/transactions
 

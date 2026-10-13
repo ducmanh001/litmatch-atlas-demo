@@ -13,7 +13,7 @@ Poll trạng thái phòng chat ẩn danh (phase chatting|rating|closed, chatEnds
 - auth: Bearer JWT
 - params: path:id*:string
 - response 200 SoulSessionViewDto: sessionId:string, phase:enum(chatting|rating|closed), chatEndsAt:string(date-time), ratingEndsAt:string(date-time), myVerdict:enum(rude|boring|like), matched:boolean
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/soul-match/api.ts:38
 
 ### GET /soul-match/sessions/{id}/messages
 
@@ -55,7 +55,7 @@ Rời phòng: Matching đặt MatchSession sang ended cho cả hai (idempotent, 
 - auth: Bearer JWT
 - params: path:id*:string
 - response 204: 
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/soul-match/api.ts:126
 
 ### GET /soul-match/sessions/{id}/partner
 

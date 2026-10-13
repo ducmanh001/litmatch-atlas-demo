@@ -13,7 +13,7 @@ Liệt kê notification của chính user, mới nhất trước, phân trang cu
 - auth: Bearer JWT
 - params: query:limit:number, query:cursor:string
 - response 200 NotificationsPageDto: items:array<NotificationDto>, items[].id:string, items[].type:enum(match_confirmed|friend_message|gift_received|post_liked|post_commented|streak_milestone|streak_at_risk|match_invite_received|admin_broadcast), items[].payload:object, items[].readAt:object, items[].createdAt:string(date-time), nextCursor:object
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/notification/api.ts:63
 
 ### GET /notifications/unread-count
 
@@ -22,7 +22,7 @@ Liệt kê notification của chính user, mới nhất trước, phân trang cu
 - handler: NotificationController.unreadCount (apps/core-api/src/modules/notification/notification.controller.ts:55); operationId: NotificationController_unreadCount
 - auth: Bearer JWT
 - response 200 UnreadCountDto: count:number
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/notification/api.ts:51
 
 ### POST /notifications/web-push/subscription
 
@@ -32,7 +32,7 @@ Liệt kê notification của chính user, mới nhất trước, phân trang cu
 - auth: Bearer JWT
 - body UpsertWebPushSubscriptionDto: endpoint*:string[maxLength=2048], expirationTime:number, keys*:WebPushSubscriptionKeysDto, keys.p256dh*:string[minLength=1 maxLength=255], keys.auth*:string[minLength=1 maxLength=255]
 - response 204: 
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/notification/api.ts:34
 
 ### DELETE /notifications/web-push/subscription
 
@@ -42,7 +42,7 @@ Huỷ subscription theo endpoint, chỉ xoá hàng thuộc chính user (delete t
 - auth: Bearer JWT
 - body DeleteWebPushSubscriptionDto: endpoint*:string[maxLength=2048]
 - response 204: 
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/notification/api.ts:42
 
 ### POST /notifications/{notificationId}/read
 
@@ -52,5 +52,5 @@ Huỷ subscription theo endpoint, chỉ xoá hàng thuộc chính user (delete t
 - auth: Bearer JWT
 - params: path:notificationId*:string
 - response 204: 
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/notification/api.ts:82
 

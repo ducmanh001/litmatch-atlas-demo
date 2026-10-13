@@ -23,7 +23,7 @@ Danh sách người theo dõi profile, cursor keyset (last_followed_at, id) mớ
 - auth: Bearer JWT
 - params: path:profileUserId*:string, query:limit:number, query:cursor:string
 - response 200 FollowListPageDto: items:array<FollowListItemDto>, items[].profile:PublicProfileDto, items[].profile.id:string, items[].profile.nickname:string, items[].profile.gender:enum(unknown|male|female|other), items[].profile.avatarId:string, items[].profile.interests:array<string>, items[].followedAt:string(date-time), items[].isFollowing:boolean, meta:object, meta.nextCursor:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/profile/api.ts:56
 
 ### GET /profiles/{profileUserId}/following
 
@@ -33,7 +33,7 @@ Danh sách profile mà user đang theo dõi, cùng cursor keyset và cùng bộ 
 - auth: Bearer JWT
 - params: path:profileUserId*:string, query:limit:number, query:cursor:string
 - response 200 FollowListPageDto: items:array<FollowListItemDto>, items[].profile:PublicProfileDto, items[].profile.id:string, items[].profile.nickname:string, items[].profile.gender:enum(unknown|male|female|other), items[].profile.avatarId:string, items[].profile.interests:array<string>, items[].followedAt:string(date-time), items[].isFollowing:boolean, meta:object, meta.nextCursor:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/profile/api.ts:59
 
 ### GET /profiles/{profileUserId}/actions
 
@@ -82,7 +82,7 @@ Inbox mọi conversation của caller sort theo lastMessageAt, kèm profile côn
 - handler: FriendController.listFriends (apps/core-api/src/modules/friend/friend.controller.ts:56); operationId: FriendController_listFriends
 - auth: Bearer JWT
 - response 200 array<FriendDto>: [].profile:PublicProfileDto, [].profile.id:string, [].profile.nickname:string, [].profile.gender:enum(unknown|male|female|other), [].profile.avatarId:string, [].profile.interests:array<string>, [].conversationId:string, [].friendSince:string(date-time), [].lastMessageAt:string(date-time), [].unreadCount:number, [].lastMessagePreview:string, [].muted:boolean, [].isFriend:boolean, [].canCall:boolean
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/friend-chat/api.ts:35
 
 ### GET /friends/connections
 
@@ -91,7 +91,7 @@ Danh sách bạn bè = Friendship (cùng "Thích" lúc ghép đôi) hợp follow
 - handler: FriendController.listConnections (apps/core-api/src/modules/friend/friend.controller.ts:85); operationId: FriendController_listConnections
 - auth: Bearer JWT
 - response 200 array<FriendConnectionDto>: [].profile:PublicProfileDto, [].profile.id:string, [].profile.nickname:string, [].profile.gender:enum(unknown|male|female|other), [].profile.avatarId:string, [].profile.interests:array<string>, [].isFriend:boolean, [].isMutualFollow:boolean, [].since:string(date-time)
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/friend-chat/api.ts:49
 
 ### GET /friends/{friendUserId}/conversation
 
@@ -111,7 +111,7 @@ Liệt kê message theo cursor keyset seq; chỉ 2 thành viên, conversation kh
 - auth: Bearer JWT
 - params: path:id*:string, query:limit:number, query:cursor:string
 - response 200 MessagesPageDto: items:array<MessageDto>, items[].id:string, items[].conversationId:string, items[].senderUserId:string, items[].content:string, items[].attachment:MessageAttachmentDto, items[].attachment.kind:string, items[].attachment.payload:object, items[].sentAt:string(date-time), meta:object, meta.nextCursor:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/friend-chat/api.ts:91
 
 ### GET /conversations/{id}/streak
 
@@ -131,7 +131,7 @@ Streak hiện tại derive khi đọc (isActive khi gap <= 2 ngày UTC, chưa c�
 - auth: Bearer JWT
 - params: path:id*:string
 - response 200 ConversationMemberStateDto: lastReadAt:string(date-time), muted:boolean
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/friend-chat/api.ts:140
 
 ### POST /conversations/{id}/mute
 
@@ -142,7 +142,7 @@ Bật/tắt mute hội thoại (body {muted}); chỉ tắt kênh notification fr
 - params: path:id*:string
 - body MuteConversationDto: muted*:boolean
 - response 200 ConversationMemberStateDto: lastReadAt:string(date-time), muted:boolean
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/friend-chat/api.ts:158
 
 ### POST /conversations/{id}/messages
 
@@ -153,5 +153,5 @@ Gửi message: bắt buộc Idempotency-Key, guard thành viên + block 2 chiề
 - params: path:id*:string, header:Idempotency-Key*:string
 - body SendFriendMessageDto: content:string[maxLength=4000], imageAssetId:string
 - response 201 MessageDto: id:string, conversationId:string, senderUserId:string, content:string, attachment:MessageAttachmentDto, attachment.kind:string, attachment.payload:object, sentAt:string(date-time)
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/friend-chat/api.ts:115
 

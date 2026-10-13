@@ -33,7 +33,7 @@ Poll fallback của call.ended: trả trạng thái call + liked/matched/friendU
 - auth: Bearer JWT
 - params: path:id*:string
 - response 200 CallDto: id:string, matchSessionId:string, status:enum(pending|active|ended), startedAt:string(date-time), endedAt:string(date-time), endReason:enum(completed|free_limit|insufficient_balance|pending_timeout), callKind:enum(voice_match|friend), durationSeconds:number, billedMinutes:number, freeCallEndsAt:string(date-time), liked:boolean, matched:boolean, friendUserId:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/voice-match/api.ts:74
 
 ### POST /calling/calls/{id}/end
 
@@ -43,7 +43,7 @@ Member chủ động kết thúc call, idempotent (lock FOR UPDATE), chốt luô
 - auth: Bearer JWT
 - params: path:id*:string
 - response 200 CallDto: id:string, matchSessionId:string, status:enum(pending|active|ended), startedAt:string(date-time), endedAt:string(date-time), endReason:enum(completed|free_limit|insufficient_balance|pending_timeout), callKind:enum(voice_match|friend), durationSeconds:number, billedMinutes:number, freeCallEndsAt:string(date-time), liked:boolean, matched:boolean, friendUserId:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/voice-match/api.ts:91
 
 ### POST /calling/match-sessions/{matchSessionId}/end
 
@@ -63,7 +63,7 @@ Ghi consent like immutable khi call active/ended (khoá CallSession, unique reac
 - auth: Bearer JWT
 - params: path:id*:string
 - response 200 VoiceMatchLikeDto: liked:boolean, matched:boolean, friendUserId:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/voice-match/api.ts:126
 
 ### POST /calling/webhooks/livekit
 

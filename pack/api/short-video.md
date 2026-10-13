@@ -34,7 +34,7 @@ Danh sách video published (for_you hoặc following = video của bạn bè qua
 - auth: Bearer JWT
 - params: query:sort:enum(recent|ranked), query:feed:enum(for_you|following), query:limit:number, query:cursor:string
 - response 200 VideosPageDto: items:array<VideoDto>, items[].id:string, items[].authorUserId:string, items[].author:PublicProfileDto, items[].author.id:string, items[].author.nickname:string, items[].author.gender:enum(unknown|male|female|other), items[].author.avatarId:string, items[].author.interests:array<string>, items[].status:enum(uploading|processing|pending_review|published|removed|rejected|failed), items[].playbackUrl:string, items[].thumbnailUrl:string, items[].caption:string, items[].durationSeconds:number, items[].viewCount:number, items[].likeCount:number, items[].commentCount:number, items[].createdAt:string(date-time), nextCursor:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/short-video/api.ts:34
 
 ### GET /videos/{id}
 
@@ -55,7 +55,7 @@ Report video: kiểm video visible rồi SafetyService.reportVideo (unique 1 rep
 - params: path:id*:string
 - body ReportVideoDto: reason*:enum(harassment|spam|underage|inappropriate_content|other), description:string
 - response 204: 
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/short-video/api.ts:148
 
 ### POST /videos/{id}/views
 
@@ -66,7 +66,7 @@ Ghi watch-time: self-view bỏ qua, video_views unique, viewCount chỉ +1 đún
 - params: path:id*:string
 - body RecordViewDto: watchTimeMs*:number[minimum=0]
 - response 204: 
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/short-video/api.ts:137
 
 ### POST /videos/{id}/reactions
 
@@ -76,7 +76,7 @@ Thả tim idempotent: insert VideoReaction + tăng likeCount cùng transaction, 
 - auth: Bearer JWT
 - params: path:id*:string
 - response 201 ReactionStatusDto: liked:boolean, likeCount:number
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/short-video/api.ts:112
 
 ### DELETE /videos/{id}/reactions
 
@@ -86,7 +86,7 @@ Bỏ tim idempotent: xoá VideoReaction và chỉ giảm likeCount khi xoá đư
 - auth: Bearer JWT
 - params: path:id*:string
 - response 200 ReactionStatusDto: liked:boolean, likeCount:number
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/short-video/api.ts:115
 
 ### POST /videos/{id}/comments
 
@@ -97,7 +97,7 @@ Bình luận video: insert VideoComment + tăng commentCount cùng transaction, 
 - params: path:id*:string
 - body CreateVideoCommentDto: content*:string
 - response 201 VideoCommentDto: id:string, videoId:string, authorUserId:string, author:PublicProfileDto, author.id:string, author.nickname:string, author.gender:enum(unknown|male|female|other), author.avatarId:string, author.interests:array<string>, content:string, createdAt:string(date-time)
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/short-video/api.ts:92
 
 ### GET /videos/{id}/comments
 
@@ -107,7 +107,7 @@ Liệt kê comment theo cursor sau khi qua getVideoOrThrow, batch author PublicP
 - auth: Bearer JWT
 - params: path:id*:string, query:limit:number, query:cursor:string
 - response 200 VideoCommentsPageDto: items:array<VideoCommentDto>, items[].id:string, items[].videoId:string, items[].authorUserId:string, items[].author:PublicProfileDto, items[].author.id:string, items[].author.nickname:string, items[].author.gender:enum(unknown|male|female|other), items[].author.avatarId:string, items[].author.interests:array<string>, items[].content:string, items[].createdAt:string(date-time), nextCursor:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/short-video/api.ts:74
 
 ### DELETE /videos/{id}/comments/{commentId}
 

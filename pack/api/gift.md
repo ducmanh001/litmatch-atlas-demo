@@ -12,7 +12,7 @@ Liệt kê catalog quà đang bật (active) với giá server là nguồn sự 
 - handler: GiftController.listCatalog (apps/core-api/src/modules/gift/gift.controller.ts:41); operationId: GiftController_listCatalog
 - auth: Bearer JWT
 - response 200 array<GiftDto>: [].id:string, [].code:string, [].name:string, [].priceDiamond:number
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/party-room/api.ts:287; web apps/web/src/features/profile/api.ts:100
 
 ### POST /party/rooms/{roomId}/gifts
 
@@ -23,7 +23,7 @@ Tặng quà trong phòng Party: bắt buộc Idempotency-Key, throttle 30/phút,
 - params: path:roomId*:string, header:Idempotency-Key*:string
 - body SendGiftDto: giftId*:string, receiverUserId*:string
 - response 200 GiftEventDto: id:string, giftId:string, giftCode:string, roomId:string, videoId:string, profileUserId:string, senderUserId:string, receiverUserId:string, priceDiamond:number, pointsAwarded:number, createdAt:string(date-time), replayed:boolean
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/party-room/api.ts:301
 
 ### POST /videos/{videoId}/gifts
 
@@ -34,7 +34,7 @@ Tặng quà cho tác giả video: người nhận suy từ video.authorUserId (c
 - params: path:videoId*:string, header:Idempotency-Key*:string
 - body SendVideoGiftDto: giftId*:string
 - response 200 GiftEventDto: id:string, giftId:string, giftCode:string, roomId:string, videoId:string, profileUserId:string, senderUserId:string, receiverUserId:string, priceDiamond:number, pointsAwarded:number, createdAt:string(date-time), replayed:boolean
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/short-video/api.ts:55
 
 ### POST /profiles/{profileUserId}/gifts
 

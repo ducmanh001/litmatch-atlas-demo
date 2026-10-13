@@ -12,7 +12,7 @@ Liệt kê catalog item đang bật, lọc theo slot tuỳ chọn, sắp theo so
 - handler: AvatarController.listCatalog (apps/core-api/src/modules/avatar/avatar.controller.ts:49); operationId: AvatarController_listCatalog
 - auth: Bearer JWT
 - response 200 array<AvatarAssetDto>: [].id:string, [].slot:enum(base|hair|face|outfit|accessory), [].code:string, [].name:string, [].imageUrl:string, [].zIndex:number, [].priceDiamond:number
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/avatar/api.ts:32
 
 ### GET /avatar/me/items
 
@@ -21,7 +21,7 @@ Liệt kê các item avatar user hiện tại đã sở hữu (join user_avatar_
 - handler: AvatarController.listMyItems (apps/core-api/src/modules/avatar/avatar.controller.ts:62); operationId: AvatarController_listMyItems
 - auth: Bearer JWT
 - response 200 array<AvatarAssetDto>: [].id:string, [].slot:enum(base|hair|face|outfit|accessory), [].code:string, [].name:string, [].imageUrl:string, [].zIndex:number, [].priceDiamond:number
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/avatar/api.ts:44
 
 ### POST /avatar/items/{assetId}/claim
 
@@ -31,7 +31,7 @@ Nhận item miễn phí (priceDiamond = 0): ghi sở hữu idempotent ON CONFLIC
 - auth: Bearer JWT
 - params: path:assetId*:string
 - response 204: 
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/avatar/api.ts:55
 
 ### POST /avatar/items/{assetId}/buy
 
@@ -41,7 +41,7 @@ Mua item trả phí: bắt buộc Idempotency-Key, Economy.spendDiamond trừ DI
 - auth: Bearer JWT; requires Idempotency-Key header
 - params: path:assetId*:string, header:Idempotency-Key*:string
 - response 200 AvatarBuyResultDto: replayed:boolean
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/avatar/api.ts:70
 
 ### PUT /avatar/me/equip
 
@@ -51,7 +51,7 @@ Trang bị item vào slot: chống IDOR bằng 3 check (asset active, đúng slo
 - auth: Bearer JWT
 - body EquipAvatarItemDto: slot*:enum(base|hair|face|outfit|accessory), avatarAssetId*:string
 - response 200 AvatarConfigDto: userId:string, layers:array<AvatarAssetDto>, layers[].id:string, layers[].slot:enum(base|hair|face|outfit|accessory), layers[].code:string, layers[].name:string, layers[].imageUrl:string, layers[].zIndex:number, layers[].priceDiamond:number
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/avatar/api.ts:90
 
 ### GET /avatar/me
 
@@ -60,7 +60,7 @@ Avatar của chính mình: config + danh sách layer đầy đủ để client g
 - handler: AvatarController.getMyAvatar (apps/core-api/src/modules/avatar/avatar.controller.ts:113); operationId: AvatarController_getMyAvatar
 - auth: Bearer JWT
 - response 200 AvatarConfigDto: userId:string, layers:array<AvatarAssetDto>, layers[].id:string, layers[].slot:enum(base|hair|face|outfit|accessory), layers[].code:string, layers[].name:string, layers[].imageUrl:string, layers[].zIndex:number, layers[].priceDiamond:number
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/features/avatar/api.ts:22
 
 ### GET /avatar/users/{userId}
 

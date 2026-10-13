@@ -13,17 +13,17 @@ see: ../modules/auth.md
 - auth: PUBLIC; throttle: { default: { limit: 5, ttl: minutes(1) } }
 - body GuestLoginDto: deviceId*:string
 - response 200 AuthTokensDto: accessToken:string, csrfToken:string, expiresIn:number, userId:string, isGuest:boolean, guestDeviceToken:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/shared/auth/login-form.tsx:250
 
 ### POST /auth/otp/request
 
-Tạo OTP 6 số cho số điện thoại (rate limit theo số trong DB, vô hiệu mã cũ) và trả mã trong response vì không gửi SMS. Public, throttle 5/phút/IP; 403 nếu AUTH_PHONE_OTP_ENABLED tắt.
+Tạo OTP 6 số cho số điện thoại (rate limit theo số trong DB, vô hiệu mã cũ) (cách trả mã: ẩn khỏi bản công khai). Public, throttle 5/phút/IP; 403 nếu AUTH_PHONE_OTP_ENABLED tắt.
 
 - handler: AuthController.requestOtp (apps/core-api/src/modules/auth/auth.controller.ts:64); operationId: AuthController_requestOtp
 - auth: PUBLIC; throttle: { default: { limit: 5, ttl: minutes(1) } }
 - body RequestOtpDto: phone*:string
 - response 200 OtpRequestedDto: code:string, ttlSeconds:number
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/shared/auth/login-form.tsx:195; admin apps/admin/src/shared/auth/login-page.tsx:90
 
 ### POST /auth/otp/verify
 
@@ -33,7 +33,7 @@ Xác minh OTP (đếm lần thử và consume bằng UPDATE có điều kiện) 
 - auth: PUBLIC; throttle: { default: { limit: 10, ttl: minutes(1) } }
 - body VerifyOtpDto: phone*:string, code*:string
 - response 200 AuthTokensDto: accessToken:string, csrfToken:string, expiresIn:number, userId:string, isGuest:boolean, guestDeviceToken:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/shared/auth/login-form.tsx:235; admin apps/admin/src/shared/auth/login-page.tsx:111
 
 ### POST /auth/social
 
@@ -43,7 +43,7 @@ Xác minh OTP (đếm lần thử và consume bằng UPDATE có điều kiện) 
 - auth: PUBLIC; throttle: { default: { limit: 10, ttl: minutes(1) } }
 - body SocialLoginDto: provider*:enum(google|apple|facebook), idToken*:string
 - response 200 AuthTokensDto: accessToken:string, csrfToken:string, expiresIn:number, userId:string, isGuest:boolean, guestDeviceToken:string
-- FE callers: none in this repo (mobile/third party or dead)
+- FE callers: web apps/web/src/shared/auth/login-form.tsx:279; admin apps/admin/src/shared/auth/login-page.tsx:134
 
 ### POST /auth/refresh
 
