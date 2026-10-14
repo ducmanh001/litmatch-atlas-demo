@@ -74,7 +74,7 @@ env vars read by the module(s): `REDIS_URL`, `USER_DEFAULT_AVATAR_ID` (see ../co
 - e2e files that call these endpoints: none
 - FE specs: apps/web/src/app/(public)/privacy/page.spec.tsx, apps/web/src/features/feed/api.spec.tsx, apps/web/src/features/feed/components/feed-banners.spec.tsx, apps/web/src/features/feed/components/like-button.spec.tsx, apps/web/src/features/feed/components/post-composer.spec.tsx, apps/web/src/features/feed/components/post-detail.spec.tsx, apps/web/src/features/feed/components/post-list.spec.tsx, apps/web/src/features/feed/create-comment-schema.spec.ts, apps/web/src/features/feed/create-post-schema.spec.ts, apps/web/src/features/profile/components/follow-list-view.spec.tsx, apps/web/src/features/profile/components/profile-stats.spec.tsx, apps/web/src/features/profile/components/profile-view.spec.tsx
 
-## 10. Known issues (public subset of the ledger)
+## 10. Known issues (linked from the ledger)
 
 none linked
 

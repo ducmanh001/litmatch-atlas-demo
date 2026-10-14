@@ -27,7 +27,7 @@ Sở hữu Post/Comment/Reaction (feed công khai toàn cục, không fanout) v�
 - error codes: ../errors/feederrors.md
 - flows involving it: [feed-comment-with-notification](../flows/feed-comment-with-notification.md), [feed-delete-post](../flows/feed-delete-post.md), [feed-post-with-image](../flows/feed-post-with-image.md), [feed-reaction-with-notification](../flows/feed-reaction-with-notification.md), [feed-read-posts](../flows/feed-read-posts.md), [story-create-with-image](../flows/story-create-with-image.md), [story-reply-to-dm](../flows/story-reply-to-dm.md), [story-ring-view-and-viewers](../flows/story-ring-view-and-viewers.md)
 
-## Linked issues (heuristic, public subset)
+## Linked issues (heuristic)
 
 - P006 [fixed] Swagger thiếu cursor pagination → client sinh kiểu never
 

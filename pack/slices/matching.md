@@ -94,7 +94,7 @@ env vars read by the module(s): `MATCHING_INVITE_SWEEPER_INTERVAL_MS`, `MATCHING
 - e2e files that call these endpoints: apps/web/e2e/login-and-join-matching-queue.spec.ts
 - FE specs: apps/web/src/features/matching/api.spec.ts, apps/web/src/features/matching/components/incoming-invites.spec.tsx, apps/web/src/features/matching/components/match-actions.spec.tsx, apps/web/src/features/matching/components/queue-status-panel.spec.tsx, apps/web/src/features/matching/components/speedup-button.spec.tsx, apps/web/src/features/matching/join-queue-schema.spec.ts, apps/web/src/features/notification/api.spec.ts, apps/web/src/features/notification/components/notification-bell.spec.tsx, apps/web/src/features/notification/notification-copy.spec.ts, apps/web/src/features/wallet/components/payos-payment-status.spec.tsx, apps/web/src/features/wallet/components/topup-packages.spec.tsx, apps/web/src/features/wallet/components/vip-plans.spec.tsx
 
-## 10. Known issues (public subset of the ledger)
+## 10. Known issues (linked from the ledger)
 
 none linked
 

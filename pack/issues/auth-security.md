@@ -2,6 +2,15 @@
 
 id: issues:auth-security
 
+### P005: CodeQL: loop-bound-injection (high) ở palm-match.hash.ts
+
+status: fixed; tier: A; date: 2026-07-13; confidence: medium
+
+- problem: CodeQL báo cảnh báo mức cao js/loop-bound-injection (vòng lặp có cận phụ thuộc dữ liệu người dùng) ở palm-match.hash.ts (alert #1, 13/07).
+- root cause: Hàm băm FNV-1a lặp theo độ dài chuỗi đầu vào.
+- resolution: CodeQL đánh dấu fixed ngày 17/07, cùng ngày commit 41bc055 chuyển hàm băm sang common/hash/fnv1a.ts.
+- evidence: commit 41bc055, file apps/core-api/src/modules/palm-match/palm-match.hash.ts
+
 ### P008: CodeQL: log rõ thông tin nhạy cảm ở runner CI local
 
 status: fixed; tier: A; date: 2026-07-13; confidence: high
@@ -19,6 +28,15 @@ status: fixed; tier: A; date: 2026-07-13; confidence: medium
 - root cause: Thiếu credentials:'include' mặc định trong createApiClient; lỗi thứ hai bị cắt trong gói bằng chứng.
 - resolution: Sửa client mặc định credentials:'include' và lỗi còn lại, thêm Playwright E2E thật (apps/web/e2e) làm bằng chứng browser bắt buộc theo ADR 0003/0007.
 - evidence: pr #26
+
+### P012: CodeQL: loop-bound-injection (high) ở common/hash/fnv1a.ts còn mở
+
+status: open; tier: A; date: 2026-07-16; confidence: medium
+
+- problem: Cảnh báo CodeQL mức cao js/loop-bound-injection (alert #9) ở fnv1a.ts, mở từ 16/07 và chưa được sửa hay dismiss.
+- root cause: Cùng mẫu với alert #1: fnv1aHash lặp theo input.length; tác động thực tế thấp (seed deterministic, không phải crypto) nhưng alert vẫn mở.
+- resolution: Chưa xử lý: cần giới hạn độ dài đầu vào hoặc dismiss alert kèm lý do.
+- evidence: file apps/core-api/src/common/hash/fnv1a.ts
 
 ### P018: JWT access token trùng nhau khi cấp trong cùng giây (LRN-010)
 
@@ -46,6 +64,15 @@ status: fixed; tier: A; date: 2026-08-20; confidence: medium
 - root cause: Quyền gọi chỉ dựa trên hai bản ghi follow active, không kiểm tra block.
 - resolution: Thêm canCall ở ProfileSocialService kiểm tra block + follow hai chiều tại POST join trong calling.service.ts; thêm unit/integration test (33 test PASS, gate Calling 973 PASS).
 - evidence: codex-thread 01a01990, file apps/core-api/src/modules/calling/calling.service.ts
+
+### P075: OTP trả mã ngay trong response khi production bật OTP
+
+status: open; tier: A; date: 2026-09-03; confidence: medium
+
+- problem: requestOtp() trả thẳng { code, ttlSeconds } trong response trong khi production bật AUTH_PHONE_OTP_ENABLED=true; client lấy được mã đăng nhập mà không cần SMS.
+- root cause: Chưa tích hợp SMS thật; mã OTP được trả về cho client và cờ OTP vẫn bật trong configmap/compose production.
+- resolution: Review chỉ khuyến nghị tắt OTP production cho tới khi có SMS thật; không thấy commit sửa trong bằng chứng. Giới hạn OTP theo phone còn check-rồi-ghi, có thể vượt limit khi đồng thời.
+- evidence: codex-thread 01a06739, file apps/core-api/src/modules/auth/services/otp.service.ts
 
 ### P082: Báo động giả: Nearby 403 / Feed chặn guest là đúng chính sách
 

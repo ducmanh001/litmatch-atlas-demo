@@ -95,8 +95,9 @@ env vars read by the module(s): `FRIEND_MESSAGE_MAX_LENGTH`, `STREAK_WARNING_CHE
 - e2e files that call these endpoints: none
 - FE specs: apps/web/src/features/friend-chat/api.spec.ts, apps/web/src/features/friend-chat/components/conversation-inbox.spec.tsx, apps/web/src/features/friend-chat/components/conversation-thread.spec.tsx, apps/web/src/features/friend-chat/components/friends-directory.spec.tsx, apps/web/src/features/friend-chat/components/message-list.spec.tsx, apps/web/src/features/friend-chat/send-message-schema.spec.ts, apps/web/src/features/matching/api.spec.ts, apps/web/src/features/matching/components/incoming-invites.spec.tsx, apps/web/src/features/matching/components/match-actions.spec.tsx, apps/web/src/features/matching/components/queue-status-panel.spec.tsx, apps/web/src/features/matching/components/speedup-button.spec.tsx, apps/web/src/features/matching/join-queue-schema.spec.ts
 
-## 10. Known issues (public subset of the ledger)
+## 10. Known issues (linked from the ledger)
 
+- P065 [open] Production chạy bản cũ: route profile 404, thông báo Facebook cũ
 - P006 [fixed] Swagger thiếu cursor pagination → client sinh kiểu never
 
 See ../issues/index.md.

@@ -72,7 +72,7 @@ env vars read by the module(s): none (see ../config/)
 - e2e files that call these endpoints: none
 - FE specs: apps/web/src/app/(app)/discovery/page.spec.tsx, apps/web/src/features/discovery/components/discovery-detail-sheet.spec.tsx, apps/web/src/features/notification/api.spec.ts, apps/web/src/features/notification/components/notification-bell.spec.tsx, apps/web/src/features/notification/notification-copy.spec.ts, apps/web/src/features/wallet/components/payos-payment-status.spec.tsx, apps/web/src/features/wallet/components/topup-packages.spec.tsx, apps/web/src/features/wallet/components/vip-plans.spec.tsx, apps/web/src/features/wallet/components/wallet-balance.spec.tsx, apps/web/src/features/feed/api.spec.tsx, apps/web/src/features/feed/components/feed-banners.spec.tsx, apps/web/src/features/feed/components/like-button.spec.tsx
 
-## 10. Known issues (public subset of the ledger)
+## 10. Known issues (linked from the ledger)
 
 - P006 [fixed] Swagger thiếu cursor pagination → client sinh kiểu never
 

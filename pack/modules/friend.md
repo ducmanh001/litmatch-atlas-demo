@@ -28,8 +28,9 @@ Sở hữu Friendship, Conversation/Message chat 1-1 lâu dài, trạng thái đ
 - error codes: ../errors/frienderrors.md, ../errors/profilesocialerrors.md
 - flows involving it: [calling-like-after-call](../flows/calling-like-after-call.md), [feed-comment-with-notification](../flows/feed-comment-with-notification.md), [feed-delete-post](../flows/feed-delete-post.md), [feed-reaction-with-notification](../flows/feed-reaction-with-notification.md), [feed-read-posts](../flows/feed-read-posts.md), [friend-direct-call](../flows/friend-direct-call.md), [friend-follow-lists-and-connections](../flows/friend-follow-lists-and-connections.md), [friend-list-and-conversation-reads](../flows/friend-list-and-conversation-reads.md), [friend-open-conversation-from-profile](../flows/friend-open-conversation-from-profile.md), [friend-profile-follow-and-actions](../flows/friend-profile-follow-and-actions.md), [friend-streak-warning-job](../flows/friend-streak-warning-job.md), [gift-to-profile-chat-gate](../flows/gift-to-profile-chat-gate.md), [message-push-notification](../flows/message-push-notification.md), [mini-game-session](../flows/mini-game-session.md), [movie-match-anonymous](../flows/movie-match-anonymous.md), [movie-match-friend-session](../flows/movie-match-friend-session.md), [palm-match-queue-and-rating](../flows/palm-match-queue-and-rating.md), [short-video-browse-and-detail](../flows/short-video-browse-and-detail.md), [soul-match-room-reads-and-reveal](../flows/soul-match-room-reads-and-reveal.md), [soul-match-send-message](../flows/soul-match-send-message.md), [soul-match-session](../flows/soul-match-session.md), [story-reply-to-dm](../flows/story-reply-to-dm.md), [story-ring-view-and-viewers](../flows/story-ring-view-and-viewers.md)
 
-## Linked issues (heuristic, public subset)
+## Linked issues (heuristic)
 
+- P065 [open] Production chạy bản cũ: route profile 404, thông báo Facebook cũ
 - P006 [fixed] Swagger thiếu cursor pagination → client sinh kiểu never
 
 See ../issues/index.md.

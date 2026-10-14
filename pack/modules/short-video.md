@@ -26,7 +26,7 @@ Sở hữu vòng đời Video (uploading -> processing -> pending_review|publish
 - error codes: ../errors/shortvideoerrors.md
 - flows involving it: [admin-video-moderation-queue](../flows/admin-video-moderation-queue.md), [gift-on-video](../flows/gift-on-video.md), [short-video-browse-and-detail](../flows/short-video-browse-and-detail.md), [short-video-comments](../flows/short-video-comments.md), [short-video-publish-moderation](../flows/short-video-publish-moderation.md), [short-video-ranking-and-sweeper-jobs](../flows/short-video-ranking-and-sweeper-jobs.md), [short-video-report](../flows/short-video-report.md)
 
-## Linked issues (heuristic, public subset)
+## Linked issues (heuristic)
 
 - P088 [fixed] View count video cộng đôi khi đồng thời
 - P089 [fixed] Sweeper video lỗi bị đói (lặp 200 hàng cũ nhất)

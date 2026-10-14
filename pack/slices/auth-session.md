@@ -72,8 +72,9 @@ env vars read by the module(s): `NODE_ENV`, `AUTH_CROSS_ORIGIN_DEV`, `AUTH_COOKI
 - e2e files that call these endpoints: apps/core-api-e2e/src/core-api/auth-cookie-flow.spec.ts, apps/web/e2e/login-and-join-matching-queue.spec.ts
 - FE specs: apps/web/src/features/more/components/more-view.spec.tsx, apps/web/src/features/notification/api.spec.ts, apps/web/src/features/notification/components/notification-bell.spec.tsx, apps/web/src/features/notification/notification-copy.spec.ts, apps/web/src/features/wallet/components/payos-payment-status.spec.tsx, apps/web/src/features/wallet/components/topup-packages.spec.tsx, apps/web/src/features/wallet/components/vip-plans.spec.tsx, apps/web/src/features/wallet/components/wallet-balance.spec.tsx, apps/web/src/features/feed/api.spec.tsx, apps/web/src/features/feed/components/feed-banners.spec.tsx, apps/web/src/features/feed/components/like-button.spec.tsx, apps/web/src/features/feed/components/post-composer.spec.tsx
 
-## 10. Known issues (public subset of the ledger)
+## 10. Known issues (linked from the ledger)
 
+- P075 [open] OTP trả mã ngay trong response khi production bật OTP
 - P018 [fixed] JWT access token trùng nhau khi cấp trong cùng giây (LRN-010)
 
 See ../issues/index.md.

@@ -27,7 +27,7 @@ Sở hữu CallSession (pending/active/ended), VoiceMatchReaction, token join Li
 - error codes: ../errors/callingerrors.md
 - flows involving it: [calling-end-and-ticker](../flows/calling-end-and-ticker.md), [calling-like-after-call](../flows/calling-like-after-call.md), [friend-direct-call](../flows/friend-direct-call.md), [matching-to-call](../flows/matching-to-call.md)
 
-## Linked issues (heuristic, public subset)
+## Linked issues (heuristic)
 
 - P071 [fixed] Cổng gọi điện có thể bypass sau khi block (bắt được khi tự review)
 

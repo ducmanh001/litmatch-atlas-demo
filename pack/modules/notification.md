@@ -24,7 +24,7 @@ Sở hữu bảng notifications (in-app, cursor theo seq) và web_push_subscript
 - error codes: ../errors/notificationerrors.md
 - flows involving it: [admin-broadcast-notification](../flows/admin-broadcast-notification.md), [feed-comment-with-notification](../flows/feed-comment-with-notification.md), [feed-reaction-with-notification](../flows/feed-reaction-with-notification.md), [friend-streak-warning-job](../flows/friend-streak-warning-job.md), [gift-in-party-room](../flows/gift-in-party-room.md), [gift-on-video](../flows/gift-on-video.md), [gift-to-profile-chat-gate](../flows/gift-to-profile-chat-gate.md), [matching-invite-create](../flows/matching-invite-create.md), [message-push-notification](../flows/message-push-notification.md)
 
-## Linked issues (heuristic, public subset)
+## Linked issues (heuristic)
 
 - P006 [fixed] Swagger thiếu cursor pagination → client sinh kiểu never
 

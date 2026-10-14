@@ -99,7 +99,7 @@ User actions that mutate this feature's data:
 
 ## 5. Data
 
-- tables owned by the module(s): `admin_role_permissions`, `support_tickets` (see ../db/support.md, ../db/admin.md)
+- tables owned by the module(s): `admin_role_permissions`, `support_tickets` (see ../db/admin.md, ../db/support.md)
 - status vocabularies enforced by CHECK:
   - admin_role_permissions: moderator | admin
   - support_tickets: feedback | bug | idea
@@ -125,7 +125,7 @@ env vars read by the module(s): none (see ../config/)
 - e2e files that call these endpoints: none
 - FE specs: apps/admin/src/features/moderation/pages/moderation-page.spec.tsx, apps/admin/src/features/config/pages/config-page.spec.tsx, apps/admin/src/features/permissions/pages/permissions-page.spec.tsx, apps/admin/src/features/users/pages/users-page.spec.tsx, apps/admin/src/features/gifts/pages/gifts-page.spec.tsx, apps/admin/src/features/economy/pages/economy-page.spec.tsx, apps/web/src/app/(public)/help/page.spec.tsx, apps/admin/src/features/rooms/pages/rooms-page.spec.tsx, apps/admin/src/features/dashboard/pages/dashboard-page.spec.tsx
 
-## 10. Known issues (public subset of the ledger)
+## 10. Known issues (linked from the ledger)
 
 none linked
 

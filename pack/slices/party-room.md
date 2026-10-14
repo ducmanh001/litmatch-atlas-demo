@@ -103,7 +103,7 @@ env vars read by the module(s): `PARTY_SWEEPER_INTERVAL_MS`, `PARTY_HOST_GRACE_C
 - e2e files that call these endpoints: apps/core-api-e2e/src/core-api/livekit-webhook-content-type.spec.ts
 - FE specs: apps/web/src/features/friend-chat/api.spec.ts, apps/web/src/features/friend-chat/components/conversation-inbox.spec.tsx, apps/web/src/features/friend-chat/components/conversation-thread.spec.tsx, apps/web/src/features/friend-chat/components/friends-directory.spec.tsx, apps/web/src/features/friend-chat/components/message-list.spec.tsx, apps/web/src/features/friend-chat/send-message-schema.spec.ts, apps/web/src/features/party-room/api.spec.ts, apps/web/src/features/party-room/components/member-list.spec.tsx, apps/web/src/features/party-room/components/party-chat.spec.tsx, apps/web/src/features/party-room/components/party-stage.spec.tsx, apps/web/src/features/party-room/components/room-list.spec.tsx, apps/web/src/features/party-room/create-room-schema.spec.ts
 
-## 10. Known issues (public subset of the ledger)
+## 10. Known issues (linked from the ledger)
 
 - P006 [fixed] Swagger thiếu cursor pagination → client sinh kiểu never
 

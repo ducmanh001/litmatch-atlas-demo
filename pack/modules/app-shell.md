@@ -20,8 +20,9 @@ Cung cấp /health, /health/live, /health/ready (probe cho Docker/k8s) và GET /
 - why it talks to other services: ../service-map/app-shell.md and ../service-map/app-shell-techniques.md
 - flows involving it: [app-shell-health-and-readiness](../flows/app-shell-health-and-readiness.md)
 
-## Linked issues (heuristic, public subset)
+## Linked issues (heuristic)
 
+- P065 [open] Production chạy bản cũ: route profile 404, thông báo Facebook cũ
 - P076 [fixed] Rate limit trong bộ nhớ từng pod + trần kết nối Postgres
 
 See ../issues/index.md.

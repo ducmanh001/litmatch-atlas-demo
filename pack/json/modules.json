@@ -391,6 +391,12 @@
    },
    "issues": [
     {
+     "id": "P075",
+     "title": "OTP trả mã ngay trong response khi production bật OTP",
+     "status": "open",
+     "tier": "A"
+    },
+    {
      "id": "P018",
      "title": "JWT access token trùng nhau khi cấp trong cùng giây (LRN-010)",
      "status": "fixed",
@@ -1932,6 +1938,12 @@
     "last": "2026-10-10"
    },
    "issues": [
+    {
+     "id": "P065",
+     "title": "Production chạy bản cũ: route profile 404, thông báo Facebook cũ",
+     "status": "open",
+     "tier": "A"
+    },
     {
      "id": "P006",
      "title": "Swagger thiếu cursor pagination → client sinh kiểu never",
@@ -3586,6 +3598,12 @@
      "title": "Giới hạn đã biết: advisory lock Palm/Movie Match, outbox chưa có consumer/retention",
      "status": "open",
      "tier": "B"
+    },
+    {
+     "id": "P005",
+     "title": "CodeQL: loop-bound-injection (high) ở palm-match.hash.ts",
+     "status": "fixed",
+     "tier": "A"
     }
    ],
    "mapCollaborators": [
@@ -5109,6 +5127,12 @@
     "last": "2026-10-09"
    },
    "issues": [
+    {
+     "id": "P065",
+     "title": "Production chạy bản cũ: route profile 404, thông báo Facebook cũ",
+     "status": "open",
+     "tier": "A"
+    },
     {
      "id": "P076",
      "title": "Rate limit trong bộ nhớ từng pod + trần kết nối Postgres",

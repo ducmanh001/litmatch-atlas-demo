@@ -75,8 +75,9 @@ env vars read by the module(s): `PALM_MATCH_QUEUE_MAX_WAIT_SECONDS`, `PALM_MATCH
 - e2e files that call these endpoints: none
 - FE specs: apps/web/src/features/palm-match/api.spec.ts, apps/web/src/features/palm-match/components/palm-reading-view.spec.tsx
 
-## 10. Known issues (public subset of the ledger)
+## 10. Known issues (linked from the ledger)
 
 - P094 [open] Giới hạn đã biết: advisory lock Palm/Movie Match, outbox chưa có consumer/retention
+- P005 [fixed] CodeQL: loop-bound-injection (high) ở palm-match.hash.ts
 
 See ../issues/index.md.

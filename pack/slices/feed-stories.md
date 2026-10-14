@@ -88,7 +88,7 @@ env vars read by the module(s): `STORY_SWEEPER_INTERVAL_MS`, `STORY_TTL_HOURS` (
 - e2e files that call these endpoints: none
 - FE specs: apps/web/src/features/feed/api.spec.tsx, apps/web/src/features/feed/components/feed-banners.spec.tsx, apps/web/src/features/feed/components/like-button.spec.tsx, apps/web/src/features/feed/components/post-composer.spec.tsx, apps/web/src/features/feed/components/post-detail.spec.tsx, apps/web/src/features/feed/components/post-list.spec.tsx, apps/web/src/features/feed/create-comment-schema.spec.ts, apps/web/src/features/feed/create-post-schema.spec.ts, apps/web/src/features/friend-chat/api.spec.ts, apps/web/src/features/friend-chat/components/conversation-inbox.spec.tsx, apps/web/src/features/friend-chat/components/conversation-thread.spec.tsx, apps/web/src/features/friend-chat/components/friends-directory.spec.tsx
 
-## 10. Known issues (public subset of the ledger)
+## 10. Known issues (linked from the ledger)
 
 - P006 [fixed] Swagger thiếu cursor pagination → client sinh kiểu never
 

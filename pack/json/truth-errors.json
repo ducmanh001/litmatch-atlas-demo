@@ -17,7 +17,8 @@
     "file": "apps/core-api/src/modules/admin/admin.service.ts",
     "line": 70,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "AdminErrors",
@@ -36,7 +37,8 @@
     "file": "apps/core-api/src/modules/admin/services/admin-permission.guard.ts",
     "line": 45,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "AdminErrors",
@@ -56,7 +58,8 @@
     "file": "apps/core-api/src/modules/admin/admin.service.ts",
     "line": 514,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 3
   },
   {
    "group": "AdminErrors",
@@ -75,7 +78,8 @@
     "file": "apps/core-api/src/modules/admin/admin.service.ts",
     "line": 532,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "AdminErrors",
@@ -94,7 +98,8 @@
     "file": "apps/core-api/src/modules/admin/admin.service.ts",
     "line": 574,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "AdminErrors",
@@ -113,7 +118,8 @@
     "file": "apps/core-api/src/modules/admin/admin.service.ts",
     "line": 590,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "AuthErrors",
@@ -132,7 +138,8 @@
     "file": "apps/core-api/src/modules/auth/auth.service.ts",
     "line": 325,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "AuthErrors",
@@ -151,7 +158,8 @@
     "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
     "line": 112,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "AuthErrors",
@@ -170,7 +178,8 @@
     "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
     "line": 79,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "AuthErrors",
@@ -189,7 +198,8 @@
     "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
     "line": 99,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "AuthErrors",
@@ -208,7 +218,8 @@
     "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
     "line": 37,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "AuthErrors",
@@ -227,7 +238,8 @@
     "file": "apps/core-api/src/modules/auth/auth.cookies.ts",
     "line": 87,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "AuthErrors",
@@ -246,7 +258,8 @@
     "file": "apps/core-api/src/modules/auth/services/token.service.ts",
     "line": 95,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "AuthErrors",
@@ -265,7 +278,8 @@
     "file": "apps/core-api/src/modules/auth/services/social-verifier.ts",
     "line": 82,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "AuthErrors",
@@ -284,7 +298,8 @@
     "file": "apps/core-api/src/modules/auth/services/social-verifier.ts",
     "line": 45,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 3
   },
   {
    "group": "AuthErrors",
@@ -303,7 +318,8 @@
     "file": "apps/core-api/src/modules/auth/auth.service.ts",
     "line": 211,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 3
   },
   {
    "group": "AuthErrors",
@@ -322,7 +338,8 @@
     "file": "apps/core-api/src/modules/auth/services/guest-device-token.service.ts",
     "line": 63,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "AuthErrors",
@@ -341,7 +358,8 @@
     "file": "apps/core-api/src/modules/auth/auth.service.ts",
     "line": 315,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "AuthErrors",
@@ -360,7 +378,8 @@
     "file": "apps/core-api/src/modules/auth/auth.service.ts",
     "line": 244,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "AuthErrors",
@@ -379,7 +398,8 @@
     "file": "apps/core-api/src/modules/auth/auth.service.ts",
     "line": 301,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "AvatarErrors",
@@ -398,7 +418,8 @@
     "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
     "line": 162,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "AvatarErrors",
@@ -417,7 +438,8 @@
     "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
     "line": 58,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "AvatarErrors",
@@ -436,7 +458,8 @@
     "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
     "line": 79,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "AvatarErrors",
@@ -455,7 +478,8 @@
     "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
     "line": 104,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "AvatarErrors",
@@ -474,7 +498,8 @@
     "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
     "line": 114,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "CallingErrors",
@@ -493,7 +518,8 @@
     "file": "apps/core-api/src/modules/calling/calling.service.ts",
     "line": 110,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 3
   },
   {
    "group": "CallingErrors",
@@ -512,7 +538,8 @@
     "file": "apps/core-api/src/modules/calling/calling.service.ts",
     "line": 271,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 3
   },
   {
    "group": "CallingErrors",
@@ -531,7 +558,8 @@
     "file": "apps/core-api/src/modules/calling/calling.service.ts",
     "line": 135,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "CallingErrors",
@@ -550,7 +578,8 @@
     "file": "apps/core-api/src/modules/calling/calling.service.ts",
     "line": 125,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 3
   },
   {
    "group": "CallingErrors",
@@ -569,7 +598,8 @@
     "file": "apps/core-api/src/modules/calling/calling.service.ts",
     "line": 379,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "CallingErrors",
@@ -588,7 +618,8 @@
     "file": "apps/core-api/src/modules/calling/webhooks/livekit-webhook.controller.ts",
     "line": 43,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "DiscoveryErrors",
@@ -607,7 +638,8 @@
     "file": "apps/core-api/src/modules/discovery/discovery.service.ts",
     "line": 83,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "DiscoveryErrors",
@@ -626,7 +658,8 @@
     "file": "apps/core-api/src/modules/discovery/discovery.service.ts",
     "line": 41,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "DiscoveryErrors",
@@ -645,7 +678,8 @@
     "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
     "line": 148,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "DiscoveryErrors",
@@ -664,7 +698,8 @@
     "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
     "line": 163,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "DiscoveryErrors",
@@ -683,7 +718,8 @@
     "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
     "line": 85,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "DiscoveryErrors",
@@ -702,7 +738,8 @@
     "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
     "line": 284,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "DiscoveryErrors",
@@ -721,7 +758,8 @@
     "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
     "line": 69,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "EconomyErrors",
@@ -740,7 +778,8 @@
     "file": "apps/core-api/src/modules/economy/ports/iap-verifier.ts",
     "line": 42,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "EconomyErrors",
@@ -759,7 +798,8 @@
     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
     "line": 456,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "EconomyErrors",
@@ -778,7 +818,8 @@
     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
     "line": 368,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "EconomyErrors",
@@ -797,7 +838,8 @@
     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
     "line": 208,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "EconomyErrors",
@@ -816,7 +858,8 @@
     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
     "line": 215,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 3
   },
   {
    "group": "EconomyErrors",
@@ -835,7 +878,8 @@
     "file": "apps/core-api/src/modules/economy/clients/apple-receipt-api.adapter.ts",
     "line": 58,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 8
   },
   {
    "group": "EconomyErrors",
@@ -847,7 +891,8 @@
    "module": "economy",
    "statuses": [],
    "throwSites": 0,
-   "quote": "IAP_PROVIDER_UNAVAILABLE: 'ECONOMY_IAP_PROVIDER_UNAVAILABLE'"
+   "quote": "IAP_PROVIDER_UNAVAILABLE: 'ECONOMY_IAP_PROVIDER_UNAVAILABLE'",
+   "refs": 2
   },
   {
    "group": "EconomyErrors",
@@ -867,7 +912,8 @@
     "file": "apps/core-api/src/modules/economy/economy.service.ts",
     "line": 180,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "EconomyErrors",
@@ -886,7 +932,8 @@
     "file": "apps/core-api/src/modules/economy/economy.service.ts",
     "line": 204,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "EconomyErrors",
@@ -905,7 +952,8 @@
     "file": "apps/core-api/src/modules/economy/ports/notification-verifier.ts",
     "line": 109,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 5
   },
   {
    "group": "EconomyErrors",
@@ -917,7 +965,8 @@
    "module": "economy",
    "statuses": [],
    "throwSites": 0,
-   "quote": "PAYOS_DISABLED: 'ECONOMY_PAYOS_DISABLED'"
+   "quote": "PAYOS_DISABLED: 'ECONOMY_PAYOS_DISABLED'",
+   "refs": 2
   },
   {
    "group": "EconomyErrors",
@@ -936,7 +985,8 @@
     "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
     "line": 94,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "EconomyErrors",
@@ -955,7 +1005,8 @@
     "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
     "line": 337,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "EconomyErrors",
@@ -974,7 +1025,8 @@
     "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
     "line": 284,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "EconomyErrors",
@@ -986,7 +1038,8 @@
    "module": "economy",
    "statuses": [],
    "throwSites": 0,
-   "quote": "PAYOS_PROVIDER_UNAVAILABLE: 'ECONOMY_PAYOS_PROVIDER_UNAVAILABLE'"
+   "quote": "PAYOS_PROVIDER_UNAVAILABLE: 'ECONOMY_PAYOS_PROVIDER_UNAVAILABLE'",
+   "refs": 1
   },
   {
    "group": "EconomyErrors",
@@ -1005,7 +1058,8 @@
     "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
     "line": 158,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "EconomyErrors",
@@ -1024,7 +1078,8 @@
     "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
     "line": 345,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "EconomyErrors",
@@ -1043,7 +1098,8 @@
     "file": "apps/core-api/src/modules/economy/economy.controller.ts",
     "line": 169,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "EconomyErrors",
@@ -1062,7 +1118,8 @@
     "file": "apps/core-api/src/modules/economy/economy.service.ts",
     "line": 699,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "FeedErrors",
@@ -1082,7 +1139,8 @@
     "file": "apps/core-api/src/modules/feed/feed.service.ts",
     "line": 198,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 3
   },
   {
    "group": "FeedErrors",
@@ -1102,7 +1160,8 @@
     "file": "apps/core-api/src/modules/feed/feed.service.ts",
     "line": 316,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "FeedErrors",
@@ -1121,7 +1180,8 @@
     "file": "apps/core-api/src/modules/feed/feed.service.ts",
     "line": 58,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "FeedErrors",
@@ -1140,7 +1200,8 @@
     "file": "apps/core-api/src/modules/feed/feed.service.ts",
     "line": 413,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "FeedErrors",
@@ -1159,7 +1220,8 @@
     "file": "apps/core-api/src/modules/feed/feed.service.ts",
     "line": 117,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 3
   },
   {
    "group": "FeedErrors",
@@ -1178,7 +1240,8 @@
     "file": "apps/core-api/src/modules/feed/feed.service.ts",
     "line": 85,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "FeedErrors",
@@ -1197,7 +1260,8 @@
     "file": "apps/core-api/src/modules/feed/services/story.service.ts",
     "line": 121,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 3
   },
   {
    "group": "FeedErrors",
@@ -1216,7 +1280,8 @@
     "file": "apps/core-api/src/modules/feed/services/story.service.ts",
     "line": 50,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "FeedErrors",
@@ -1235,7 +1300,8 @@
     "file": "apps/core-api/src/modules/feed/services/story.service.ts",
     "line": 206,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "FriendErrors",
@@ -1254,7 +1320,8 @@
     "file": "apps/core-api/src/modules/friend/friend.service.ts",
     "line": 283,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "FriendErrors",
@@ -1273,7 +1340,8 @@
     "file": "apps/core-api/src/modules/friend/friend.service.ts",
     "line": 349,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "FriendErrors",
@@ -1292,7 +1360,8 @@
     "file": "apps/core-api/src/modules/friend/services/conversation.service.ts",
     "line": 183,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "FriendErrors",
@@ -1311,7 +1380,8 @@
     "file": "apps/core-api/src/modules/friend/friend.service.ts",
     "line": 359,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "FriendErrors",
@@ -1330,7 +1400,8 @@
     "file": "apps/core-api/src/modules/friend/friend.service.ts",
     "line": 368,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "FriendErrors",
@@ -1349,7 +1420,8 @@
     "file": "apps/core-api/src/modules/friend/services/conversation.service.ts",
     "line": 206,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "ProfileSocialErrors",
@@ -1368,7 +1440,8 @@
     "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
     "line": 472,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "ProfileSocialErrors",
@@ -1387,7 +1460,8 @@
     "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
     "line": 490,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 3
   },
   {
    "group": "ProfileSocialErrors",
@@ -1406,7 +1480,8 @@
     "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
     "line": 439,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "GiftErrors",
@@ -1425,7 +1500,8 @@
     "file": "apps/core-api/src/modules/gift/gift.service.ts",
     "line": 142,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 4
   },
   {
    "group": "GiftErrors",
@@ -1444,7 +1520,8 @@
     "file": "apps/core-api/src/modules/gift/gift.service.ts",
     "line": 164,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 3
   },
   {
    "group": "GiftErrors",
@@ -1463,7 +1540,8 @@
     "file": "apps/core-api/src/modules/gift/gift.service.ts",
     "line": 186,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "GiftErrors",
@@ -1482,7 +1560,8 @@
     "file": "apps/core-api/src/modules/gift/gift.service.ts",
     "line": 193,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "GiftErrors",
@@ -1501,7 +1580,8 @@
     "file": "apps/core-api/src/modules/gift/gift.service.ts",
     "line": 120,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MatchingErrors",
@@ -1520,7 +1600,8 @@
     "file": "apps/core-api/src/modules/matching/matching.service.ts",
     "line": 231,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "MatchingErrors",
@@ -1539,7 +1620,8 @@
     "file": "apps/core-api/src/modules/matching/matching.service.ts",
     "line": 189,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MatchingErrors",
@@ -1558,7 +1640,8 @@
     "file": "apps/core-api/src/modules/matching/matching.service.ts",
     "line": 314,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 4
   },
   {
    "group": "MatchingErrors",
@@ -1577,7 +1660,8 @@
     "file": "apps/core-api/src/modules/matching/matching.service.ts",
     "line": 651,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MatchingErrors",
@@ -1596,7 +1680,8 @@
     "file": "apps/core-api/src/modules/matching/matching.service.ts",
     "line": 218,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MatchingErrors",
@@ -1615,7 +1700,8 @@
     "file": "apps/core-api/src/modules/matching/matching.service.ts",
     "line": 511,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "MatchingErrors",
@@ -1634,7 +1720,8 @@
     "file": "apps/core-api/src/modules/matching/matching.service.ts",
     "line": 518,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "MatchingErrors",
@@ -1653,7 +1740,8 @@
     "file": "apps/core-api/src/modules/matching/matching.service.ts",
     "line": 333,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 3
   },
   {
    "group": "MatchingErrors",
@@ -1673,7 +1761,8 @@
     "file": "apps/core-api/src/modules/matching/matching.service.ts",
     "line": 110,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "MatchingErrors",
@@ -1692,7 +1781,8 @@
     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
     "line": 61,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MatchingErrors",
@@ -1711,7 +1801,8 @@
     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
     "line": 112,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MatchingErrors",
@@ -1730,7 +1821,8 @@
     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
     "line": 186,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MatchingErrors",
@@ -1750,7 +1842,8 @@
     "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
     "line": 98,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 4
   },
   {
    "group": "MatchingErrors",
@@ -1769,7 +1862,8 @@
     "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
     "line": 173,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "MatchingErrors",
@@ -1788,7 +1882,8 @@
     "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
     "line": 183,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 5
   },
   {
    "group": "MatchingErrors",
@@ -1807,7 +1902,8 @@
     "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
     "line": 626,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "MatchingErrors",
@@ -1826,7 +1922,8 @@
     "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
     "line": 144,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MatchingErrors",
@@ -1845,7 +1942,8 @@
     "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
     "line": 115,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MatchingErrors",
@@ -1864,7 +1962,8 @@
     "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
     "line": 518,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MatchingErrors",
@@ -1883,7 +1982,8 @@
     "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
     "line": 654,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MediaErrors",
@@ -1902,7 +2002,8 @@
     "file": "apps/core-api/src/modules/media/media.service.ts",
     "line": 226,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MediaErrors",
@@ -1921,7 +2022,8 @@
     "file": "apps/core-api/src/modules/media/media.service.ts",
     "line": 216,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MediaErrors",
@@ -1940,7 +2042,8 @@
     "file": "apps/core-api/src/modules/media/media.service.ts",
     "line": 47,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MediaErrors",
@@ -1959,7 +2062,8 @@
     "file": "apps/core-api/src/modules/media/media.service.ts",
     "line": 89,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "MediaErrors",
@@ -1978,7 +2082,8 @@
     "file": "apps/core-api/src/modules/media/media.service.ts",
     "line": 142,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "MiniGameErrors",
@@ -1997,7 +2102,8 @@
     "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
     "line": 65,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "MiniGameErrors",
@@ -2016,7 +2122,8 @@
     "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
     "line": 113,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MiniGameErrors",
@@ -2035,7 +2142,8 @@
     "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
     "line": 318,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MiniGameErrors",
@@ -2054,7 +2162,8 @@
     "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
     "line": 167,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MiniGameErrors",
@@ -2073,7 +2182,8 @@
     "file": "apps/core-api/src/modules/mini-game/mini-game.service.ts",
     "line": 253,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "MoodErrors",
@@ -2092,7 +2202,8 @@
     "file": "apps/core-api/src/modules/mood/mood.service.ts",
     "line": 68,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MovieMatchErrors",
@@ -2111,7 +2222,8 @@
     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
     "line": 117,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "MovieMatchErrors",
@@ -2130,7 +2242,8 @@
     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
     "line": 165,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "MovieMatchErrors",
@@ -2150,7 +2263,8 @@
     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
     "line": 592,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 4
   },
   {
    "group": "MovieMatchErrors",
@@ -2169,7 +2283,8 @@
     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
     "line": 201,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 5
   },
   {
    "group": "MovieMatchErrors",
@@ -2188,7 +2303,8 @@
     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
     "line": 906,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 4
   },
   {
    "group": "MovieMatchErrors",
@@ -2207,7 +2323,8 @@
     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
     "line": 494,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MovieMatchErrors",
@@ -2226,7 +2343,8 @@
     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
     "line": 479,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MovieMatchErrors",
@@ -2245,7 +2363,8 @@
     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
     "line": 543,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MovieMatchErrors",
@@ -2264,7 +2383,8 @@
     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
     "line": 573,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MovieMatchErrors",
@@ -2283,7 +2403,8 @@
     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
     "line": 617,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "MovieMatchErrors",
@@ -2302,7 +2423,8 @@
     "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
     "line": 696,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "NotificationErrors",
@@ -2321,7 +2443,8 @@
     "file": "apps/core-api/src/modules/notification/notification.service.ts",
     "line": 196,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "NotificationErrors",
@@ -2340,7 +2463,8 @@
     "file": "apps/core-api/src/modules/notification/notification.service.ts",
     "line": 167,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "PalmMatchErrors",
@@ -2359,7 +2483,8 @@
     "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
     "line": 91,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "PalmMatchErrors",
@@ -2378,7 +2503,8 @@
     "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
     "line": 539,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "PalmMatchErrors",
@@ -2397,7 +2523,8 @@
     "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
     "line": 439,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "PalmMatchErrors",
@@ -2416,7 +2543,8 @@
     "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
     "line": 464,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "PalmMatchErrors",
@@ -2435,7 +2563,8 @@
     "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
     "line": 261,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "PalmMatchErrors",
@@ -2454,7 +2583,8 @@
     "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
     "line": 252,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "PartyRoomErrors",
@@ -2473,7 +2603,8 @@
     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
     "line": 371,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 4
   },
   {
    "group": "PartyRoomErrors",
@@ -2492,7 +2623,8 @@
     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
     "line": 712,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 3
   },
   {
    "group": "PartyRoomErrors",
@@ -2511,7 +2643,8 @@
     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
     "line": 287,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "PartyRoomErrors",
@@ -2530,7 +2663,8 @@
     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
     "line": 193,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "PartyRoomErrors",
@@ -2549,7 +2683,8 @@
     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
     "line": 581,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 4
   },
   {
    "group": "PartyRoomErrors",
@@ -2568,7 +2703,8 @@
     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
     "line": 455,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "PartyRoomErrors",
@@ -2587,7 +2723,8 @@
     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
     "line": 442,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "PartyRoomErrors",
@@ -2606,7 +2743,8 @@
     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
     "line": 462,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "PartyRoomErrors",
@@ -2625,7 +2763,8 @@
     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
     "line": 605,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "PartyRoomErrors",
@@ -2644,7 +2783,8 @@
     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
     "line": 593,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "PartyRoomErrors",
@@ -2663,7 +2803,8 @@
     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
     "line": 542,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "PartyRoomErrors",
@@ -2682,7 +2823,8 @@
     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
     "line": 148,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "PartyRoomErrors",
@@ -2701,7 +2843,8 @@
     "file": "apps/core-api/src/modules/party-room/webhooks/party-livekit-webhook.controller.ts",
     "line": 43,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "PartyRoomErrors",
@@ -2713,7 +2856,8 @@
    "module": "party-room",
    "statuses": [],
    "throwSites": 0,
-   "quote": "MEDIA_ROOM_CREATE_FAILED: 'PARTY_MEDIA_ROOM_CREATE_FAILED'"
+   "quote": "MEDIA_ROOM_CREATE_FAILED: 'PARTY_MEDIA_ROOM_CREATE_FAILED'",
+   "refs": 1
   },
   {
    "group": "PartyRoomErrors",
@@ -2732,7 +2876,8 @@
     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
     "line": 745,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "PartyRoomErrors",
@@ -2751,7 +2896,8 @@
     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
     "line": 785,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "PartyRoomErrors",
@@ -2770,7 +2916,8 @@
     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
     "line": 853,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "SafetyErrors",
@@ -2789,7 +2936,8 @@
     "file": "apps/core-api/src/modules/safety/safety.service.ts",
     "line": 60,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "SafetyErrors",
@@ -2808,7 +2956,8 @@
     "file": "apps/core-api/src/modules/safety/safety.service.ts",
     "line": 193,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "SafetyErrors",
@@ -2827,7 +2976,8 @@
     "file": "apps/core-api/src/modules/safety/safety.service.ts",
     "line": 362,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "ShortVideoErrors",
@@ -2846,7 +2996,8 @@
     "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
     "line": 191,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "ShortVideoErrors",
@@ -2865,7 +3016,8 @@
     "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
     "line": 180,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 3
   },
   {
    "group": "ShortVideoErrors",
@@ -2884,7 +3036,8 @@
     "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
     "line": 406,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "ShortVideoErrors",
@@ -2904,7 +3057,8 @@
     "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
     "line": 106,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 3
   },
   {
    "group": "ShortVideoErrors",
@@ -2923,7 +3077,8 @@
     "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
     "line": 96,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "ShortVideoErrors",
@@ -2942,7 +3097,8 @@
     "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
     "line": 69,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "ShortVideoErrors",
@@ -2961,7 +3117,8 @@
     "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
     "line": 581,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "SoulMatchErrors",
@@ -2980,7 +3137,8 @@
     "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
     "line": 172,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "SoulMatchErrors",
@@ -2999,7 +3157,8 @@
     "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
     "line": 129,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 4
   },
   {
    "group": "SoulMatchErrors",
@@ -3018,7 +3177,8 @@
     "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
     "line": 298,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "SoulMatchErrors",
@@ -3037,7 +3197,8 @@
     "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
     "line": 507,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "SoulMatchErrors",
@@ -3056,7 +3217,8 @@
     "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
     "line": 236,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "SoulMatchErrors",
@@ -3075,7 +3237,8 @@
     "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
     "line": 150,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "SoulMatchErrors",
@@ -3094,7 +3257,8 @@
     "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
     "line": 413,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "SoulMatchErrors",
@@ -3113,7 +3277,8 @@
     "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
     "line": 266,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "SoulMatchErrors",
@@ -3132,7 +3297,8 @@
     "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
     "line": 139,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "SupportErrors",
@@ -3151,7 +3317,8 @@
     "file": "apps/core-api/src/modules/support/support.service.ts",
     "line": 130,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "SupportErrors",
@@ -3170,7 +3337,8 @@
     "file": "apps/core-api/src/modules/support/support.service.ts",
     "line": 86,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "SupportErrors",
@@ -3189,7 +3357,8 @@
     "file": "apps/core-api/src/modules/support/support.service.ts",
     "line": 58,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "SupportErrors",
@@ -3208,7 +3377,8 @@
     "file": "apps/core-api/src/modules/support/support.service.ts",
     "line": 93,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "UserErrors",
@@ -3227,7 +3397,8 @@
     "file": "apps/core-api/src/modules/user/user.service.ts",
     "line": 90,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 3
   },
   {
    "group": "UserErrors",
@@ -3246,7 +3417,8 @@
     "file": "apps/core-api/src/modules/user/user.service.ts",
     "line": 409,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "UserErrors",
@@ -3265,7 +3437,8 @@
     "file": "apps/core-api/src/modules/user/user.service.ts",
     "line": 284,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "CommonErrors",
@@ -3277,7 +3450,8 @@
    "module": "libs/common-exceptions",
    "statuses": [],
    "throwSites": 0,
-   "quote": "VALIDATION_FAILED: 'COMMON_VALIDATION_FAILED'"
+   "quote": "VALIDATION_FAILED: 'COMMON_VALIDATION_FAILED'",
+   "refs": 2
   },
   {
    "group": "CommonErrors",
@@ -3289,7 +3463,8 @@
    "module": "libs/common-exceptions",
    "statuses": [],
    "throwSites": 0,
-   "quote": "ROUTE_NOT_FOUND: 'COMMON_ROUTE_NOT_FOUND'"
+   "quote": "ROUTE_NOT_FOUND: 'COMMON_ROUTE_NOT_FOUND'",
+   "refs": 1
   },
   {
    "group": "CommonErrors",
@@ -3301,7 +3476,8 @@
    "module": "libs/common-exceptions",
    "statuses": [],
    "throwSites": 0,
-   "quote": "RATE_LIMITED: 'COMMON_RATE_LIMITED'"
+   "quote": "RATE_LIMITED: 'COMMON_RATE_LIMITED'",
+   "refs": 1
   },
   {
    "group": "CommonErrors",
@@ -3313,7 +3489,8 @@
    "module": "libs/common-exceptions",
    "statuses": [],
    "throwSites": 0,
-   "quote": "UNAUTHORIZED: 'COMMON_UNAUTHORIZED'"
+   "quote": "UNAUTHORIZED: 'COMMON_UNAUTHORIZED'",
+   "refs": 1
   },
   {
    "group": "CommonErrors",
@@ -3332,7 +3509,8 @@
     "file": "apps/core-api/src/common/guards/roles.guard.ts",
     "line": 37,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 2
   },
   {
    "group": "CommonErrors",
@@ -3344,7 +3522,8 @@
    "module": "libs/common-exceptions",
    "statuses": [],
    "throwSites": 0,
-   "quote": "INTERNAL_ERROR: 'COMMON_INTERNAL_ERROR'"
+   "quote": "INTERNAL_ERROR: 'COMMON_INTERNAL_ERROR'",
+   "refs": 2
   },
   {
    "group": "CommonErrors",
@@ -3363,7 +3542,8 @@
     "file": "apps/core-api/src/common/decorators/idempotency-key.decorator.ts",
     "line": 24,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "CommonErrors",
@@ -3382,7 +3562,8 @@
     "file": "apps/core-api/src/common/decorators/idempotency-key.decorator.ts",
     "line": 31,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   },
   {
    "group": "CommonErrors",
@@ -3401,7 +3582,8 @@
     "file": "apps/core-api/src/common/guards/csrf.guard.ts",
     "line": 25,
     "quote": "throw new DomainException("
-   }
+   },
+   "refs": 1
   }
  ],
  "unresolvedThrowSites": [],

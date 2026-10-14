@@ -27,7 +27,7 @@ Sở hữu phòng chat ẩn danh ngắn sau khi Matching ghép cặp: tin nhắn
 - error codes: ../errors/soulmatcherrors.md
 - flows involving it: [soul-match-room-reads-and-reveal](../flows/soul-match-room-reads-and-reveal.md), [soul-match-send-message](../flows/soul-match-send-message.md), [soul-match-session](../flows/soul-match-session.md)
 
-## Linked issues (heuristic, public subset)
+## Linked issues (heuristic)
 
 - P006 [fixed] Swagger thiếu cursor pagination → client sinh kiểu never
 

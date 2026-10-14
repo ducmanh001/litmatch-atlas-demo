@@ -27,7 +27,7 @@ No service-map flow covers these endpoints (they are confirmed local-only).
 
 ## 5. Data
 
-- tables owned by the module(s): none (see )
+- tables owned by the module(s): none 
 
 ## 6. Events
 
@@ -48,7 +48,7 @@ env vars read by the module(s): none (see ../config/)
 - e2e files that call these endpoints: none
 - FE specs: none
 
-## 10. Known issues (public subset of the ledger)
+## 10. Known issues (linked from the ledger)
 
 none linked
 

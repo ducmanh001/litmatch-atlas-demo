@@ -1,83 +1,96 @@
-# Litmatch context pack
+# Litmatch System Atlas
 
-> Machine-readable context for the Litmatch social voice app (NestJS core-api, signaling-gateway, LiveKit, Next.js web, Vite admin). Many small files with stable ids; static analysis only; code wins over docs.
+> Static-analysis context pack of the Litmatch social voice app (NestJS core-api, signaling-gateway, LiveKit media-server, Next.js web, Vite admin): database schema, REST API, async flows, cache/state, config, frontend routes to API map, 22 feature slices, project roadmap. Many small markdown/JSON files with stable ids. Code wins over docs; nothing is hidden.
 
 ## Start here
 
-- [README](https://ducmanh001.github.io/litmatch-atlas-demo/pack/README.md): id scheme and task routing
-- [Module index](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/index.md): 25 modules with counts and links
-- [Flows index](https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/index.md): 72 cross-service flows
-- [Issue ledger](https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/index.md): problems met while building
-- [Manifest](https://ducmanh001.github.io/litmatch-atlas-demo/index.json): every entity id with file and related ids
+- [roadmap.md](https://ducmanh001.github.io/litmatch-atlas-demo/roadmap.md): reading roadmap, project roadmap, open work
+- [pack/README.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/README.md): id scheme and task routing
+- [pack/lookup/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/lookup/index.md): one-line lookups: endpoint, table, env var, error code, event, issue, flow, entrypoint to flow
+- [search-index.json](https://ducmanh001.github.io/litmatch-atlas-demo/search-index.json): every entity and fine-grained id with url (machine search)
+- [sitemap.xml](https://ducmanh001.github.io/litmatch-atlas-demo/sitemap.xml): all URLs
+- [index.json](https://ducmanh001.github.io/litmatch-atlas-demo/index.json): manifest of documents with related ids
+- [llms-full.txt](https://ducmanh001.github.io/litmatch-atlas-demo/llms-full.txt): indexes, roadmap and lookups concatenated
 
-## Human-readable pages (large, not for crawling)
+## Indexes
 
-- [System Atlas](https://ducmanh001.github.io/litmatch-atlas-demo/index.html), [Service Map](https://ducmanh001.github.io/litmatch-service-map/), [Error History](https://ducmanh001.github.io/litmatch-error-history/)
-
-## Indexes (one per layer)
-
-- [modules/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/index.md): modules, one datasheet each
-- [slices/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/index.md): FEATURE SLICES: follow one feature from screen to database (start here for "follow feature X")
-- [fe/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/index.md): frontend routes, features, state, errors, i18n, UI action map
-- [flows/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/index.md): 72 cross-service backend flows
-- [api/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/index.md): REST API contract per module
-- [db/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/index.md): tables per module
-- [events/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/events/index.md): realtime events, jobs, outbox, metrics
-- [errors/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/index.md): error codes per group
-- [config/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/index.md): environment variables by prefix
-- [service-map/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/index.md): why services talk to each other, techniques, Q&A, findings
-- [issues/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/index.md): problems met while building (public subset)
-- [recipes.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/recipes.md): what past commits of each kind touched
-- [reconciliation.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/reconciliation.md): where the atlas and the service map disagree
+- [pack/modules/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/index.md): 25 modules, one datasheet each
+- [pack/slices/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/index.md): FEATURE SLICES: follow one feature from screen to database (start here for "follow feature X")
+- [pack/fe/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/fe/index.md): frontend routes, features, state, errors, i18n, UI action map
+- [pack/flows/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/flows/index.md): 72 cross-service backend flows
+- [pack/api/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/api/index.md): REST API contract per module
+- [pack/db/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/db/index.md): tables per module
+- [pack/events/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/events/index.md): realtime events, jobs, outbox, metrics
+- [pack/errors/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/errors/index.md): error codes per group
+- [pack/config/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/config/index.md): environment variables by prefix
+- [pack/service-map/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/service-map/index.md): why services talk to each other, techniques, Q&A, findings
+- [pack/system/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/system/index.md): async, state, domain rules, CI/CD sections written from code
+- [pack/issues/index.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/issues/index.md): problems met while building (full ledger)
+- [pack/project/roadmap-source.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/project/roadmap-source.md): docs/07-roadmap.md of the repo
+- [pack/project/capacity-plan.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/project/capacity-plan.md): capacity and scaling plan 2026-10-08
+- [pack/project/feature-registry.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/project/feature-registry.md): feature registry and deferred decisions
+- [pack/project/docs-map.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/project/docs-map.md): every doc of the repo with title and last change
+- [pack/recipes.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/recipes.md): what past commits of each kind touched
+- [pack/reconciliation.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/reconciliation.md): where the atlas and the service map disagree
 
 ## Modules
 
-- [module:admin](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/admin.md)
-- [module:auth](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/auth.md)
-- [module:avatar](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/avatar.md)
-- [module:calling](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/calling.md)
-- [module:discovery](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/discovery.md)
-- [module:economy](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/economy.md)
-- [module:feed](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/feed.md)
-- [module:friend](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/friend.md)
-- [module:gift](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/gift.md)
-- [module:matching](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/matching.md)
-- [module:media](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/media.md)
-- [module:mini-game](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/mini-game.md)
-- [module:mood](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/mood.md)
-- [module:movie-match](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/movie-match.md)
-- [module:notification](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/notification.md)
-- [module:palm-match](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/palm-match.md)
-- [module:party-room](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/party-room.md)
-- [module:safety](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/safety.md)
-- [module:short-video](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/short-video.md)
-- [module:soul-match](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/soul-match.md)
-- [module:support](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/support.md)
-- [module:user](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/user.md)
-- [module:app-shell](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/app-shell.md)
-- [module:signaling-gateway](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/signaling-gateway.md)
-- [module:media-server](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/media-server.md)
+- [pack/modules/admin.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/admin.md): module:admin
+- [pack/modules/app-shell.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/app-shell.md): module:app-shell
+- [pack/modules/auth.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/auth.md): module:auth
+- [pack/modules/avatar.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/avatar.md): module:avatar
+- [pack/modules/calling.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/calling.md): module:calling
+- [pack/modules/discovery.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/discovery.md): module:discovery
+- [pack/modules/economy.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/economy.md): module:economy
+- [pack/modules/feed.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/feed.md): module:feed
+- [pack/modules/friend.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/friend.md): module:friend
+- [pack/modules/gift.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/gift.md): module:gift
+- [pack/modules/matching.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/matching.md): module:matching
+- [pack/modules/media-server.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/media-server.md): module:media-server
+- [pack/modules/media.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/media.md): module:media
+- [pack/modules/mini-game.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/mini-game.md): module:mini-game
+- [pack/modules/mood.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/mood.md): module:mood
+- [pack/modules/movie-match.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/movie-match.md): module:movie-match
+- [pack/modules/notification.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/notification.md): module:notification
+- [pack/modules/palm-match.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/palm-match.md): module:palm-match
+- [pack/modules/party-room.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/party-room.md): module:party-room
+- [pack/modules/safety.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/safety.md): module:safety
+- [pack/modules/short-video.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/short-video.md): module:short-video
+- [pack/modules/signaling-gateway.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/signaling-gateway.md): module:signaling-gateway
+- [pack/modules/soul-match.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/soul-match.md): module:soul-match
+- [pack/modules/support.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/support.md): module:support
+- [pack/modules/user.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/modules/user.md): module:user
 
 ## Feature slices
 
-- [slice:auth-session](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/auth-session.md): Feature slice: auth-session
-- [slice:avatar-discovery-mood](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/avatar-discovery-mood.md): Feature slice: avatar-discovery-mood
-- [slice:calling](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/calling.md): Feature slice: calling
-- [slice:economy-ledger](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/economy-ledger.md): Feature slice: economy-ledger
-- [slice:feed-stories](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/feed-stories.md): Feature slice: feed-stories
-- [slice:friend-chat-streak](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/friend-chat-streak.md): Feature slice: friend-chat-streak
-- [slice:gift](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/gift.md): Feature slice: gift
-- [slice:matching](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/matching.md): Feature slice: matching
-- [slice:mini-game](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/mini-game.md): Feature slice: mini-game
-- [slice:movie-match](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/movie-match.md): Feature slice: movie-match
-- [slice:notification](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/notification.md): Feature slice: notification
-- [slice:palm-match](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/palm-match.md): Feature slice: palm-match
-- [slice:party-room](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/party-room.md): Feature slice: party-room
-- [slice:privacy-analytics-consent](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/privacy-analytics-consent.md): Feature slice: privacy-analytics-consent
-- [slice:realtime-fanout](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/realtime-fanout.md): Feature slice: realtime-fanout
-- [slice:runtime-capabilities](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/runtime-capabilities.md): Feature slice: runtime-capabilities
-- [slice:safety](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/safety.md): Feature slice: safety
-- [slice:short-video](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/short-video.md): Feature slice: short-video
-- [slice:soul-match](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/soul-match.md): Feature slice: soul-match
-- [slice:support-tickets](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/support-tickets.md): Feature slice: support-tickets
-- [slice:user-profile-open-entry](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/user-profile-open-entry.md): Feature slice: user-profile-open-entry
+- [pack/slices/auth-session.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/auth-session.md): Feature slice: auth-session
+- [pack/slices/avatar-discovery-mood.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/avatar-discovery-mood.md): Feature slice: avatar-discovery-mood
+- [pack/slices/calling.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/calling.md): Feature slice: calling
+- [pack/slices/economy-ledger.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/economy-ledger.md): Feature slice: economy-ledger
+- [pack/slices/feed-stories.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/feed-stories.md): Feature slice: feed-stories
+- [pack/slices/friend-chat-streak.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/friend-chat-streak.md): Feature slice: friend-chat-streak
+- [pack/slices/gift.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/gift.md): Feature slice: gift
+- [pack/slices/matching.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/matching.md): Feature slice: matching
+- [pack/slices/mini-game.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/mini-game.md): Feature slice: mini-game
+- [pack/slices/movie-match.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/movie-match.md): Feature slice: movie-match
+- [pack/slices/notification.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/notification.md): Feature slice: notification
+- [pack/slices/palm-match.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/palm-match.md): Feature slice: palm-match
+- [pack/slices/party-room.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/party-room.md): Feature slice: party-room
+- [pack/slices/privacy-analytics-consent.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/privacy-analytics-consent.md): Feature slice: privacy-analytics-consent
+- [pack/slices/realtime-fanout.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/realtime-fanout.md): Feature slice: realtime-fanout
+- [pack/slices/runtime-capabilities.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/runtime-capabilities.md): Feature slice: runtime-capabilities
+- [pack/slices/safety.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/safety.md): Feature slice: safety
+- [pack/slices/short-video.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/short-video.md): Feature slice: short-video
+- [pack/slices/soul-match.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/soul-match.md): Feature slice: soul-match
+- [pack/slices/support-tickets.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/support-tickets.md): Feature slice: support-tickets
+- [pack/slices/user-profile-open-entry.md](https://ducmanh001.github.io/litmatch-atlas-demo/pack/slices/user-profile-open-entry.md): Feature slice: user-profile-open-entry
+
+## Related sites
+
+- [Service Map](https://ducmanh001.github.io/litmatch-service-map/llms.txt): who calls whom and why, 72 audited flows
+- [Error History](https://ducmanh001.github.io/litmatch-error-history/llms.txt): 108 problems with causes, fixes, evidence, open work
+
+## Optional
+
+- [System Atlas page](https://ducmanh001.github.io/litmatch-atlas-demo/index.html): large human page (not for crawling)
+- [Sitemap page](https://ducmanh001.github.io/litmatch-atlas-demo/sitemap.html), [search](https://ducmanh001.github.io/litmatch-atlas-demo/search.html), [viewer](https://ducmanh001.github.io/litmatch-atlas-demo/view.html)

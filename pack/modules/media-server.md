@@ -16,7 +16,7 @@ Không phải code NestJS: chỉ là cấu hình/deploy image livekit/livekit-se
 - why it talks to other services: ../service-map/media-server.md and ../service-map/media-server-techniques.md
 - flows involving it: [admin-room-management](../flows/admin-room-management.md), [matching-to-call](../flows/matching-to-call.md), [party-room-leave-and-role-change](../flows/party-room-leave-and-role-change.md), [party-room-lifecycle](../flows/party-room-lifecycle.md), [party-room-speaker-invite](../flows/party-room-speaker-invite.md)
 
-## Linked issues (heuristic, public subset)
+## Linked issues (heuristic)
 
 - P004 [fixed] Adapter CLAUDE.md / skills lệch bản canonical (symlink tay)
 

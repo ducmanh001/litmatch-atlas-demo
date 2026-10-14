@@ -97,7 +97,7 @@ env vars read by the module(s): `MOVIE_MATCH_QUEUE_MAX_WAIT_SECONDS`, `MOVIE_MAT
 - e2e files that call these endpoints: none
 - FE specs: apps/web/src/features/friend-chat/api.spec.ts, apps/web/src/features/friend-chat/components/conversation-inbox.spec.tsx, apps/web/src/features/friend-chat/components/conversation-thread.spec.tsx, apps/web/src/features/friend-chat/components/friends-directory.spec.tsx, apps/web/src/features/friend-chat/components/message-list.spec.tsx, apps/web/src/features/friend-chat/send-message-schema.spec.ts, apps/web/src/features/movie-match/anon-api.spec.ts, apps/web/src/features/movie-match/api.spec.ts, apps/web/src/features/movie-match/components/anon-match-view.spec.tsx, apps/web/src/features/movie-match/components/friend-picker.spec.tsx, apps/web/src/features/movie-match/components/movie-session-view.spec.tsx, apps/web/src/features/movie-match/youtube-url.spec.ts
 
-## 10. Known issues (public subset of the ledger)
+## 10. Known issues (linked from the ledger)
 
 - P094 [open] Giới hạn đã biết: advisory lock Palm/Movie Match, outbox chưa có consumer/retention
 

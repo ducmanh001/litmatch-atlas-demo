@@ -75,7 +75,7 @@ env vars read by the module(s): `REDIS_URL`, `SOUL_CHAT_MESSAGE_MAX_LENGTH`, `SO
 - e2e files that call these endpoints: none
 - FE specs: apps/web/src/features/soul-match/api.spec.ts, apps/web/src/features/soul-match/components/soul-chat-phase-view.spec.tsx, apps/web/src/features/soul-match/components/soul-countdown-badge.spec.tsx, apps/web/src/features/soul-match/send-message-schema.spec.ts
 
-## 10. Known issues (public subset of the ledger)
+## 10. Known issues (linked from the ledger)
 
 - P006 [fixed] Swagger thiếu cursor pagination → client sinh kiểu never
 

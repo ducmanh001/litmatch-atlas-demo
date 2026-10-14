@@ -189,6 +189,57 @@
   "flags": []
  },
  {
+  "key": "cq1",
+  "title": "CodeQL: loop-bound-injection (high) ở palm-match.hash.ts",
+  "task": "ci",
+  "date": "2026-07-13",
+  "area": "auth-security",
+  "kind": "security",
+  "status": "fixed",
+  "unconfirmed": false,
+  "problem": "CodeQL báo cảnh báo mức cao js/loop-bound-injection (vòng lặp có cận phụ thuộc dữ liệu người dùng) ở palm-match.hash.ts (alert #1, 13/07).",
+  "root_cause": "Hàm băm FNV-1a lặp theo độ dài chuỗi đầu vào.",
+  "resolution": "CodeQL đánh dấu fixed ngày 17/07, cùng ngày commit 41bc055 chuyển hàm băm sang common/hash/fnv1a.ts.",
+  "resolution_type": [
+   "code-fix"
+  ],
+  "confidence": "medium",
+  "evidence": [
+   {
+    "kind": "commit",
+    "ref": "41bc055",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "file",
+    "ref": "apps/core-api/src/modules/palm-match/palm-match.hash.ts",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "keywords": [],
+  "tasks": [
+   "ci"
+  ],
+  "merged_from": 1,
+  "tier": "A",
+  "sources": [
+   "code",
+   "git"
+  ],
+  "id": "P005",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 0,
+  "ev_quote_ok": 0,
+  "flags": [
+   "no-quote"
+  ]
+ },
+ {
   "key": "g04",
   "title": "Swagger thiếu cursor pagination → client sinh kiểu never",
   "date": "2026-07-13",
@@ -492,6 +543,47 @@
   "ev_ref_ok": 2,
   "ev_quote_total": 2,
   "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "cq2",
+  "title": "CodeQL: loop-bound-injection (high) ở common/hash/fnv1a.ts còn mở",
+  "task": "ci",
+  "date": "2026-07-16",
+  "area": "auth-security",
+  "kind": "security",
+  "status": "open",
+  "unconfirmed": false,
+  "problem": "Cảnh báo CodeQL mức cao js/loop-bound-injection (alert #9) ở fnv1a.ts, mở từ 16/07 và chưa được sửa hay dismiss.",
+  "root_cause": "Cùng mẫu với alert #1: fnv1aHash lặp theo input.length; tác động thực tế thấp (seed deterministic, không phải crypto) nhưng alert vẫn mở.",
+  "resolution": "Chưa xử lý: cần giới hạn độ dài đầu vào hoặc dismiss alert kèm lý do.",
+  "resolution_type": [
+   "none-yet"
+  ],
+  "confidence": "medium",
+  "evidence": [
+   {
+    "kind": "file",
+    "ref": "apps/core-api/src/common/hash/fnv1a.ts",
+    "quote": "for (let i = 0; i < input.length; i++)",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "keywords": [],
+  "tasks": [
+   "ci"
+  ],
+  "merged_from": 1,
+  "tier": "A",
+  "sources": [
+   "code"
+  ],
+  "id": "P012",
+  "ev_total": 1,
+  "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
   "flags": []
  },
  {
@@ -3337,6 +3429,98 @@
   "flags": []
  },
  {
+  "key": "g64",
+  "title": "Production chạy bản cũ: route profile 404, thông báo Facebook cũ",
+  "date": "2026-08-19",
+  "area": "deploy-config",
+  "kind": "config-deploy",
+  "status": "open",
+  "problem": "Bấm Theo dõi/Nhắn tin ở profile báo lỗi đỏ 'Cannot POST /api/v1/profiles/.../follow'; sau đó GET /profiles/:id/actions trả 404 COMMON_ROUTE_NOT_FOUND và UI khóa hai nút.",
+  "root_cause": "Không phải lỗi frontend/contract: source và OpenAPI đã có route. Core API runtime/prod đang chạy bản cũ hoặc chưa load ProfileSocialController (deploy chưa cập nhật); local DB còn thiếu 3 migration profile.",
+  "resolution": "Local: chạy 3 migration profile, bật lại core-api rồi xác nhận route follow/conversation đã load. Prod: khuyến nghị deploy lại core-api đúng source hiện tại, giữ NEXT_PUBLIC_API_URL. FE không thêm fallback giả.",
+  "resolution_type": [
+   "env-config",
+   "none-yet",
+   "redeploy"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B3",
+   "B4"
+  ],
+  "merged_from": 3,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a01990",
+    "quote": "Cannot POST",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "01a01990",
+    "quote": "Local DB đang thiếu đúng 3 migration liên quan profile",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "01a0248b",
+    "quote": "404 COMMON_ROUTE_NOT_FOUND",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "01a01993",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "01a11dea",
+    "quote": "web đã deploy tính năng profile social nhưng `core-api` production chưa deploy module tương ứng",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "apps/core-api/src/modules/friend/controllers/profile-social.controller.ts",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "01a11dea",
+    "quote": "Đăng nhập Facebook ckhả dụng.",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "apps/core-api/src/app/capabilities.service.ts",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "codex"
+  ],
+  "id": "P065",
+  "ev_total": 8,
+  "ev_ref_ok": 8,
+  "ev_quote_total": 5,
+  "ev_quote_ok": 5,
+  "flags": []
+ },
+ {
   "key": "g66",
   "title": "Hiểu sai luật cổng quà (follower/ngày vs người bắt chuyện lần đầu)",
   "date": "2026-08-19",
@@ -3726,6 +3910,100 @@
   "id": "P073",
   "ev_total": 1,
   "ev_ref_ok": 1,
+  "ev_quote_total": 1,
+  "ev_quote_ok": 1,
+  "flags": []
+ },
+ {
+  "key": "g65",
+  "title": "Core API production crash lúc boot (media storage dev / thiếu biến R2)",
+  "date": "2026-08-21",
+  "area": "deploy-config",
+  "kind": "config-deploy",
+  "status": "in-progress",
+  "problem": "Core API production crash khi khởi động nên bản mới không chạy, route profile 404; sau khi đổi sang r2 lại crash tiếp vì thiếu biến R2.",
+  "root_cause": "Env production để MEDIA_STORAGE_PROVIDER=dev (DevImageStorageProvider bị cấm ở prod); sau đó thiếu/để placeholder các biến MEDIA_R2_* và MEDIA_PUBLIC_BASE_URL nên R2ImageStorageProvider ném lỗi.",
+  "resolution": "Đổi MEDIA_STORAGE_PROVIDER=r2 (user đã làm) và hướng dẫn cấp đủ 5 biến R2 (ACCOUNT_ID, BUCKET, ACCESS_KEY_ID, SECRET_ACCESS_KEY, PUBLIC_BASE_URL) rồi redeploy. Chưa thấy bằng chứng deploy cuối thành công.",
+  "resolution_type": [
+   "env-config",
+   "redeploy"
+  ],
+  "confidence": "high",
+  "tasks": [
+   "B3"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a0248b",
+    "quote": "DevImageStorageProvider không được dùng ở production",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "codex-thread",
+    "ref": "01a0248b",
+    "quote": "MEDIA_STORAGE_PROVIDER=r2 yêu cầu đầy đủ account, bucket, credential và MEDIA_PUBLIC_BASE_URL",
+    "_ref_ok": true,
+    "_quote_ok": true
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "codex"
+  ],
+  "id": "P074",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
+  "ev_quote_total": 2,
+  "ev_quote_ok": 2,
+  "flags": []
+ },
+ {
+  "key": "g73",
+  "title": "OTP trả mã ngay trong response khi production bật OTP",
+  "date": "2026-09-03",
+  "area": "auth-security",
+  "kind": "security",
+  "status": "open",
+  "problem": "requestOtp() trả thẳng { code, ttlSeconds } trong response trong khi production bật AUTH_PHONE_OTP_ENABLED=true; client lấy được mã đăng nhập mà không cần SMS.",
+  "root_cause": "Chưa tích hợp SMS thật; mã OTP được trả về cho client và cờ OTP vẫn bật trong configmap/compose production.",
+  "resolution": "Review chỉ khuyến nghị tắt OTP production cho tới khi có SMS thật; không thấy commit sửa trong bằng chứng. Giới hạn OTP theo phone còn check-rồi-ghi, có thể vượt limit khi đồng thời.",
+  "resolution_type": [
+   "none-yet"
+  ],
+  "confidence": "medium",
+  "tasks": [
+   "B4"
+  ],
+  "merged_from": 1,
+  "unconfirmed": false,
+  "evidence": [
+   {
+    "kind": "codex-thread",
+    "ref": "01a06739",
+    "quote": "OTP đang trả mã xác thực trực tiếp trong response",
+    "_ref_ok": true,
+    "_quote_ok": true
+   },
+   {
+    "kind": "file",
+    "ref": "apps/core-api/src/modules/auth/services/otp.service.ts",
+    "quote": "",
+    "_ref_ok": true,
+    "_quote_ok": null
+   }
+  ],
+  "tier": "A",
+  "sources": [
+   "code",
+   "codex"
+  ],
+  "id": "P075",
+  "ev_total": 2,
+  "ev_ref_ok": 2,
   "ev_quote_total": 1,
   "ev_quote_ok": 1,
   "flags": []

@@ -13,7 +13,7 @@ Sở hữu phòng party (party_rooms), membership theo dòng, comment append-onl
 - publishes realtime: party.member.joined, party.member.left, party.member.disconnected, party.member.reconnected, party.role.changed, party.speaker.invite.received, party.room.closed, party.host.disconnected, party.host.reconnected, party.comment.created
 - jobs: PartyRoomSweeperService, PartyRoomSweeperService
 - env vars read: PARTY_SWEEPER_INTERVAL_MS, PARTY_HOST_GRACE_CHECK_INTERVAL_MS, PARTY_HOST_DISCONNECT_GRACE_SECONDS, PARTY_MEMBER_DISCONNECT_GRACE_SECONDS, PARTY_STALE_ROOM_SECONDS, PARTY_TITLE_MAX_LENGTH, PARTY_MAX_SPEAKERS, PARTY_MAX_MEMBERS, PARTY_EMPTY_ROOM_TIMEOUT_SECONDS, PARTY_COMMENT_MAX_LENGTH, LIVEKIT_URL, LIVEKIT_REGION_URLS, PARTY_TOKEN_TTL_SECONDS, REDIS_URL
-- error codes: 17 in PartyRoomErrors (1 never thrown)
+- error codes: 17 in PartyRoomErrors (1 used indirectly, not via new DomainException)
 - tests: 1 unit spec files, 1 integration spec files
 - history: 18 commits (3 fixes), last 2026-08-14
 - docs: docs/services/party-room-service.md (last changed 2026-08-14)
@@ -27,7 +27,7 @@ Sở hữu phòng party (party_rooms), membership theo dòng, comment append-onl
 - error codes: ../errors/partyroomerrors.md
 - flows involving it: [admin-dashboard](../flows/admin-dashboard.md), [admin-room-management](../flows/admin-room-management.md), [gift-in-party-room](../flows/gift-in-party-room.md), [party-room-detail-and-comments](../flows/party-room-detail-and-comments.md), [party-room-leave-and-role-change](../flows/party-room-leave-and-role-change.md), [party-room-lifecycle](../flows/party-room-lifecycle.md), [party-room-speaker-invite](../flows/party-room-speaker-invite.md)
 
-## Linked issues (heuristic, public subset)
+## Linked issues (heuristic)
 
 - P006 [fixed] Swagger thiếu cursor pagination → client sinh kiểu never
 

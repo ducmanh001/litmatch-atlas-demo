@@ -59,7 +59,7 @@ env vars read by the module(s): `REDIS_URL` (see ../config/)
 - e2e files that call these endpoints: none
 - FE specs: none
 
-## 10. Known issues (public subset of the ledger)
+## 10. Known issues (linked from the ledger)
 
 - P090 [fixed] Huỷ ván mini-game ghi đè ván đã resolved
 

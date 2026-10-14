@@ -112,6 +112,12 @@
    "title": "Giới hạn đã biết: advisory lock Palm/Movie Match, outbox chưa có consumer/retention",
    "status": "open",
    "tier": "B"
+  },
+  {
+   "id": "P005",
+   "title": "CodeQL: loop-bound-injection (high) ở palm-match.hash.ts",
+   "status": "fixed",
+   "tier": "A"
   }
  ],
  "mapCollaborators": [

@@ -17,7 +17,7 @@ see: ../modules/auth.md
 
 ### POST /auth/otp/request
 
-Tạo OTP 6 số cho số điện thoại (rate limit theo số trong DB, vô hiệu mã cũ) (cách trả mã: ẩn khỏi bản công khai). Public, throttle 5/phút/IP; 403 nếu AUTH_PHONE_OTP_ENABLED tắt.
+Tạo OTP 6 số cho số điện thoại (rate limit theo số trong DB, vô hiệu mã cũ) và trả mã trong response vì không gửi SMS. Public, throttle 5/phút/IP; 403 nếu AUTH_PHONE_OTP_ENABLED tắt.
 
 - handler: AuthController.requestOtp (apps/core-api/src/modules/auth/auth.controller.ts:64); operationId: AuthController_requestOtp
 - auth: PUBLIC; throttle: { default: { limit: 5, ttl: minutes(1) } }

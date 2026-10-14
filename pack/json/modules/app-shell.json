@@ -190,6 +190,12 @@
  },
  "issues": [
   {
+   "id": "P065",
+   "title": "Production chạy bản cũ: route profile 404, thông báo Facebook cũ",
+   "status": "open",
+   "tier": "A"
+  },
+  {
    "id": "P076",
    "title": "Rate limit trong bộ nhớ từng pod + trần kết nối Postgres",
    "status": "fixed",

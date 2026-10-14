@@ -25,8 +25,9 @@ Sở hữu hàng đợi ghép cặp ẩn danh Palm Match, phiên 2 người (l�
 - error codes: ../errors/palmmatcherrors.md
 - flows involving it: [palm-match-queue-and-rating](../flows/palm-match-queue-and-rating.md)
 
-## Linked issues (heuristic, public subset)
+## Linked issues (heuristic)
 
 - P094 [open] Giới hạn đã biết: advisory lock Palm/Movie Match, outbox chưa có consumer/retention
+- P005 [fixed] CodeQL: loop-bound-injection (high) ở palm-match.hash.ts
 
 See ../issues/index.md.

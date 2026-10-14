@@ -3,7 +3,6 @@
 id: db:(common)
 module: module:(common)
 tables: admin_audit_logs
-see: ../modules/common.md
 
 ### table: admin_audit_logs
 

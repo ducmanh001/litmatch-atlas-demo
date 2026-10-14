@@ -26,7 +26,7 @@ Sở hữu phiên oẳn tù tì giữa 2 người đã là bạn (mini_game_sess
 - error codes: ../errors/minigameerrors.md
 - flows involving it: [mini-game-session](../flows/mini-game-session.md)
 
-## Linked issues (heuristic, public subset)
+## Linked issues (heuristic)
 
 - P090 [fixed] Huỷ ván mini-game ghi đè ván đã resolved
 

@@ -39,7 +39,7 @@ FE features (directories): [web/notification](../fe/feature-web-notification.md)
 
 ## 5. Data
 
-- tables owned by the module(s): none (see ../db/app-shell.md)
+- tables owned by the module(s): none 
 
 ## 6. Events
 
@@ -60,8 +60,9 @@ env vars read by the module(s): `LOG_LEVEL`, `NODE_ENV`, `DATABASE_URL`, `DATABA
 - e2e files that call these endpoints: apps/core-api-e2e/src/core-api/core-api.spec.ts
 - FE specs: apps/web/src/features/notification/api.spec.ts, apps/web/src/features/notification/components/notification-bell.spec.tsx, apps/web/src/features/notification/notification-copy.spec.ts, apps/web/src/features/wallet/components/payos-payment-status.spec.tsx, apps/web/src/features/wallet/components/topup-packages.spec.tsx, apps/web/src/features/wallet/components/vip-plans.spec.tsx, apps/web/src/features/wallet/components/wallet-balance.spec.tsx
 
-## 10. Known issues (public subset of the ledger)
+## 10. Known issues (linked from the ledger)
 
+- P065 [open] Production chạy bản cũ: route profile 404, thông báo Facebook cũ
 - P076 [fixed] Rate limit trong bộ nhớ từng pod + trần kết nối Postgres
 
 See ../issues/index.md.

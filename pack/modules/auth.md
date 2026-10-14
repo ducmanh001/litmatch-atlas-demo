@@ -25,8 +25,9 @@ Sở hữu danh tính đăng nhập (auth_identities), OTP điện thoại, refr
 - error codes: ../errors/autherrors.md
 - flows involving it: [auth-guest-login-and-socket](../flows/auth-guest-login-and-socket.md), [auth-guest-upgrade](../flows/auth-guest-upgrade.md), [auth-otp-login](../flows/auth-otp-login.md), [auth-refresh-and-logout](../flows/auth-refresh-and-logout.md), [auth-search-by-phone](../flows/auth-search-by-phone.md), [auth-social-login](../flows/auth-social-login.md)
 
-## Linked issues (heuristic, public subset)
+## Linked issues (heuristic)
 
+- P075 [open] OTP trả mã ngay trong response khi production bật OTP
 - P018 [fixed] JWT access token trùng nhau khi cấp trong cùng giây (LRN-010)
 
 See ../issues/index.md.

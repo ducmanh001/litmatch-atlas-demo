@@ -1,0 +1,3108 @@
+{
+ "section": "domain",
+ "summary": "Mọi lỗi đi qua GlobalExceptionFilter: DomainException (4xx) giữ nguyên mã, HttpException map sang COMMON_*, phần còn lại thành 500 COMMON_INTERNAL_ERROR; thành công bọc { data, meta? }. Tệp gồm quy ước lỗi, 30 luật nghiệp vụ nhạy cảm đã đối chiếu mã, 35 thuật ngữ sản phẩm sang mã và quy ước đặt tên, bố cục.",
+ "limits": [
+  "Mọi khẳng định là theo mã tĩnh tại HEAD nhánh fix/multi-pod-readiness; chưa chạy hệ thống nên hành vi runtime (log thật, header thật, cấu hình triển khai) chưa được xác nhận.",
+  "Giá trị mặc định lấy từ Joi default trong env.validation.ts; ConfigMap/secret ở môi trường thật có thể ghi đè và không được đối chiếu ở phần này.",
+  "Header Retry-After và X-RateLimit do thư viện @nestjs/throttler đặt; bằng chứng lấy từ bản cài trong node_modules cục bộ (không thuộc repo) nên phiên bản chạy thật chưa xác nhận.",
+  "Việc ServiceUnavailableException(code, message) ra COMMON_INTERNAL_ERROR kèm message là chuỗi mã được suy ra từ filter cộng với cách NestJS dựng body (node_modules/@nestjs/common); chưa có test HTTP xác nhận.",
+  "Chưa đọc thân FriendService.ensureFriendship nên chưa xác nhận Conversation được tạo cùng transaction; chỉ xác nhận Friendship nhận `manager` của transaction cuộc gọi.",
+  "Ánh xạ quota miễn phí cho VIP/SVIP (giới hạn 30/20 và 60/40) chỉ xác nhận ở env mặc định và docs/06; chưa đọc đoạn code chọn giới hạn theo tier.",
+  "Luồng IAP verify (native) chưa được đọc chi tiết; chỉ xác nhận đường payOS có chặn guest.",
+  "Danh sách 30 luật là lựa chọn theo độ nhạy khi sửa code, không phải toàn bộ luật (docs/06 tự ghi là danh sách tối thiểu)."
+ ],
+ "docDrift": [
+  {
+   "doc": "docs/05-coding-standards.md § 5.1",
+   "claim": "Format lỗi thống nhất chỉ gồm (code, message, traceId).",
+   "actual": "Bộ lọc còn thêm `details` tuỳ chọn: validation trả `details.violations`, DomainException trả `details` của nó (vd `required`, `limit`).",
+   "evidence": [
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 24,
+     "quote": "format lỗi thống nhất (code, message, traceId)"
+    },
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 83,
+     "quote": "...(details ? { details } : {}),"
+    },
+    {
+     "file": "libs/common-dtos/src/lib/api-response.ts",
+     "line": 12,
+     "quote": "details?: Record<string, unknown>;"
+    }
+   ]
+  },
+  {
+   "doc": "docs/06-domain-rules.md (Refund/chargeback IAP)",
+   "claim": "Refund-sau-tiêu lặp lại nhiều lần là tín hiệu gian lận, hạ trust score hoặc khoá nạp.",
+   "actual": "RefundService chỉ ghi bút toán đảo và đánh dấu receipt; không thấy mã hạ trust score hay khoá nạp theo refund trong modules economy, safety, user (grep \"refund\").",
+   "confidence": "medium",
+   "evidence": [
+    {
+     "file": "docs/06-domain-rules.md",
+     "line": 38,
+     "quote": "refund-sau-tiêu lặp lại nhiều lần là tín hiệu gian lận"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/refund.service.ts",
+     "line": 35,
+     "quote": "async refundIapPurchase("
+    }
+   ]
+  },
+  {
+   "doc": "docs/06-domain-rules.md (Đăng ký/đăng nhập)",
+   "claim": "Guest bị giới hạn: không nạp diamond.",
+   "actual": "Chỉ đường payOS có chặn guest (assertNotGuestForPayos); trong modules/economy không có kiểm tra isGuest nào khác, nên IAP verify không chặn guest theo mã.",
+   "confidence": "medium",
+   "evidence": [
+    {
+     "file": "docs/06-domain-rules.md",
+     "line": 30,
+     "quote": "Guest bị giới hạn: không nạp diamond"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/economy.controller.ts",
+     "line": 90,
+     "quote": "this.assertNotGuestForPayos(user);"
+    }
+   ]
+  },
+  {
+   "doc": "apps/core-api/src/modules/safety/safety.service.ts (comment của getHiddenUserIds)",
+   "claim": "Report ẩn vĩnh viễn, không theo SAFETY_REPORT_COOLDOWN_DAYS như matching.",
+   "actual": "Cooldown của matching (canPair) dùng SAFETY_REMATCH_COOLDOWN_DAYS (mặc định 30); SAFETY_REPORT_COOLDOWN_DAYS (mặc định 7) là cửa sổ chống trừ trust score lặp theo cặp reporter-target. docs/06 nêu đúng tên SAFETY_REMATCH_COOLDOWN_DAYS.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/safety/safety.service.ts",
+     "line": 263,
+     "quote": "(không theo `SAFETY_REPORT_COOLDOWN_DAYS` như matching)"
+    },
+    {
+     "file": "apps/core-api/src/modules/safety/safety.service.ts",
+     "line": 298,
+     "quote": "'SAFETY_REMATCH_COOLDOWN_DAYS',"
+    },
+    {
+     "file": "docs/06-domain-rules.md",
+     "line": 49,
+     "quote": "chặt hơn `SAFETY_REMATCH_COOLDOWN_DAYS` (matching)"
+    }
+   ]
+  }
+ ],
+ "errorHandling": {
+  "envelope": {
+   "success": "Response thành công được bọc thành `{ data, meta? }` bởi ResponseEnvelopeInterceptor; controller đã trả object có khoá `data` (vd list kèm `meta.nextCursor`) thì được giữ nguyên.",
+   "errorShape": "Lỗi luôn có dạng `{ error: { code, message, traceId, details? } }` (ApiErrorBody), do GlobalExceptionFilter ghi bằng `res.status(status).json(payload)`. `traceId` là request-id (header `x-request-id` hoặc id sinh mới, cũng được trả lại ở response header).",
+   "wiring": "Bộ lọc và interceptor đăng ký toàn cục qua APP_FILTER và APP_INTERCEPTOR trong app.module.ts.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/common/interceptors/response-envelope.interceptor.ts",
+     "line": 13,
+     "quote": "Bọc mọi response thành công vào envelope { data, meta? }"
+    },
+    {
+     "file": "apps/core-api/src/common/interceptors/response-envelope.interceptor.ts",
+     "line": 31,
+     "quote": "if (value && typeof value === 'object' && 'data' in (value as object)) {"
+    },
+    {
+     "file": "libs/common-dtos/src/lib/api-response.ts",
+     "line": 7,
+     "quote": "export interface ApiErrorBody {"
+    },
+    {
+     "file": "libs/common-dtos/src/lib/api-response.ts",
+     "line": 12,
+     "quote": "details?: Record<string, unknown>;"
+    },
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 86,
+     "quote": "res.status(status).json(payload);"
+    },
+    {
+     "file": "apps/core-api/src/app/app.module.ts",
+     "line": 158,
+     "quote": "{ provide: APP_FILTER, useClass: GlobalExceptionFilter },"
+    },
+    {
+     "file": "apps/core-api/src/app/app.module.ts",
+     "line": 157,
+     "quote": "{ provide: APP_INTERCEPTOR, useClass: ResponseEnvelopeInterceptor },"
+    },
+    {
+     "file": "libs/logger/src/lib/build-logger-options.ts",
+     "line": 42,
+     "quote": "res.setHeader('x-request-id', id);"
+    },
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 72,
+     "quote": "Không endpoint nào trả object trần một kiểu riêng"
+    }
+   ]
+  },
+  "domainExceptionToHttp": {
+   "rule": "DomainException giữ nguyên code, message, details và dùng httpStatus của nó (mặc định 400; ném Error thường nếu ngoài 400-499). HttpException của framework map theo status: 401 COMMON_UNAUTHORIZED, 403 COMMON_FORBIDDEN, 404 COMMON_ROUTE_NOT_FOUND, 429 COMMON_RATE_LIMITED, 400 COMMON_VALIDATION_FAILED, còn lại (kể cả 5xx) COMMON_INTERNAL_ERROR.",
+   "gotcha": "HttpException 5xx tự đặt (vd `new ServiceUnavailableException(code, message)`) mất mã riêng: theo mã, client nhận status 5xx với `error.code = COMMON_INTERNAL_ERROR` và `error.message` là chính chuỗi mã (locale vi) hoặc câu chung (locale en). Nhánh HttpException cũng không log và không gửi Sentry.",
+   "evidence": [
+    {
+     "file": "libs/common-exceptions/src/lib/domain-exception.ts",
+     "line": 6,
+     "quote": "DomainException không bao giờ map ra 500"
+    },
+    {
+     "file": "libs/common-exceptions/src/lib/domain-exception.ts",
+     "line": 23,
+     "quote": "DomainException chỉ được dùng status 4xx"
+    },
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 42,
+     "quote": "if (exception instanceof DomainException) {"
+    },
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 55,
+     "quote": "code = this.mapHttpStatusToCode(status);"
+    },
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 97,
+     "quote": "case HttpStatus.TOO_MANY_REQUESTS:"
+    },
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 102,
+     "quote": "return CommonErrors.INTERNAL_ERROR;"
+    },
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 81,
+     "quote": "`DomainException` không bao giờ map ra 500"
+    },
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 219,
+     "quote": "Lỗi hạ tầng (5xx) — không phải lỗi domain của client nên không dùng DomainException (4xx-only)"
+    },
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 221,
+     "quote": "PartyRoomErrors.MEDIA_ROOM_CREATE_FAILED,"
+    },
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.integration.spec.ts",
+     "line": 317,
+     "quote": "message: 'PARTY_MEDIA_ROOM_CREATE_FAILED',"
+    },
+    {
+     "file": "node_modules/@nestjs/common/exceptions/http.exception.js",
+     "line": 91,
+     "quote": "static createBody(arg0, arg1, statusCode) {"
+    }
+   ]
+  },
+  "validationErrors": {
+   "how": "ValidationPipe toàn cục (whitelist, forbidNonWhitelisted, transform) ném BadRequestException có message là mảng; filter đổi thành 400 COMMON_VALIDATION_FAILED, message cố định 'Dữ liệu đầu vào không hợp lệ' và details.violations là mảng thông điệp gốc của class-validator (không localize).",
+   "stringMessage": "400 có message dạng chuỗi vẫn ra COMMON_VALIDATION_FAILED nhưng giữ message gốc.",
+   "businessValidation": "Lỗi đúng hình thức nhưng sai nghiệp vụ dùng DomainException 422 (vd USER_SEEKING_AGE_RANGE_INVALID).",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/main.ts",
+     "line": 82,
+     "quote": "forbidNonWhitelisted: true,"
+    },
+    {
+     "file": "apps/core-api/src/main.ts",
+     "line": 83,
+     "quote": "transform: true,"
+    },
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 59,
+     "quote": "code = CommonErrors.VALIDATION_FAILED;"
+    },
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 61,
+     "quote": "details = { violations: raw };"
+    },
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 60,
+     "quote": "message = 'Dữ liệu đầu vào không hợp lệ';"
+    },
+    {
+     "file": "apps/core-api/src/modules/user/user.service.ts",
+     "line": 287,
+     "quote": "HttpStatus.UNPROCESSABLE_ENTITY,"
+    }
+   ]
+  },
+  "databaseErrors": {
+   "how": "Không có ánh xạ chung cho lỗi Postgres (không có xử lý QueryFailedError): lỗi driver không bị bắt rơi vào nhánh 500 COMMON_INTERNAL_ERROR.",
+   "uniqueViolation": "Unique violation (23505) được từng service bắt cục bộ bằng isUniqueViolation/violatedConstraint rồi đọc lại hoặc ném DomainException (vd uq_match_tickets_active_user thành 409 MATCHING_TICKET_ALREADY_QUEUED). Ledger dùng INSERT ... ON CONFLICT DO NOTHING để không làm abort transaction của caller.",
+   "deadlockAndSerialization": "Theo mã (grep 40P01, 40001, SERIALIZABLE trong apps/core-api/src và libs, không tính file spec, không có kết quả): không bắt hay retry deadlock/serialization failure và không dùng isolation SERIALIZABLE. Giảm deadlock bằng thứ tự khoá cố định (ORDER BY id/keyHash) cùng khoá `pessimistic_write`; nếu vẫn xảy ra thì ra 500.",
+   "rule": "Insert-rồi-đọc-lại khi unique violation không được nằm trong transaction explicit nếu bước đọc chỉ chạy khi insert lỗi, vì Postgres abort cả transaction (docs/06).",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/database/postgres-errors.ts",
+     "line": 7,
+     "quote": "export const PG_UNIQUE_VIOLATION = '23505';"
+    },
+    {
+     "file": "apps/core-api/src/database/postgres-errors.ts",
+     "line": 16,
+     "quote": "export function violatedConstraint(err: unknown, constraint: string): boolean {"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 188,
+     "quote": "if (violatedConstraint(err, UQ_ACTIVE_USER)) {"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/matching.constants.ts",
+     "line": 7,
+     "quote": "export const UQ_ACTIVE_USER = 'uq_match_tickets_active_user';"
+    },
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 24,
+     "quote": "Còn lại → 500 COMMON_INTERNAL_ERROR, log đầy đủ, KHÔNG lộ chi tiết nội bộ ra ngoài"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+     "line": 236,
+     "quote": "thứ tự lock cố định — tránh deadlock với các writer khác"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 83,
+     "quote": "Insert-before-lock + thứ tự key ổn định tránh lost update/deadlock khi nhiều key giao nhau."
+    },
+    {
+     "file": "docs/06-domain-rules.md",
+     "line": 122,
+     "quote": "Insert-rồi-đọc-lại khi unique violation PHẢI KHÔNG nằm trong 1 transaction Postgres explicit"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 117,
+     "quote": "ON CONFLICT DO NOTHING avoids aborting the caller-owned transaction on a"
+    }
+   ]
+  },
+  "unexpectedErrors": {
+   "status": "500 COMMON_INTERNAL_ERROR cho mọi exception không phải DomainException/HttpException.",
+   "response": "Message cố định 'Lỗi hệ thống, thử lại sau' (locale en: 'Something went wrong. Please try again later.'); không trả stack hay message gốc.",
+   "whatIsLoggedAndMasked": "Filter log mức error kèm traceId và stack rồi gọi captureSentryException; log đi qua pino REDACT_PATHS (thay bằng [REDACTED]) và Sentry bỏ cookies/data/headers (sendDefaultPii=false).",
+   "redactedFields": "REDACT_PATHS gồm authorization, cookie, set-cookie, body.password/otp/code/token/refreshToken/accessToken/idToken/receipt/phone/lat/lon và các biến thể *.field.",
+   "redactLimit": "REDACT_PATHS che theo đường dẫn field, không quét nội dung chuỗi stack.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 67,
+     "quote": "message = 'Lỗi hệ thống, thử lại sau';"
+    },
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 71,
+     "quote": "err: exception instanceof Error ? exception.stack : String(exception),"
+    },
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 75,
+     "quote": "captureSentryException(exception, traceId);"
+    },
+    {
+     "file": "libs/observability/src/lib/sentry.ts",
+     "line": 30,
+     "quote": "sendDefaultPii: false,"
+    },
+    {
+     "file": "libs/observability/src/lib/sentry.ts",
+     "line": 35,
+     "quote": "delete event.request.data;"
+    },
+    {
+     "file": "libs/logger/src/lib/redact.ts",
+     "line": 11,
+     "quote": "'req.body.otp',"
+    },
+    {
+     "file": "libs/logger/src/lib/build-logger-options.ts",
+     "line": 28,
+     "quote": "censor: '[REDACTED]',"
+    },
+    {
+     "file": "apps/core-api/src/common/i18n/error-message.localizer.ts",
+     "line": 12,
+     "quote": "COMMON_INTERNAL_ERROR: 'Something went wrong. Please try again later.',"
+    },
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 102,
+     "quote": "Cấm log PII/secret"
+    }
+   ]
+  },
+  "rateLimit": {
+   "status": "429; filter map sang COMMON_RATE_LIMITED (message localize). ThrottlerGuard là APP_GUARD toàn cục.",
+   "retryHeaders": "Repo không tự đặt header giới hạn: Retry-After do ThrottlerGuard của @nestjs/throttler đặt khi chặn, thư viện dùng tiền tố X-RateLimit cho header hạn mức. Body lỗi không có trường retry.",
+   "quotaRateLimit": "429 do quota nghiệp vụ (MATCHING_DAILY_QUOTA_EXCEEDED, MATCHING_GUEST_DAILY_QUOTA_EXCEEDED) là DomainException ném từ service, không qua ThrottlerGuard; MATCHING_DAILY_QUOTA_EXCEEDED kèm details { limit, quotaDate, matchType }.",
+   "config": "Mặc định toàn cục THROTTLE_LIMIT=100 trên THROTTLE_TTL_SECONDS=60; THROTTLE_STORAGE=memory (mặc định) hoặc redis để dùng chung giữa các pod. `@Throttle` theo route khai tại 14 controller (auth, economy, gift, matching, safety...).",
+   "caveat": "Bộ đếm khoá theo req.ip: sau ingress/LB mà HTTP_TRUST_PROXY_HOPS=0 thì mọi người dùng chung một bucket (app.module.ts cảnh báo khi dùng redis).",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 98,
+     "quote": "return CommonErrors.RATE_LIMITED;"
+    },
+    {
+     "file": "apps/core-api/src/app/app.module.ts",
+     "line": 154,
+     "quote": "{ provide: APP_GUARD, useClass: ThrottlerGuard },"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 754,
+     "quote": "THROTTLE_LIMIT: Joi.number().integer().min(1).default(100),"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 757,
+     "quote": "THROTTLE_STORAGE: Joi.string().valid('memory', 'redis').default('memory'),"
+    },
+    {
+     "file": "apps/core-api/src/app/app.module.ts",
+     "line": 110,
+     "quote": "// Nhiều replica: hạn mức phải dùng chung qua Redis, không đếm riêng từng pod."
+    },
+    {
+     "file": "apps/core-api/src/app/app.module.ts",
+     "line": 95,
+     "quote": "Bộ đếm dùng chung nhưng khoá theo req.ip: sau ingress/LB mà không tin proxy thì req.ip là IP"
+    },
+    {
+     "file": "apps/core-api/src/modules/auth/auth.controller.ts",
+     "line": 48,
+     "quote": "@Throttle({ default: { limit: 5, ttl: minutes(1) } })"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 115,
+     "quote": "HttpStatus.TOO_MANY_REQUESTS,"
+    },
+    {
+     "file": "node_modules/@nestjs/throttler/dist/throttler.guard.js",
+     "line": 28,
+     "quote": "this.headerPrefix = 'X-RateLimit';"
+    },
+    {
+     "file": "node_modules/@nestjs/throttler/dist/throttler.guard.js",
+     "line": 121,
+     "quote": "res.header(`Retry-After${getThrottlerSuffix(throttler.name)}`, timeToBlockExpire);"
+    },
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 112,
+     "quote": "Limit per-route khai ngay tại `@Throttle`"
+    }
+   ]
+  },
+  "idempotencyErrors": {
+   "header": "Header `Idempotency-Key` (tối đa 128 ký tự) được rút bằng decorator `@IdempotencyKey()`.",
+   "missing": "Thiếu hoặc rỗng: 400 COMMON_IDEMPOTENCY_KEY_MISSING.",
+   "invalid": "Dài hơn 128 ký tự: 400 COMMON_IDEMPOTENCY_KEY_INVALID.",
+   "conflict": "Cùng key nhưng request_hash khác: 409 với mã `<DOMAIN>_..._IDEMPOTENCY_CONFLICT` riêng của từng module (vd ECONOMY_TRANSACTION_IDEMPOTENCY_CONFLICT).",
+   "replay": "Cùng key và cùng nội dung: trả lại giao dịch đã có (`replayed: true`) thay vì tạo mới; đua giữa hai request cùng key được chốt bởi unique constraint `uq_transactions_idempotency_key`.",
+   "externalId": "Giao dịch có ID ngoài bất biến (IAP) dùng chính ID đó làm key, server tự derive, không cần header (docs/05 §5.10).",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/common/decorators/idempotency-key.decorator.ts",
+     "line": 11,
+     "quote": "export const IDEMPOTENCY_KEY_HEADER = 'idempotency-key';"
+    },
+    {
+     "file": "apps/core-api/src/common/decorators/idempotency-key.decorator.ts",
+     "line": 23,
+     "quote": "if (typeof key !== 'string' || key.trim() === '') {"
+    },
+    {
+     "file": "apps/core-api/src/common/decorators/idempotency-key.decorator.ts",
+     "line": 30,
+     "quote": "if (key.length > MAX_KEY_LENGTH) {"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 367,
+     "quote": "if (existing.requestHash !== requestHash) {"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 113,
+     "quote": "replayed: true,"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1752000000000-economy-ledger.ts",
+     "line": 43,
+     "quote": "CONSTRAINT uq_transactions_idempotency_key UNIQUE (idempotency_key)"
+    },
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 142,
+     "quote": "Cùng key nhưng payload khác"
+    },
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 140,
+     "quote": "dùng chính ID đó làm key, server tự derive, KHÔNG cần header"
+    }
+   ]
+  },
+  "clientSideHandling": {
+   "parse": "libs/api-client biến mọi non-2xx thành `ApiError { status, code, traceId, details }`; body sai envelope cho code CLIENT_MALFORMED_ERROR, mất mạng cho CLIENT_NETWORK_ERROR (status 0). UI được hướng dẫn switch theo `code`, không parse message.",
+   "refreshOn401": "Khi request thường nhận 401 và token store đang authenticated: gọi `/api/v1/auth/refresh` đúng một lần (single-flight trong tab, Web Locks `navigator.locks` giữa các tab) rồi retry bằng bản clone của request; vẫn 401 hoặc refresh lỗi thì xoá session và gọi `onSessionExpired`.",
+   "csrf": "Header `x-csrf-token` chỉ được gắn vào lời gọi refresh (kèm cookie httpOnly, credentials include) và không có logic retry riêng cho COMMON_CSRF_TOKEN_INVALID. CsrfGuard (route refresh và logout) trả 401 cho lỗi CSRF, nên CSRF hỏng ở refresh dẫn tới kết thúc session.",
+   "headers": "Mọi request gắn `accept-language` theo `getLocale()` (vi|en) để server localize message; request tới /matching/tickets kèm `X-Guest-Device-Token` khi có.",
+   "webCodes": "Web chỉ tham chiếu 3 trong 182 mã lỗi: CALLING_CALL_ENDED, CALLING_SESSION_NOT_CALLABLE, CALLING_SESSION_NOT_FOUND (voice-call-room.tsx); phần còn lại hiển thị `error.message` hoặc chuỗi i18n dự phòng (theo atlas fe/errors.md).",
+   "evidence": [
+    {
+     "file": "libs/api-client/src/lib/client.ts",
+     "line": 72,
+     "quote": "401 → refresh rotation đúng MỘT lần (single-flight giữa các request song song) rồi retry;"
+    },
+    {
+     "file": "libs/api-client/src/lib/client.ts",
+     "line": 190,
+     "quote": "const isRefreshCall = new URL(request.url).pathname === AUTH_REFRESH_PATH;"
+    },
+    {
+     "file": "libs/api-client/src/lib/client.ts",
+     "line": 118,
+     "quote": "return navigator.locks.request(refreshLockName, work);"
+    },
+    {
+     "file": "libs/api-client/src/lib/client.ts",
+     "line": 133,
+     "quote": "...(csrfToken !== null ? { [CSRF_HEADER_NAME]: csrfToken } : {}),"
+    },
+    {
+     "file": "libs/api-client/src/lib/client.ts",
+     "line": 214,
+     "quote": "if (retried.status === 401) {"
+    },
+    {
+     "file": "libs/api-client/src/lib/client.ts",
+     "line": 172,
+     "quote": "request.headers.set('accept-language', getLocale?.() ?? 'vi');"
+    },
+    {
+     "file": "libs/api-client/src/lib/client.ts",
+     "line": 182,
+     "quote": "request.headers.set('X-Guest-Device-Token', guestDeviceToken);"
+    },
+    {
+     "file": "libs/api-client/src/lib/client.ts",
+     "line": 101,
+     "quote": "throw ApiError.network(cause);"
+    },
+    {
+     "file": "libs/api-client/src/lib/api-error.ts",
+     "line": 10,
+     "quote": "export const CLIENT_MALFORMED_ERROR = 'CLIENT_MALFORMED_ERROR';"
+    },
+    {
+     "file": "libs/api-client/src/lib/api-error.ts",
+     "line": 13,
+     "quote": "switch theo `code`, không parse"
+    },
+    {
+     "file": "apps/core-api/src/common/guards/csrf.guard.ts",
+     "line": 26,
+     "quote": "CommonErrors.CSRF_TOKEN_INVALID,"
+    },
+    {
+     "file": "apps/core-api/src/common/guards/csrf.guard.ts",
+     "line": 28,
+     "quote": "HttpStatus.UNAUTHORIZED,"
+    },
+    {
+     "file": "apps/core-api/src/modules/auth/auth.controller.ts",
+     "line": 108,
+     "quote": "@Post('refresh')"
+    },
+    {
+     "file": "apps/core-api/src/modules/auth/auth.controller.ts",
+     "line": 127,
+     "quote": "@Post('logout')"
+    },
+    {
+     "file": "apps/web/src/features/voice-match/components/voice-call-room.tsx",
+     "line": 91,
+     "quote": "(error.code === 'CALLING_CALL_ENDED' ||"
+    }
+   ]
+  },
+  "conventionsForNewCode": [
+   {
+    "rule": "Khai mã lỗi trong `<module>.errors.ts` dạng DOMAIN_SUBJECT_REASON; không sinh mã rải rác trong service.",
+    "evidence": [
+     {
+      "file": "docs/05-coding-standards.md",
+      "line": 80,
+      "quote": "Mỗi module có 1 file `*.errors.ts` liệt kê toàn bộ mã lỗi của module"
+     },
+     {
+      "file": "docs/16-module-blueprint.md",
+      "line": 25,
+      "quote": "├── <module>.errors.ts # taxonomy lỗi domain duy nhất"
+     }
+    ]
+   },
+   {
+    "rule": "Lỗi client/nghiệp vụ sửa được: `throw new DomainException(code, message, HttpStatus.X, details?)` với status 4xx, truyền bằng enum HttpStatus.",
+    "evidence": [
+     {
+      "file": "libs/common-exceptions/src/lib/domain-exception.ts",
+      "line": 7,
+      "quote": "Truyền bằng enum `HttpStatus` của @nestjs/common, không viết số trần"
+     },
+     {
+      "file": "docs/05-coding-standards.md",
+      "line": 83,
+      "quote": "`httpStatus` của `DomainException` truyền bằng enum `HttpStatus`"
+     }
+    ]
+   },
+   {
+    "rule": "Bug hoặc bất biến nội bộ bị vi phạm: ném `Error` thường (thành 500), không bọc DomainException.",
+    "evidence": [
+     {
+      "file": "docs/05-coding-standards.md",
+      "line": 82,
+      "quote": "Bug/bất biến nội bộ bị vi phạm (không phải lỗi client) → `throw new Error(...)` thường"
+     },
+     {
+      "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+      "line": 324,
+      "quote": "Giao dịch double-entry cần tối thiểu 2 bút toán"
+     }
+    ]
+   },
+   {
+    "rule": "Lỗi hạ tầng 5xx hiện không dùng DomainException; HttpException 5xx luôn ra COMMON_INTERNAL_ERROR (mã riêng chỉ còn trong message). Muốn client phân biệt mã 5xx phải mở rộng filter.",
+    "evidence": [
+     {
+      "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+      "line": 219,
+      "quote": "Lỗi hạ tầng (5xx) — không phải lỗi domain của client nên không dùng DomainException (4xx-only)"
+     },
+     {
+      "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+      "line": 55,
+      "quote": "code = this.mapHttpStatusToCode(status);"
+     }
+    ]
+   },
+   {
+    "rule": "Service không đọc request/locale hay tự dịch message; bản dịch en nằm ở EN_ERROR_MESSAGES, mã chưa có bản dịch trả câu chung.",
+    "evidence": [
+     {
+      "file": "docs/05-coding-standards.md",
+      "line": 87,
+      "quote": "không đọc request hoặc tự dịch message"
+     },
+     {
+      "file": "apps/core-api/src/common/i18n/error-message.localizer.ts",
+      "line": 6,
+      "quote": "const EN_ERROR_MESSAGES: Readonly<Record<string, string>> = {"
+     },
+     {
+      "file": "apps/core-api/src/common/i18n/error-message.localizer.ts",
+      "line": 59,
+      "quote": "return EN_ERROR_MESSAGES[code] ?? 'The request could not be completed.';"
+     }
+    ]
+   },
+   {
+    "rule": "Endpoint có tác dụng phụ không được lặp: dùng `@IdempotencyKey()` cùng `@ApiIdempotencyKeyHeader()`, service prefix key theo domain, chốt chặn cuối là unique constraint DB.",
+    "evidence": [
+     {
+      "file": "apps/core-api/src/common/decorators/idempotency-key.decorator.ts",
+      "line": 41,
+      "quote": "Param decorator chuẩn cho MỌI endpoint có tác dụng phụ không được lặp"
+     },
+     {
+      "file": "apps/core-api/src/common/decorators/idempotency-key.decorator.ts",
+      "line": 50,
+      "quote": "dựa vào unique constraint DB trên `Transaction` làm chốt chặn cuối."
+     }
+    ]
+   },
+   {
+    "rule": "Bắt unique violation bằng `isUniqueViolation`/`violatedConstraint` ở database/postgres-errors.ts; không khai lại mã 23505 trong module.",
+    "evidence": [
+     {
+      "file": "apps/core-api/src/database/postgres-errors.ts",
+      "line": 5,
+      "quote": "không để từng module tự khai lại '23505' + copy helper"
+     }
+    ]
+   },
+   {
+    "rule": "Không log PII/secret: thêm field nhạy cảm vào REDACT_PATHS của libs/logger thay vì tự che từng chỗ.",
+    "evidence": [
+     {
+      "file": "libs/logger/src/lib/redact.ts",
+      "line": 2,
+      "quote": "Danh sách field cấm log, đặt tập trung 1 chỗ (docs/05 § 5.7)"
+     },
+     {
+      "file": "docs/05-coding-standards.md",
+      "line": 102,
+      "quote": "Cấm log PII/secret"
+     }
+    ]
+   },
+   {
+    "rule": "Rate limit theo route khai bằng `@Throttle` tại controller (không đưa vào env); chỉ default toàn cục là env.",
+    "evidence": [
+     {
+      "file": "docs/05-coding-standards.md",
+      "line": 112,
+      "quote": "KHÔNG đưa vào env (`@Throttle` là decorator tĩnh"
+     },
+     {
+      "file": "apps/core-api/src/modules/auth/auth.controller.ts",
+      "line": 48,
+      "quote": "@Throttle({ default: { limit: 5, ttl: minutes(1) } })"
+     }
+    ]
+   }
+  ]
+ },
+ "unusedErrorCodes": [
+  {
+   "code": "ECONOMY_IAP_PROVIDER_UNAVAILABLE",
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 9,
+   "quote": "IAP_PROVIDER_UNAVAILABLE: 'ECONOMY_IAP_PROVIDER_UNAVAILABLE'",
+   "kind": "không phải mã chết (dùng ngoài DomainException)",
+   "note": "Dùng làm tiền tố message của ServiceUnavailableException ở hai adapter gọi API refund của Apple/Google; không bao giờ là `error.code` của API.",
+   "usedAt": [
+    {
+     "file": "apps/core-api/src/modules/economy/clients/apple-refund-api.adapter.ts",
+     "line": 52,
+     "quote": "`${EconomyErrors.IAP_PROVIDER_UNAVAILABLE}: Apple refund API ${reason}`,"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/clients/google-refund-api.adapter.ts",
+     "line": 63,
+     "quote": "`${EconomyErrors.IAP_PROVIDER_UNAVAILABLE}: Google voided purchases API ${reason}`,"
+    }
+   ]
+  },
+  {
+   "code": "ECONOMY_PAYOS_DISABLED",
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 13,
+   "quote": "PAYOS_DISABLED: 'ECONOMY_PAYOS_DISABLED'",
+   "kind": "không phải mã chết (dùng ngoài DomainException)",
+   "note": "Truyền làm tham số đầu của ServiceUnavailableException khi thiếu cấu hình payOS và làm tiền tố message ở payos.service.ts. Theo mã, client nhận 503 với code COMMON_INTERNAL_ERROR, mã riêng chỉ nằm trong message (locale vi).",
+   "usedAt": [
+    {
+     "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
+     "line": 188,
+     "quote": "EconomyErrors.PAYOS_DISABLED,"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+     "line": 271,
+     "quote": "`${EconomyErrors.PAYOS_DISABLED}: Thiếu URL quay lại ví web cho payOS`,"
+    }
+   ]
+  },
+  {
+   "code": "ECONOMY_PAYOS_PROVIDER_UNAVAILABLE",
+   "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+   "line": 17,
+   "quote": "PAYOS_PROVIDER_UNAVAILABLE: 'ECONOMY_PAYOS_PROVIDER_UNAVAILABLE'",
+   "kind": "không phải mã chết (dùng ngoài DomainException)",
+   "note": "Truyền làm tham số đầu của ServiceUnavailableException khi payOS không tạo được liên kết thanh toán; cùng hệ quả COMMON_INTERNAL_ERROR như trên.",
+   "usedAt": [
+    {
+     "file": "apps/core-api/src/modules/economy/ports/payos-client.ts",
+     "line": 220,
+     "quote": "EconomyErrors.PAYOS_PROVIDER_UNAVAILABLE,"
+    }
+   ]
+  },
+  {
+   "code": "PARTY_MEDIA_ROOM_CREATE_FAILED",
+   "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+   "line": 30,
+   "quote": "MEDIA_ROOM_CREATE_FAILED: 'PARTY_MEDIA_ROOM_CREATE_FAILED'",
+   "kind": "không phải mã chết (dùng ngoài DomainException)",
+   "note": "Truyền cho ServiceUnavailableException khi tạo room LiveKit thất bại (lỗi hạ tầng 5xx, cố ý không dùng DomainException); test tích hợp khẳng định message và status 503.",
+   "usedAt": [
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 221,
+     "quote": "PartyRoomErrors.MEDIA_ROOM_CREATE_FAILED,"
+    },
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.integration.spec.ts",
+     "line": 317,
+     "quote": "message: 'PARTY_MEDIA_ROOM_CREATE_FAILED',"
+    }
+   ]
+  },
+  {
+   "code": "COMMON_VALIDATION_FAILED",
+   "file": "libs/common-exceptions/src/lib/common.errors.ts",
+   "line": 3,
+   "quote": "VALIDATION_FAILED: 'COMMON_VALIDATION_FAILED'",
+   "kind": "dự phòng, do GlobalExceptionFilter phát",
+   "note": "Không có throw DomainException nào dùng; filter gán mã này cho 400 có message dạng mảng và làm mã mặc định của status 400.",
+   "usedAt": [
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 59,
+     "quote": "code = CommonErrors.VALIDATION_FAILED;"
+    }
+   ]
+  },
+  {
+   "code": "COMMON_ROUTE_NOT_FOUND",
+   "file": "libs/common-exceptions/src/lib/common.errors.ts",
+   "line": 4,
+   "quote": "ROUTE_NOT_FOUND: 'COMMON_ROUTE_NOT_FOUND'",
+   "kind": "dự phòng, do GlobalExceptionFilter phát",
+   "note": "Filter gán mã này cho mọi HttpException 404 (vd route không tồn tại).",
+   "usedAt": [
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 96,
+     "quote": "return CommonErrors.ROUTE_NOT_FOUND;"
+    }
+   ]
+  },
+  {
+   "code": "COMMON_RATE_LIMITED",
+   "file": "libs/common-exceptions/src/lib/common.errors.ts",
+   "line": 5,
+   "quote": "RATE_LIMITED: 'COMMON_RATE_LIMITED'",
+   "kind": "dự phòng, do GlobalExceptionFilter phát",
+   "note": "Filter gán mã này cho HttpException 429 do ThrottlerGuard ném.",
+   "usedAt": [
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 98,
+     "quote": "return CommonErrors.RATE_LIMITED;"
+    }
+   ]
+  },
+  {
+   "code": "COMMON_UNAUTHORIZED",
+   "file": "libs/common-exceptions/src/lib/common.errors.ts",
+   "line": 6,
+   "quote": "UNAUTHORIZED: 'COMMON_UNAUTHORIZED'",
+   "kind": "dự phòng, do GlobalExceptionFilter phát",
+   "note": "Filter gán mã này cho HttpException 401 (vd UnauthorizedException của JwtAuthGuard).",
+   "usedAt": [
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 92,
+     "quote": "return CommonErrors.UNAUTHORIZED;"
+    },
+    {
+     "file": "apps/core-api/src/common/guards/jwt-auth.guard.ts",
+     "line": 50,
+     "quote": "throw new UnauthorizedException('Thiếu access token');"
+    }
+   ]
+  },
+  {
+   "code": "COMMON_INTERNAL_ERROR",
+   "file": "libs/common-exceptions/src/lib/common.errors.ts",
+   "line": 8,
+   "quote": "INTERNAL_ERROR: 'COMMON_INTERNAL_ERROR'",
+   "kind": "dự phòng, do GlobalExceptionFilter phát",
+   "note": "Filter gán mã này cho exception bất ngờ và làm mã mặc định cho mọi HttpException status không có nhánh riêng.",
+   "usedAt": [
+    {
+     "file": "apps/core-api/src/common/filters/global-exception.filter.ts",
+     "line": 66,
+     "quote": "code = CommonErrors.INTERNAL_ERROR;"
+    }
+   ]
+  }
+ ],
+ "businessRules": [
+  {
+   "id": "BR-01",
+   "rule": "Guest (chưa gắn phone/social) không được tạo đơn nạp Diamond qua payOS; controller trả 403 ECONOMY_PAYOS_GUEST_FORBIDDEN.",
+   "appliesTo": [
+    "economy",
+    "auth"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "EconomyController.assertNotGuestForPayos",
+   "whatBreaksIfRemoved": "Guest (user tạm chưa xác minh) nạp được Diamond và dễ farm bằng nhiều tài khoản guest; docs/06 coi không nạp Diamond là hạn chế cốt lõi của guest. Lưu ý: chỉ đường payOS có chặn, luồng IAP verify không có kiểm tra guest trong mã economy.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/economy/economy.controller.ts",
+     "line": 167,
+     "quote": "private assertNotGuestForPayos(user: AuthenticatedUser): void {"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/economy.controller.ts",
+     "line": 171,
+     "quote": "Guest chưa gắn phone/social không thể nạp Diamond"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/economy.controller.ts",
+     "line": 90,
+     "quote": "this.assertNotGuestForPayos(user);"
+    },
+    {
+     "file": "docs/06-domain-rules.md",
+     "line": 30,
+     "quote": "Guest bị giới hạn: không nạp diamond, không nhận điểm quy đổi từ gift"
+    }
+   ]
+  },
+  {
+   "id": "BR-02",
+   "rule": "Người tặng mất DIA bằng đúng giá quà; người nhận được PTS = floor(giá × GIFT_POINTS_RATE_PERCENT / 100) (mặc định 40, tối đa 99) và guest nhận 0 PTS; tỉ lệ được snapshot vào GiftEvent.",
+   "appliesTo": [
+    "gift",
+    "economy"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "GiftService (pointsAwarded) và Joi max(99) của GIFT_POINTS_RATE_PERCENT",
+   "whatBreaksIfRemoved": "Quà thành kênh chuyển tiền ngang hàng hoặc farm điểm bằng guest (lý do ghi ở docs/06); đổi tỉ lệ mà không snapshot làm sai dữ liệu lịch sử.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/gift/gift.service.ts",
+     "line": 200,
+     "quote": "Guest không nhận điểm quy đổi (docs/06 § Gift) — quà vẫn tặng được, chân PTS = 0"
+    },
+    {
+     "file": "apps/core-api/src/modules/gift/gift.service.ts",
+     "line": 207,
+     "quote": ": Math.floor((gift.priceDiamond * ratePercent) / 100);"
+    },
+    {
+     "file": "apps/core-api/src/modules/gift/entities/gift-event.entity.ts",
+     "line": 48,
+     "quote": "Snapshot GIFT_POINTS_RATE_PERCENT tại thời điểm tặng"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 603,
+     "quote": "GIFT_POINTS_RATE_PERCENT: Joi.number().integer().min(0).max(99).default(40),"
+    },
+    {
+     "file": "docs/06-domain-rules.md",
+     "line": 26,
+     "quote": "người nhận KHÔNG nhận diamond 1:1"
+    }
+   ]
+  },
+  {
+   "id": "BR-03",
+   "rule": "Guest có MATCHING_GUEST_DAILY_LIMIT (3) lượt match mỗi ngày UTC, đếm trên ba khoá HMAC (user, device token, network IP); một khoá chạm trần là bị 429. Guest phải gửi X-Guest-Device-Token do Auth ký cho chính user, thiếu thì 401.",
+   "appliesTo": [
+    "matching",
+    "auth"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "GuestMatchQuotaService (authorize, consume, keyHash) với khoá pessimistic_write",
+   "whatBreaksIfRemoved": "Tạo guest mới (hoặc đổi thiết bị/IP) reset quota, match miễn phí không giới hạn; docs/06 yêu cầu không được phép chỉ reset một trong ba trục.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 73,
+     "quote": "this.keyHash('device', deviceKey),"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 74,
+     "quote": "this.keyHash('network', this.normalizeNetwork(context.ip)),"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 110,
+     "quote": "rows.some((row) => row.count >= limit)"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 63,
+     "quote": "Guest phải gửi X-Guest-Device-Token được cấp lúc đăng nhập"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 229,
+     "quote": "return createHmac("
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 485,
+     "quote": "MATCHING_GUEST_DAILY_LIMIT: Joi.number().integer().min(1).default(3),"
+    },
+    {
+     "file": "docs/06-domain-rules.md",
+     "line": 34,
+     "quote": "(user, device token identity, normalized network IP)"
+    }
+   ]
+  },
+  {
+   "id": "BR-04",
+   "rule": "Nâng cấp guest giữ nguyên userId (gắn thêm identity vào user hiện có). Identity đã gắn với user khác thì 409 AUTH_IDENTITY_ALREADY_LINKED, không tự merge; tài khoản đã hết là guest thì 409 AUTH_GUEST_UPGRADE_NOT_ALLOWED; credential guest cũ bị thu hồi (401 AUTH_GUEST_IDENTITY_RETIRED).",
+   "appliesTo": [
+    "auth",
+    "user",
+    "economy"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "AuthService (luồng upgrade, assertGuestIdentityStillActive)",
+   "whatBreaksIfRemoved": "Tự động merge hoặc tạo user mới sẽ gộp nhầm ledger của hai người hoặc làm guest mất ví/lịch sử; credential guest cũ còn đăng nhập được sau nâng cấp.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/auth/auth.service.ts",
+     "line": 239,
+     "quote": "Identity đã gắn với một tài khoản khác; không tự động merge tài khoản"
+    },
+    {
+     "file": "apps/core-api/src/modules/auth/auth.service.ts",
+     "line": 246,
+     "quote": "Tài khoản không còn là guest; không thể gắn identity mới qua luồng upgrade"
+    },
+    {
+     "file": "apps/core-api/src/modules/auth/auth.service.ts",
+     "line": 317,
+     "quote": "Guest credential đã bị thu hồi sau khi nâng cấp tài khoản"
+    },
+    {
+     "file": "docs/06-domain-rules.md",
+     "line": 31,
+     "quote": "(cùng `Wallet`, cùng lịch sử ledger, không tạo user mới)"
+    }
+   ]
+  },
+  {
+   "id": "BR-05",
+   "rule": "Refresh token xoay vòng mỗi lần dùng; dùng lại token đã xoay thì 401 AUTH_REFRESH_TOKEN_REUSED và phiên bị thu hồi.",
+   "appliesTo": [
+    "auth"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "TokenService (kết quả rotation `reused`)",
+   "whatBreaksIfRemoved": "Refresh token bị đánh cắp dùng lại không bị phát hiện; phía client single-flight và Web Locks tồn tại để chính nó không tự gây ra reuse.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/auth/services/token.service.ts",
+     "line": 94,
+     "quote": "if (result === 'reused') {"
+    },
+    {
+     "file": "apps/core-api/src/modules/auth/services/token.service.ts",
+     "line": 97,
+     "quote": "Refresh token đã bị dùng lại — phiên bị thu hồi"
+    },
+    {
+     "file": "libs/api-client/src/lib/client.ts",
+     "line": 111,
+     "quote": "Rotation nhiều tab không được race trên CÙNG cookie refresh token"
+    }
+   ]
+  },
+  {
+   "id": "BR-06",
+   "rule": "OTP 6 chữ số được trả thẳng trong response (không gửi SMS) là ngoại lệ sản phẩm có chủ đích; TTL 300 giây, tối đa 5 lần thử, 5 yêu cầu mỗi giờ; mã không được log, gửi analytics hay lưu bền.",
+   "appliesTo": [
+    "auth"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "OtpRequestedDto, AUTH_OTP_* trong Joi, REDACT_PATHS",
+   "whatBreaksIfRemoved": "Client mất luồng toast/tự điền OTP; bỏ giới hạn thử/giờ mở đường brute-force; log mã OTP làm lộ credential.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/auth/dto/otp-requested.dto.ts",
+     "line": 6,
+     "quote": "Mã OTP 6 chữ số — không gửi SMS, client dùng để hiển thị và tự điền"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 293,
+     "quote": "AUTH_OTP_TTL_SECONDS: Joi.number().integer().min(60).default(300),"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 294,
+     "quote": "AUTH_OTP_MAX_ATTEMPTS: Joi.number().integer().min(1).default(5),"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 295,
+     "quote": "AUTH_OTP_REQUESTS_PER_HOUR: Joi.number().integer().min(1).default(5),"
+    },
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 102,
+     "quote": "OTP là ngoại lệ sản phẩm có chủ đích"
+    },
+    {
+     "file": "libs/logger/src/lib/redact.ts",
+     "line": 11,
+     "quote": "'req.body.otp',"
+    }
+   ]
+  },
+  {
+   "id": "BR-07",
+   "rule": "Mỗi giao dịch có tối thiểu 2 bút toán, amount nguyên dương và tổng Nợ bằng tổng Có theo từng currency (DIA, PTS) trước khi commit; vi phạm là lỗi lập trình (Error thường, ra 500).",
+   "appliesTo": [
+    "economy"
+   ],
+   "enforcedAt": "both",
+   "enforcedBy": "LedgerService.validateEntries (service) và CHECK (amount > 0) của ledger_entries (db)",
+   "whatBreaksIfRemoved": "Ví và sổ cái lệch nhau (Wallet chỉ là snapshot dẫn xuất), tiền sinh ra hoặc mất mà không dấu vết; job đối soát sẽ báo lệch.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 324,
+     "quote": "Giao dịch double-entry cần tối thiểu 2 bút toán"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 328,
+     "quote": "Bút toán phải có amount nguyên dương"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 339,
+     "quote": "vi phạm bất biến double-entry"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1752000000000-economy-ledger.ts",
+     "line": 56,
+     "quote": "amount bigint NOT NULL CHECK (amount > 0),"
+    },
+    {
+     "file": "docs/06-domain-rules.md",
+     "line": 24,
+     "quote": "append-only ledger"
+    }
+   ]
+  },
+  {
+   "id": "BR-08",
+   "rule": "ledger_entries là append-only: trigger DB chặn UPDATE/DELETE; muốn sửa phải tạo giao dịch đảo (reversal) trỏ `reversalOf` về giao dịch gốc.",
+   "appliesTo": [
+    "economy"
+   ],
+   "enforcedAt": "both",
+   "enforcedBy": "trigger trg_ledger_entries_append_only (hàm forbid_ledger_entry_mutation) và LedgerService.reverse",
+   "whatBreaksIfRemoved": "Có thể sửa/xoá lịch sử tiền, mất khả năng kiểm toán; refund/chargeback không còn truy vết về giao dịch gốc.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/database/migrations/1752000000000-economy-ledger.ts",
+     "line": 77,
+     "quote": "CREATE TRIGGER trg_ledger_entries_append_only"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1752000000000-economy-ledger.ts",
+     "line": 72,
+     "quote": "ledger_entries la append-only"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 184,
+     "quote": "KHÔNG sửa/xoá giao dịch gốc — tạo transaction mới với"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 237,
+     "quote": "reversalOf: original.id,"
+    }
+   ]
+  },
+  {
+   "id": "BR-09",
+   "rule": "Số dư ví chỉ được âm khi giao dịch là Reversal hoặc Adjustment (refund, chargeback, admin sửa sai); mọi giao dịch tiêu khác làm số dư < 0 bị từ chối 422 ECONOMY_WALLET_INSUFFICIENT_BALANCE, được kiểm lại đúng lúc trừ tiền trong transaction.",
+   "appliesTo": [
+    "economy",
+    "gift",
+    "matching"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "LedgerService (mayGoNegative); DB cố ý không có CHECK balance >= 0 (chỉ earnings >= 0)",
+   "whatBreaksIfRemoved": "Cấm âm tuyệt đối thì refund sau khi đã tiêu sẽ thất bại; cho âm ở mọi loại giao dịch thì user tiêu vượt số dư.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 451,
+     "quote": "const mayGoNegative ="
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 454,
+     "quote": "if (newBalance < 0n && !mayGoNegative) {"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 455,
+     "quote": "Xác minh lại ĐÚNG THỜI ĐIỂM trừ tiền (docs/10 § 10.0.C) — không tin check ở đầu luồng"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1752000000000-economy-ledger.ts",
+     "line": 8,
+     "quote": "wallets.balance KHÔNG đặt CHECK >= 0: số dư âm là trạng thái hợp lệ sau refund/chargeback"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1752000000000-economy-ledger.ts",
+     "line": 88,
+     "quote": "earnings bigint NOT NULL DEFAULT 0 CHECK (earnings >= 0),"
+    }
+   ]
+  },
+  {
+   "id": "BR-10",
+   "rule": "Idempotency key là unique constraint DB (`uq_transactions_idempotency_key`); cùng key cùng nội dung thì trả lại giao dịch cũ (replayed), cùng key khác request_hash thì 409 *_IDEMPOTENCY_CONFLICT.",
+   "appliesTo": [
+    "economy",
+    "matching",
+    "gift",
+    "friend",
+    "feed",
+    "party-room",
+    "soul-match",
+    "movie-match",
+    "short-video",
+    "support"
+   ],
+   "enforcedAt": "both",
+   "enforcedBy": "LedgerService.recordInManager/assertSameRequest và unique index uq_transactions_idempotency_key",
+   "whatBreaksIfRemoved": "Request gửi lại (mạng chập chờn, double-click) trừ tiền hai lần; cùng key khác nội dung bị chấp nhận âm thầm.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 367,
+     "quote": "if (existing.requestHash !== requestHash) {"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 370,
+     "quote": "Idempotency key đã dùng cho 1 request khác nội dung"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 107,
+     "quote": "const existing = await manager.findOne(LedgerTransaction, {"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1752000000000-economy-ledger.ts",
+     "line": 43,
+     "quote": "CONSTRAINT uq_transactions_idempotency_key UNIQUE (idempotency_key)"
+    },
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 142,
+     "quote": "Cùng key nhưng payload khác"
+    }
+   ]
+  },
+  {
+   "id": "BR-11",
+   "rule": "Mua VIP khi đang active thì gia hạn cộng dồn: expiry = max(now, expiry hiện tại) + số ngày gói; hết hạn tự downgrade bằng cách derive khi đọc (Wallet.activeVipTier), không cần cron.",
+   "appliesTo": [
+    "economy",
+    "matching"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "EconomyService (mua VIP trong withinTransaction) và getter Wallet.activeVipTier",
+   "whatBreaksIfRemoved": "Mua VIP lúc đang active làm mất ngày còn lại; nếu bỏ derive khi đọc thì tier không tự hết hạn.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/economy/economy.service.ts",
+     "line": 422,
+     "quote": "newExpiry = new Date(base.getTime() + plan.days * 24 * 3600 * 1000); // gia hạn cộng dồn"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/economy.service.ts",
+     "line": 419,
+     "quote": "wallet.vipExpiresAt && wallet.vipExpiresAt > new Date()"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/entities/wallet.entity.ts",
+     "line": 36,
+     "quote": "Hết hạn tự downgrade = derive khi đọc"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/entities/wallet.entity.ts",
+     "line": 37,
+     "quote": "get activeVipTier(): VipTier | null {"
+    },
+    {
+     "file": "docs/06-domain-rules.md",
+     "line": 42,
+     "quote": "expiry = max(now, expiry hiện tại) + số ngày gói"
+    }
+   ]
+  },
+  {
+   "id": "BR-12",
+   "rule": "Refund/chargeback IAP ghi bút toán đảo (không sửa/xoá giao dịch gốc), idempotent theo (provider, providerTransactionId); hai request cùng reverse thì chỉ một bên thắng nhờ UPDATE có điều kiện status.",
+   "appliesTo": [
+    "economy"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "RefundService.refundIapPurchase và LedgerService.reverse",
+   "whatBreaksIfRemoved": "Webhook retry hoặc job quét trùng sẽ hoàn tiền nhiều lần; sửa/xoá giao dịch gốc làm mất dấu vết.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/economy/services/refund.service.ts",
+     "line": 20,
+     "quote": "Idempotent theo (provider, providerTransactionId): gọi"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/refund.service.ts",
+     "line": 35,
+     "quote": "async refundIapPurchase("
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 186,
+     "quote": "2 request cùng reverse thì chỉ 1 bên thắng."
+    },
+    {
+     "file": "docs/06-domain-rules.md",
+     "line": 38,
+     "quote": "ghi **bút toán đảo**, `Wallet.balance` có thể **âm**"
+    }
+   ]
+  },
+  {
+   "id": "BR-13",
+   "rule": "Giá speed-up theo tier: Regular 50, VIP 40, SVIP 30 DIA, do server đọc ngay trước khi trừ. Quota miễn phí mỗi ngày UTC: Regular 10 Soul + 10 Voice, VIP 30 + 20, SVIP 60 + 40; hết quota thì 429 MATCHING_DAILY_QUOTA_EXCEEDED hoặc mua thêm lượt (Soul 20, Voice 40 DIA; docs/06: ghi ledger cùng transaction tạo ticket).",
+   "appliesTo": [
+    "matching",
+    "economy"
+   ],
+   "enforcedAt": "both",
+   "enforcedBy": "MatchingService.getSpeedupPriceDiamondForUser/getExtraMatchPriceDiamond; GuestMatchQuotaService (hàng match_daily_quotas khoá pessimistic_write)",
+   "whatBreaksIfRemoved": "Client tự hard-code giá sẽ lệch tier; bỏ quota làm match miễn phí vô hạn; giá hiển thị và giá trừ có thể lệch nhau.",
+   "confidence": "medium",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 256,
+     "quote": "Một nguồn giá cho cả debit và API response — client không được hard-code."
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 265,
+     "quote": "if (tier === VipTier.Svip)"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 471,
+     "quote": "MATCHING_SPEEDUP_PRICE_DIAMOND: Joi.number().integer().min(1).default(50),"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 472,
+     "quote": "MATCHING_VIP_SPEEDUP_PRICE_DIAMOND: Joi.number().integer().min(1).default(40),"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 473,
+     "quote": "MATCHING_SVIP_SPEEDUP_PRICE_DIAMOND: Joi.number()"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 490,
+     "quote": "MATCHING_VIP_DAILY_VOICE_LIMIT: Joi.number().integer().min(1).default(20),"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 494,
+     "quote": "MATCHING_EXTRA_VOICE_PRICE_DIAMOND: Joi.number().integer().min(1).default(40),"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 185,
+     "quote": "if (row.count >= freeLimit) {"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 188,
+     "quote": "Đã hết ${freeLimit} lượt ${matchType} miễn phí trong ngày UTC"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 142,
+     "quote": "TransactionType.MatchingExtraMatch,"
+    },
+    {
+     "file": "docs/06-domain-rules.md",
+     "line": 44,
+     "quote": "Lượt trả Diamond được ghi ledger cùng transaction tạo ticket"
+    }
+   ]
+  },
+  {
+   "id": "BR-14",
+   "rule": "Một user chỉ có một ticket queued/matched tại một thời điểm: partial unique index `uq_match_tickets_active_user`, vi phạm trả 409 MATCHING_TICKET_ALREADY_QUEUED.",
+   "appliesTo": [
+    "matching"
+   ],
+   "enforcedAt": "both",
+   "enforcedBy": "unique index uq_match_tickets_active_user và MatchingService (violatedConstraint)",
+   "whatBreaksIfRemoved": "User có nhiều ticket đồng thời, bị ghép trùng và trừ quota/ví nhiều lần; hai request đua nhau chỉ còn dựa vào kiểm tra ở tầng ứng dụng.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 188,
+     "quote": "if (violatedConstraint(err, UQ_ACTIVE_USER)) {"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 191,
+     "quote": "Đã có 1 ticket đang chờ/đang ghép — 1 user chỉ ở trong 1 queue tại 1 thời điểm (docs/06)"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1752200000000-matching-core.ts",
+     "line": 35,
+     "quote": "CREATE UNIQUE INDEX uq_match_tickets_active_user"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1752200000000-matching-core.ts",
+     "line": 6,
+     "quote": "uq_match_tickets_active_user: partial unique — 1 user chỉ 1 ticket queued/matched (docs/06)."
+    }
+   ]
+  },
+  {
+   "id": "BR-15",
+   "rule": "canPair loại cặp có block active hai chiều hoặc có report gần đây trong SAFETY_REMATCH_COOLDOWN_DAYS (30 ngày); được kiểm trong matcher và kiểm lại lúc accept lời mời, nếu fail thì chuyển invite sang declined và commit trước khi ném lỗi.",
+   "appliesTo": [
+    "matching",
+    "safety"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "SafetyService.canPair (qua MatchInteractionPolicy) tại MatcherWorkerService.tryPair và InviteService.precheckAccept",
+   "whatBreaksIfRemoved": "Ghép lại người vừa chặn/report; lời mời accept sau khi phát sinh block vẫn tạo session; ném lỗi trong cùng transaction làm mất trạng thái declined.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/safety/safety.service.ts",
+     "line": 291,
+     "quote": "async canPair(userAId: string, userBId: string): Promise<boolean> {"
+    },
+    {
+     "file": "apps/core-api/src/modules/safety/safety.service.ts",
+     "line": 293,
+     "quote": "(await this.isBlocked(userAId, userBId)) ||"
+    },
+    {
+     "file": "apps/core-api/src/modules/safety/safety.service.ts",
+     "line": 298,
+     "quote": "'SAFETY_REMATCH_COOLDOWN_DAYS',"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+     "line": 277,
+     "quote": "(await this.interactionPolicy.canPair(ta.userId, tb.userId))"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+     "line": 475,
+     "quote": "const canPair = await this.interactionPolicy.canPair("
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+     "line": 287,
+     "quote": "Transaction RIÊNG cho precheck: nếu canPair fail, invite phải chuyển Declined và COMMIT"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 607,
+     "quote": "SAFETY_REMATCH_COOLDOWN_DAYS: Joi.number().integer().min(1).default(30),"
+    }
+   ]
+  },
+  {
+   "id": "BR-16",
+   "rule": "Preference giới tính chỉ khớp khi gender đối phương bằng đúng giá trị chọn (unknown/other chỉ ghép với `any`), kiểm bằng gender đọc tươi lúc ghép; region/ageBand do server derive từ hồ sơ. Ngày sinh chỉ cần hợp lệ và không ở tương lai, không phải access gate; bộ lọc tuổi là preference và loại user chưa khai ngày sinh khi bật.",
+   "appliesTo": [
+    "matching",
+    "user",
+    "discovery"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "genderPreferenceAllows (MatcherWorkerService.tryPair), UserService.assertBirthDateValid và bộ lọc ageMin/ageMax",
+   "whatBreaksIfRemoved": "Ghép sai preference; client có thể giả mạo region/ageBand nếu không derive ở server; chặn truy cập theo ngày sinh làm hỏng onboarding.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/matching/entities/match-ticket.entity.ts",
+     "line": 28,
+     "quote": "return pref === GenderPreference.Any || (pref as string) === partnerGender;"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+     "line": 263,
+     "quote": "genderPreferenceAllows("
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/dto/matching.dtos.ts",
+     "line": 12,
+     "quote": "Client CHỈ được chọn matchType + genderPreference"
+    },
+    {
+     "file": "apps/core-api/src/modules/user/user.service.ts",
+     "line": 315,
+     "quote": "u.birthDate IS NOT NULL AND u.birthDate <= :maxBirthDate"
+    },
+    {
+     "file": "apps/core-api/src/modules/user/user.service.ts",
+     "line": 408,
+     "quote": "if (Number.isNaN(parsed.getTime()) || parsed > now) {"
+    },
+    {
+     "file": "docs/06-domain-rules.md",
+     "line": 39,
+     "quote": "Ngày sinh không phải access gate"
+    }
+   ]
+  },
+  {
+   "id": "BR-17",
+   "rule": "Trust score dưới 100 chỉ cộng thêm ms vào score của ticket lúc enqueue (snapshot một lần; MATCHING_TRUST_PENALTY_MS_PER_POINT, tối đa 120000 ms) nên làm chậm priority chứ không chặn hẳn matching; ban thật là UserStatus.Banned. trustScore mặc định 100 và không lộ ra API.",
+   "appliesTo": [
+    "matching",
+    "safety",
+    "user"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "MatchingService và InviteService (penalty theo trustScore)",
+   "whatBreaksIfRemoved": "User bị report nhiều vẫn được ghép ưu tiên như thường; chặn hẳn thay vì làm chậm là đổi hành vi sản phẩm.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 682,
+     "quote": "'MATCHING_TRUST_PENALTY_MS_PER_POINT',"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 678,
+     "quote": "thêm ms vào score, làm chậm priority chứ không chặn hẳn matching (đó là UserStatus.Banned)."
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 478,
+     "quote": "Trust score < 100 làm chậm priority matching (docs/services/safety-service.md § 3.2) —"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 484,
+     "quote": "MATCHING_TRUST_PENALTY_MAX_MS: Joi.number().integer().min(0).default(120_000),"
+    },
+    {
+     "file": "apps/core-api/src/modules/user/entities/user.entity.ts",
+     "line": 58,
+     "quote": "Điểm tin cậy nội bộ cho matching priority (docs/06) — không expose ra API."
+    }
+   ]
+  },
+  {
+   "id": "BR-18",
+   "rule": "Voice Match tối đa CALLING_FREE_CALL_SECONDS (420 giây) cho mọi tier, server tự kết thúc bằng free_limit; mất kết nối quá CALLING_RECONNECT_WINDOW_SECONDS (30 giây) thì call kết thúc.",
+   "appliesTo": [
+    "calling"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "CallTickerService (processActiveCalls, sweepReconnectTimeouts)",
+   "whatBreaksIfRemoved": "Cuộc gọi không tự dừng sau 7 phút (client không tự enforce); rớt mạng giữ call Active vô hạn; đổi 420 giây là đổi cam kết sản phẩm cho mọi tier.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/calling/jobs/call-ticker.service.ts",
+     "line": 30,
+     "quote": "active voice match quá CALLING_FREE_CALL_SECONDS → end free_limit."
+    },
+    {
+     "file": "apps/core-api/src/modules/calling/jobs/call-ticker.service.ts",
+     "line": 141,
+     "quote": ".endById(call.id, CallEndReason.FreeLimit)"
+    },
+    {
+     "file": "apps/core-api/src/modules/calling/jobs/call-ticker.service.ts",
+     "line": 96,
+     "quote": "'CALLING_RECONNECT_WINDOW_SECONDS',"
+    },
+    {
+     "file": "apps/core-api/src/modules/calling/jobs/call-ticker.service.ts",
+     "line": 110,
+     "quote": "await this.callingService.endById(call.id, CallEndReason.Completed);"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 559,
+     "quote": "CALLING_FREE_CALL_SECONDS: Joi.number().integer().min(10).default(420),"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 561,
+     "quote": "CALLING_RECONNECT_WINDOW_SECONDS: Joi.number().integer().min(5).default(30),"
+    },
+    {
+     "file": "apps/core-api/src/modules/calling/dto/calling.dtos.ts",
+     "line": 24,
+     "quote": "Server derive từ CALLING_FREE_CALL_SECONDS; client chỉ hiển thị countdown, không tự enforce."
+    }
+   ]
+  },
+  {
+   "id": "BR-19",
+   "rule": "Friend call chỉ mở khi hai user follow nhau (cả hai chiều) và không block nhau, kiểm lại ở endpoint join; thất bại trả 404 CALLING_SESSION_NOT_FOUND (cùng mã với call không tồn tại).",
+   "appliesTo": [
+    "calling",
+    "friend",
+    "safety"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "CallingService.joinFriendCall và ProfileSocialService.canCall",
+   "whatBreaksIfRemoved": "Ai cũng gọi bền vững được cho người khác (spam); cờ UI bị tin thay vì kiểm tra ở endpoint join.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/calling/calling.service.ts",
+     "line": 208,
+     "quote": "if (!(await this.profileSocialService.canCall(user.userId, friendUserId))) {"
+    },
+    {
+     "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+     "line": 156,
+     "quote": "return this.areMutuallyFollowing(userAId, userBId);"
+    },
+    {
+     "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+     "line": 155,
+     "quote": "if (blockedByA || blockedByB) return false;"
+    },
+    {
+     "file": "apps/core-api/src/modules/calling/calling.service.ts",
+     "line": 211,
+     "quote": "Hai bạn cần follow nhau để gọi voice lâu dài"
+    },
+    {
+     "file": "docs/06-domain-rules.md",
+     "line": 13,
+     "quote": "Friend call trong mục Tin nhắn chỉ được mở khi `ProfileFollow`"
+    }
+   ]
+  },
+  {
+   "id": "BR-20",
+   "rule": "Voice Match chỉ tạo Friendship khi cả hai đã Yêu thích: lượt like của đối tác được đọc trong transaction và ensureFriendship nhận `manager` của transaction đó.",
+   "appliesTo": [
+    "calling",
+    "friend"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "CallingService (nhánh partnerLiked) và FriendService.ensureFriendship",
+   "whatBreaksIfRemoved": "Mutual-like không tạo Friendship (mất liên kết sau cuộc gọi) hoặc tạo khi chỉ một bên like (lộ danh tính ẩn danh).",
+   "confidence": "medium",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/calling/calling.service.ts",
+     "line": 399,
+     "quote": "const partnerLiked = await manager.existsBy(VoiceMatchReaction, {"
+    },
+    {
+     "file": "apps/core-api/src/modules/calling/calling.service.ts",
+     "line": 404,
+     "quote": "await this.friendService.ensureFriendship("
+    },
+    {
+     "file": "docs/06-domain-rules.md",
+     "line": 111,
+     "quote": "đúng một lượt immutable; chỉ khi **cả hai** đã thích thì server tạo `Friendship` và"
+    }
+   ]
+  },
+  {
+   "id": "BR-21",
+   "rule": "Chat trực tiếp từ hồ sơ: mỗi ngày UTC 10 người đầu (PROFILE_DIRECT_MESSAGE_DAILY_FIRST_CHAT_THRESHOLD) mở chat miễn phí; từ người thứ 11 phải tặng quà (402 PROFILE_SOCIAL_MESSAGE_GIFT_REQUIRED). Conversation đã tồn tại thì không thu lại quà.",
+   "appliesTo": [
+    "friend",
+    "gift",
+    "economy"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "ProfileSocialService.openConversation (khoá hồ sơ đích trong transaction)",
+   "whatBreaksIfRemoved": "Hồ sơ nổi tiếng nhận tin nhắn miễn phí không giới hạn (mất cổng popularity) hoặc thu quà lặp ở các tin sau; nhiều người cùng bấm có thể vượt ngưỡng.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+     "line": 413,
+     "quote": "Mở conversation free nếu profile chưa chạm ngưỡng. Lock user đích trong"
+    },
+    {
+     "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+     "line": 431,
+     "quote": "if (existing) return existing;"
+    },
+    {
+     "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+     "line": 438,
+     "quote": "if (dailyFirstChatCount >= firstChatThreshold) {"
+    },
+    {
+     "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+     "line": 442,
+     "quote": "HttpStatus.PAYMENT_REQUIRED,"
+    },
+    {
+     "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+     "line": 612,
+     "quote": "contact.firstContactDate = (now() AT TIME ZONE 'UTC')::date"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 516,
+     "quote": "PROFILE_DIRECT_MESSAGE_DAILY_FIRST_CHAT_THRESHOLD: Joi.number()"
+    }
+   ]
+  },
+  {
+   "id": "BR-22",
+   "rule": "Streak chỉ tăng khi cả hai chiều nhắn trong cùng ngày UTC (server clock); lỡ đúng 1 ngày được grace tự động, lỡ từ 2 ngày trở lên reset về 1; milestone mặc định 3,7,14,30,50,100 ngày.",
+   "appliesTo": [
+    "friend",
+    "notification"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "StreakService (khoá pessimistic_write trên conversation_streaks)",
+   "whatBreaksIfRemoved": "Streak tăng khi chỉ một bên nhắn hoặc theo múi giờ client (spoof); hai tin nhắn đồng thời đếm sai; mất grace làm reset sớm.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/friend/services/streak.service.ts",
+     "line": 75,
+     "quote": "const bothActiveToday ="
+    },
+    {
+     "file": "apps/core-api/src/modules/friend/services/streak.service.ts",
+     "line": 84,
+     "quote": "} else if (gapDays === 2) {"
+    },
+    {
+     "file": "apps/core-api/src/modules/friend/services/streak.service.ts",
+     "line": 89,
+     "quote": "row.currentStreak = 1; // gapDays >= 3 (hoặc dữ liệu bất thường) — reset"
+    },
+    {
+     "file": "apps/core-api/src/modules/friend/services/streak.service.ts",
+     "line": 68,
+     "quote": ".setLock('pessimistic_write')"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 523,
+     "quote": "STREAK_MILESTONE_DAYS: Joi.string().default('3,7,14,30,50,100'),"
+    },
+    {
+     "file": "apps/core-api/src/common/date/utc-date.ts",
+     "line": 2,
+     "quote": "export function todayUtc(): string {"
+    }
+   ]
+  },
+  {
+   "id": "BR-23",
+   "rule": "Party Room: chỉ host được cấp/thu quyền speaker; số speaker tối đa là snapshot PARTY_MAX_SPEAKERS (mặc định 8) lúc tạo phòng, kiểm trong transaction (409 PARTY_SPEAKER_LIMIT_REACHED); phòng đầy theo PARTY_MAX_MEMBERS (mặc định 100).",
+   "appliesTo": [
+    "party-room"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "PartyRoomService (kiểm role host và speakerCount >= room.speakerLimit)",
+   "whatBreaksIfRemoved": "Audience tự cấp quyền; số speaker vượt mức SFU chịu được; đổi config làm thay đổi phòng đang chạy.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 441,
+     "quote": "if (!caller || caller.role !== PartyRole.Host) {"
+    },
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 444,
+     "quote": "Chỉ host mới được cấp/thu quyền speaker"
+    },
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 604,
+     "quote": "if (speakerCount >= room.speakerLimit) {"
+    },
+    {
+     "file": "apps/core-api/src/modules/party-room/entities/party-room.entity.ts",
+     "line": 38,
+     "quote": "là SNAPSHOT config lúc tạo phòng — đổi config không retro phòng đang"
+    },
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+     "line": 171,
+     "quote": "speakerLimit: this.config.getOrThrow('PARTY_MAX_SPEAKERS', {"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 567,
+     "quote": "PARTY_MAX_SPEAKERS: Joi.number().integer().min(1).default(8),"
+    },
+    {
+     "file": "apps/core-api/src/modules/party-room/party-room.errors.ts",
+     "line": 7,
+     "quote": "Phòng đã đủ PARTY_MAX_MEMBERS."
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 569,
+     "quote": "PARTY_MAX_MEMBERS: Joi.number().integer().min(2).default(100),"
+    }
+   ]
+  },
+  {
+   "id": "BR-24",
+   "rule": "Report trừ trust score 5 điểm mỗi report (SAFETY_TRUST_PENALTY_PER_REPORT), tối đa 20 điểm mỗi ngày, sàn 0; cùng cặp reporter-target trong 7 ngày (SAFETY_REPORT_COOLDOWN_DAYS) vẫn được ghi report nhưng không trừ thêm điểm; mọi phép trừ được serialize bằng khoá pessimistic_write trên user đích.",
+   "appliesTo": [
+    "safety",
+    "user"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "SafetyService.report (transaction + khoá user đích)",
+   "whatBreaksIfRemoved": "Report spam trừ điểm một người vô hạn; hai report đồng thời vượt trần ngày; trust score xuống dưới sàn.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/safety/safety.service.ts",
+     "line": 84,
+     "quote": "Serialize all trust penalties for one target on the durable user row. Without this"
+    },
+    {
+     "file": "apps/core-api/src/modules/safety/safety.service.ts",
+     "line": 50,
+     "quote": "Report thêm của cùng cặp trong cooldown vẫn được ghi (giữ evidence)"
+    },
+    {
+     "file": "apps/core-api/src/modules/safety/safety.service.ts",
+     "line": 93,
+     "quote": "const alreadyPenalizedThisPair ="
+    },
+    {
+     "file": "apps/core-api/src/modules/safety/safety.service.ts",
+     "line": 76,
+     "quote": "const dailyCap = this.config.getOrThrow('SAFETY_TRUST_PENALTY_DAILY_CAP', {"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 610,
+     "quote": "SAFETY_TRUST_PENALTY_PER_REPORT: Joi.number().integer().min(0).default(5),"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 612,
+     "quote": "SAFETY_TRUST_PENALTY_DAILY_CAP: Joi.number().integer().min(0).default(20),"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 609,
+     "quote": "SAFETY_REPORT_COOLDOWN_DAYS: Joi.number().integer().min(1).default(7),"
+    }
+   ]
+  },
+  {
+   "id": "BR-25",
+   "rule": "Video ngắn: mặc định VIDEO_MODERATION_MODE=pre đưa video sau transcode vào pending_review (mode post thì published); đủ VIDEO_REPORT_AUTOHIDE_THRESHOLD (5) reporter khác nhau thì tự chuyển published sang removed mà không đụng trust score; mọi transition là UPDATE có điều kiện status.",
+   "appliesTo": [
+    "short-video",
+    "safety"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "ShortVideoService (transition, autoHideIfPublished)",
+   "whatBreaksIfRemoved": "Video chưa duyệt lên public; báo cáo hàng loạt không tự ẩn; transition sai chiều khi hai request đua nhau.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+     "line": 147,
+     "quote": "moderationMode === 'pre'"
+    },
+    {
+     "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+     "line": 148,
+     "quote": "? VideoStatus.PendingReview"
+    },
+    {
+     "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+     "line": 500,
+     "quote": "if (distinctReporterCount >= threshold) {"
+    },
+    {
+     "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+     "line": 507,
+     "quote": "return this.transition(videoId, VideoStatus.Published, VideoStatus.Removed);"
+    },
+    {
+     "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+     "line": 534,
+     "quote": "Conditional UPDATE — thua race (status không còn khớp `from`) = 0 rows = false, không throw."
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 732,
+     "quote": "VIDEO_MODERATION_MODE: Joi.string().valid('pre', 'post').default('pre'),"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 742,
+     "quote": "VIDEO_REPORT_AUTOHIDE_THRESHOLD: Joi.number().integer().min(1).default(5),"
+    }
+   ]
+  },
+  {
+   "id": "BR-26",
+   "rule": "Discovery (browse và nearby) loại trừ vĩnh viễn mọi cặp từng block hoặc report nhau theo bất kỳ chiều nào; không hết hạn, khác cooldown 30 ngày của matching.",
+   "appliesTo": [
+    "discovery",
+    "safety"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "SafetyService.getHiddenUserIds (DiscoveryService và NearbyService truyền vào excludeUserIds)",
+   "whatBreaksIfRemoved": "Hai người từng report/block nhau thấy nhau lại trong browse/nearby; reports append-only nên không có cách tự hết hạn.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/safety/safety.service.ts",
+     "line": 267,
+     "quote": "async getHiddenUserIds(userId: string): Promise<string[]> {"
+    },
+    {
+     "file": "apps/core-api/src/modules/safety/safety.service.ts",
+     "line": 264,
+     "quote": "bất kỳ report nào từng tồn tại giữa 1 cặp là"
+    },
+    {
+     "file": "apps/core-api/src/modules/discovery/discovery.service.ts",
+     "line": 49,
+     "quote": "const hiddenUserIds = await this.safetyService.getHiddenUserIds("
+    },
+    {
+     "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+     "line": 174,
+     "quote": "const hiddenUserIds = await this.safetyService.getHiddenUserIds("
+    },
+    {
+     "file": "docs/06-domain-rules.md",
+     "line": 46,
+     "quote": "Discovery (browse/nearby) loại trừ report vĩnh viễn, KHÁC cooldown của matching"
+    }
+   ]
+  },
+  {
+   "id": "BR-27",
+   "rule": "Nearby chỉ hoạt động khi người dùng opt-in `nearbyVisible` (mặc định false); toạ độ được làm tròn theo DISCOVERY_LOCATION_QUANTIZE_DEGREES (0.0045 độ, khoảng 500 m) và cộng jitter tất định theo cặp-theo-ngày; `showDistance=false` trả distanceBucket null; hideProfile=true loại user khỏi nearby và browse ngay ở query server.",
+   "appliesTo": [
+    "discovery",
+    "user",
+    "feed"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "NearbyService (quantize, jitter, SQL hide_profile) và UserService.browsePage (lọc hide_profile cho Discovery browse)",
+   "whatBreaksIfRemoved": "Lộ vị trí chính xác qua trilateration; người chưa opt-in vẫn bị xem; hồ sơ ẩn vẫn hiện trong nearby/browse.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/discovery/entities/discovery-setting.entity.ts",
+     "line": 5,
+     "quote": "mặc định **false** (opt-in)"
+    },
+    {
+     "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+     "line": 92,
+     "quote": "const step = this.config.getOrThrow('DISCOVERY_LOCATION_QUANTIZE_DEGREES', {"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 680,
+     "quote": "DISCOVERY_LOCATION_QUANTIZE_DEGREES: Joi.number().positive().default(0.0045),"
+    },
+    {
+     "file": "apps/core-api/src/modules/discovery/nearby.constants.ts",
+     "line": 28,
+     "quote": "Jitter tất định theo cặp-theo-ngày (pattern FNV-1a của palm-match)"
+    },
+    {
+     "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+     "line": 249,
+     "quote": "distanceBucket: r.showDistance"
+    },
+    {
+     "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+     "line": 320,
+     "quote": "AND COALESCE(ups.hide_profile, false) = false"
+    },
+    {
+     "file": "apps/core-api/src/modules/user/user.service.ts",
+     "line": 308,
+     "quote": "ups.hide_profile = true)"
+    },
+    {
+     "file": "apps/core-api/src/modules/discovery/discovery.service.ts",
+     "line": 63,
+     "quote": "const page = await this.userService.browsePage(filter, query.limit, after);"
+    }
+   ]
+  },
+  {
+   "id": "BR-28",
+   "rule": "Post.audience được enforce ở guard trung tâm getPostOrThrow: chủ bài xem mọi audience, `friends` cần quan hệ bạn bè, feed toàn cục chỉ hiện `public`; block, hồ sơ ẩn, sai audience hay không tồn tại đều trả cùng 404 FEED_POST_NOT_FOUND (oracle-safe).",
+   "appliesTo": [
+    "feed",
+    "safety",
+    "friend"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "FeedService.getPostOrThrow",
+   "whatBreaksIfRemoved": "Vào thẳng GET /posts/:id vượt audience; phân biệt được bài tồn tại nhưng bị chặn với bài không tồn tại.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/feed/feed.service.ts",
+     "line": 216,
+     "quote": "if (blocked || hidden || !audienceAllowed) {"
+    },
+    {
+     "file": "apps/core-api/src/modules/feed/feed.service.ts",
+     "line": 215,
+     "quote": "const hidden = await this.privacySettings.isHidden(post.authorUserId);"
+    },
+    {
+     "file": "apps/core-api/src/modules/feed/feed.service.ts",
+     "line": 209,
+     "quote": "post.audience === PostAudience.Public ||"
+    },
+    {
+     "file": "apps/core-api/src/modules/feed/feed.service.ts",
+     "line": 199,
+     "quote": "FeedErrors.POST_NOT_FOUND,"
+    },
+    {
+     "file": "apps/core-api/src/modules/feed/feed.service.ts",
+     "line": 108,
+     "quote": ".andWhere('p.audience = :audience', { audience: PostAudience.Public })"
+    },
+    {
+     "file": "docs/06-domain-rules.md",
+     "line": 69,
+     "quote": "vi phạm audience/block/không tồn tại trả CÙNG mã lỗi (oracle-safe)"
+    }
+   ]
+  },
+  {
+   "id": "BR-29",
+   "rule": "Admin không được tự ban chính mình; ban và audit log ghi atomic trong cùng transaction; quyền admin được kiểm ở backend (AdminPermissionGuard, 403 ADMIN_PERMISSION_FORBIDDEN), UI chỉ hỗ trợ UX; admin_audit_log append-only.",
+   "appliesTo": [
+    "admin"
+   ],
+   "enforcedAt": "both",
+   "enforcedBy": "AdminService.banUser, AdminPermissionGuard, trigger append-only của admin_audit_log",
+   "whatBreaksIfRemoved": "Admin tự khoá mất quyền truy cập; quyền chỉ kiểm ở UI thì bị bypass bằng gọi API; audit log sửa/xoá được.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/admin/admin.service.ts",
+     "line": 69,
+     "quote": "if (actorUserId === targetUserId) {"
+    },
+    {
+     "file": "apps/core-api/src/modules/admin/admin.service.ts",
+     "line": 65,
+     "quote": "Ban + ghi audit atomic trong CÙNG transaction"
+    },
+    {
+     "file": "apps/core-api/src/modules/admin/services/admin-permission.guard.ts",
+     "line": 43,
+     "quote": "!(await this.adminService.hasPermission(request.user.userId, permission))"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1753700000000-admin-audit-log.ts",
+     "line": 6,
+     "quote": "Append-only tuyệt đối — cùng pattern `forbid_ledger_entry_mutation`"
+    },
+    {
+     "file": "docs/02-domain-model.md",
+     "line": 15,
+     "quote": "backend guard/permission DB mới là authority"
+    }
+   ]
+  },
+  {
+   "id": "BR-30",
+   "rule": "Block hai chiều được kiểm lại tại từng điểm quyết định (xem bài, nhắn tin, mở chat từ hồ sơ, friend call, ghép cặp/accept lời mời, discovery), không tin cờ UI hay kết quả cũ.",
+   "appliesTo": [
+    "safety",
+    "feed",
+    "friend",
+    "matching",
+    "discovery",
+    "gift",
+    "movie-match",
+    "palm-match",
+    "mood"
+   ],
+   "enforcedAt": "service",
+   "enforcedBy": "SafetyService.isBlocked/canPair/getHiddenUserIds được các module gọi lại ở mỗi hành động",
+   "whatBreaksIfRemoved": "Block phát sinh sau khi cặp đã được ghép/mời vẫn cho nhắn, xem bài hoặc ghép; kiểm tra chỉ ở UI/cache thì bị bypass.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/feed/feed.service.ts",
+     "line": 206,
+     "quote": "(await this.safetyService.isBlocked(user.userId, post.authorUserId)) ||"
+    },
+    {
+     "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+     "line": 164,
+     "quote": "await this.assertNotBlocked(viewerUserId, profileUserId);"
+    },
+    {
+     "file": "apps/core-api/src/modules/friend/friend.service.ts",
+     "line": 346,
+     "quote": "(await this.safetyService.isBlocked(userId, partnerId)) ||"
+    },
+    {
+     "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+     "line": 155,
+     "quote": "if (blockedByA || blockedByB) return false;"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+     "line": 475,
+     "quote": "const canPair = await this.interactionPolicy.canPair("
+    },
+    {
+     "file": "docs/02-domain-model.md",
+     "line": 27,
+     "quote": "block/report được các consumer re-check tại decision point"
+    }
+   ]
+  }
+ ],
+ "glossary": [
+  {
+   "term": "DIA (Diamond)",
+   "vietnameseOrProductTerm": "Diamond / Kim cương",
+   "definition": "Tiền ảo trả phí của hệ thống, ghi ở tài khoản sổ cái `user_wallet` với currency `DIA`. Không hết hạn, không rút ra tiền thật, không chuyển trực tiếp giữa user (docs/06).",
+   "codeIdentifiers": [
+    "LedgerCurrency.Diamond",
+    "Wallet.balance",
+    "LedgerAccountKind.UserWallet",
+    "priceDiamond"
+   ],
+   "whereToLook": {
+    "file": "docs/services/economy-service.md",
+    "line": 22,
+    "quote": "diamond của user (currency `DIA`)"
+   }
+  },
+  {
+   "term": "PTS",
+   "vietnameseOrProductTerm": "Điểm quy đổi (earnings)",
+   "definition": "Điểm người nhận quà được cộng theo tỉ lệ GIFT_POINTS_RATE_PERCENT của giá quà, ghi ở `user_earnings` với currency `PTS`. Không phải Diamond; guest nhận 0.",
+   "codeIdentifiers": [
+    "Wallet.earnings",
+    "LedgerAccountKind.UserEarnings",
+    "GIFT_POINTS_RATE_PERCENT",
+    "pointsAwarded"
+   ],
+   "whereToLook": {
+    "file": "docs/services/economy-service.md",
+    "line": 23,
+    "quote": "điểm quy đổi từ gift (currency `PTS`"
+   }
+  },
+  {
+   "term": "Wallet",
+   "vietnameseOrProductTerm": "Ví",
+   "definition": "Snapshot đọc nhanh của `balance` (DIA), `earnings` (PTS) và VIP tier/hạn; nguồn sự thật là sổ cái. `balance` có thể âm sau refund.",
+   "codeIdentifiers": [
+    "Wallet",
+    "wallets",
+    "Wallet.activeVipTier"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/economy/entities/wallet.entity.ts",
+    "line": 17,
+    "quote": "export class Wallet {"
+   }
+  },
+  {
+   "term": "Ledger account",
+   "vietnameseOrProductTerm": "Tài khoản sổ cái",
+   "definition": "Tài khoản của sổ kép: `user_wallet`, `user_earnings` của user và các tài khoản hệ thống `system_iap`, `system_revenue`, `system_gift_pool`, `system_points_mint`, `system_adjustment`.",
+   "codeIdentifiers": [
+    "LedgerAccount",
+    "LedgerAccountKind"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/economy/entities/ledger-account.entity.ts",
+    "line": 8,
+    "quote": "export enum LedgerAccountKind {"
+   }
+  },
+  {
+   "term": "Ledger entry",
+   "vietnameseOrProductTerm": "Bút toán",
+   "definition": "Một dòng Nợ hoặc Có (amount > 0, theo currency) thuộc một giao dịch; bảng `ledger_entries` là append-only nhờ trigger.",
+   "codeIdentifiers": [
+    "LedgerEntry",
+    "LedgerDirection",
+    "ledger_entries"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/economy/entities/ledger-entry.entity.ts",
+    "line": 22,
+    "quote": "export class LedgerEntry {"
+   }
+  },
+  {
+   "term": "Transaction",
+   "vietnameseOrProductTerm": "Giao dịch",
+   "definition": "Nhóm tối thiểu 2 bút toán cân bằng, lưu ở bảng `transactions` bằng entity `LedgerTransaction`; có `type` (iap_purchase, vip_purchase, matching_speedup, gift_send...), idempotencyKey và requestHash.",
+   "codeIdentifiers": [
+    "LedgerTransaction",
+    "TransactionType",
+    "TransactionStatus",
+    "transactions",
+    "requestHash"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/economy/entities/transaction.entity.ts",
+    "line": 37,
+    "quote": "export class LedgerTransaction {"
+   }
+  },
+  {
+   "term": "Reversal",
+   "vietnameseOrProductTerm": "Bút toán đảo",
+   "definition": "Giao dịch mới đảo chiều các bút toán của giao dịch gốc và trỏ `reversalOf` về nó; dùng cho refund, chargeback, sửa sai và là cách duy nhất để sửa sổ cái.",
+   "codeIdentifiers": [
+    "LedgerService.reverse",
+    "reversalOf",
+    "TransactionType.Reversal",
+    "TransactionType.Adjustment"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+    "line": 188,
+    "quote": "async reverse("
+   }
+  },
+  {
+   "term": "Idempotency-Key",
+   "vietnameseOrProductTerm": "Khoá idempotency",
+   "definition": "Header `Idempotency-Key` (tối đa 128 ký tự) cho request có tác dụng phụ không được lặp; service prefix theo domain và chốt chặn bằng unique constraint.",
+   "codeIdentifiers": [
+    "IDEMPOTENCY_KEY_HEADER",
+    "IdempotencyKey",
+    "ApiIdempotencyKeyHeader",
+    "uq_transactions_idempotency_key"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/common/decorators/idempotency-key.decorator.ts",
+    "line": 11,
+    "quote": "export const IDEMPOTENCY_KEY_HEADER = 'idempotency-key';"
+   }
+  },
+  {
+   "term": "Outbox event",
+   "vietnameseOrProductTerm": "Hộp thư sự kiện (outbox)",
+   "definition": "Bản ghi sự kiện Economy ghi cùng transaction nghiệp vụ để publish sau (chống dual-write); không thay transaction đồng bộ cho debit/credit.",
+   "codeIdentifiers": [
+    "OutboxEvent",
+    "ECONOMY_OUTBOX_MAX_ATTEMPTS"
+   ],
+   "whereToLook": {
+    "file": "docs/02-domain-model.md",
+    "line": 53,
+    "quote": "`OutboxEvent` bảo vệ dual-write của Economy"
+   }
+  },
+  {
+   "term": "VIP plan / tier",
+   "vietnameseOrProductTerm": "Gói VIP / SVIP",
+   "definition": "Catalog gói `VipPlan` (số ngày, giá DIA) và tier `VipTier` (vip, svip) lưu ở Wallet; tier ảnh hưởng quota và giá speed-up, hết hạn được suy ra khi đọc.",
+   "codeIdentifiers": [
+    "VipPlan",
+    "VipTier",
+    "Wallet.activeVipTier",
+    "getActiveVipTier"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/economy/entities/wallet.entity.ts",
+    "line": 3,
+    "quote": "export enum VipTier {"
+   }
+  },
+  {
+   "term": "Capability",
+   "vietnameseOrProductTerm": "Khả năng runtime",
+   "definition": "Cờ sẵn sàng của tích hợp theo môi trường (vd `auth.phoneOtp`, `topUp.web`, `video.upload`, `notifications.push`) để UI hỏi qua CapabilitiesController thay vì hard-code.",
+   "codeIdentifiers": [
+    "CAPABILITY_IDS",
+    "CapabilitiesService",
+    "CapabilitiesController",
+    "parseMaintenanceCapabilities"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/config/capabilities.ts",
+    "line": 1,
+    "quote": "export const CAPABILITY_IDS = ["
+   }
+  },
+  {
+   "term": "Ticket",
+   "vietnameseOrProductTerm": "Vé ghép (ticket)",
+   "definition": "Một lượt xếp hàng matching của một user (soul hoặc voice) với trạng thái queued, matched, confirmed, expired, cancelled.",
+   "codeIdentifiers": [
+    "MatchTicket",
+    "MatchTicketStatus",
+    "match_tickets",
+    "MatchType"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/matching/entities/match-ticket.entity.ts",
+    "line": 31,
+    "quote": "export enum MatchTicketStatus {"
+   }
+  },
+  {
+   "term": "Shard",
+   "vietnameseOrProductTerm": "Shard hàng đợi",
+   "definition": "Nhóm ứng viên cùng (match_type, region, age_band) được matcher quét cùng nhau; gender không phải khoá shard mà được kiểm lúc ghép trong tryPair.",
+   "codeIdentifiers": [
+    "idx_match_tickets_status_shard",
+    "matching:shards:active",
+    "ageBand",
+    "region",
+    "MATCHING_AGE_BAND_SIZE"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/matching/entities/match-ticket.entity.ts",
+    "line": 71,
+    "quote": "@Index('idx_match_tickets_status_shard', ["
+   }
+  },
+  {
+   "term": "Speed-up",
+   "vietnameseOrProductTerm": "Đẩy nhanh",
+   "definition": "Trả DIA để tăng priority của ticket đang queued; giá theo tier (50/40/30) do server đọc và số lần không giới hạn.",
+   "codeIdentifiers": [
+    "MatchingService.speedup",
+    "getSpeedupPriceDiamondForUser",
+    "TransactionType.MatchingSpeedup",
+    "speedupIdempotencyKey",
+    "MATCHING_PRIORITY_BOOST_MS"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/matching/matching.service.ts",
+    "line": 263,
+    "quote": "async getSpeedupPriceDiamondForUser(userId: string): Promise<number> {"
+   }
+  },
+  {
+   "term": "Extra match",
+   "vietnameseOrProductTerm": "Mua thêm lượt",
+   "definition": "Sau khi hết quota miễn phí trong ngày, user trả 20 DIA (Soul) hoặc 40 DIA (Voice) để mở thêm một lượt; khoản trừ ghi ledger cùng transaction tạo ticket.",
+   "codeIdentifiers": [
+    "getExtraMatchPriceDiamond",
+    "TransactionType.MatchingExtraMatch",
+    "MATCHING_EXTRA_SOUL_PRICE_DIAMOND",
+    "MATCHING_EXTRA_VOICE_PRICE_DIAMOND"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/matching/matching.service.ts",
+    "line": 276,
+    "quote": "getExtraMatchPriceDiamond(matchType: MatchType): number {"
+   }
+  },
+  {
+   "term": "Daily quota",
+   "vietnameseOrProductTerm": "Quota miễn phí mỗi ngày",
+   "definition": "Số lượt Soul/Voice miễn phí theo tier trong ngày UTC, đếm ở `MatchDailyQuota`; guest dùng `GuestMatchQuota` với khoá HMAC.",
+   "codeIdentifiers": [
+    "MatchDailyQuota",
+    "GuestMatchQuota",
+    "MATCHING_DAILY_SOUL_LIMIT",
+    "MATCHING_DAILY_VOICE_LIMIT",
+    "MATCHING_GUEST_DAILY_LIMIT"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/matching/entities/match-daily-quota.entity.ts",
+    "line": 10,
+    "quote": "export class MatchDailyQuota {"
+   }
+  },
+  {
+   "term": "Guest account",
+   "vietnameseOrProductTerm": "Tài khoản khách (guest)",
+   "definition": "User dùng thử với `isGuest = true`, chưa gắn phone/social; bị hạn chế nạp tiền, nhận PTS và quota match, nâng cấp bằng cách gắn identity vào cùng userId.",
+   "codeIdentifiers": [
+    "User.isGuest",
+    "AuthProvider.Guest",
+    "assertGuestIdentityStillActive",
+    "AUTH_GUEST_UPGRADE_NOT_ALLOWED"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/auth/auth.service.ts",
+    "line": 314,
+    "quote": "if (provider !== AuthProvider.Guest || user.isGuest) return user;"
+   }
+  },
+  {
+   "term": "Guest device token",
+   "vietnameseOrProductTerm": "Token thiết bị guest",
+   "definition": "Token do Auth cấp lúc guest login (TTL AUTH_GUEST_DEVICE_TOKEN_TTL_DAYS, mặc định 30 ngày) và gắn với user; guest phải gửi qua header `X-Guest-Device-Token` khi vào matching.",
+   "codeIdentifiers": [
+    "GuestDeviceTokenService",
+    "X-Guest-Device-Token",
+    "AUTH_GUEST_DEVICE_TOKEN_SECRET",
+    "AUTH_GUEST_DEVICE_TOKEN_TTL_DAYS",
+    "MATCHING_GUEST_DEVICE_TOKEN_REQUIRED"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/auth/dto/auth-tokens.dto.ts",
+    "line": 17,
+    "quote": "Chỉ trả khi guest login; gửi qua X-Guest-Device-Token khi vào matching queue"
+   }
+  },
+  {
+   "term": "Soul Match",
+   "vietnameseOrProductTerm": "Ghép chat ẩn danh",
+   "definition": "Chat text ẩn danh có thời hạn giữa hai người; rating rude/boring/like, chỉ mutual-like mới lộ danh tính và tạo quan hệ bền vững.",
+   "codeIdentifiers": [
+    "MatchType.Soul",
+    "SoulChatMessage",
+    "SoulMatchRating",
+    "SOUL_CHAT_MESSAGE_MAX_LENGTH"
+   ],
+   "whereToLook": {
+    "file": "docs/01-product-features.md",
+    "line": 14,
+    "quote": "Ghép hai người vào chat text ẩn danh có thời hạn"
+   }
+  },
+  {
+   "term": "Voice Match",
+   "vietnameseOrProductTerm": "Ghép gọi thoại",
+   "definition": "Cuộc gọi 1-1 qua SFU sinh từ ticket voice, tối đa CALLING_FREE_CALL_SECONDS (420 giây) cho mọi tier; mutual-like mới tạo Friendship.",
+   "codeIdentifiers": [
+    "CallKind.VoiceMatch",
+    "CallSession",
+    "VoiceMatchReaction",
+    "CALLING_FREE_CALL_SECONDS",
+    "CallEndReason.FreeLimit"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/calling/entities/call-session.entity.ts",
+    "line": 15,
+    "quote": "VoiceMatch = 'voice_match',"
+   }
+  },
+  {
+   "term": "Friend call",
+   "vietnameseOrProductTerm": "Gọi bạn bè",
+   "definition": "Cuộc gọi bền vững `CallKind.Friend` giữa hai user follow nhau và không block nhau; không có timer free hay MatchSession.",
+   "codeIdentifiers": [
+    "CallKind.Friend",
+    "CallingService.joinFriendCall",
+    "ProfileSocialService.canCall"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/calling/calling.service.ts",
+    "line": 203,
+    "quote": "Tạo/lấy một call khi hai bên follow nhau và không bị block; không có free timer/MatchSession."
+   }
+  },
+  {
+   "term": "Palm Match",
+   "vietnameseOrProductTerm": "Ghép xem chỉ tay",
+   "definition": "Hàng đợi ẩn danh, lật thẻ theo lượt, compatibility snapshot và like/skip; kết quả do server chốt, không phải chẩn đoán thật.",
+   "codeIdentifiers": [
+    "PalmMatchSession",
+    "PalmReadingTemplate",
+    "PALM_MATCH_QUEUE_MAX_WAIT_SECONDS"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/palm-match/entities/palm-match-session.entity.ts",
+    "line": 27,
+    "quote": "export class PalmMatchSession extends BaseAppEntity {"
+   }
+  },
+  {
+   "term": "Movie Match",
+   "vietnameseOrProductTerm": "Xem phim cùng nhau",
+   "definition": "Hai chế độ: bạn bè chủ động xem URL đã chọn, hoặc hàng đợi ẩn danh với video do server chọn; playback last-write-wins, không có pipeline VOD riêng.",
+   "codeIdentifiers": [
+    "MovieSession",
+    "MOVIE_MATCH_QUEUE_MAX_WAIT_SECONDS",
+    "MOVIE_MATCH_URL_MAX_LENGTH"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/movie-match/entities/movie-session.entity.ts",
+    "line": 54,
+    "quote": "export class MovieSession extends BaseAppEntity {"
+   }
+  },
+  {
+   "term": "Party room",
+   "vietnameseOrProductTerm": "Phòng nhóm (Party Room)",
+   "definition": "Voice room nhiều người với role host, speaker, audience; quyền và membership do Core API giữ, LiveKit chỉ là transport.",
+   "codeIdentifiers": [
+    "PartyRoom",
+    "PartyRoomMember",
+    "PartyRole",
+    "PARTY_MAX_MEMBERS"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/party-room/entities/party-room-member.entity.ts",
+    "line": 10,
+    "quote": "export enum PartyRole {"
+   }
+  },
+  {
+   "term": "Speaker limit",
+   "vietnameseOrProductTerm": "Giới hạn speaker",
+   "definition": "Số speaker tối đa của phòng, chụp snapshot từ PARTY_MAX_SPEAKERS (mặc định 8) lúc tạo phòng; chạm giới hạn thì 409 PARTY_SPEAKER_LIMIT_REACHED.",
+   "codeIdentifiers": [
+    "PartyRoom.speakerLimit",
+    "PARTY_MAX_SPEAKERS",
+    "PARTY_SPEAKER_LIMIT_REACHED"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/party-room/entities/party-room.entity.ts",
+    "line": 60,
+    "quote": "speakerLimit!: number;"
+   }
+  },
+  {
+   "term": "Streak",
+   "vietnameseOrProductTerm": "Chuỗi trò chuyện",
+   "definition": "Số ngày UTC liên tiếp mà cả hai bên cùng nhắn trong một conversation, lưu ở `ConversationStreak`; có grace cho 1 ngày lỡ và các milestone.",
+   "codeIdentifiers": [
+    "ConversationStreak",
+    "StreakService",
+    "graceUsedForDate",
+    "STREAK_MILESTONE_DAYS"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/friend/services/streak.service.ts",
+    "line": 75,
+    "quote": "const bothActiveToday ="
+   }
+  },
+  {
+   "term": "Gift event",
+   "vietnameseOrProductTerm": "Sự kiện tặng quà",
+   "definition": "Bản ghi mỗi lần tặng quà, snapshot giá quà và tỉ lệ PTS tại thời điểm tặng, đi cùng giao dịch Economy.",
+   "codeIdentifiers": [
+    "GiftEvent",
+    "Gift",
+    "TransactionType.GiftSend"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/gift/entities/gift-event.entity.ts",
+    "line": 15,
+    "quote": "export class GiftEvent {"
+   }
+  },
+  {
+   "term": "Friendship",
+   "vietnameseOrProductTerm": "Bạn bè",
+   "definition": "Quan hệ bạn bè bền vững; được tạo bằng `ensureFriendship(manager, a, b, source)` khi mutual-like (vd source `FriendshipSource.VoiceMatch`).",
+   "codeIdentifiers": [
+    "Friendship",
+    "FriendshipSource",
+    "FriendService.ensureFriendship",
+    "Conversation"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/friend/entities/friendship.entity.ts",
+    "line": 21,
+    "quote": "export class Friendship extends BaseAppEntity {"
+   }
+  },
+  {
+   "term": "Profile follow",
+   "vietnameseOrProductTerm": "Theo dõi (follow)",
+   "definition": "Quan hệ theo dõi một chiều `ProfileFollow` (cờ active) độc lập với chat; follow hai chiều mở khoá friend call.",
+   "codeIdentifiers": [
+    "ProfileFollow",
+    "ProfileSocialService.areMutuallyFollowing",
+    "ProfileSocialService.canCall"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/friend/entities/profile-follow.entity.ts",
+    "line": 20,
+    "quote": "export class ProfileFollow extends BaseAppEntity {"
+   }
+  },
+  {
+   "term": "First chat",
+   "vietnameseOrProductTerm": "Chat đầu tiên từ hồ sơ",
+   "definition": "Lần đầu một cặp mở chat trực tiếp được ghi ở `ProfileChatContact` theo ngày UTC; vượt ngưỡng mỗi ngày của hồ sơ đích thì phải tặng quà (HTTP 402).",
+   "codeIdentifiers": [
+    "ProfileChatContact",
+    "firstContactDate",
+    "PROFILE_DIRECT_MESSAGE_DAILY_FIRST_CHAT_THRESHOLD",
+    "PROFILE_SOCIAL_MESSAGE_GIFT_REQUIRED"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/friend/services/profile-social.service.ts",
+    "line": 433,
+    "quote": "const dailyFirstChatCount = await this.countDailyFirstChatsWithManager("
+   }
+  },
+  {
+   "term": "Match invite",
+   "vietnameseOrProductTerm": "Lời mời ghép trực tiếp",
+   "definition": "Lời mời Voice/Soul gửi thẳng cho một user; accept tạo ticket/session bỏ qua hàng đợi shard và vẫn kiểm lại canPair.",
+   "codeIdentifiers": [
+    "MatchInvite",
+    "InviteService",
+    "MATCHING_INVITE_TTL_SECONDS",
+    "MATCHING_INVITE_RATE_LIMIT_PER_HOUR"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/matching/entities/match-invite.entity.ts",
+    "line": 36,
+    "quote": "tái dùng các chốt an toàn của `tryPair`"
+   }
+  },
+  {
+   "term": "Trust score",
+   "vietnameseOrProductTerm": "Điểm tin cậy",
+   "definition": "Số nội bộ (mặc định 100, không lộ ra API) giảm khi bị report và làm chậm priority trong matching, không chặn hẳn.",
+   "codeIdentifiers": [
+    "User.trustScore",
+    "SAFETY_TRUST_PENALTY_PER_REPORT",
+    "SAFETY_TRUST_SCORE_FLOOR",
+    "MATCHING_TRUST_PENALTY_MS_PER_POINT"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/user/entities/user.entity.ts",
+    "line": 58,
+    "quote": "Điểm tin cậy nội bộ cho matching priority (docs/06) — không expose ra API."
+   }
+  },
+  {
+   "term": "Report / Block",
+   "vietnameseOrProductTerm": "Báo cáo và chặn",
+   "definition": "`Report` (append-only) và `Block` là đầu vào của canPair, isBlocked và getHiddenUserIds mà matching, discovery, feed, chat kiểm lại tại điểm quyết định.",
+   "codeIdentifiers": [
+    "Report",
+    "Block",
+    "SafetyService.canPair",
+    "SafetyService.isBlocked",
+    "SafetyService.getHiddenUserIds"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/safety/safety.service.ts",
+    "line": 291,
+    "quote": "async canPair(userAId: string, userBId: string): Promise<boolean> {"
+   }
+  },
+  {
+   "term": "Nearby",
+   "vietnameseOrProductTerm": "Gần bạn (Nearby)",
+   "definition": "Duyệt user lân cận khi chủ hồ sơ opt-in `nearbyVisible`; vị trí được làm tròn khoảng 500 m khi ghi và chỉ trả `distanceBucket` (hoặc null).",
+   "codeIdentifiers": [
+    "DiscoverySetting.nearbyVisible",
+    "UserLocation",
+    "DISCOVERY_LOCATION_QUANTIZE_DEGREES",
+    "distanceBucket"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/discovery/entities/discovery-setting.entity.ts",
+    "line": 19,
+    "quote": "nearbyVisible!: boolean;"
+   }
+  },
+  {
+   "term": "Video status",
+   "vietnameseOrProductTerm": "Trạng thái video ngắn",
+   "definition": "Các trạng thái uploading, processing, pending_review, published, removed, rejected, failed; sau transcode video vào pending_review (mode `pre`) hoặc published (mode `post`).",
+   "codeIdentifiers": [
+    "VideoStatus",
+    "VIDEO_MODERATION_MODE",
+    "VIDEO_REPORT_AUTOHIDE_THRESHOLD"
+   ],
+   "whereToLook": {
+    "file": "apps/core-api/src/modules/short-video/entities/video.entity.ts",
+    "line": 5,
+    "quote": "export enum VideoStatus {"
+   }
+  }
+ ],
+ "conventions": [
+  {
+   "area": "DB: tên bảng và cột",
+   "convention": "Bảng snake_case số nhiều, cột snake_case; TypeORM ánh xạ camelCase sang snake_case bằng SnakeNamingStrategy (cấu hình ở app.module.ts và data-source.ts).",
+   "evidence": [
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 94,
+     "quote": "DB: bảng snake_case số nhiều (`ledger_entries`, `match_tickets`), cột snake_case"
+    },
+    {
+     "file": "apps/core-api/src/app/app.module.ts",
+     "line": 82,
+     "quote": "namingStrategy: new SnakeNamingStrategy(),"
+    },
+    {
+     "file": "apps/core-api/src/database/data-source.ts",
+     "line": 24,
+     "quote": "namingStrategy: new SnakeNamingStrategy(),"
+    }
+   ]
+  },
+  {
+   "area": "DB: constraint và index",
+   "convention": "Index `idx_<table>_<query-shape>`, unique `uq_<table>_<invariant>`, check `chk_<table>_<rule>`, FK `fk_<child>_<parent>`; tên constraint dùng trong code khai thành hằng (vd UQ_ACTIVE_USER).",
+   "evidence": [
+    {
+     "file": "docs/17-naming-conventions.md",
+     "line": 137,
+     "quote": "Tên index `idx_<table>_<query-shape>`, unique `uq_<table>_<invariant>`, check"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/matching.constants.ts",
+     "line": 7,
+     "quote": "export const UQ_ACTIVE_USER = 'uq_match_tickets_active_user';"
+    }
+   ]
+  },
+  {
+   "area": "Kiểu chữ theo bề mặt",
+   "convention": "File/folder kebab-case, biến và property camelCase, class/enum PascalCase, hằng/env/mã lỗi UPPER_SNAKE, JSON field camelCase; giá trị serialized của enum theo contract (`iap_purchase`, `queued`).",
+   "evidence": [
+    {
+     "file": "docs/17-naming-conventions.md",
+     "line": 48,
+     "quote": "Package, app, lib, folder, source file"
+    },
+    {
+     "file": "docs/17-naming-conventions.md",
+     "line": 62,
+     "quote": "Env var, error code"
+    }
+   ]
+  },
+  {
+   "area": "Hậu tố vai trò",
+   "convention": "`*Dto` cho transport HTTP, `*Input` cho input service/port, `*Result`/`*View` cho output, `*Event` cho event, `*Config` cho cấu hình đã validate; class NestJS đặt tên `<Domain><Role>`.",
+   "evidence": [
+    {
+     "file": "docs/17-naming-conventions.md",
+     "line": 117,
+     "quote": "Suffix role là một phần contract: `*Dto` cho transport HTTP, `*Input` cho input service/port,"
+    },
+    {
+     "file": "apps/core-api/src/modules/auth/dto/auth-request.dtos.ts",
+     "line": 18,
+     "quote": "export class RequestOtpDto {"
+    }
+   ]
+  },
+  {
+   "area": "Bố cục module",
+   "convention": "Mỗi module trong apps/core-api/src/modules có `<module>.module.ts`, facade service, controller, `<module>.errors.ts`, `index.ts` và `<module>.constants.ts` tuỳ chọn; dto/ entities/ services/ ports/ clients/ jobs/ webhooks/ redis/ events/ chỉ tạo khi có thành phần thật.",
+   "evidence": [
+    {
+     "file": "docs/16-module-blueprint.md",
+     "line": 25,
+     "quote": "├── <module>.errors.ts # taxonomy lỗi domain duy nhất"
+    },
+    {
+     "file": "docs/16-module-blueprint.md",
+     "line": 54,
+     "quote": "Không tạo `events/`, `repositories/` hoặc bất kỳ folder nào chỉ để dành chỗ."
+    }
+   ]
+  },
+  {
+   "area": "Public API (index.ts)",
+   "convention": "`index.ts` là cổng public duy nhất; module khác chỉ import qua `modules/<name>`; không export entity, repository, job, client cho module mới.",
+   "evidence": [
+    {
+     "file": "docs/16-module-blueprint.md",
+     "line": 128,
+     "quote": "`index.ts` là cổng public duy nhất của module."
+    },
+    {
+     "file": "docs/16-module-blueprint.md",
+     "line": 137,
+     "quote": "Không export mặc định TypeORM entity, repository, job, client"
+    }
+   ]
+  },
+  {
+   "area": "Ports và adapters",
+   "convention": "`ports/` giữ abstract class/interface kèm token, implementation chọn qua DI/config; `clients/` chỉ gọi API bên thứ ba. Vd MatchInteractionPolicy do SafetyService thoả mãn bằng structural typing.",
+   "evidence": [
+    {
+     "file": "docs/16-module-blueprint.md",
+     "line": 68,
+     "quote": "Abstract class/interface + token; implementation chọn qua DI/config"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/ports/interaction-policy.ts",
+     "line": 14,
+     "quote": "canPair(userAId: string, userBId: string): Promise<boolean>;"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/matching.module.ts",
+     "line": 69,
+     "quote": "SafetyService.canPair thoả mãn MatchInteractionPolicy bằng structural typing"
+    }
+   ]
+  },
+  {
+   "area": "Layering",
+   "convention": "Controller gọi Service, Service gọi Repository; controller, webhook và `*.handler.ts` không inject Repository/DataSource.",
+   "evidence": [
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 20,
+     "quote": "**Layer rõ ràng**: `Controller` → `Service` → `Repository`. Controller không gọi thẳng Repository."
+    },
+    {
+     "file": "docs/16-module-blueprint.md",
+     "line": 94,
+     "quote": "Controller, webhook và `*.handler.ts` không inject `Repository<T>`"
+    }
+   ]
+  },
+  {
+   "area": "Response envelope",
+   "convention": "Thành công `{ data, meta? }`, lỗi `{ error: { code, message, traceId, details? } }`; không endpoint nào trả object trần.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/common/interceptors/response-envelope.interceptor.ts",
+     "line": 13,
+     "quote": "Bọc mọi response thành công vào envelope { data, meta? }"
+    },
+    {
+     "file": "libs/common-dtos/src/lib/api-response.ts",
+     "line": 7,
+     "quote": "export interface ApiErrorBody {"
+    }
+   ]
+  },
+  {
+   "area": "Phân trang cursor",
+   "convention": "List lớn dần dùng cursor: query `limit` (1-100, mặc định 20) và `cursor` (chuỗi base64url opaque), trả `meta.nextCursor`; helper buildCursorPage nhận limit+1 hàng. Offset chỉ cho danh sách admin nhỏ.",
+   "evidence": [
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 73,
+     "quote": "Pagination: **cursor-based** cho mọi list lớn dần vô hạn"
+    },
+    {
+     "file": "libs/common-dtos/src/lib/cursor-pagination.ts",
+     "line": 11,
+     "quote": "limit = 20;"
+    },
+    {
+     "file": "libs/common-dtos/src/lib/cursor-pagination.ts",
+     "line": 75,
+     "quote": "export function buildCursorPage<T>("
+    }
+   ]
+  },
+  {
+   "area": "Idempotency-Key",
+   "convention": "Truyền qua header `Idempotency-Key` (không nhét body), rút bằng `@IdempotencyKey()`, service prefix theo domain (vd speedupIdempotencyKey) và dựa vào unique constraint.",
+   "evidence": [
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 74,
+     "quote": "Idempotency key truyền qua header `Idempotency-Key`, không nhét vào body."
+    },
+    {
+     "file": "apps/core-api/src/common/decorators/idempotency-key.decorator.ts",
+     "line": 11,
+     "quote": "export const IDEMPOTENCY_KEY_HEADER = 'idempotency-key';"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 446,
+     "quote": "speedupIdempotencyKey(user.userId, idempotencyKey)"
+    }
+   ]
+  },
+  {
+   "area": "i18n của lỗi",
+   "convention": "API đọc `Accept-Language` (vi|en), mặc định vi; filter chọn message theo mã lỗi; service chỉ tạo DomainException(code, message, ...). Client gửi header theo `getLocale()`.",
+   "evidence": [
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 85,
+     "quote": "API nhận locale chuẩn qua `Accept-Language`"
+    },
+    {
+     "file": "apps/core-api/src/common/i18n/error-message.localizer.ts",
+     "line": 4,
+     "quote": "const DEFAULT_LOCALE: ApiLocale = 'vi';"
+    },
+    {
+     "file": "libs/api-client/src/lib/client.ts",
+     "line": 172,
+     "quote": "request.headers.set('accept-language', getLocale?.() ?? 'vi');"
+    }
+   ]
+  },
+  {
+   "area": "Mã lỗi",
+   "convention": "`DOMAIN_SUBJECT_REASON` UPPER_SNAKE, hằng nằm trong object `XxxErrors` (PascalCase) với key UPPER_SNAKE, vd `MatchingErrors.TICKET_ALREADY_QUEUED`.",
+   "evidence": [
+    {
+     "file": "docs/17-naming-conventions.md",
+     "line": 140,
+     "quote": "Constant object có namespace PascalCase và key"
+    },
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 79,
+     "quote": "Mã lỗi dạng `DOMAIN_SUBJECT_REASON` (UPPER_SNAKE)"
+    }
+   ]
+  },
+  {
+   "area": "Hằng số và định danh nội bộ",
+   "convention": "Hằng có ngữ nghĩa vượt một file vào `<module>.constants.ts` ngay từ đầu; Redis key, tên job, tên constraint, prefix idempotency key là hằng hoặc hàm builder ở file chủ quản.",
+   "evidence": [
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 15,
+     "quote": "`<module>.constants.ts` NGAY TỪ ĐẦU"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/matching.constants.ts",
+     "line": 7,
+     "quote": "export const UQ_ACTIVE_USER = 'uq_match_tickets_active_user';"
+    }
+   ]
+  },
+  {
+   "area": "Cấu hình (env)",
+   "convention": "Env có prefix domain (vd MATCHING_SPEEDUP_PRICE_DIAMOND), khai default một lần trong Joi schema và kiểu trong CoreApiEnv; code đọc bằng `ConfigService<CoreApiEnv, true>.getOrThrow(KEY, { infer: true })`.",
+   "evidence": [
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 35,
+     "quote": "**Luôn tiêm `ConfigService<CoreApiEnv, true>`, không phải `ConfigService` trần**"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 471,
+     "quote": "MATCHING_SPEEDUP_PRICE_DIAMOND: Joi.number().integer().min(1).default(50),"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 258,
+     "quote": "return this.config.getOrThrow('MATCHING_SPEEDUP_PRICE_DIAMOND', {"
+    }
+   ]
+  },
+  {
+   "area": "Event và Kafka",
+   "convention": "Event `<domain>.<subject>.<động-từ-quá-khứ>` (vd `economy.diamond.deducted`); topic Kafka `litmatch.<domain>.events`; event schema có field `version`.",
+   "evidence": [
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 95,
+     "quote": "Event (nội bộ + Kafka): `<domain>.<subject>.<động-từ-quá-khứ>`"
+    },
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 96,
+     "quote": "Kafka topic theo domain: `litmatch.<domain>.events`"
+    },
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 130,
+     "quote": "Event schema có field `version`"
+    }
+   ]
+  },
+  {
+   "area": "Metric",
+   "convention": "Metric `<domain>_<subject>_<đơn_vị>` ghi bằng OTel Meter (vd matching_ticket_wait_seconds, call_ended_total, economy_transaction_total).",
+   "evidence": [
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 103,
+     "quote": "Metrics đặt tên `<domain>_<subject>_<đơn_vị>`"
+    }
+   ]
+  },
+  {
+   "area": "Tên hàm theo hợp đồng",
+   "convention": "`findX` có thể null, `getXOrThrow` ném lỗi đặt tên, `listX` trả collection/page, `ensureX` idempotent, `assertX` ném, `recordX` cho bản ghi append-only; Promise không cần hậu tố Async.",
+   "evidence": [
+    {
+     "file": "apps/core-api/src/modules/feed/feed.service.ts",
+     "line": 195,
+     "quote": "async getPostOrThrow(user: AuthenticatedUser, postId: string): Promise<Post> {"
+    },
+    {
+     "file": "apps/core-api/src/modules/calling/calling.service.ts",
+     "line": 404,
+     "quote": "await this.friendService.ensureFriendship("
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/economy.controller.ts",
+     "line": 167,
+     "quote": "private assertNotGuestForPayos(user: AuthenticatedUser): void {"
+    },
+    {
+     "file": "docs/17-naming-conventions.md",
+     "line": 89,
+     "quote": "không cần suffix `Async`; kiểu trả về đã thể hiện async."
+    }
+   ]
+  },
+  {
+   "area": "DTO và entity",
+   "convention": "DTO input dùng class-validator, DTO output chỉ cần type và @ApiProperty, không trả entity trần; file mới ưu tiên một DTO/entity mỗi file (`*.dto.ts`, `*.entity.ts`).",
+   "evidence": [
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 21,
+     "quote": "**DTO cho mọi input/output, không nhận `any`, không trả entity trần**"
+    },
+    {
+     "file": "docs/16-module-blueprint.md",
+     "line": 149,
+     "quote": "File mới ưu tiên một DTO/entity mỗi file: `profile.dto.ts`, `user.entity.ts`."
+    }
+   ]
+  },
+  {
+   "area": "Test",
+   "convention": "Unit test `*.spec.ts` đặt cạnh source; integration test cả module đặt ở gốc module với hậu tố `.integration.spec.ts`; Economy/Matching bắt buộc có test race-condition.",
+   "evidence": [
+    {
+     "file": "docs/16-module-blueprint.md",
+     "line": 53,
+     "quote": "Integration test của cả module đặt ở gốc và có hậu tố `.integration.spec.ts`."
+    },
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 122,
+     "quote": "Riêng Economy/Matching bắt buộc có"
+    }
+   ]
+  },
+  {
+   "area": "Migration",
+   "convention": "File `<timestamp>-<mô-tả-kebab>.ts`, luôn là file mới; không sửa migration đã commit.",
+   "evidence": [
+    {
+     "file": "docs/17-naming-conventions.md",
+     "line": 50,
+     "quote": "`<timestamp>-<mô-tả-kebab>.ts`"
+    },
+    {
+     "file": "docs/16-module-blueprint.md",
+     "line": 167,
+     "quote": "Không sửa migration đã commit."
+    }
+   ]
+  },
+  {
+   "area": "Audit và bảng append-only",
+   "convention": "Audit cho hành động nhạy cảm là bảng DB append-only, không phải log text; ledger_entries dùng trigger chặn UPDATE/DELETE và admin_audit_log theo cùng pattern.",
+   "evidence": [
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 108,
+     "quote": "Audit log cho hành động nhạy cảm"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1752000000000-economy-ledger.ts",
+     "line": 77,
+     "quote": "CREATE TRIGGER trg_ledger_entries_append_only"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1753700000000-admin-audit-log.ts",
+     "line": 6,
+     "quote": "Append-only tuyệt đối — cùng pattern `forbid_ledger_entry_mutation`"
+    }
+   ]
+  },
+  {
+   "area": "Thời gian (UTC)",
+   "convention": "Quy tắc theo ngày dùng ngày UTC của server (todayUtc), không dùng múi giờ client.",
+   "evidence": [
+    {
+     "file": "docs/06-domain-rules.md",
+     "line": 61,
+     "quote": "Streak chỉ tăng khi CẢ 2 CHIỀU nhắn trong cùng 1 ngày UTC (server clock)"
+    },
+    {
+     "file": "apps/core-api/src/common/date/utc-date.ts",
+     "line": 2,
+     "quote": "export function todayUtc(): string {"
+    }
+   ]
+  },
+  {
+   "area": "Transaction và khoá",
+   "convention": "Thao tác trừ/cộng diamond và check-then-act chạy trong một transaction với `SELECT ... FOR UPDATE` (TypeORM `pessimistic_write`) hoặc UPDATE có điều kiện, xác minh lại điều kiện tại thời điểm hành động.",
+   "evidence": [
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 143,
+     "quote": "**Check + hành động luôn atomic**"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 55,
+     "quote": "lock: { mode: 'pessimistic_write' },"
+    },
+    {
+     "file": "apps/core-api/src/modules/short-video/short-video.service.ts",
+     "line": 534,
+     "quote": "Conditional UPDATE — thua race (status không còn khớp `from`) = 0 rows = false, không throw."
+    }
+   ]
+  },
+  {
+   "area": "Logging",
+   "convention": "Structured JSON qua pino (libs/logger), cấm console.log; traceId là request-id lấy từ `x-request-id`.",
+   "evidence": [
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 101,
+     "quote": "Structured JSON log (pino qua logger lib chung ở `libs/logger`) — cấm `console.log`."
+    },
+    {
+     "file": "docs/05-coding-standards.md",
+     "line": 84,
+     "quote": "`traceId` trong error response/mọi log line = request-id"
+    }
+   ]
+  }
+ ]
+}

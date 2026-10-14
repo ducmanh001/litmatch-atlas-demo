@@ -38,6 +38,24 @@ status: fixed; tier: A; date: 2026-08-14; confidence: high
 - resolution: Thêm 8 SVG local ở apps/web/public/avatar và migration mới 1757300000000-avatar-public-assets; sửa migration cũ bị hook chặn (migration bất biến) nên hoàn tác.
 - evidence: codex-thread 019ffec1, file apps/core-api/src/database/migrations/1757300000000-avatar-public-assets.ts, commit a3f0f61
 
+### P065: Production chạy bản cũ: route profile 404, thông báo Facebook cũ
+
+status: open; tier: A; date: 2026-08-19; confidence: high
+
+- problem: Bấm Theo dõi/Nhắn tin ở profile báo lỗi đỏ 'Cannot POST /api/v1/profiles/.../follow'; sau đó GET /profiles/:id/actions trả 404 COMMON_ROUTE_NOT_FOUND và UI khóa hai nút.
+- root cause: Không phải lỗi frontend/contract: source và OpenAPI đã có route. Core API runtime/prod đang chạy bản cũ hoặc chưa load ProfileSocialController (deploy chưa cập nhật); local DB còn thiếu 3 migration profile.
+- resolution: Local: chạy 3 migration profile, bật lại core-api rồi xác nhận route follow/conversation đã load. Prod: khuyến nghị deploy lại core-api đúng source hiện tại, giữ NEXT_PUBLIC_API_URL. FE không thêm fallback giả.
+- evidence: codex-thread 01a01990, codex-thread 01a01990, codex-thread 01a0248b, codex-thread 01a01993
+
+### P074: Core API production crash lúc boot (media storage dev / thiếu biến R2)
+
+status: in-progress; tier: A; date: 2026-08-21; confidence: high
+
+- problem: Core API production crash khi khởi động nên bản mới không chạy, route profile 404; sau khi đổi sang r2 lại crash tiếp vì thiếu biến R2.
+- root cause: Env production để MEDIA_STORAGE_PROVIDER=dev (DevImageStorageProvider bị cấm ở prod); sau đó thiếu/để placeholder các biến MEDIA_R2_* và MEDIA_PUBLIC_BASE_URL nên R2ImageStorageProvider ném lỗi.
+- resolution: Đổi MEDIA_STORAGE_PROVIDER=r2 (user đã làm) và hướng dẫn cấp đủ 5 biến R2 (ACCOUNT_ID, BUCKET, ACCESS_KEY_ID, SECRET_ACCESS_KEY, PUBLIC_BASE_URL) rồi redeploy. Chưa thấy bằng chứng deploy cuối thành công.
+- evidence: codex-thread 01a0248b, codex-thread 01a0248b
+
 ### P076: Rate limit trong bộ nhớ từng pod + trần kết nối Postgres
 
 status: fixed; tier: B; date: 2026-09-03; confidence: high

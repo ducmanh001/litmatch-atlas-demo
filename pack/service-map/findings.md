@@ -74,3 +74,35 @@ status: confirmed; services: media-server
 Đầu k8s/base/media-server/deployment.yaml vẫn viết 'CHƯA chọn phương án nào ở đây vì cần ADR', nhưng thân file đã đặt hostNetwork: true theo ADR 0005. Chú thích đầu file cần cập nhật để khỏi gây hiểu nhầm là mạng RTC chưa được chốt.
 
 evidence: k8s/base/media-server/deployment.yaml:11, k8s/base/media-server/deployment.yaml:58
+
+### M2: Sự kiện match.matched được khai báo nhưng không có nơi nào phát
+
+status: confirmed; services: matching, signaling-gateway
+
+RealtimeEvents.MatchMatched (match.matched) và kiểu MatchMatchedEventData có trong libs/common-dtos nhưng không có chỗ phát nào trong core-api và web không lắng nghe; luồng thật phát match.confirmed. Comment trong matching.metrics.ts vẫn nhắc match.matched. 25 sự kiện còn lại đều có chỗ phát.
+
+evidence: libs/common-dtos/src/lib/realtime-events.ts:42, apps/core-api/src/modules/matching/matching.metrics.ts:31
+
+### M3: Movie Match ẩn danh phát realtime bên trong transaction, trái với tài liệu
+
+status: confirmed; services: movie-match, signaling-gateway
+
+updateAnonState và endAnonWatch gọi publishAnonPlayback ngay trong dataSource.transaction (sau manager.save, trước COMMIT), còn docs/services/realtime-gateway.md ghi publish luôn chạy sau khi transaction commit. Hậu quả thực tế nhỏ vì đây là bước cuối của transaction và event là best-effort, nhưng quy tắc publish-sau-commit không được giữ ở đây.
+
+evidence: apps/core-api/src/modules/movie-match/movie-match.service.ts:438, apps/core-api/src/modules/movie-match/movie-match.service.ts:459, docs/services/realtime-gateway.md:35
+
+### M4: AUTH_MIN_AGE và DEPLOY_ENVIRONMENT có trong .env.example nhưng không có schema hay mã đọc
+
+status: confirmed; services: auth, app-shell
+
+Hai biến được đặt trong .env.example (AUTH_MIN_AGE còn được nhắc ở dòng chú thích phía dưới) nhưng không có trong schema Joi của core-api hay signaling-gateway và không có mã nào đọc; có thể là cấu hình mồ côi hoặc chưa nối dây.
+
+evidence: .env.example:121, .env.example:75
+
+### M5: Đặc tả AsyncAPI trong repo chỉ liệt kê 8 trong 26 sự kiện realtime
+
+status: confirmed; services: signaling-gateway
+
+specs/realtime.asyncapi.yaml khai 8 message và không có schema payload (ghi rõ payload nằm ở kiểu nguồn), trong khi libs/common-dtos khai 26 sự kiện kèm kiểu payload đầy đủ.
+
+evidence: specs/realtime.asyncapi.yaml:18, libs/common-dtos/src/lib/realtime-events.ts:37

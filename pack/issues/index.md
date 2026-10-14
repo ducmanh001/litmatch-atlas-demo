@@ -1,7 +1,7 @@
-# Error history ledger (public version)
+# Error history ledger
 
 id: issues:index
-rows: 103 (open security/production findings are withheld from the public version)
+rows: 108 (full ledger, nothing withheld; open findings included)
 
 | id | status | tier | area | date | title |
 |---|---|---|---|---|---|
@@ -9,12 +9,14 @@ rows: 103 (open security/production findings are withheld from the public versio
 | P002 | fixed | A | ci-cd | 2026-07-11 | CI main đỏ ngay từ commit đầu: "Multiple versions of pnpm specified" |
 | P003 | fixed | B | ai-agent-process | 2026-07-11 | Commit "harden phase 2A" quá lớn phải revert khỏi main |
 | P004 | fixed | B | ai-agent-process | 2026-07-12 | Adapter CLAUDE.md / skills lệch bản canonical (symlink tay) |
+| P005 | fixed | A | auth-security | 2026-07-13 | CodeQL: loop-bound-injection (high) ở palm-match.hash.ts |
 | P006 | fixed | A | frontend-ux | 2026-07-13 | Swagger thiếu cursor pagination → client sinh kiểu never |
 | P007 | fixed | A | ci-cd | 2026-07-13 | CI hosted lệch CI local (runner sạch) |
 | P008 | fixed | A | auth-security | 2026-07-13 | CodeQL: log rõ thông tin nhạy cảm ở runner CI local |
 | P009 | fixed | A | auth-security | 2026-07-13 | Cookie refresh token: 2 lỗi chỉ lộ khi test trình duyệt thật |
 | P010 | fixed | B | matching | 2026-07-13 | Bộ lọc vùng Discovery cho độ chính xác giả (LRN-001) |
 | P011 | mitigated | A | database-concurrency | 2026-07-13 | Transaction Postgres bị aborted sau unique violation (LRN-002) |
+| P012 | open | A | auth-security | 2026-07-16 | CodeQL: loop-bound-injection (high) ở common/hash/fnv1a.ts còn mở |
 | P013 | fixed | A | database-concurrency | 2026-07-18 | Job định kỳ chồng lấp khi tick chậm/reject (LRN-003) |
 | P014 | fixed | A | deploy-config | 2026-07-18 | Cấu hình theo máy (tunnel/IP/credential) nằm trong repo (LRN-004) |
 | P015 | mitigated | A | realtime-gateway | 2026-07-18 | Socket reconnect không khôi phục state bền (LRN-005) |
@@ -67,6 +69,7 @@ rows: 103 (open security/production findings are withheld from the public versio
 | P062 | fixed | A | ci-cd | 2026-08-14 | Prettier lỗi bảng markdown → CI #189 đỏ |
 | P063 | open | A | ci-cd | 2026-08-14 | Test frontend (admin/web) timeout lặp lại |
 | P064 | fixed | A | ci-cd | 2026-08-19 | Container smoke Linux-only chạy trên Windows chặn push |
+| P065 | open | A | deploy-config | 2026-08-19 | Production chạy bản cũ: route profile 404, thông báo Facebook cũ |
 | P066 | fixed | B | economy-payment | 2026-08-19 | Hiểu sai luật cổng quà (follower/ngày vs người bắt chuyện lần đầu) |
 | P067 | fixed | A | frontend-ux | 2026-08-19 | Toast đỏ sai ngữ cảnh khi hồ sơ yêu cầu tặng quà |
 | P068 | fixed | B | database-concurrency | 2026-08-19 | Migration gộp gây phụ thuộc chéo + gate kiến trúc đỏ |
@@ -75,6 +78,8 @@ rows: 103 (open security/production findings are withheld from the public versio
 | P071 | fixed | A | auth-security | 2026-08-20 | Cổng gọi điện có thể bypass sau khi block (bắt được khi tự review) |
 | P072 | mitigated | B | windows-toolchain | 2026-08-20 | Windows: Nx build lỗi 1314 + runner timeout (exit 124) |
 | P073 | false-alarm | C | ci-cd | 2026-08-20 | Báo động giả: clean container fail ở agent-check không có assertion |
+| P074 | in-progress | A | deploy-config | 2026-08-21 | Core API production crash lúc boot (media storage dev / thiếu biến R2) |
+| P075 | open | A | auth-security | 2026-09-03 | OTP trả mã ngay trong response khi production bật OTP |
 | P076 | fixed | B | deploy-config | 2026-09-03 | Rate limit trong bộ nhớ từng pod + trần kết nối Postgres |
 | P077 | open | A | windows-toolchain | 2026-09-03 | Test hard-kill của run-stage lỗi trên Windows (exit 124) |
 | P078 | open | A | dependencies | 2026-09-09 | PR Dependabot đỏ vì chính sách minimumReleaseAge của pnpm |

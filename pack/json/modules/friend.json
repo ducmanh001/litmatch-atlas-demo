@@ -202,6 +202,12 @@
  },
  "issues": [
   {
+   "id": "P065",
+   "title": "Production chạy bản cũ: route profile 404, thông báo Facebook cũ",
+   "status": "open",
+   "tier": "A"
+  },
+  {
    "id": "P006",
    "title": "Swagger thiếu cursor pagination → client sinh kiểu never",
    "status": "fixed",

@@ -4221,7 +4221,7 @@
     "line": 64,
     "summary": "Tạo OTP cho đăng nhập bằng số điện thoại",
     "tag": "auth",
-    "purpose": "Tạo OTP 6 số cho số điện thoại (rate limit theo số trong DB, vô hiệu mã cũ) (cách trả mã: ẩn khỏi bản công khai). Public, throttle 5/phút/IP; 403 nếu AUTH_PHONE_OTP_ENABLED tắt.",
+    "purpose": "Tạo OTP 6 số cho số điện thoại (rate limit theo số trong DB, vô hiệu mã cũ) và trả mã trong response vì không gửi SMS. Public, throttle 5/phút/IP; 403 nếu AUTH_PHONE_OTP_ENABLED tắt.",
     "auth": "public",
     "mapId": "e2",
     "public": true,

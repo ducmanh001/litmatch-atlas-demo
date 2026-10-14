@@ -16,7 +16,7 @@ Owns: bảng auth_identities (provider, providerUid -> userId, unique); bảng p
 | id | kind | method | path | auth | purpose |
 |---|---|---|---|---|---|
 | e1 | rest | POST | /api/v1/auth/guest | public | Đăng nhập khách bằng deviceId: find-or-create user guest + identity trong một transaction, trả access token, set cookie refresh và cấp guestDeviceToken. Public, throttle 5/phút/IP. |
-| e2 | rest | POST | /api/v1/auth/otp/request | public | Tạo OTP 6 số cho số điện thoại (rate limit theo số trong DB, vô hiệu mã cũ) (cách trả mã: ẩn khỏi bản công khai). Public, throttle 5/phút/IP; 403 nếu AUTH_PHONE_OTP_ENABLED tắt. |
+| e2 | rest | POST | /api/v1/auth/otp/request | public | Tạo OTP 6 số cho số điện thoại (rate limit theo số trong DB, vô hiệu mã cũ) và trả mã trong response vì không gửi SMS. Public, throttle 5/phút/IP; 403 nếu AUTH_PHONE_OTP_ENABLED tắt. |
 | e3 | rest | POST | /api/v1/auth/otp/verify | public | Xác minh OTP (đếm lần thử và consume bằng UPDATE có điều kiện) rồi đăng nhập hoặc tạo user mới theo identity phone. Public, throttle 10/phút/IP. |
 | e4 | rest | POST | /api/v1/auth/social | public | Đăng nhập Google/Apple (ID token JWKS) hoặc Facebook (debug_token) sau khi server tự verify, rồi find-or-create user theo (provider, uid). Public, throttle 10/phút/IP. |
 | e5 | rest | POST | /api/v1/auth/refresh | refresh-cookie | Xoay refresh token từ cookie httpOnly (rotation, phát hiện reuse thu hồi cả family), kiểm lại user chưa bị ban rồi cấp access token mới. Cần CsrfGuard (cookie csrf_token khớp header x-csrf-token). |

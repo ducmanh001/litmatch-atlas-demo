@@ -1,0 +1,3001 @@
+{
+ "section": "state",
+ "summary": "Trạng thái bền nằm ở Postgres (khoá dòng, unique, advisory lock); Redis chỉ giữ dữ liệu tạm/dẫn xuất (queue ghép đôi, lease kết nối và presence, rate limit, pub/sub realtime). Lỗi Redis fail-open ở throttle/publish, fail-closed ở lease/presence/rate-limit. Mỗi process còn có Map/cờ riêng; phiên là JWT ngắn + refresh xoay vòng trong DB.",
+ "limits": [
+  "Không xác minh được cấu hình Redis phía hạ tầng (maxmemory/eviction, persistence, TLS thực tế của dịch vụ hosted); mã chỉ truyền REDIS_URL cho ioredis.",
+  "Tên kênh/khoá do @socket.io/redis-adapter tạo nằm trong thư viện, không có trong repo nên không liệt kê pattern cụ thể.",
+  "Các ứng viên trong truth-redis không phải khoá Redis: ws://localhost:7880 (URL LiveKit mặc định), match-sessions/:id/join|end (route), quota_date/user_id/match_type (SQL guest quota), user:{userId} (tên room Socket.IO, xem inMemoryState) và party:comment:{userId}:{roomId}:{key} (giá trị cột party_room_comments.idempotency_key).",
+  "RateLimitPort.refund và tham số operationId chưa có nơi gọi ngoài adapter (grep apps/core-api/src); Lua refund hiện là mã chưa được dùng.",
+  "Không tìm thấy Cache-Control/ETag/max-age tuỳ chỉnh, cấu hình revalidate/force-cache của Next.js hay proxy_cache trong apps/core-api, apps/web/src, k8s/, deploy/, docker/ (grep tĩnh); lớp CDN Cloudflare (ADR 0006) và ingress nằm ngoài mã đã đọc.",
+  "Chưa đọc nhánh so khớp nội dung khi replay của stories, support_tickets, videos, soul_chat_messages, movie_session_messages; các mục đó chỉ xác nhận ràng buộc unique và hàm dựng key.",
+  "Admin: chưa thấy kết nối realtime hay xoá cache khi đăng xuất; chưa đọc đầy đủ apps/admin để khẳng định không có.",
+  "Số pod thực tế, topology Redis (đơn/cluster) và hành vi khi Redis đầy hoặc failover không suy ra được từ mã."
+ ],
+ "docDrift": [
+  {
+   "doc": "docs/services/realtime-gateway.md:56",
+   "claim": "Mỗi module publish bằng Redis client riêng của mình.",
+   "actual": "createCoreRedisClient trả cùng một ioredis connection cho mọi module trong một process (khoá theo REDIS_URL, đếm tham chiếu); chỉ token inject là riêng theo module.",
+   "evidence": {
+    "file": "apps/core-api/src/common/redis/core-redis-client.ts",
+    "line": 36,
+    "quote": "Các module vẫn inject token riêng để giữ boundary"
+   }
+  },
+  {
+   "doc": "apps/core-api/src/modules/discovery/redis/discovery-redis.provider.ts:7 (comment trong mã)",
+   "claim": "Client ioredis riêng của module Discovery, không dùng chung connection với module khác.",
+   "actual": "Provider gọi createCoreRedisClient nên dùng chung một connection với các module khác trong cùng process.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/discovery/redis/discovery-redis.provider.ts",
+    "line": 7,
+    "quote": "không dùng chung connection với module khác"
+   }
+  },
+  {
+   "doc": "apps/core-api/src/modules/economy/entities/wallet.entity.ts:11 (comment trong mã)",
+   "claim": "Wallet rebuild được bằng EconomyService.rebuildWallet().",
+   "actual": "rebuildWallet được cài ở LedgerService (và LedgerPersistencePort); EconomyService không có phương thức này (grep trong modules/economy).",
+   "evidence": {
+    "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+    "line": 277,
+    "quote": "async rebuildWallet(userId: string): Promise<Wallet> {"
+   }
+  }
+ ],
+ "redisKeys": [
+  {
+   "id": "realtime-user-channel",
+   "pattern": "realtime:user:{userId}",
+   "structure": "pubsub-channel",
+   "purpose": "Kênh fanout theo người nhận: core-api publish envelope đã tính sẵn quyền, signaling-gateway PSUBSCRIBE realtime:user:* rồi relay nguyên văn xuống socket.",
+   "owner": "libs/common-dtos (hợp đồng); core-api(common) publish, signaling-gateway subscribe",
+   "ttl": "none (pub/sub không lưu, at-most-once)",
+   "writers": [
+    {
+     "module": "core-api(common)",
+     "op": "PUBLISH qua publishRealtimeEvent (mọi module nghiệp vụ dùng chung helper)",
+     "evidence": {
+      "file": "apps/core-api/src/common/realtime/publish-realtime.ts",
+      "line": 24,
+      "quote": "await publisher.publish("
+     }
+    },
+    {
+     "module": "core-api(common)",
+     "op": "RedisRealtimePublisher.publish gọi PUBLISH channel payload",
+     "evidence": {
+      "file": "apps/core-api/src/common/realtime/redis-realtime-publisher.adapter.ts",
+      "line": 11,
+      "quote": "return this.redis.publish(channel, payload);"
+     }
+    },
+    {
+     "module": "matching",
+     "op": "dựng RedisRealtimePublisher trên client dùng chung của module",
+     "evidence": {
+      "file": "apps/core-api/src/modules/matching/redis/matching-redis.provider.ts",
+      "line": 79,
+      "quote": "new RedisRealtimePublisher(redis),"
+     }
+    }
+   ],
+   "readers": [
+    {
+     "module": "signaling-gateway",
+     "op": "PSUBSCRIBE realtime:user:* trên connection subscriber riêng",
+     "evidence": {
+      "file": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+      "line": 346,
+      "quote": ".psubscribe(REALTIME_USER_CHANNEL_PATTERN)"
+     }
+    },
+    {
+     "module": "signaling-gateway",
+     "op": "relay chỉ emit tới room cục bộ user:{userId} của pod (server.local)",
+     "evidence": {
+      "file": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+      "line": 332,
+      "quote": "this.server.local.to(userRoom(userId)).emit(envelope.event, envelope.data);"
+     }
+    }
+   ],
+   "failureMode": "fail-open ở phía publish (nuốt lỗi, log warn, client còn REST polling); pod chưa subscribe được thì isReady() false và socket của pod đó không nhận event.",
+   "cardinality": "Không lưu key; mỗi user nhận event là một channel logic.",
+   "evidence": {
+    "file": "libs/common-dtos/src/lib/realtime-events.ts",
+    "line": 13,
+    "quote": "export const REALTIME_USER_CHANNEL_PREFIX = 'realtime:user:';"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/common/realtime/publish-realtime.ts",
+     "line": 12,
+     "quote": "BEST-EFFORT theo thiết kế: nuốt lỗi + log warn, KHÔNG throw"
+    },
+    {
+     "file": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+     "line": 153,
+     "quote": "this.connectionQuota.isReady()"
+    }
+   ]
+  },
+  {
+   "id": "realtime-presence",
+   "pattern": "realtime:presence:{userId}",
+   "structure": "zset",
+   "purpose": "Presence dẫn xuất: mỗi lease socket là một member (score = thời điểm hết hạn, ms); core-api đọc để biết user có online không.",
+   "owner": "signaling-gateway (ghi) / user (đọc); tiền tố khai báo ở libs/common-dtos",
+   "ttl": "PEXPIRE = WS_CONNECTION_LEASE_MS (mặc định 90000, khoảng 10000-300000); member quá hạn bị ZREMRANGEBYSCORE khi đọc/acquire/refresh",
+   "writers": [
+    {
+     "module": "signaling-gateway",
+     "op": "ZADD + PEXPIRE trong ACQUIRE_SCRIPT/REFRESH_SCRIPT, ZREM trong RELEASE_SCRIPT",
+     "evidence": {
+      "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+      "line": 25,
+      "quote": "redis.call('ZADD', KEYS[2], expires_at, ARGV[1])"
+     }
+    },
+    {
+     "module": "signaling-gateway",
+     "op": "refresh lease mỗi leaseMs/3 khi socket còn sống",
+     "evidence": {
+      "file": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+      "line": 300,
+      "quote": "Math.floor(this.connectionQuota.leaseMs / 3),"
+     }
+    }
+   ],
+   "readers": [
+    {
+     "module": "user",
+     "op": "ZREMRANGEBYSCORE -inf now để dọn member hết hạn",
+     "evidence": {
+      "file": "apps/core-api/src/modules/user/redis/redis-presence-reader.adapter.ts",
+      "line": 15,
+      "quote": "await this.redis.zremrangebyscore(key, '-inf', Date.now());"
+     }
+    },
+    {
+     "module": "user",
+     "op": "ZCARD > 0 nghĩa là online",
+     "evidence": {
+      "file": "apps/core-api/src/modules/user/redis/redis-presence-reader.adapter.ts",
+      "line": 16,
+      "quote": "return (await this.redis.zcard(key)) > 0;"
+     }
+    }
+   ],
+   "failureMode": "fail-closed: RedisPresenceReader trả false (offline) khi Redis lỗi; phía ghi, acquire lỗi làm handshake bị từ chối.",
+   "cardinality": "1 zset mỗi user đang có socket, tối đa WS_MAX_CONNECTIONS_PER_USER (Joi max 3) member.",
+   "evidence": {
+    "file": "libs/common-dtos/src/lib/realtime-presence.ts",
+    "line": 6,
+    "quote": "export const REALTIME_PRESENCE_KEY_PREFIX = 'realtime:presence:';"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/user/redis/redis-presence-reader.adapter.ts",
+     "line": 11,
+     "quote": "Fail closed: Redis outage must never turn into a false online signal."
+    }
+   ]
+  },
+  {
+   "id": "signaling-connection-quota",
+   "pattern": "signaling:connection-quota:{userId}",
+   "structure": "zset",
+   "purpose": "Lease số kết nối socket mỗi user trên toàn cụm (member = leaseId UUID); acquire/refresh/release chạy atomic bằng Lua.",
+   "owner": "signaling-gateway",
+   "ttl": "PEXPIRE = WS_CONNECTION_LEASE_MS (mặc định 90000, khoảng 10000-300000); k8s base đặt 90000",
+   "writers": [
+    {
+     "module": "signaling-gateway",
+     "op": "acquire (ACQUIRE_SCRIPT) khi handshake",
+     "evidence": {
+      "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+      "line": 126,
+      "quote": "const result = await this.redis.eval("
+     }
+    },
+    {
+     "module": "signaling-gateway",
+     "op": "refresh (REFRESH_SCRIPT) định kỳ",
+     "evidence": {
+      "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+      "line": 139,
+      "quote": "const result = await this.redis.eval("
+     }
+    },
+    {
+     "module": "signaling-gateway",
+     "op": "release (RELEASE_SCRIPT) khi disconnect",
+     "evidence": {
+      "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+      "line": 151,
+      "quote": "await this.redis.eval("
+     }
+    }
+   ],
+   "readers": [
+    {
+     "module": "signaling-gateway",
+     "op": "ZSCORE/ZCARD trong ACQUIRE_SCRIPT để so với WS_MAX_CONNECTIONS_PER_USER",
+     "evidence": {
+      "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+      "line": 29,
+      "quote": "if redis.call('ZCARD', KEYS[1]) >= tonumber(ARGV[3]) then"
+     }
+    }
+   ],
+   "failureMode": "fail-closed: acquire lỗi thì handshake bị từ chối (CONNECTION_QUOTA_UNAVAILABLE); refresh lỗi thì ngắt socket; release lỗi thì lease tự hết hạn theo TTL.",
+   "cardinality": "1 zset mỗi user đang có socket, tối đa WS_MAX_CONNECTIONS_PER_USER (Joi max 3) member.",
+   "evidence": {
+    "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+    "line": 15,
+    "quote": "const QUOTA_KEY_PREFIX = 'signaling:connection-quota:';"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/signaling-gateway/src/config/env.validation.ts",
+     "line": 43,
+     "quote": "WS_MAX_CONNECTIONS_PER_USER: Joi.number().integer().min(1).max(3).default(3),"
+    },
+    {
+     "file": "apps/signaling-gateway/src/config/env.validation.ts",
+     "line": 48,
+     "quote": ".default(90_000),"
+    },
+    {
+     "file": "k8s/base/signaling-gateway/configmap.yaml",
+     "line": 18,
+     "quote": "WS_CONNECTION_LEASE_MS: '90000'"
+    },
+    {
+     "file": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+     "line": 258,
+     "quote": "throw new Error(CONNECTION_QUOTA_UNAVAILABLE_ERROR, { cause: error });"
+    }
+   ]
+  },
+  {
+   "id": "matching-queue-shard",
+   "pattern": "matching:queue:{matchType}:{region}:{ageBand}",
+   "structure": "zset",
+   "purpose": "Hàng đợi ghép đôi theo shard; member = ticketId, score = enqueuedAt + trustPenaltyMs - priorityBoostMs (nhỏ hơn được ghép trước).",
+   "owner": "matching",
+   "ttl": "none (mã không đặt TTL; xoá bằng ZPOPMIN/ZREM)",
+   "writers": [
+    {
+     "module": "matching",
+     "op": "ZADD NX|XX (enqueue; requeue giữ score gốc với NX)",
+     "evidence": {
+      "file": "apps/core-api/src/modules/matching/redis/redis-matching-queue.adapter.ts",
+      "line": 18,
+      "quote": "await this.redis.zadd(shard, mode, score, ticketId);"
+     }
+    },
+    {
+     "module": "matching",
+     "op": "ZREM ticketId khi huỷ/hết hạn",
+     "evidence": {
+      "file": "apps/core-api/src/modules/matching/redis/redis-matching-queue.adapter.ts",
+      "line": 22,
+      "quote": "await this.redis.zrem(shard, ticketId);"
+     }
+    },
+    {
+     "module": "matching",
+     "op": "ZPOPMIN shard 2 (matcher lấy 2 ticket điểm thấp nhất, atomic)",
+     "evidence": {
+      "file": "apps/core-api/src/modules/matching/redis/redis-matching-queue.adapter.ts",
+      "line": 26,
+      "quote": "const values = await this.redis.zpopmin(shard, count);"
+     }
+    }
+   ],
+   "readers": [
+    {
+     "module": "matching",
+     "op": "ZCARD > 0 để dọn shard rỗng khỏi tập active",
+     "evidence": {
+      "file": "apps/core-api/src/modules/matching/redis/redis-matching-queue.adapter.ts",
+      "line": 47,
+      "quote": "return (await this.redis.zcard(shard)) > 0;"
+     }
+    }
+   ],
+   "failureMode": "degrades to Postgres: queue chỉ là bản dẫn xuất, lệnh Redis reject sau 1 s (không xếp hàng offline) nên không ghép được tới khi Redis phục hồi; trạng thái ticket bền vẫn ở Postgres.",
+   "cardinality": "1 zset mỗi tổ hợp (matchType, region, ageBand) đang có ticket queued.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/matching/redis/matching-redis.provider.ts",
+    "line": 29,
+    "quote": "return `matching:queue:${matchType}:${region}:${ageBand}`;"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/matching/redis/matching-redis.provider.ts",
+     "line": 13,
+     "quote": "Capability token for the derived sorted-set queue"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/redis/matching-redis.provider.ts",
+     "line": 50,
+     "quote": "ticket.enqueuedAt.getTime() + ticket.trustPenaltyMs - ticket.priorityBoostMs"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+     "line": 361,
+     "quote": "await this.queue.enqueue(shard, String(r.score), r.id, 'NX');"
+    }
+   ]
+  },
+  {
+   "id": "matching-active-shards",
+   "pattern": "matching:shards:active",
+   "structure": "set",
+   "purpose": "Tập shard đang có ticket chờ để matcher chỉ quét các shard này, không quét keyspace.",
+   "owner": "matching",
+   "ttl": "none",
+   "writers": [
+    {
+     "module": "matching",
+     "op": "SADD shard (markActive khi enqueue)",
+     "evidence": {
+      "file": "apps/core-api/src/modules/matching/redis/redis-matching-queue.adapter.ts",
+      "line": 39,
+      "quote": "await this.redis.sadd(this.activeShardsKey, shard);"
+     }
+    },
+    {
+     "module": "matching",
+     "op": "SREM shard (unmarkActive khi shard rỗng)",
+     "evidence": {
+      "file": "apps/core-api/src/modules/matching/redis/redis-matching-queue.adapter.ts",
+      "line": 43,
+      "quote": "await this.redis.srem(this.activeShardsKey, shard);"
+     }
+    }
+   ],
+   "readers": [
+    {
+     "module": "matching",
+     "op": "SMEMBERS để liệt kê shard cần quét mỗi tick",
+     "evidence": {
+      "file": "apps/core-api/src/modules/matching/redis/redis-matching-queue.adapter.ts",
+      "line": 35,
+      "quote": "return this.redis.smembers(this.activeShardsKey);"
+     }
+    }
+   ],
+   "failureMode": "degrades to Postgres: cùng chế độ lỗi với queue shard (Redis lỗi thì matcher không có shard để quét).",
+   "cardinality": "1 key duy nhất; số member = số shard đang có ticket.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/matching/redis/matching-redis.provider.ts",
+    "line": 21,
+    "quote": "export const MATCHING_ACTIVE_SHARDS_KEY = 'matching:shards:active';"
+   }
+  },
+  {
+   "id": "throttle-hits",
+   "pattern": "throttle:{{throttlerName}:{key}}:hits",
+   "structure": "string",
+   "purpose": "Bộ đếm cửa sổ cố định của @nestjs/throttler dùng chung giữa các pod khi THROTTLE_STORAGE=redis; cặp ngoặc ngoài cùng là hash tag Redis Cluster.",
+   "owner": "core-api(common/throttle)",
+   "ttl": "PEXPIRE = ttl cửa sổ (THROTTLE_TTL_SECONDS mặc định 60 s hoặc ttl của @Throttle); rút còn blockDuration khi vượt limit",
+   "writers": [
+    {
+     "module": "core-api(common)",
+     "op": "INCR + PEXPIRE trong THROTTLE_INCREMENT_LUA",
+     "evidence": {
+      "file": "apps/core-api/src/common/throttle/redis-throttler-storage.ts",
+      "line": 36,
+      "quote": "local hits = redis.call('INCR', KEYS[1])"
+     }
+    }
+   ],
+   "readers": [
+    {
+     "module": "core-api(common)",
+     "op": "GET/PTTL cùng script (khi đang bị block trả số hits hiện có)",
+     "evidence": {
+      "file": "apps/core-api/src/common/throttle/redis-throttler-storage.ts",
+      "line": 91,
+      "quote": "(await this.redis.eval("
+     }
+    }
+   ],
+   "failureMode": "fail-open: lỗi Redis thì dùng bộ đếm trong RAM của pod 5 s (REDIS_RETRY_AFTER_MS) rồi thử lại; request không bị lỗi.",
+   "cardinality": "1 key mỗi tổ hợp (throttler, khoá ThrottlerGuard theo req.ip và route) trong cửa sổ.",
+   "evidence": {
+    "file": "apps/core-api/src/common/throttle/redis-throttler-storage.ts",
+    "line": 89,
+    "quote": "const slot = `throttle:{${throttlerName}:${key}}`;"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/common/throttle/redis-throttler-storage.ts",
+     "line": 16,
+     "quote": "const REDIS_RETRY_AFTER_MS = 5_000;"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 753,
+     "quote": "THROTTLE_TTL_SECONDS: Joi.number().integer().min(1).default(60),"
+    }
+   ]
+  },
+  {
+   "id": "throttle-block",
+   "pattern": "throttle:{{throttlerName}:{key}}:block",
+   "structure": "string",
+   "purpose": "Cờ chặn đặt khi vượt limit; hits được rút ngắn bằng blockDuration nên bộ đếm khởi động lại đúng lúc hết chặn.",
+   "owner": "core-api(common/throttle)",
+   "ttl": "PX = blockDuration của throttler",
+   "writers": [
+    {
+     "module": "core-api(common)",
+     "op": "SET '1' PX blockDuration trong THROTTLE_INCREMENT_LUA",
+     "evidence": {
+      "file": "apps/core-api/src/common/throttle/redis-throttler-storage.ts",
+      "line": 43,
+      "quote": "redis.call('SET', KEYS[2], '1', 'PX', ARGV[3])"
+     }
+    }
+   ],
+   "readers": [
+    {
+     "module": "core-api(common)",
+     "op": "PTTL KEYS[2] đầu script để biết còn bị chặn",
+     "evidence": {
+      "file": "apps/core-api/src/common/throttle/redis-throttler-storage.ts",
+      "line": 30,
+      "quote": "local blockTtl = redis.call('PTTL', KEYS[2])"
+     }
+    }
+   ],
+   "failureMode": "fail-open: như throttle-hits (fallback bộ nhớ pod khi Redis lỗi).",
+   "cardinality": "Chỉ tồn tại cho khoá đang bị chặn.",
+   "evidence": {
+    "file": "apps/core-api/src/common/throttle/redis-throttler-storage.ts",
+    "line": 90,
+    "quote": "const [totalHits, windowTtlMs, blocked, blockTtlMs] ="
+   }
+  },
+  {
+   "id": "ratelimit-discovery-location",
+   "pattern": "discovery:location-update:count:{userId}",
+   "structure": "string",
+   "purpose": "Bộ đếm giới hạn cập nhật vị trí mỗi giờ (DISCOVERY_LOCATION_UPDATE_RATE_LIMIT_PER_HOUR), chống dò hành trình.",
+   "owner": "discovery",
+   "ttl": "3600 s (RATE_LIMIT_WINDOW_SECONDS), đặt khi INCR lần đầu",
+   "writers": [
+    {
+     "module": "discovery",
+     "op": "checkRateLimit trong setLocation (consume Lua)",
+     "evidence": {
+      "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+      "line": 76,
+      "quote": "const allowed = await checkRateLimit("
+     }
+    }
+   ],
+   "readers": [
+    {
+     "module": "common/redis",
+     "op": "checkRateLimit dựng RedisRateLimitAdapter rồi consume",
+     "evidence": {
+      "file": "apps/core-api/src/common/redis/rate-limit.ts",
+      "line": 12,
+      "quote": "const result = await new RedisRateLimitAdapter(redis).consume({"
+     }
+    }
+   ],
+   "failureMode": "fail-closed theo mã: không có try/catch quanh checkRateLimit nên lỗi Redis ném ra khỏi service (request lỗi).",
+   "cardinality": "1 key mỗi user có cập nhật vị trí trong giờ, kèm tối đa limit key reservation.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/discovery/redis/discovery-redis.provider.ts",
+    "line": 12,
+    "quote": "return `discovery:location-update:count:${userId}`;"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+     "line": 34,
+     "quote": "const RATE_LIMIT_WINDOW_SECONDS = 3600;"
+    }
+   ]
+  },
+  {
+   "id": "ratelimit-discovery-nearby",
+   "pattern": "discovery:nearby-query:count:{userId}",
+   "structure": "string",
+   "purpose": "Bộ đếm giới hạn truy vấn nearby mỗi giờ (DISCOVERY_NEARBY_QUERY_RATE_LIMIT_PER_HOUR), chống dò trilateration.",
+   "owner": "discovery",
+   "ttl": "3600 s (RATE_LIMIT_WINDOW_SECONDS), đặt khi INCR lần đầu",
+   "writers": [
+    {
+     "module": "discovery",
+     "op": "checkRateLimit trong listNearby (consume Lua)",
+     "evidence": {
+      "file": "apps/core-api/src/modules/discovery/nearby.service.ts",
+      "line": 128,
+      "quote": "const allowed = await checkRateLimit("
+     }
+    }
+   ],
+   "readers": [
+    {
+     "module": "common/redis",
+     "op": "đọc/ghi bên trong RATE_LIMIT_CONSUME_LUA",
+     "evidence": {
+      "file": "apps/core-api/src/common/redis/redis-rate-limit.adapter.ts",
+      "line": 79,
+      "quote": "const result = (await this.redis.eval("
+     }
+    }
+   ],
+   "failureMode": "fail-closed theo mã: không có try/catch quanh checkRateLimit.",
+   "cardinality": "1 key mỗi user có truy vấn nearby trong giờ, kèm tối đa limit key reservation.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/discovery/redis/discovery-redis.provider.ts",
+    "line": 17,
+    "quote": "return `discovery:nearby-query:count:${userId}`;"
+   }
+  },
+  {
+   "id": "ratelimit-matching-invite",
+   "pattern": "matching:invite:count:{userId}",
+   "structure": "string",
+   "purpose": "Bộ đếm giới hạn lời mời Voice/Soul Match mỗi giờ (MATCHING_INVITE_RATE_LIMIT_PER_HOUR).",
+   "owner": "matching",
+   "ttl": "3600 s (RATE_LIMIT_WINDOW_SECONDS), đặt khi INCR lần đầu",
+   "writers": [
+    {
+     "module": "matching",
+     "op": "RateLimitPort.consume khi tạo invite",
+     "evidence": {
+      "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+      "line": 109,
+      "quote": "const consumed = await this.rateLimit.consume({"
+     }
+    }
+   ],
+   "readers": [
+    {
+     "module": "common/redis",
+     "op": "đọc/ghi bên trong RATE_LIMIT_CONSUME_LUA",
+     "evidence": {
+      "file": "apps/core-api/src/common/redis/redis-rate-limit.adapter.ts",
+      "line": 79,
+      "quote": "const result = (await this.redis.eval("
+     }
+    }
+   ],
+   "failureMode": "fail-closed theo mã: consume nằm ngoài try/catch nên lỗi Redis làm request tạo invite lỗi.",
+   "cardinality": "1 key mỗi user có gửi invite trong giờ, kèm tối đa limit key reservation.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+    "line": 62,
+    "quote": "return `matching:invite:count:${userId}`;"
+   }
+  },
+  {
+   "id": "ratelimit-window",
+   "pattern": "{rateLimitKey}:rate-limit-window",
+   "structure": "string",
+   "purpose": "Định danh cửa sổ hiện tại (UUID) để refund muộn không trừ nhầm cửa sổ sau dùng lại cùng rateLimitKey.",
+   "owner": "core-api(common/redis)",
+   "ttl": "EX = windowSeconds khi INCR=1; được dựng lại theo TTL còn lại của counter nếu mất",
+   "writers": [
+    {
+     "module": "core-api(common)",
+     "op": "SET window EX trong RATE_LIMIT_CONSUME_LUA",
+     "evidence": {
+      "file": "apps/core-api/src/common/redis/redis-rate-limit.adapter.ts",
+      "line": 29,
+      "quote": "redis.call('SET', KEYS[3], ARGV[3], 'EX', ARGV[2])"
+     }
+    }
+   ],
+   "readers": [
+    {
+     "module": "core-api(common)",
+     "op": "GET so khớp window trong RATE_LIMIT_REFUND_LUA",
+     "evidence": {
+      "file": "apps/core-api/src/common/redis/redis-rate-limit.adapter.ts",
+      "line": 52,
+      "quote": "if redis.call('GET', KEYS[3]) ~= reservationWindow then return 0 end"
+     }
+    }
+   ],
+   "failureMode": "fail-closed: cùng đường eval với counter, lỗi Redis ném ra cho caller.",
+   "cardinality": "1 key cho mỗi rateLimitKey đang trong cửa sổ.",
+   "evidence": {
+    "file": "apps/core-api/src/common/redis/redis-rate-limit.adapter.ts",
+    "line": 14,
+    "quote": "const RATE_LIMIT_WINDOW_SUFFIX = ':rate-limit-window';"
+   }
+  },
+  {
+   "id": "ratelimit-reservation",
+   "pattern": "{rateLimitKey}:rate-limit-reservation:{operationId|uuid}",
+   "structure": "string",
+   "purpose": "Dấu đã tiêu một slot: operationId lặp lại thì consume được coi là deduplicated; refund xoá dấu trước khi giảm counter.",
+   "owner": "core-api(common/redis)",
+   "ttl": "EX = TTL còn lại của counter (tối thiểu 1 s)",
+   "writers": [
+    {
+     "module": "core-api(common)",
+     "op": "SET reservation EX sau mỗi consume được phép",
+     "evidence": {
+      "file": "apps/core-api/src/common/redis/redis-rate-limit.adapter.ts",
+      "line": 42,
+      "quote": "redis.call('SET', KEYS[2], window, 'EX', math.max(ttl, 1))"
+     }
+    }
+   ],
+   "readers": [
+    {
+     "module": "core-api(common)",
+     "op": "EXISTS reservation đầu script để trả deduplicated",
+     "evidence": {
+      "file": "apps/core-api/src/common/redis/redis-rate-limit.adapter.ts",
+      "line": 22,
+      "quote": "if redis.call('EXISTS', KEYS[2]) == 1 then"
+     }
+    }
+   ],
+   "failureMode": "fail-closed: lỗi Redis ném ra cho caller.",
+   "cardinality": "Mỗi lượt consume được phép tạo 1 key (UUID ngẫu nhiên vì chưa caller nào truyền operationId), sống tới hết cửa sổ: tối đa limit key mỗi rateLimitKey mỗi cửa sổ.",
+   "evidence": {
+    "file": "apps/core-api/src/common/redis/redis-rate-limit.adapter.ts",
+    "line": 13,
+    "quote": "const RATE_LIMIT_RESERVATION_SUFFIX = ':rate-limit-reservation:';"
+   },
+   "confidence": "high"
+  },
+  {
+   "id": "lua-ratelimit-consume",
+   "pattern": "RATE_LIMIT_CONSUME_LUA (KEYS: counter, reservation, window)",
+   "structure": "lua",
+   "purpose": "INCR + EXPIRE atomic; vượt limit thì DECR lại và không cấp reservation; reservation đã có thì trả deduplicated.",
+   "owner": "core-api(common/redis)",
+   "ttl": "n/a (đặt EXPIRE = windowSeconds trên counter)",
+   "writers": [
+    {
+     "module": "core-api(common)",
+     "op": "EVAL qua RedisRateLimitAdapter.consume",
+     "evidence": {
+      "file": "apps/core-api/src/common/redis/redis-rate-limit.adapter.ts",
+      "line": 79,
+      "quote": "const result = (await this.redis.eval("
+     }
+    }
+   ],
+   "readers": [],
+   "failureMode": "fail-closed: adapter không bắt lỗi, caller nhận lỗi.",
+   "cardinality": "n/a",
+   "evidence": {
+    "file": "apps/core-api/src/common/redis/redis-rate-limit.adapter.ts",
+    "line": 21,
+    "quote": "const RATE_LIMIT_CONSUME_LUA ="
+   }
+  },
+  {
+   "id": "lua-ratelimit-refund",
+   "pattern": "RATE_LIMIT_REFUND_LUA (KEYS: counter, reservation, window)",
+   "structure": "lua",
+   "purpose": "Hoàn một slot đã tiêu: xoá reservation trước, chỉ DECR khi window còn khớp; hiện chưa có caller nào gọi refund.",
+   "owner": "core-api(common/redis)",
+   "ttl": "n/a",
+   "writers": [
+    {
+     "module": "core-api(common)",
+     "op": "EVAL qua RedisRateLimitAdapter.refund",
+     "evidence": {
+      "file": "apps/core-api/src/common/redis/redis-rate-limit.adapter.ts",
+      "line": 103,
+      "quote": "const result = await this.redis.eval("
+     }
+    }
+   ],
+   "readers": [],
+   "failureMode": "fail-closed: lỗi Redis ném ra cho caller (nếu có).",
+   "cardinality": "n/a",
+   "evidence": {
+    "file": "apps/core-api/src/common/redis/redis-rate-limit.adapter.ts",
+    "line": 47,
+    "quote": "const RATE_LIMIT_REFUND_LUA ="
+   }
+  },
+  {
+   "id": "lua-throttle-increment",
+   "pattern": "THROTTLE_INCREMENT_LUA (KEYS: hits, block)",
+   "structure": "lua",
+   "purpose": "Tăng hits và đặt cờ block trong một lần gọi; hai key chung hash tag để cùng slot khi Redis Cluster.",
+   "owner": "core-api(common/throttle)",
+   "ttl": "n/a",
+   "writers": [
+    {
+     "module": "core-api(common)",
+     "op": "EVAL trong RedisThrottlerStorage.increment",
+     "evidence": {
+      "file": "apps/core-api/src/common/throttle/redis-throttler-storage.ts",
+      "line": 91,
+      "quote": "(await this.redis.eval("
+     }
+    }
+   ],
+   "readers": [],
+   "failureMode": "fail-open: lỗi thì fallback bộ nhớ pod.",
+   "cardinality": "n/a",
+   "evidence": {
+    "file": "apps/core-api/src/common/throttle/redis-throttler-storage.ts",
+    "line": 29,
+    "quote": "const THROTTLE_INCREMENT_LUA ="
+   }
+  },
+  {
+   "id": "lua-connection-acquire",
+   "pattern": "ACQUIRE_SCRIPT (KEYS: quota, presence)",
+   "structure": "lua",
+   "purpose": "Dọn lease hết hạn, gia hạn nếu lease đã có, từ chối khi ZCARD >= WS_MAX_CONNECTIONS_PER_USER, ngược lại thêm lease vào cả quota và presence.",
+   "owner": "signaling-gateway",
+   "ttl": "n/a (PEXPIRE = leaseMs)",
+   "writers": [
+    {
+     "module": "signaling-gateway",
+     "op": "EVAL từ ConnectionQuotaService.acquire",
+     "evidence": {
+      "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+      "line": 126,
+      "quote": "const result = await this.redis.eval("
+     }
+    }
+   ],
+   "readers": [],
+   "failureMode": "fail-closed: lỗi thì handshake bị từ chối.",
+   "cardinality": "n/a",
+   "evidence": {
+    "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+    "line": 17,
+    "quote": "const ACQUIRE_SCRIPT ="
+   }
+  },
+  {
+   "id": "lua-connection-refresh",
+   "pattern": "REFRESH_SCRIPT (KEYS: quota, presence)",
+   "structure": "lua",
+   "purpose": "Gia hạn lease nếu còn tồn tại (trả 0 nếu đã mất) và cập nhật presence cùng điểm hết hạn.",
+   "owner": "signaling-gateway",
+   "ttl": "n/a (PEXPIRE = leaseMs)",
+   "writers": [
+    {
+     "module": "signaling-gateway",
+     "op": "EVAL từ ConnectionQuotaService.refresh",
+     "evidence": {
+      "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+      "line": 139,
+      "quote": "const result = await this.redis.eval("
+     }
+    }
+   ],
+   "readers": [],
+   "failureMode": "fail-closed: refresh lỗi hoặc trả 0 thì ngắt socket.",
+   "cardinality": "n/a",
+   "evidence": {
+    "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+    "line": 39,
+    "quote": "const REFRESH_SCRIPT ="
+   }
+  },
+  {
+   "id": "lua-connection-release",
+   "pattern": "RELEASE_SCRIPT (KEYS: quota, presence)",
+   "structure": "lua",
+   "purpose": "ZREM lease khỏi quota và presence, xoá key khi rỗng.",
+   "owner": "signaling-gateway",
+   "ttl": "n/a",
+   "writers": [
+    {
+     "module": "signaling-gateway",
+     "op": "EVAL từ ConnectionQuotaService.release",
+     "evidence": {
+      "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+      "line": 151,
+      "quote": "await this.redis.eval("
+     }
+    }
+   ],
+   "readers": [],
+   "failureMode": "degrades to TTL: release lỗi chỉ log/Sentry, lease tự hết hạn theo leaseMs.",
+   "cardinality": "n/a",
+   "evidence": {
+    "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+    "line": 53,
+    "quote": "const RELEASE_SCRIPT ="
+   }
+  },
+  {
+   "id": "socketio-adapter-channels",
+   "pattern": "(tên do @socket.io/redis-adapter đặt, không khai báo trong repo)",
+   "structure": "pubsub-channel",
+   "purpose": "Bus liên pod của Socket.IO cluster adapter trên 2 kết nối pub/sub riêng; relay realtime dùng server.local nên không đi qua bus này.",
+   "owner": "signaling-gateway",
+   "ttl": "none (pub/sub)",
+   "writers": [
+    {
+     "module": "signaling-gateway",
+     "op": "pubClient tạo adapter; subClient = pubClient.duplicate()",
+     "evidence": {
+      "file": "apps/signaling-gateway/src/app/redis-adapter.service.ts",
+      "line": 26,
+      "quote": "this.subClient = this.pubClient.duplicate();"
+     }
+    },
+    {
+     "module": "signaling-gateway",
+     "op": "đóng cả hai client khi shutdown (QUIT, lỗi thì disconnect)",
+     "evidence": {
+      "file": "apps/signaling-gateway/src/app/redis-adapter.service.ts",
+      "line": 75,
+      "quote": "await client.quit();"
+     }
+    }
+   ],
+   "readers": [
+    {
+     "module": "signaling-gateway",
+     "op": "subClient nhận broadcast không-local từ pod khác",
+     "evidence": {
+      "file": "apps/signaling-gateway/src/app/redis-adapter.service.ts",
+      "line": 46,
+      "quote": "return createAdapter(this.pubClient, this.subClient);"
+     }
+    }
+   ],
+   "failureMode": "readiness: isReady() cần cả pub và sub ở trạng thái ready; lỗi runtime chỉ log warn.",
+   "cardinality": "Do thư viện quyết định (chưa xác minh trong repo).",
+   "evidence": {
+    "file": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+    "line": 317,
+    "quote": "Mọi pod đều PSUBSCRIBE"
+   },
+   "confidence": "low"
+  }
+ ],
+ "redisClients": [
+  {
+   "name": "core-api command client dùng chung (createCoreRedisClient)",
+   "createdIn": "apps/core-api/src/common/redis/core-redis-client.ts (hàm createCoreRedisClient, gọi từ provider của calling, discovery, friend, gift, matching, mini-game, movie-match, party-room, soul-match, user và app.module cho throttler)",
+   "urlEnv": "REDIS_URL (Joi uri scheme redis|rediss, mặc định redis://localhost:6379)",
+   "tls": "Mã không đặt option tls riêng; TLS tuỳ scheme của REDIS_URL. deploy/hosted/*.env.example dùng rediss://, compose production dùng redis://redis:6379.",
+   "retryAndTimeouts": "connectTimeout 1000 ms, commandTimeout 1000 ms, maxRetriesPerRequest 1, enableOfflineQueue false (lệnh fail nhanh); reconnect theo cấp số nhân 250 ms đến tối đa 15000 ms, jitter +-25%.",
+   "sharedBetween": "Mọi module core-api trong cùng process dùng CHUNG một connection theo REDIS_URL (đếm tham chiếu); connection subscriber không đi qua helper này.",
+   "evidence": {
+    "file": "apps/core-api/src/common/redis/core-redis-client.ts",
+    "line": 49,
+    "quote": "connectTimeout: 1_000,"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/common/redis/core-redis-client.ts",
+     "line": 52,
+     "quote": "enableOfflineQueue: false,"
+    },
+    {
+     "file": "apps/core-api/src/common/redis/core-redis-client.ts",
+     "line": 3,
+     "quote": "const REDIS_RECONNECT_BASE_MS = 250;"
+    },
+    {
+     "file": "apps/core-api/src/common/redis/core-redis-client.ts",
+     "line": 4,
+     "quote": "const REDIS_RECONNECT_MAX_MS = 15_000;"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 263,
+     "quote": ".uri({ scheme: ['redis', 'rediss'] })"
+    },
+    {
+     "file": "apps/core-api/src/app/app.module.ts",
+     "line": 114,
+     "quote": "createCoreRedisClient("
+    },
+    {
+     "file": "apps/core-api/src/modules/user/redis/user-redis.provider.ts",
+     "line": 15,
+     "quote": "createCoreRedisClient(config.getOrThrow('REDIS_URL', { infer: true })),"
+    },
+    {
+     "file": "deploy/hosted/core-api.env.example",
+     "line": 7,
+     "quote": "REDIS_URL=rediss://default:PASSWORD@HOST:PORT"
+    },
+    {
+     "file": "deploy/production/compose.yml",
+     "line": 63,
+     "quote": "REDIS_URL: redis://redis:6379"
+    }
+   ]
+  },
+  {
+   "name": "signaling quota command client",
+   "createdIn": "apps/signaling-gateway/src/app/connection-quota.service.ts (constructor ConnectionQuotaService)",
+   "urlEnv": "REDIS_URL của signaling-gateway (cùng Redis với core-api)",
+   "tls": "Không đặt option tls; theo scheme REDIS_URL (hosted example dùng rediss://).",
+   "retryAndTimeouts": "signalingRedisClientOptions: connectTimeout 1000 ms, commandTimeout 1000 ms, maxRetriesPerRequest 1, enableOfflineQueue false; reconnect 500 ms đến 15000 ms, jitter +-25%.",
+   "sharedBetween": "Chỉ ConnectionQuotaService (acquire/refresh/release); tách khỏi connection subscriber. Shutdown gọi QUIT (lỗi thì disconnect).",
+   "evidence": {
+    "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+    "line": 82,
+    "quote": "this.redis = new Redis("
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/signaling-gateway/src/app/redis-client-options.ts",
+     "line": 3,
+     "quote": "const RECONNECT_BASE_MS = 500;"
+    },
+    {
+     "file": "apps/signaling-gateway/src/app/redis-client-options.ts",
+     "line": 25,
+     "quote": "enableOfflineQueue: false,"
+    },
+    {
+     "file": "deploy/hosted/signaling-gateway.env.example",
+     "line": 6,
+     "quote": "REDIS_URL=rediss://default:PASSWORD@HOST:PORT"
+    },
+    {
+     "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+     "line": 162,
+     "quote": "await this.redis.quit();"
+    }
+   ]
+  },
+  {
+   "name": "signaling PSUBSCRIBE subscriber",
+   "createdIn": "apps/signaling-gateway/src/app/signaling.gateway.ts (afterInit)",
+   "urlEnv": "REDIS_URL của signaling-gateway",
+   "tls": "Không đặt option tls; theo scheme REDIS_URL.",
+   "retryAndTimeouts": "Cùng signalingRedisClientOptions(); ready thì ensureSubscribed gọi PSUBSCRIBE, close/end thì subscriptionReady=false.",
+   "sharedBetween": "Chỉ SignalingGateway (subscriber mode không dùng được lệnh khác). onModuleDestroy gọi QUIT, lỗi thì disconnect cưỡng bức.",
+   "evidence": {
+    "file": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+    "line": 103,
+    "quote": "this.subscriber = new Redis("
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+     "line": 140,
+     "quote": "await subscriber.quit();"
+    }
+   ]
+  },
+  {
+   "name": "signaling cluster adapter pub/sub",
+   "createdIn": "apps/signaling-gateway/src/app/redis-adapter.service.ts (connect)",
+   "urlEnv": "REDIS_URL truyền vào connect(redisUrl)",
+   "tls": "Không đặt option tls; theo scheme REDIS_URL.",
+   "retryAndTimeouts": "pubClient dùng signalingRedisClientOptions(); subClient là pubClient.duplicate(); cả hai có listener error để không crash khi reconnect.",
+   "sharedBetween": "Chỉ SignalingRedisAdapterService (2 connection riêng, không chung với PSUBSCRIBE). Mỗi pod signaling giữ tổng 4 connection Redis.",
+   "evidence": {
+    "file": "apps/signaling-gateway/src/app/redis-adapter.service.ts",
+    "line": 25,
+    "quote": "this.pubClient = new Redis(redisUrl, signalingRedisClientOptions());"
+   }
+  }
+ ],
+ "inMemoryState": [
+  {
+   "where": "apps/core-api/src/common/redis/core-redis-client.ts",
+   "what": "sharedClientsByUrl (Map), sharedEntryByClient (WeakMap), fullyReleasedClients (WeakSet): registry connection Redis dùng chung theo REDIS_URL, đếm tham chiếu để đóng đúng lúc. closeCoreRedisClient giảm tham chiếu, về 0 thì QUIT (QUIT lỗi thì disconnect).",
+   "scope": "per process",
+   "multiPodConsequence": "Mỗi pod giữ đúng 1 connection command cho mọi module; N pod là N connection tới Redis, không có phối hợp giữa pod.",
+   "evidence": {
+    "file": "apps/core-api/src/common/redis/core-redis-client.ts",
+    "line": 12,
+    "quote": "const sharedClientsByUrl = new Map<string, SharedRedisEntry>();"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/common/redis/core-redis-client.ts",
+     "line": 69,
+     "quote": "const shared = sharedEntryByClient.get(client);"
+    },
+    {
+     "file": "apps/core-api/src/common/redis/core-redis-client.ts",
+     "line": 81,
+     "quote": "await client.quit();"
+    }
+   ]
+  },
+  {
+   "where": "apps/core-api/src/common/throttle/redis-throttler-storage.ts",
+   "what": "fallback (ThrottlerStorageService đếm trong RAM), redisRetryAt, lastWarnAt.",
+   "scope": "per process",
+   "multiPodConsequence": "Khi Redis lỗi hoặc THROTTLE_STORAGE=memory (mặc định trong .env.example) mỗi pod đếm riêng: giới hạn thực tế gấp N lần và reset mỗi lần deploy; k8s base đặt THROTTLE_STORAGE=redis.",
+   "evidence": {
+    "file": "apps/core-api/src/common/throttle/redis-throttler-storage.ts",
+    "line": 54,
+    "quote": "so with N replicas the effective limit is N times higher"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 757,
+     "quote": "THROTTLE_STORAGE: Joi.string().valid('memory', 'redis').default('memory'),"
+    },
+    {
+     "file": "k8s/base/core-api/configmap.yaml",
+     "line": 194,
+     "quote": "THROTTLE_STORAGE: 'redis'"
+    },
+    {
+     "file": ".env.example",
+     "line": 414,
+     "quote": "THROTTLE_STORAGE=memory"
+    }
+   ]
+  },
+  {
+   "where": "apps/core-api/src/common/scheduling/managed-interval.ts",
+   "what": "ManagedInterval.running, scheduledRunInFlight, clusterRetryAfter: cờ chống chồng lấn tick và hẹn giờ thử lại khi không giành được lock.",
+   "scope": "per process",
+   "multiPodConsequence": "Chỉ chống chồng lấn trong một process; giữa các pod chỉ job bật clusterSingleton (pg_try_advisory_xact_lock) mới chạy ở một pod. Outbox-relay và iap-refund-poll không bật clusterSingleton nên chạy ở mọi pod khi được bật và dựa vào SKIP LOCKED.",
+   "evidence": {
+    "file": "apps/core-api/src/common/scheduling/managed-interval.ts",
+    "line": 26,
+    "quote": "private running = false;"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/common/scheduling/managed-interval.ts",
+     "line": 23,
+     "quote": "Correctness giữa nhiều process vẫn phải do transaction"
+    }
+   ]
+  },
+  {
+   "where": "apps/core-api/src/common/runtime/runtime-activity.ts",
+   "what": "lastMeaningfulRequestAt, meaningfulRequestCount, backgroundSkipCount, backgroundSkipsByJob: tín hiệu hoạt động HTTP để bỏ qua tick nền khi rảnh.",
+   "scope": "per process",
+   "multiPodConsequence": "Pod không nhận request nghiệp vụ trong 5 phút bỏ qua các tick có skipWhenIdle dù pod khác đang bận; số đếm skip/request là riêng từng pod.",
+   "evidence": {
+    "file": "apps/core-api/src/common/runtime/runtime-activity.ts",
+    "line": 10,
+    "quote": "export const RUNTIME_ACTIVITY_IDLE_AFTER_MS = 5 * 60 * 1_000;"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/common/runtime/runtime-activity.ts",
+     "line": 15,
+     "quote": "const backgroundSkipsByJob = new Map<string, number>();"
+    }
+   ]
+  },
+  {
+   "where": "apps/core-api/src/modules/matching/matcher-wakeup.ts",
+   "what": "MatcherWakeup.listeners (Set): tín hiệu đánh thức matcher trong cùng process.",
+   "scope": "per process",
+   "multiPodConsequence": "Wake-up chỉ tới matcher cùng pod; pod khác thấy ticket mới nhờ Redis queue và backstop interval của worker.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/matching/matcher-wakeup.ts",
+    "line": 12,
+    "quote": "private readonly listeners = new Set<MatcherWakeListener>();"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/matching/matcher-wakeup.ts",
+     "line": 7,
+     "quote": "Redis queue vẫn là nguồn công việc dùng chung giữa các instance"
+    }
+   ]
+  },
+  {
+   "where": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+   "what": "activeQuotaLeases (Map leaseId -> {userId, timer, client}), subscriptionReady, subscriptionInFlight, shuttingDown; socket.data (userId, quotaLeaseId, quotaRefreshTimer).",
+   "scope": "per process",
+   "multiPodConsequence": "Socket và timer refresh chỉ tồn tại ở pod giữ socket; pod chết thì lease trong Redis tự hết hạn sau WS_CONNECTION_LEASE_MS (mặc định 90 s).",
+   "evidence": {
+    "file": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+    "line": 59,
+    "quote": "private readonly activeQuotaLeases = new Map<"
+   }
+  },
+  {
+   "where": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+   "what": "Room Socket.IO user:{userId} chứa các socket cục bộ của pod.",
+   "scope": "per process",
+   "multiPodConsequence": "Relay dùng server.local nên mỗi pod chỉ emit cho socket của chính nó; mọi pod đều PSUBSCRIBE và nhận cùng event, pod không có socket của user thì bỏ qua.",
+   "evidence": {
+    "file": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+    "line": 33,
+    "quote": "return `user:${userId}`;"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+     "line": 332,
+     "quote": "this.server.local.to(userRoom(userId)).emit(envelope.event, envelope.data);"
+    }
+   ]
+  },
+  {
+   "where": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+   "what": "ConnectionQuotaService.unavailableListeners (Set) và trạng thái connection Redis của quota.",
+   "scope": "per process",
+   "multiPodConsequence": "Khi connection quota đóng/kết thúc, pod ngắt hết socket đang giữ lease (fail-closed); không ảnh hưởng socket ở pod khác.",
+   "evidence": {
+    "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+    "line": 71,
+    "quote": "private readonly unavailableListeners = new Set<() => void>();"
+   }
+  }
+ ],
+ "locksAndLeases": [
+  {
+   "kind": "pg advisory lock",
+   "where": "apps/core-api/src/common/scheduling/managed-interval.ts (runClusterSingleton)",
+   "protects": "Job nền bật clusterSingleton chỉ chạy ở một pod mỗi tick: pg_try_advisory_xact_lock(hashtextextended('litmatch:cluster-job:{jobName}')) trong transaction; lock nhả khi transaction/connection kết thúc kể cả crash. Dùng bởi call-ticker, reconciliation (fast/deep), story-sweeper, streak-warning, invite-sweeper, matcher-worker, ticket-sweeper, party-room-sweeper, video-ranking, video-sweeper.",
+   "evidence": {
+    "file": "apps/core-api/src/common/scheduling/managed-interval.ts",
+    "line": 128,
+    "quote": "SELECT pg_try_advisory_xact_lock("
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/common/scheduling/managed-interval.ts",
+     "line": 131,
+     "quote": "[`litmatch:cluster-job:${options.jobName}`],"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+     "line": 111,
+     "quote": "clusterSingleton: { dataSource: this.dataSource },"
+    }
+   ]
+  },
+  {
+   "kind": "pg advisory lock",
+   "where": "apps/core-api/src/modules/movie-match/movie-match.service.ts (lockAnonMatcher)",
+   "protects": "Tuần tự hoá bộ ghép Movie Match ẩn danh giữa các request/pod bằng pg_advisory_xact_lock(hashtext(MOVIE_MATCH_ADVISORY_LOCK_KEY)) trong transaction.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+    "line": 680,
+    "quote": "await manager.query('SELECT pg_advisory_xact_lock(hashtext($1))', ["
+   }
+  },
+  {
+   "kind": "pg advisory lock",
+   "where": "apps/core-api/src/modules/palm-match/palm-match.service.ts (lockMatcher)",
+   "protects": "Tuần tự hoá bộ ghép Palm Match giữa các request/pod bằng pg_advisory_xact_lock(hashtext(PALM_MATCH_ADVISORY_LOCK_KEY)).",
+   "evidence": {
+    "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+    "line": 329,
+    "quote": "await manager.query('SELECT pg_advisory_xact_lock(hashtext($1))', ["
+   }
+  },
+  {
+   "kind": "row lock FOR UPDATE",
+   "where": "apps/core-api/src/modules/economy/services/ledger.service.ts (wallets; cũng economy.service.ts)",
+   "protects": "Ví user (wallets): điểm tuần tự hoá per-user khi ghi sổ và chống tiêu quá số dư (guard tầng ứng dụng, không phải CHECK); khoá theo thứ tự userId.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+    "line": 412,
+    "quote": "sau đó lock FOR UPDATE làm điểm tuần tự hoá per-user"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 420,
+     "quote": ".setLock('pessimistic_write')"
+    },
+    {
+     "file": "docs/adr/0012-postgres-persistence-boundaries.md",
+     "line": 37,
+     "quote": "khóa theo thứ tự userId"
+    }
+   ]
+  },
+  {
+   "kind": "row lock FOR UPDATE",
+   "where": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts (và ticket-sweeper, matching.service)",
+   "protects": "match_tickets/match_sessions: verify lại cả 2 ticket còn queued trước khi ghép và chuyển trạng thái; sweeper và matcher tranh nhau cùng dòng nên lock buộc tuần tự.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+    "line": 226,
+    "quote": "SELECT FOR UPDATE trên cả 2 ticket"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+     "line": 237,
+     "quote": "lock: { mode: 'pessimistic_write' },"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/jobs/ticket-sweeper.service.ts",
+     "line": 94,
+     "quote": "matcher lock FOR UPDATE sẽ chờ"
+    }
+   ]
+  },
+  {
+   "kind": "row lock FOR UPDATE",
+   "where": "apps/core-api/src/modules/auth/repositories/typeorm-refresh-session.adapter.ts (rotate)",
+   "protects": "refresh_tokens: hai request cùng refresh token song song chỉ một thắng rotation, bên thua rơi vào nhánh reuse và revoke cả family.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/auth/repositories/typeorm-refresh-session.adapter.ts",
+    "line": 42,
+    "quote": "lock: { mode: 'pessimistic_write' },"
+   }
+  },
+  {
+   "kind": "row lock FOR UPDATE",
+   "where": "apps/core-api/src/modules/auth/auth.service.ts và matching.service.ts (bảng users)",
+   "protects": "Khoá user khi nâng cấp guest và khi vào queue để đọc isGuest/status mới từ DB, không tin claim JWT cũ.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/auth/auth.service.ts",
+    "line": 227,
+    "quote": "lock: { mode: 'pessimistic_write' },"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 102,
+     "quote": "Lock + DB-fresh isGuest"
+    }
+   ]
+  },
+  {
+   "kind": "row lock FOR UPDATE",
+   "where": "apps/core-api/src/modules/party-room/party-room.service.ts",
+   "protects": "party_rooms: mọi thay đổi state phòng (join/leave/đổi role/close) serialize qua khoá dòng phòng và verify còn active.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/party-room/party-room.service.ts",
+    "line": 108,
+    "quote": "đều serialize qua lock FOR UPDATE"
+   }
+  },
+  {
+   "kind": "row lock FOR UPDATE",
+   "where": "apps/core-api/src/modules/calling/calling.service.ts",
+   "protects": "call_sessions: kết thúc call idempotent dù đến từ endpoint, webhook LiveKit hay ticker nhờ khoá dòng call.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/calling/calling.service.ts",
+    "line": 438,
+    "quote": "End idempotent — dùng bởi endpoint/webhook/ticker"
+   }
+  },
+  {
+   "kind": "row lock FOR UPDATE",
+   "where": "apps/core-api/src/modules/matching/services/invite.service.ts",
+   "protects": "match_invites: precheckAccept khoá dòng invite nên request accept thứ hai luôn thấy trạng thái đã đổi.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+    "line": 500,
+    "quote": "request accept thứ 2 luôn thấy"
+   }
+  },
+  {
+   "kind": "row lock FOR UPDATE",
+   "where": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+   "protects": "guest_match_quotas và match_daily_quotas: đếm và tiêu quota ghép đôi mỗi ngày/thiết bị atomic.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+    "line": 100,
+    "quote": ".setLock('pessimistic_write')"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/matching/services/guest-match-quota.service.ts",
+     "line": 180,
+     "quote": ".setLock('pessimistic_write')"
+    }
+   ]
+  },
+  {
+   "kind": "row lock FOR UPDATE",
+   "where": "apps/core-api/src/modules/friend/services/streak.service.ts",
+   "protects": "conversation_streaks: recordActivity khoá dòng streak để tính streak on-write không race giữa các tin nhắn.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/friend/services/streak.service.ts",
+    "line": 68,
+    "quote": ".setLock('pessimistic_write')"
+   }
+  },
+  {
+   "kind": "row lock FOR UPDATE",
+   "where": "apps/core-api/src/modules/economy/services/payos.service.ts",
+   "protects": "payos_payment_orders: webhook hợp lệ đến trễ sau khi read-path suy ra expired vẫn xử lý trên dòng đã khoá.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+    "line": 316,
+    "quote": ".setLock('pessimistic_write')"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+     "line": 210,
+     "quote": "Row đã FOR UPDATE; webhook hợp lệ đến trễ sau khi read-path derive"
+    }
+   ]
+  },
+  {
+   "kind": "row lock FOR UPDATE",
+   "where": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+   "protects": "Phiên Soul Match: khoá dòng để hai rater like song song không bỏ lỡ nhau (READ COMMITTED).",
+   "evidence": {
+    "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+    "line": 287,
+    "quote": "FOR UPDATE serialize 2 rater"
+   }
+  },
+  {
+   "kind": "row lock FOR UPDATE",
+   "where": "movie-match.service.ts, palm-match.service.ts, safety.service.ts, support.service.ts, short-video.service.ts, user.service.ts",
+   "protects": "movie_sessions, palm_match_sessions, users, support_tickets, video_views: khoá dòng trước khi đổi trạng thái (số lượng theo db-usage: 3, 3, 5, 1, 1).",
+   "evidence": {
+    "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+    "line": 400,
+    "quote": "lock: { mode: 'pessimistic_write' },"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/palm-match/palm-match.service.ts",
+     "line": 315,
+     "quote": "lock: { mode: 'pessimistic_write' },"
+    },
+    {
+     "file": "apps/core-api/src/modules/support/support.service.ts",
+     "line": 83,
+     "quote": "lock: { mode: 'pessimistic_write' },"
+    }
+   ]
+  },
+  {
+   "kind": "SKIP LOCKED",
+   "where": "apps/core-api/src/modules/economy/jobs/outbox-relay.service.ts (flushOnce)",
+   "protects": "outbox_events: nhiều pod relay claim lô chưa publish mà không lấy trùng dòng (FOR UPDATE SKIP LOCKED); job này không dùng clusterSingleton.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/economy/jobs/outbox-relay.service.ts",
+    "line": 72,
+    "quote": ".setOnLocked('skip_locked')"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/economy/jobs/outbox-relay.service.ts",
+     "line": 25,
+     "quote": "FOR UPDATE SKIP LOCKED — nhiều instance chạy song song không dẫm nhau"
+    }
+   ]
+  },
+  {
+   "kind": "SKIP LOCKED",
+   "where": "apps/core-api/src/modules/economy/jobs/iap-refund-poll.service.ts",
+   "protects": "iap_receipts: nhiều pod claim lô receipt để poll refund mà không dẫm nhau.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/economy/jobs/iap-refund-poll.service.ts",
+    "line": 97,
+    "quote": ".setOnLocked('skip_locked')"
+   }
+  },
+  {
+   "kind": "redis lease",
+   "where": "apps/signaling-gateway/src/app/connection-quota.service.ts (ACQUIRE/REFRESH/RELEASE Lua)",
+   "protects": "Tối đa WS_MAX_CONNECTIONS_PER_USER (<=3) socket mỗi user trên toàn cụm; lease TTL WS_CONNECTION_LEASE_MS, pod chết thì tự hết hạn; đồng thời nuôi realtime:presence:{userId}.",
+   "evidence": {
+    "file": "apps/signaling-gateway/src/app/connection-quota.service.ts",
+    "line": 29,
+    "quote": "if redis.call('ZCARD', KEYS[1]) >= tonumber(ARGV[3]) then"
+   }
+  },
+  {
+   "kind": "ZPOPMIN atomic pop",
+   "where": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts (popMin) + redis-matching-queue.adapter.ts",
+   "protects": "Hai matcher/pod không lấy trùng ticket nhờ ZPOPMIN shard 2 atomic của Redis; sau đó Postgres verify lại bằng SELECT FOR UPDATE.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+    "line": 199,
+    "quote": "ZPOPMIN key 2: atomic — không cần Lua, 2 matcher không lấy trùng"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+     "line": 63,
+     "quote": "Redis KHÔNG phải nguồn sự thật: verify lại Postgres"
+    }
+   ]
+  },
+  {
+   "kind": "unique constraint guard",
+   "where": "uq_match_tickets_active_user (match_tickets)",
+   "protects": "Partial unique: mỗi user chỉ có 1 ticket ở trạng thái queued hoặc matched.",
+   "evidence": {
+    "file": "apps/core-api/src/database/migrations/1752200000000-matching-core.ts",
+    "line": 35,
+    "quote": "CREATE UNIQUE INDEX uq_match_tickets_active_user"
+   }
+  },
+  {
+   "kind": "unique constraint guard",
+   "where": "uq_match_invites_pending_pair (match_invites)",
+   "protects": "Partial unique: tối đa 1 invite pending mỗi cặp (inviter, invitee).",
+   "evidence": {
+    "file": "apps/core-api/src/database/migrations/1754700000000-match-invite.ts",
+    "line": 34,
+    "quote": "CREATE UNIQUE INDEX uq_match_invites_pending_pair ON match_invites"
+   }
+  },
+  {
+   "kind": "unique constraint guard",
+   "where": "uq_call_sessions_active_friend_pair (call_sessions)",
+   "protects": "Partial unique: một cặp bạn bè chỉ có 1 cuộc gọi friend ở trạng thái pending/active.",
+   "evidence": {
+    "file": "apps/core-api/src/database/migrations/1757200000000-friend-calling.ts",
+    "line": 13,
+    "quote": "CREATE UNIQUE INDEX uq_call_sessions_active_friend_pair"
+   }
+  },
+  {
+   "kind": "unique constraint guard",
+   "where": "uq_party_members_active_user và uq_party_members_active_room_user (party_room_members)",
+   "protects": "Partial unique (left_at IS NULL): mỗi user ở tối đa 1 phòng active và 1 membership active mỗi phòng.",
+   "evidence": {
+    "file": "apps/core-api/src/database/migrations/1752700000000-party-room-gift.ts",
+    "line": 53,
+    "quote": "CREATE UNIQUE INDEX uq_party_members_active_user"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/database/migrations/1752700000000-party-room-gift.ts",
+     "line": 47,
+     "quote": "CREATE UNIQUE INDEX uq_party_members_active_room_user"
+    }
+   ]
+  },
+  {
+   "kind": "unique constraint guard",
+   "where": "uq_ledger_accounts_user và uq_ledger_accounts_system (ledger_accounts)",
+   "protects": "Partial unique: mỗi (kind, user, currency) và mỗi (kind, currency) hệ thống chỉ có một tài khoản sổ cái; tạo lazy bằng ON CONFLICT DO NOTHING.",
+   "evidence": {
+    "file": "apps/core-api/src/database/migrations/1752000000000-economy-ledger.ts",
+    "line": 26,
+    "quote": "CREATE UNIQUE INDEX uq_ledger_accounts_user ON ledger_accounts(kind, user_id, currency)"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/database/migrations/1752000000000-economy-ledger.ts",
+     "line": 29,
+     "quote": "CREATE UNIQUE INDEX uq_ledger_accounts_system ON ledger_accounts(kind, currency)"
+    }
+   ]
+  },
+  {
+   "kind": "unique constraint guard",
+   "where": "uq_reports_video_reporter (reports)",
+   "protects": "Partial unique: mỗi người chỉ báo cáo một video một lần.",
+   "evidence": {
+    "file": "apps/core-api/src/database/migrations/1754900000000-report-target-video.ts",
+    "line": 31,
+    "quote": "CREATE UNIQUE INDEX uq_reports_video_reporter ON reports (reporter_user_id, target_video_id"
+   }
+  }
+ ],
+ "idempotency": [
+  {
+   "scope": "Mọi bút toán ví qua LedgerService.record (spend, credit, refund, VIP, gift, avatar)",
+   "headerOrKey": "idempotencyKey do flow dựng; client gửi header Idempotency-Key (bắt buộc, tối đa 128 ký tự) rồi flow thêm prefix",
+   "storage": "transactions.idempotency_key (kèm request_hash)",
+   "uniqueConstraint": "uq_transactions_idempotency_key",
+   "replayBehavior": "Tra key trước; cùng request_hash thì trả giao dịch cũ với replayed=true, không ghi sổ lần hai. Race: insert dùng ON CONFLICT DO NOTHING hoặc bắt unique violation rồi đọc bản thắng.",
+   "conflictBehavior": "request_hash khác thì 409 ECONOMY_TRANSACTION_IDEMPOTENCY_CONFLICT.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+    "line": 367,
+    "quote": "if (existing.requestHash !== requestHash) {"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 61,
+     "quote": ".findOneBy({ idempotencyKey: input.idempotencyKey });"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 133,
+     "quote": ".orIgnore()"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 371,
+     "quote": "HttpStatus.CONFLICT,"
+    },
+    {
+     "file": "apps/core-api/src/common/decorators/idempotency-key.decorator.ts",
+     "line": 12,
+     "quote": "const MAX_KEY_LENGTH = 128;"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+     "line": 5,
+     "quote": "IDEMPOTENCY_CONFLICT: 'ECONOMY_TRANSACTION_IDEMPOTENCY_CONFLICT',"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1752000000000-economy-ledger.ts",
+     "line": 43,
+     "quote": "CONSTRAINT uq_transactions_idempotency_key UNIQUE (idempotency_key)"
+    }
+   ]
+  },
+  {
+   "scope": "Xác minh biên lai IAP Apple/Google (EconomyService)",
+   "headerOrKey": "iap:{provider}:{providerTransactionId} (lấy từ receipt đã verify, không dùng header)",
+   "storage": "transactions.idempotency_key và iap_receipts (provider, provider_transaction_id)",
+   "uniqueConstraint": "uq_iap_receipts_provider_txn; uq_transactions_idempotency_key",
+   "replayBehavior": "Cùng receipt gọi lại thì kết quả ledger.record trả replayed=true cho client, không cộng diamond lần hai.",
+   "conflictBehavior": "Nếu request_hash lệch giao dịch đã có thì ledger ném 409 như mục ledger.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/economy/economy.service.ts",
+    "line": 322,
+    "quote": "idempotencyKey: `iap:${provider}:${verified.providerTransactionId}`,"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/database/migrations/1752000000000-economy-ledger.ts",
+     "line": 127,
+     "quote": "CONSTRAINT uq_iap_receipts_provider_txn UNIQUE (provider, provider_transaction_id)"
+    }
+   ]
+  },
+  {
+   "scope": "Mua VIP (EconomyService)",
+   "headerOrKey": "vip:{userId}:{Idempotency-Key}",
+   "storage": "transactions.idempotency_key",
+   "uniqueConstraint": "uq_transactions_idempotency_key",
+   "replayBehavior": "Replay không gia hạn lần hai, trả trạng thái VIP hiện tại với replayed=true.",
+   "conflictBehavior": "Cùng key khác nội dung thì 409 từ ledger.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/economy/economy.service.ts",
+    "line": 445,
+    "quote": "replay: không gia hạn lần 2 — trả trạng thái VIP hiện tại"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/economy/economy.service.ts",
+     "line": 389,
+     "quote": "idempotencyKey: `vip:${userId}:${idempotencyKey}`,"
+    }
+   ]
+  },
+  {
+   "scope": "payOS tạo đơn nạp (PayosService.createOrder)",
+   "headerOrKey": "payos:{userId}:{Idempotency-Key của client}",
+   "storage": "payos_payment_orders.idempotency_key (kèm request_hash = sha256 của packageId)",
+   "uniqueConstraint": "uq_payos_payment_orders_idempotency_key",
+   "replayBehavior": "Tìm đơn theo key; cùng request_hash thì trả đơn cũ (replayed) và link thanh toán hiện hữu. Race: bắt unique violation rồi đọc bản thắng.",
+   "conflictBehavior": "assertSameCreateRequest so request_hash; mã lỗi định nghĩa sẵn là ECONOMY_PAYOS_ORDER_IDEMPOTENCY_CONFLICT.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+    "line": 85,
+    "quote": "const idempotencyKey = `payos:${userId}:${clientIdempotencyKey}`;"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+     "line": 86,
+     "quote": "const requestHash = createHash('sha256').update(packageId).digest('hex');"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+     "line": 123,
+     "quote": "!violatedConstraint(err, UQ_PAYOS_ORDER_IDEMPOTENCY_KEY)"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/economy.errors.ts",
+     "line": 16,
+     "quote": "PAYOS_ORDER_IDEMPOTENCY_CONFLICT: 'ECONOMY_PAYOS_ORDER_IDEMPOTENCY_CONFLICT',"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1756300000000-payos-diamond.ts",
+     "line": 39,
+     "quote": "CONSTRAINT uq_payos_payment_orders_idempotency_key UNIQUE (idempotency_key),"
+    }
+   ]
+  },
+  {
+   "scope": "Webhook payOS ghi có theo đơn (mã đơn và dedupe webhook)",
+   "headerOrKey": "orderCode của đơn; ledger key payos-credit:{orderCode}",
+   "storage": "payos_payment_orders.order_code và .transaction_id; transactions.idempotency_key",
+   "uniqueConstraint": "uq_payos_payment_orders_order_code; uq_payos_payment_orders_transaction_id; uq_transactions_idempotency_key",
+   "replayBehavior": "Webhook gửi lặp thì ledger trả replay theo key payos-credit:{orderCode}, không cộng lần hai; đơn được khoá FOR UPDATE khi xử lý.",
+   "conflictBehavior": "Chỉ webhook đã HMAC-verify mới vào write path; event.orderCode phải khớp đơn trước khi xử lý.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+    "line": 178,
+    "quote": "idempotencyKey: `payos-credit:${order.orderCode}`,"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+     "line": 169,
+     "quote": "Chỉ caller webhook đã HMAC-verify mới được gọi write path này."
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/payos.service.ts",
+     "line": 329,
+     "quote": "event.orderCode === order.orderCode &&"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1756300000000-payos-diamond.ts",
+     "line": 38,
+     "quote": "CONSTRAINT uq_payos_payment_orders_order_code UNIQUE (order_code),"
+    }
+   ]
+  },
+  {
+   "scope": "Webhook Apple/Google và refund IAP",
+   "headerOrKey": "refund:{provider}:{providerTransactionId} (ledger key)",
+   "storage": "transactions.idempotency_key; tra cứu receipt qua iap_receipts (provider, provider_transaction_id)",
+   "uniqueConstraint": "uq_transactions_idempotency_key; uq_iap_receipts_provider_txn",
+   "replayBehavior": "Webhook đã verify luôn trả 200 kể cả không tìm thấy receipt để store không retry; refund truyền khoá refund:{provider}:{providerTransactionId} làm idempotencyKey của ledger.reverse nên lặp lại bị dedupe.",
+   "conflictBehavior": "Chữ ký sai thì verifier ném 401; refund Google do IapRefundPollService xử lý theo chu kỳ, không refund tại webhook.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/economy/services/refund.service.ts",
+    "line": 68,
+    "quote": "refund:${provider}:${providerTransactionId}"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/economy/webhooks/economy-webhooks.controller.ts",
+     "line": 38,
+     "quote": "Luôn trả 200 khi đã verify xong (kể cả không tìm thấy receipt)"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/webhooks/economy-webhooks.controller.ts",
+     "line": 111,
+     "quote": "(IapRefundPollService, chạy theo ECONOMY_REFUND_POLL_INTERVAL_MS)"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/refund.service.ts",
+     "line": 66,
+     "quote": "const result = await this.ledger.reverse("
+    }
+   ]
+  },
+  {
+   "scope": "Gửi quà (GiftService)",
+   "headerOrKey": "giftSendIdempotencyKey(userId, Idempotency-Key) truyền xuống ledger",
+   "storage": "transactions.idempotency_key; gift_events.transaction_id",
+   "uniqueConstraint": "uq_transactions_idempotency_key; uq_gift_events_transaction",
+   "replayBehavior": "Ledger trả cùng giao dịch; gift_events ánh xạ 1:1 với transaction nên không sinh GiftEvent thứ hai.",
+   "conflictBehavior": "Cùng key khác nội dung thì 409 từ ledger.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/gift/gift.service.ts",
+    "line": 215,
+    "quote": "idempotencyKey: giftSendIdempotencyKey(user.userId, idempotencyKey),"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/database/migrations/1752700000000-party-room-gift.ts",
+     "line": 89,
+     "quote": "CONSTRAINT uq_gift_events_transaction UNIQUE (transaction_id),"
+    }
+   ]
+  },
+  {
+   "scope": "Mua vật phẩm avatar (AvatarService)",
+   "headerOrKey": "avatarBuyIdempotencyKey(userId, Idempotency-Key) cho bước spend",
+   "storage": "transactions.idempotency_key; quyền sở hữu ghi bằng ON CONFLICT DO NOTHING",
+   "uniqueConstraint": "uq_transactions_idempotency_key",
+   "replayBehavior": "Retry cùng Idempotency-Key trả replayed=true và không trừ diamond lần hai; ghi sở hữu idempotent.",
+   "conflictBehavior": "Cùng key khác nội dung thì 409 từ ledger.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/avatar/dto/avatar.dtos.ts",
+    "line": 45,
+    "quote": "true = retry cùng Idempotency-Key — không trừ diamond lần 2."
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+     "line": 89,
+     "quote": "avatarBuyIdempotencyKey(userId, idempotencyKey),"
+    },
+    {
+     "file": "apps/core-api/src/modules/avatar/avatar.service.ts",
+     "line": 181,
+     "quote": ".orIgnore()"
+    }
+   ]
+  },
+  {
+   "scope": "Vào hàng đợi ghép đôi POST /matching/tickets",
+   "headerOrKey": "joinIdempotencyKey(userId, Idempotency-Key)",
+   "storage": "match_tickets.idempotency_key",
+   "uniqueConstraint": "uq_match_tickets_idempotency_key",
+   "replayBehavior": "Nhận diện replay trước khi consume quota nên retry không tốn quota; khớp thì trả lại ticket cũ.",
+   "conflictBehavior": "assertJoinReplay so userId, matchType, genderPreference, useDiamond; khi unique violation phải kiểm tra replay trước vì uq_match_tickets_active_user cũng có thể vi phạm.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/matching/matching.service.ts",
+    "line": 117,
+    "quote": "Replay được nhận diện trước consume; retry không tốn quota."
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 97,
+     "quote": "const prefixedKey = joinIdempotencyKey(user.userId, idempotencyKey);"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 171,
+     "quote": "Replay cùng Idempotency-Key? — check TRƯỚC"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1752200000000-matching-core.ts",
+     "line": 30,
+     "quote": "CONSTRAINT uq_match_tickets_idempotency_key UNIQUE (idempotency_key)"
+    }
+   ]
+  },
+  {
+   "scope": "Speed-up ticket ghép đôi",
+   "headerOrKey": "speedupIdempotencyKey(userId, Idempotency-Key), dạng matching:speedup:{userId}:{key}, truyền xuống ledger spend",
+   "storage": "transactions.idempotency_key",
+   "uniqueConstraint": "uq_transactions_idempotency_key",
+   "replayBehavior": "Spend idempotent nên retry không trừ tiền lại; bước cập nhật score Redis retry được an toàn.",
+   "conflictBehavior": "Cùng key khác nội dung thì 409 từ ledger.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/matching/matching.service.ts",
+    "line": 446,
+    "quote": "const prefixedKey = speedupIdempotencyKey(user.userId, idempotencyKey);"
+   },
+   "moreEvidence": [
+    {
+     "file": "docs/services/matching-service.md",
+     "line": 59,
+     "quote": "caller tự prefix theo domain"
+    }
+   ]
+  },
+  {
+   "scope": "Chấp nhận invite ghép đôi và requeue sau sweeper",
+   "headerOrKey": "inviteAcceptIdempotencyKey(invite.id, role) và requeueIdempotencyKey(session.id, ticket.id) (khoá tất định, không cần header)",
+   "storage": "match_tickets.idempotency_key",
+   "uniqueConstraint": "uq_match_tickets_idempotency_key",
+   "replayBehavior": "Accept lặp đọc lại ticket theo idempotencyKey (In [...]) và dùng lại; request accept thứ hai thấy invite đã đổi trạng thái do khoá FOR UPDATE.",
+   "conflictBehavior": "Không có so khớp payload; unique key tất định theo invite/role hoặc session/ticket.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+    "line": 572,
+    "quote": "idempotencyKey: inviteAcceptIdempotencyKey(invite.id, role),"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/matching/services/invite.service.ts",
+     "line": 534,
+     "quote": "const byKey = new Map(existing.map((t) => [t.idempotencyKey, t]));"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/jobs/ticket-sweeper.service.ts",
+     "line": 208,
+     "quote": "idempotencyKey: requeueIdempotencyKey(session.id, ticket.id),"
+    }
+   ]
+  },
+  {
+   "scope": "Gửi tin nhắn bạn bè (ConversationService)",
+   "headerOrKey": "messageIdempotencyKey(senderUserId, Idempotency-Key)",
+   "storage": "messages.idempotency_key",
+   "uniqueConstraint": "uq_messages_idempotency_key",
+   "replayBehavior": "Bắt unique violation rồi đọc lại; cùng conversationId và content thì trả message cũ (client retry sau timeout).",
+   "conflictBehavior": "Khác nội dung thì 409 FRIEND MESSAGE_IDEMPOTENCY_CONFLICT.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/friend/services/conversation.service.ts",
+    "line": 181,
+    "quote": "return existing; // replay — client retry sau timeout mạng"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/friend/services/conversation.service.ts",
+     "line": 184,
+     "quote": "FriendErrors.MESSAGE_IDEMPOTENCY_CONFLICT,"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1752600000000-friend-chat.ts",
+     "line": 39,
+     "quote": "CONSTRAINT uq_messages_idempotency_key UNIQUE (idempotency_key)"
+    }
+   ]
+  },
+  {
+   "scope": "Tạo bài viết feed (FeedService)",
+   "headerOrKey": "feedPostIdempotencyKey(userId, Idempotency-Key)",
+   "storage": "posts.idempotency_key (unique một phần, chỉ khi khác NULL)",
+   "uniqueConstraint": "uq_posts_idempotency_key",
+   "replayBehavior": "Bắt unique violation rồi đọc lại; cùng content và imageUrl thì trả bài cũ.",
+   "conflictBehavior": "Khác nội dung thì 409 FeedErrors.POST_IDEMPOTENCY_CONFLICT.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/feed/feed.service.ts",
+    "line": 83,
+    "quote": "return existing; // replay — client retry sau timeout mạng"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/feed/feed.service.ts",
+     "line": 86,
+     "quote": "FeedErrors.POST_IDEMPOTENCY_CONFLICT,"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1754300000000-feed-audience.ts",
+     "line": 21,
+     "quote": "CREATE UNIQUE INDEX uq_posts_idempotency_key ON posts (idempotency_key)"
+    }
+   ]
+  },
+  {
+   "scope": "Tạo story (StoryService)",
+   "headerOrKey": "storyIdempotencyKey(userId, Idempotency-Key)",
+   "storage": "stories.idempotency_key",
+   "uniqueConstraint": "uq_stories_idempotency_key",
+   "replayBehavior": "Đọc lại bản ghi cùng key sau unique violation (chưa đọc nhánh so khớp nội dung).",
+   "conflictBehavior": "Chưa xác minh trong lượt đọc này.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/feed/services/story.service.ts",
+    "line": 73,
+    "quote": "const existing = await this.storyRepo.findOneBy({ idempotencyKey: key });"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/database/migrations/1754500000000-story.ts",
+     "line": 21,
+     "quote": "CONSTRAINT uq_stories_idempotency_key UNIQUE (idempotency_key),"
+    }
+   ],
+   "confidence": "low"
+  },
+  {
+   "scope": "Đặt/tắt mood (MoodService)",
+   "headerOrKey": "moodSetIdempotencyKey / moodClearIdempotencyKey (userId, Idempotency-Key)",
+   "storage": "mood_status_events.idempotency_key",
+   "uniqueConstraint": "uq_mood_status_events_idempotency_key",
+   "replayBehavior": "Unique violation trên idempotencyKey được coi là replay hợp lệ, đọc lại event cũ.",
+   "conflictBehavior": "Không có so khớp payload (replay hợp lệ theo mã).",
+   "evidence": {
+    "file": "apps/core-api/src/modules/mood/mood.service.ts",
+    "line": 159,
+    "quote": "coi unique violation trên"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/mood/mood.service.ts",
+     "line": 170,
+     "quote": "return await this.eventRepo.findOneByOrFail({ idempotencyKey });"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1754100000000-mood.ts",
+     "line": 35,
+     "quote": "CONSTRAINT uq_mood_status_events_idempotency_key UNIQUE (idempotency_key),"
+    }
+   ]
+  },
+  {
+   "scope": "Bình luận phòng party (PartyRoomService)",
+   "headerOrKey": "party:comment:{userId}:{roomId}:{clientKey} (đây là giá trị cột DB, không phải khoá Redis)",
+   "storage": "party_room_comments.idempotency_key",
+   "uniqueConstraint": "uq_party_room_comments_idempotency_key",
+   "replayBehavior": "Retry không nhân đôi comment nhờ unique DB.",
+   "conflictBehavior": "Chưa đọc nhánh xử lý trùng trong service.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/party-room/party-room.constants.ts",
+    "line": 27,
+    "quote": "return `party:comment:${userId}:${roomId}:${key}`;"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/database/migrations/1756800000000-party-room-presence-chat.ts",
+     "line": 29,
+     "quote": "CONSTRAINT uq_party_room_comments_idempotency_key UNIQUE (idempotency_key)"
+    }
+   ],
+   "confidence": "low"
+  },
+  {
+   "scope": "Tin nhắn Soul Match ẩn danh",
+   "headerOrKey": "idempotency_key do client gửi (hàm dựng key chưa đọc)",
+   "storage": "soul_chat_messages.idempotency_key",
+   "uniqueConstraint": "uq_soul_chat_messages_idempotency_key",
+   "replayBehavior": "Client retry không nhân đôi message (theo ghi chú migration).",
+   "conflictBehavior": "Chưa xác minh trong lượt đọc này.",
+   "evidence": {
+    "file": "apps/core-api/src/database/migrations/1752400000000-soul-match.ts",
+    "line": 53,
+    "quote": "CONSTRAINT uq_soul_chat_messages_idempotency_key UNIQUE (idempotency_key)"
+   },
+   "confidence": "low"
+  },
+  {
+   "scope": "Tin nhắn phiên Movie Match",
+   "headerOrKey": "movieMessageIdempotencyKey(userId, Idempotency-Key)",
+   "storage": "movie_session_messages.idempotency_key",
+   "uniqueConstraint": "movie_session_messages_idempotency_key_key",
+   "replayBehavior": "Chưa đọc nhánh replay; tên ràng buộc do Postgres tự đặt (UNIQUE inline) theo db-schema.json.",
+   "conflictBehavior": "Chưa xác minh trong lượt đọc này.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/movie-match/movie-match.service.ts",
+    "line": 551,
+    "quote": "const prefixedKey = movieMessageIdempotencyKey(userId, idempotencyKey);"
+   },
+   "confidence": "low"
+  },
+  {
+   "scope": "Đăng video ngắn và vé hỗ trợ",
+   "headerOrKey": "idempotency_key do client gửi (video); (user_id, idempotency_key) cho support ticket",
+   "storage": "videos.idempotency_key; support_tickets (user_id, idempotency_key)",
+   "uniqueConstraint": "uq_videos_idempotency_key; uq_support_ticket_user_idempotency",
+   "replayBehavior": "Chưa đọc nhánh replay; ràng buộc unique chặn bản ghi thứ hai.",
+   "conflictBehavior": "Chưa xác minh trong lượt đọc này.",
+   "evidence": {
+    "file": "apps/core-api/src/database/migrations/1754800000000-short-video.ts",
+    "line": 31,
+    "quote": "CONSTRAINT uq_videos_idempotency_key UNIQUE (idempotency_key)"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/database/migrations/1755300000000-support-ticket.ts",
+     "line": 22,
+     "quote": "CONSTRAINT uq_support_ticket_user_idempotency"
+    }
+   ],
+   "confidence": "low"
+  },
+  {
+   "scope": "Đăng nhập/liên kết social và guest (AuthService)",
+   "headerOrKey": "(provider, provider_uid) của identity",
+   "storage": "auth_identities (provider, provider_uid)",
+   "uniqueConstraint": "uq_auth_identities_provider_uid",
+   "replayBehavior": "Request song song: transaction thua bắt unique violation rồi đọc identity thắng và trả user hiện có.",
+   "conflictBehavior": "Khi nâng cấp guest mà identity đã gắn tài khoản khác thì 409 IDENTITY_ALREADY_LINKED, không tự merge.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/auth/auth.service.ts",
+    "line": 273,
+    "quote": "Request song song cùng identity: transaction thua đọc winner rồi phân loại replay/conflict."
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/auth/auth.service.ts",
+     "line": 281,
+     "quote": "Identity đã gắn với một tài khoản khác; không tự động merge tài khoản"
+    },
+    {
+     "file": "apps/core-api/src/database/migrations/1751900000000-init-auth-user.ts",
+     "line": 35,
+     "quote": "CONSTRAINT uq_auth_identities_provider_uid UNIQUE (provider, provider_uid)"
+    }
+   ]
+  },
+  {
+   "scope": "Xoay refresh token (TokenService.rotate)",
+   "headerOrKey": "token_hash = SHA-256 của refresh token (cookie)",
+   "storage": "refresh_tokens.token_hash",
+   "uniqueConstraint": "uq_refresh_tokens_token_hash",
+   "replayBehavior": "Token đã rotated_at hoặc UPDATE có điều kiện thua race thì coi là reuse.",
+   "conflictBehavior": "Reuse thì revoke cả family và trả 401 REFRESH_TOKEN_REUSED.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/auth/services/token.service.ts",
+    "line": 66,
+    "quote": "request thua rơi vào nhánh reuse → revoke cả family"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/database/migrations/1751900000000-init-auth-user.ts",
+     "line": 52,
+     "quote": "CONSTRAINT uq_refresh_tokens_token_hash UNIQUE (token_hash)"
+    }
+   ]
+  },
+  {
+   "scope": "Đánh giá Soul Match và phản ứng Voice Match",
+   "headerOrKey": "(session_id, rater_user_id) và (call_id, rater_user_id)",
+   "storage": "soul_match_ratings; voice_match_reactions",
+   "uniqueConstraint": "uq_soul_match_ratings_session_rater; uq_voice_match_reactions_call_rater",
+   "replayBehavior": "Rating immutable: replay cùng verdict là idempotent; unique DB chặn double tap/retry với reaction.",
+   "conflictBehavior": "Verdict khác thì 409.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/soul-match/soul-match.service.ts",
+    "line": 501,
+    "quote": "replay cùng verdict là idempotent, khác verdict là 409"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/calling/entities/voice-match-reaction.entity.ts",
+     "line": 9,
+     "quote": "unique DB là chốt chống double tap/retry"
+    }
+   ]
+  },
+  {
+   "scope": "Kết thúc call và webhook LiveKit (CallingService)",
+   "headerOrKey": "callId/trạng thái (không có khoá riêng)",
+   "storage": "call_sessions.status (khoá dòng FOR UPDATE)",
+   "uniqueConstraint": "n/a (idempotent theo trạng thái ended)",
+   "replayBehavior": "End idempotent: đã ended thì trả trạng thái hiện tại; webhook LiveKit retry an toàn và luôn trả 200 khi đã verify.",
+   "conflictBehavior": "n/a",
+   "evidence": {
+    "file": "apps/core-api/src/modules/calling/calling.service.ts",
+    "line": 438,
+    "quote": "End idempotent — dùng bởi endpoint/webhook/ticker"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/calling/webhooks/livekit-webhook.controller.ts",
+     "line": 24,
+     "quote": "Xử lý idempotent (service) → LiveKit retry an toàn"
+    }
+   ]
+  },
+  {
+   "scope": "Rate limit Redis consume (RateLimitPort)",
+   "headerOrKey": "operationId tuỳ chọn trong RateLimitConsumeRequest (chưa caller nào truyền)",
+   "storage": "Redis {rateLimitKey}:rate-limit-reservation:{operationId}",
+   "uniqueConstraint": "n/a (khoá Redis)",
+   "replayBehavior": "Dùng lại operationId thì Lua trả deduplicated (không tiêu thêm slot) cho tới khi refund hoặc hết hạn.",
+   "conflictBehavior": "n/a",
+   "evidence": {
+    "file": "apps/core-api/src/common/redis/rate-limit.port.ts",
+    "line": 15,
+    "quote": "Reusing this ID makes a retried consume idempotent"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/common/redis/redis-rate-limit.adapter.ts",
+     "line": 23,
+     "quote": "return { 2, redis.call('GET', KEYS[2]) }"
+    }
+   ]
+  }
+ ],
+ "consistencyPatterns": [
+  {
+   "name": "Outbox Economy sang Kafka",
+   "where": "ledger (ghi outbox_events) và OutboxRelayService",
+   "rule": "Sự kiện tiền ghi cùng transaction với bút toán; relay claim lô chưa publish bằng FOR UPDATE SKIP LOCKED, publish Kafka rồi đánh dấu published_at; lỗi lặp thì giữ dòng terminal để vận hành replay.",
+   "why": "Không mất sự kiện tiền khi broker lỗi và nhiều pod relay không dẫm nhau.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/economy/jobs/outbox-relay.service.ts",
+    "line": 25,
+    "quote": "FOR UPDATE SKIP LOCKED — nhiều instance chạy song song không dẫm nhau"
+   },
+   "moreEvidence": [
+    {
+     "file": "docs/adr/0012-postgres-persistence-boundaries.md",
+     "line": 11,
+     "quote": "ledger cần idempotency + lock ví + outbox trong một"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/jobs/outbox-relay.service.ts",
+     "line": 133,
+     "quote": "the retained row is the operator replay source of truth"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 475,
+     "quote": "Outbox: event ghi CÙNG transaction (docs/03 § 3.6), relay publish sau"
+    }
+   ]
+  },
+  {
+   "name": "Publish realtime sau commit, không dùng outbox",
+   "where": "publishRealtimeEvent và libs/common-dtos realtime-events",
+   "rule": "Publish Redis pub/sub chạy sau khi DB transaction xong, nuốt lỗi và chỉ log warn; client còn REST polling làm fallback.",
+   "why": "Event ephemeral at-most-once, publish lỗi không được phá nghiệp vụ đã commit.",
+   "evidence": {
+    "file": "apps/core-api/src/common/realtime/publish-realtime.ts",
+    "line": 14,
+    "quote": "dual-write chấp nhận, không dùng outbox"
+   },
+   "moreEvidence": [
+    {
+     "file": "libs/common-dtos/src/lib/realtime-events.ts",
+     "line": 10,
+     "quote": "vì vậy KHÔNG dùng outbox cho các event ephemeral này"
+    }
+   ]
+  },
+  {
+   "name": "Wallet snapshot dựng lại từ ledger",
+   "where": "wallets (snapshot), ledger_entries (sự thật), ReconciliationService",
+   "rule": "wallets là snapshot dẫn xuất, chỉ LedgerService ghi trong cùng transaction với bút toán, rebuild được bằng LedgerService.rebuildWallet(); job đối soát deep lấy mẫu ví và so snapshot với số derive từ ledger.",
+   "why": "Một nguồn sự thật cho tiền; lệch snapshot phát hiện được và sửa được.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/economy/entities/wallet.entity.ts",
+    "line": 9,
+    "quote": "SNAPSHOT dẫn xuất từ ledger — KHÔNG phải nguồn sự thật"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/economy/entities/wallet.entity.ts",
+     "line": 11,
+     "quote": "Rebuild được bất cứ lúc nào bằng EconomyService.rebuildWallet()."
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/jobs/reconciliation.service.ts",
+     "line": 180,
+     "quote": "snapshot phải khớp derive từ ledger"
+    },
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 277,
+     "quote": "async rebuildWallet(userId: string): Promise<Wallet> {"
+    }
+   ]
+  },
+  {
+   "name": "Append-only bằng trigger DB",
+   "where": "ledger_entries và admin_audit_logs",
+   "rule": "Trigger BEFORE UPDATE OR DELETE gọi forbid_ledger_entry_mutation / forbid_admin_audit_log_mutation nên dòng chỉ được thêm, không sửa/xoá.",
+   "why": "Sổ cái và audit log bất biến ngay cả khi mã ứng dụng có lỗi.",
+   "evidence": {
+    "file": "apps/core-api/src/database/migrations/1752000000000-economy-ledger.ts",
+    "line": 77,
+    "quote": "CREATE TRIGGER trg_ledger_entries_append_only"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/database/migrations/1753700000000-admin-audit-log.ts",
+     "line": 6,
+     "quote": "Append-only tuyệt đối"
+    }
+   ]
+  },
+  {
+   "name": "Chuyển trạng thái bằng UPDATE có điều kiện",
+   "where": "OtpService (attempt_count, consumed_at), TypeOrmRefreshSessionAdapter.rotate (rotated_at), ticket-sweeper",
+   "rule": "Đếm lần thử và consume OTP, đánh dấu rotated của refresh token đều là UPDATE kèm điều kiện (attempt_count < max, consumed_at IS NULL, rotatedAt IS NULL); affected=0 nghĩa là thua race.",
+   "why": "Check-then-act phải atomic: client song song không vượt giới hạn và một mã/token chỉ dùng một lần.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
+    "line": 93,
+    "quote": ".where('id = :id AND attempt_count < :max AND consumed_at IS NULL', {"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/auth/repositories/typeorm-refresh-session.adapter.ts",
+     "line": 58,
+     "quote": "{ id: session.id, rotatedAt: IsNull(), revokedAt: IsNull() },"
+    },
+    {
+     "file": "apps/core-api/src/modules/matching/jobs/ticket-sweeper.service.ts",
+     "line": 94,
+     "quote": "nếu matcher vừa chuyển sang matched thì WHERE không còn"
+    }
+   ]
+  },
+  {
+   "name": "Verify lại block/guest/privacy tại thời điểm hành động, không cache",
+   "where": "matcher-worker (tryPair), invite accept, POST /matching/tickets, publish realtime",
+   "rule": "Block/report được kiểm lại đúng lúc ghép/accept (không chỉ lúc vào queue); isGuest đọc lại từ DB trong transaction thay vì tin JWT; quyền xem realtime được core-api quyết tại lúc publish rồi gateway relay nguyên văn.",
+   "why": "Trạng thái block/guest có thể đổi trong lúc ticket chờ hoặc sau khi nâng cấp; cache hay claim cũ sẽ sai.",
+   "evidence": {
+    "file": "docs/services/matching-service.md",
+    "line": 111,
+    "quote": "bắt buộc verify lại đúng lúc matcher ghép"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/matching/matching.service.ts",
+     "line": 102,
+     "quote": "Lock + DB-fresh isGuest"
+    },
+    {
+     "file": "libs/common-dtos/src/lib/realtime-events.ts",
+     "line": 7,
+     "quote": "core-api quyết xong TẠI THỜI ĐIỂM PUBLISH"
+    }
+   ]
+  },
+  {
+   "name": "Redis là bản dẫn xuất, Postgres là nguồn sự thật",
+   "where": "matching queue, presence, quota kết nối",
+   "rule": "Queue shard chỉ là bản dẫn xuất (matcher verify lại Postgres bằng SELECT FOR UPDATE); presence là state dẫn xuất tự hết hạn theo lease.",
+   "why": "Mất hoặc lệch Redis không làm sai dữ liệu nghiệp vụ.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+    "line": 63,
+    "quote": "Redis KHÔNG phải nguồn sự thật: verify lại Postgres"
+   },
+   "moreEvidence": [
+    {
+     "file": "libs/common-dtos/src/lib/realtime-presence.ts",
+     "line": 3,
+     "quote": "Presence chỉ là state dẫn xuất"
+    }
+   ]
+  },
+  {
+   "name": "Job nền chạy mọi pod nhưng một pod thắng advisory lock",
+   "where": "ManagedInterval.runClusterSingleton",
+   "rule": "Mỗi tick pod thử pg_try_advisory_xact_lock; pod thua nghỉ followerRetryMs. Domain vẫn phải đúng khi chạy trùng (transaction, lock, idempotency).",
+   "why": "Backstop timer không được nhân N lần khi scale ngang và không cần leader election riêng.",
+   "evidence": {
+    "file": "apps/core-api/src/common/scheduling/managed-interval.ts",
+    "line": 23,
+    "quote": "Correctness giữa nhiều process vẫn phải do transaction"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/common/scheduling/managed-interval.ts",
+     "line": 128,
+     "quote": "SELECT pg_try_advisory_xact_lock("
+    }
+   ]
+  },
+  {
+   "name": "Replay bằng unique violation hoặc ON CONFLICT DO NOTHING",
+   "where": "LedgerService, ConversationService, FeedService, AuthService, resolveAccount",
+   "rule": "Insert trước, bắt unique violation (23505) rồi đọc bản thắng và so khớp payload; trong transaction do caller sở hữu dùng ON CONFLICT DO NOTHING để không abort transaction.",
+   "why": "Lỗi 23505 làm abort transaction Postgres nên không dùng insert-rồi-bắt trong transaction ledger.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+    "line": 117,
+    "quote": "ON CONFLICT DO NOTHING avoids aborting the caller-owned transaction on a"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+     "line": 390,
+     "quote": "KHÔNG dùng insert-rồi-bắt-23505 ở đây"
+    }
+   ]
+  },
+  {
+   "name": "Lease có TTL thay cho cờ trạng thái",
+   "where": "signaling connection quota và realtime:presence",
+   "rule": "Mỗi socket là một member lease có hạn; refresh mỗi leaseMs/3, release khi disconnect, pod chết thì tự hết hạn; presence có member theo lease nên không race xoá trạng thái khi user còn socket khác.",
+   "why": "Pod hoặc Redis chết không giữ slot hay trạng thái online vĩnh viễn.",
+   "evidence": {
+    "file": "libs/common-dtos/src/lib/realtime-presence.ts",
+    "line": 3,
+    "quote": "Presence chỉ là state dẫn xuất"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/signaling-gateway/src/app/signaling.gateway.ts",
+     "line": 192,
+     "quote": "Fail-safe: lease có TTL nên replica crash/Redis outage không giữ slot vĩnh viễn."
+    }
+   ]
+  },
+  {
+   "name": "Access token stateless, trạng thái tài khoản kiểm lại ở refresh/login",
+   "where": "JwtAuthGuard và TokenService.rotate",
+   "rule": "Guard global chỉ verify chữ ký và hạn của JWT, không query DB mỗi request; banned được kiểm lại khi refresh/login nên cửa sổ rủi ro bằng TTL access token.",
+   "why": "Tránh một truy vấn DB mỗi request đổi lấy cửa sổ thu hồi ngắn.",
+   "evidence": {
+    "file": "apps/core-api/src/common/guards/jwt-auth.guard.ts",
+    "line": 22,
+    "quote": "không query DB mỗi request"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/auth/services/token.service.ts",
+     "line": 81,
+     "quote": "const user = await this.userService.getByIdOrThrow(session.userId);"
+    }
+   ]
+  }
+ ],
+ "serverSessionState": {
+  "accessToken": {
+   "format": "JWT ký bằng JWT_SECRET qua JwtService.signAsync; stateless, không lưu phía server; JwtAuthGuard global chỉ verify chữ ký và hạn.",
+   "ttlEnvAndDefault": "JWT_ACCESS_TTL_SECONDS, mặc định 900 s (tối thiểu 60)",
+   "claims": "sub (userId), isGuest, role, jti (UUID mới mỗi token)",
+   "revocation": "Không có denylist theo jti trong guard; token hết hạn theo TTL, banned kiểm lại ở refresh/login.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/auth/services/token.service.ts",
+    "line": 45,
+    "quote": "jti: randomUUID(),"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 290,
+     "quote": "JWT_ACCESS_TTL_SECONDS: Joi.number().integer().min(60).default(900),"
+    },
+    {
+     "file": "apps/core-api/src/common/guards/jwt-auth.guard.ts",
+     "line": 21,
+     "quote": "Access token là stateless JWT TTL ngắn"
+    }
+   ]
+  },
+  "refreshToken": {
+   "storage": "Bảng refresh_tokens: token_hash (SHA-256 của chuỗi ngẫu nhiên 48 byte base64url), family_id, expires_at, rotated_at, revoked_at; plaintext chỉ nằm trong cookie.",
+   "rotation": "Mỗi /auth/refresh phát refresh token mới cùng family; transaction khoá dòng token (FOR UPDATE), đánh dấu rotated_at bằng UPDATE có điều kiện rồi insert token thay thế. TTL AUTH_REFRESH_TTL_DAYS (mặc định 30).",
+   "reuseDetection": "Token đã rotated_at hoặc UPDATE thua race thì revoke toàn bộ family (revoked_at) và trả 401 REFRESH_TOKEN_REUSED.",
+   "cookieAttributes": "refresh_token: httpOnly, path /api/v1/auth, maxAge = AUTH_REFRESH_TTL_DAYS ngày; secure khi production hoặc sameSite=none; sameSite production theo AUTH_COOKIE_SAME_SITE (strict mặc định), dev mặc định strict.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/auth/repositories/typeorm-refresh-session.adapter.ts",
+    "line": 47,
+    "quote": "if (session.rotatedAt) {"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/auth/auth.cookies.ts",
+     "line": 33,
+     "quote": "httpOnly: true,"
+    },
+    {
+     "file": "apps/core-api/src/modules/auth/auth.cookies.ts",
+     "line": 35,
+     "quote": "secure: isProduction || sameSite === 'none',"
+    },
+    {
+     "file": "apps/core-api/src/modules/auth/auth.cookies.ts",
+     "line": 37,
+     "quote": "path: REFRESH_TOKEN_COOKIE_PATH,"
+    },
+    {
+     "file": "apps/core-api/src/modules/auth/auth.constants.ts",
+     "line": 19,
+     "quote": "export const REFRESH_TOKEN_COOKIE_PATH = '/api/v1/auth';"
+    },
+    {
+     "file": "apps/core-api/src/modules/auth/auth.constants.ts",
+     "line": 15,
+     "quote": "export const REFRESH_TOKEN_BYTES = 48;"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 305,
+     "quote": "AUTH_COOKIE_SAME_SITE: Joi.string().valid('strict', 'none').default('strict'),"
+    }
+   ]
+  },
+  "guestDeviceToken": {
+   "format": "JWT HS256 ký bằng AUTH_GUEST_DEVICE_TOKEN_SECRET, audience litmatch-matching, issuer litmatch-core-api; không lưu phía server.",
+   "claims": "sub (userId), deviceKey (HMAC-SHA256 của deviceId, 64 ký tự hex), purpose='guest-device'",
+   "ttlEnvAndDefault": "AUTH_GUEST_DEVICE_TOKEN_TTL_DAYS, mặc định 30 ngày",
+   "binding": "verifyForUser yêu cầu sub khớp userId, purpose đúng và deviceKey hex; deviceId thô không vào storage quota.",
+   "clientHandling": "Client giữ memory-only, gửi header X-Guest-Device-Token cho các request /matching/tickets.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/auth/services/guest-device-token.service.ts",
+    "line": 36,
+    "quote": "algorithm: 'HS256',"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/auth/services/guest-device-token.service.ts",
+     "line": 32,
+     "quote": "purpose: 'guest-device',"
+    },
+    {
+     "file": "apps/core-api/src/modules/auth/services/guest-device-token.service.ts",
+     "line": 72,
+     "quote": "return createHmac('sha256', this.secret())"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 298,
+     "quote": "AUTH_GUEST_DEVICE_TOKEN_TTL_DAYS: Joi.number().integer().min(1).default(30),"
+    },
+    {
+     "file": "libs/api-client/src/lib/client.ts",
+     "line": 182,
+     "quote": "request.headers.set('X-Guest-Device-Token', guestDeviceToken);"
+    }
+   ]
+  },
+  "csrf": {
+   "pattern": "Double-submit: cookie csrf_token (httpOnly, cùng path/TTL với refresh) phải khớp header x-csrf-token, so sánh timingSafeEqual.",
+   "token": "32 byte ngẫu nhiên base64url, trả qua JSON body lúc login/refresh; frontend persist ở localStorage để lần refresh đầu sau reload còn header hợp lệ.",
+   "scope": "Chỉ áp thủ công bằng CsrfGuard trên /auth/refresh và /auth/logout, không đăng ký global (các API khác dùng Authorization Bearer).",
+   "evidence": {
+    "file": "apps/core-api/src/common/csrf/csrf-token.ts",
+    "line": 32,
+    "quote": "return timingSafeEqual(cookieBuf, headerBuf);"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/common/csrf/csrf.constants.ts",
+     "line": 8,
+     "quote": "export const CSRF_TOKEN_BYTES = 32;"
+    },
+    {
+     "file": "apps/core-api/src/common/guards/csrf.guard.ts",
+     "line": 12,
+     "quote": "KHÔNG đăng ký global vì phần lớn API xác thực"
+    },
+    {
+     "file": "apps/core-api/src/modules/auth/auth.cookies.ts",
+     "line": 60,
+     "quote": "res.cookie(CSRF_COOKIE_NAME, input.csrfToken, options);"
+    }
+   ]
+  },
+  "otp": {
+   "storage": "Bảng phone_otps: code_hash = HMAC-SHA256(AUTH_OTP_PEPPER, phone:code), expires_at, attempt_count, consumed_at; không dùng Redis.",
+   "ttlEnvAndDefault": "AUTH_OTP_TTL_SECONDS, mặc định 300 s; mã 6 chữ số",
+   "limits": "Tối đa AUTH_OTP_MAX_ATTEMPTS (mặc định 5) lần thử bằng UPDATE có điều kiện; AUTH_OTP_REQUESTS_PER_HOUR (mặc định 5) yêu cầu mỗi số điện thoại mỗi giờ đếm trong bảng; thêm @Throttle 5 lần/phút theo IP.",
+   "singleUse": "Yêu cầu mã mới vô hiệu mã cũ chưa dùng; consume bằng UPDATE kèm consumed_at IS NULL nên một mã chỉ dùng một lần.",
+   "deliveryNote": "Không gửi SMS: mã được trả trong response requestOtp ({ code, ttlSeconds }) để client hiển thị và tự điền.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
+    "line": 64,
+    "quote": "Không gửi SMS: client nhận mã qua response để hiển thị toast và tự điền."
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/modules/auth/services/otp.service.ts",
+     "line": 135,
+     "quote": "return createHmac('sha256', pepper)"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 294,
+     "quote": "AUTH_OTP_MAX_ATTEMPTS: Joi.number().integer().min(1).default(5),"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 295,
+     "quote": "AUTH_OTP_REQUESTS_PER_HOUR: Joi.number().integer().min(1).default(5),"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 293,
+     "quote": "AUTH_OTP_TTL_SECONDS: Joi.number().integer().min(60).default(300),"
+    },
+    {
+     "file": "apps/core-api/src/modules/auth/auth.controller.ts",
+     "line": 66,
+     "quote": "limit theo số điện thoại nằm trong OtpService"
+    }
+   ]
+  },
+  "jwtSecretRotation": {
+   "current": "JWT_SECRET (tối thiểu 32 ký tự); token luôn được ký bằng khoá hiện tại.",
+   "previous": "JWT_SECRET_PREVIOUS: chỉ thử khi chữ ký sai với khoá hiện tại; token hết hạn, sai định dạng hoặc sai claim không được thử lại.",
+   "duplication": "Logic xác thực xoay khoá có bản sao ở apps/signaling-gateway/src/app/jwt-rotation.ts (hai app deploy độc lập); sửa một nơi phải sửa nơi kia.",
+   "evidence": {
+    "file": "apps/core-api/src/common/guards/jwt-rotation.ts",
+    "line": 4,
+    "quote": "chỉ khi CHỮ KÝ không khớp mới thử khoá cũ"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/common/guards/jwt-rotation.ts",
+     "line": 8,
+     "quote": "Bản sao cùng logic nằm ở"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 282,
+     "quote": "JWT_SECRET: Joi.string().min(32).required(),"
+    }
+   ]
+  }
+ },
+ "clientState": {
+  "web": {
+   "serverStateCache": {
+    "library": "@tanstack/react-query; không có global store, state server nằm trong QueryClient",
+    "defaults": "staleTime 30000 ms, retry theo shouldRetryQuery (ngân sách retry toàn cục nhỏ, không retry 4xx), refetchOnWindowFocus false, refetchOnReconnect theo shouldRefetchOnReconnect, refetchIntervalInBackground false",
+    "perFeatureStaleTime": [
+     {
+      "feature": "avatar (api.ts)",
+      "staleTime": "5 * 60 * 1000 (5 phút)",
+      "evidence": {
+       "file": "apps/web/src/features/avatar/api.ts",
+       "line": 36,
+       "quote": "staleTime: 5 * 60 * 1000,"
+      }
+     },
+     {
+      "feature": "profile (api.ts, 1 query)",
+      "staleTime": "30_000",
+      "evidence": {
+       "file": "apps/web/src/features/profile/api.ts",
+       "line": 182,
+       "quote": "staleTime: 30_000,"
+      }
+     },
+     {
+      "feature": "wallet (api.ts, query tại dòng 37)",
+      "staleTime": "Infinity",
+      "evidence": {
+       "file": "apps/web/src/features/wallet/api.ts",
+       "line": 37,
+       "quote": "staleTime: Infinity,"
+      }
+     },
+     {
+      "feature": "wallet (api.ts, query tại dòng 48)",
+      "staleTime": "Infinity",
+      "evidence": {
+       "file": "apps/web/src/features/wallet/api.ts",
+       "line": 48,
+       "quote": "staleTime: Infinity,"
+      }
+     },
+     {
+      "feature": "wallet (api.ts, query tại dòng 92)",
+      "staleTime": "Infinity",
+      "evidence": {
+       "file": "apps/web/src/features/wallet/api.ts",
+       "line": 92,
+       "quote": "staleTime: Infinity,"
+      }
+     },
+     {
+      "feature": "current user (shared/auth)",
+      "staleTime": "Infinity",
+      "evidence": {
+       "file": "apps/web/src/shared/auth/use-current-user.ts",
+       "line": 25,
+       "quote": "staleTime: Infinity,"
+      }
+     },
+     {
+      "feature": "capabilities runtime (shared)",
+      "staleTime": "Infinity",
+      "evidence": {
+       "file": "apps/web/src/shared/capabilities/api.ts",
+       "line": 32,
+       "quote": "staleTime: Infinity,"
+      }
+     }
+    ]
+   },
+   "browserStorage": [
+    {
+     "kind": "localStorage",
+     "key": "litmatch-web.csrf-token",
+     "purpose": "Persist csrfToken để lần refresh đầu sau reload còn header CSRF; đồng bộ giữa tab qua storage event. Refresh token không nằm ở đây.",
+     "evidence": {
+      "file": "apps/web/src/shared/api/client.ts",
+      "line": 11,
+      "quote": "const CSRF_TOKEN_STORAGE_KEY = 'litmatch-web.csrf-token';"
+     }
+    },
+    {
+     "kind": "localStorage",
+     "key": "litmatch.guestDeviceId",
+     "purpose": "deviceId của guest, sinh ở client và gửi lúc đăng nhập guest.",
+     "evidence": {
+      "file": "apps/web/src/shared/auth/login-form.tsx",
+      "line": 35,
+      "quote": "const GUEST_DEVICE_ID_STORAGE_KEY = 'litmatch.guestDeviceId';"
+     }
+    },
+    {
+     "kind": "localStorage",
+     "key": "litmatch-theme",
+     "purpose": "Lựa chọn giao diện sáng/tối.",
+     "evidence": {
+      "file": "apps/web/src/shared/ui/theme-script.ts",
+      "line": 1,
+      "quote": "export const THEME_STORAGE_KEY = 'litmatch-theme';"
+     }
+    },
+    {
+     "kind": "localStorage",
+     "key": "litmatch-last-dark-mood",
+     "purpose": "Nhớ chế độ tối gần nhất cho nút đổi theme.",
+     "evidence": {
+      "file": "apps/web/src/shared/ui/theme-toggle-button.tsx",
+      "line": 14,
+      "quote": "const LAST_DARK_MOOD_KEY = 'litmatch-last-dark-mood';"
+     }
+    },
+    {
+     "kind": "memory",
+     "key": "accessToken, guestDeviceToken (TokenStore)",
+     "purpose": "Chỉ giữ trong bộ nhớ tab, mất khi reload; khôi phục bằng refresh cookie.",
+     "evidence": {
+      "file": "libs/api-client/src/lib/token-store.ts",
+      "line": 85,
+      "quote": "let accessToken: string | null = null;"
+     }
+    }
+   ],
+   "cookies": [
+    {
+     "name": "litmatch-web.locale",
+     "purpose": "Ngôn ngữ giao diện, ghi bằng document.cookie.",
+     "attributes": "Path=/; Max-Age=31536000; SameSite=Lax; JS-set (không HttpOnly)",
+     "evidence": {
+      "file": "apps/web/src/shared/i18n/locale-store.ts",
+      "line": 37,
+      "quote": "Path=/; Max-Age=31536000; SameSite=Lax"
+     }
+    },
+    {
+     "name": "litmatch-web.product-analytics-consent",
+     "purpose": "Lưu đồng ý analytics.",
+     "attributes": "Path=/; Max-Age=31536000 s; SameSite=Lax; JS-set",
+     "evidence": {
+      "file": "apps/web/src/shared/analytics/product-analytics.ts",
+      "line": 28,
+      "quote": "const CONSENT_COOKIE_MAX_AGE_SECONDS = 31_536_000;"
+     }
+    },
+    {
+     "name": "refresh_token, csrf_token (do core-api set)",
+     "purpose": "Refresh token xoay vòng và nửa cookie của CSRF double-submit; JS không đọc được.",
+     "attributes": "httpOnly; Path=/api/v1/auth; secure khi production; sameSite theo AUTH_COOKIE_SAME_SITE",
+     "evidence": {
+      "file": "apps/core-api/src/modules/auth/auth.cookies.ts",
+      "line": 59,
+      "quote": "res.cookie(REFRESH_TOKEN_COOKIE_NAME, input.refreshToken, options);"
+     }
+    }
+   ],
+   "realtimeHandling": "Một socket Socket.IO cho cả app; socket là kênh delta, sau khi nối lại onReconnected refetch REST, khi transport khoẻ thì giảm tần suất polling. Một số query có refetchInterval làm fallback: friend-chat, matching, movie-match, notification (unread count), palm-match, party-room, soul-match, voice-match.",
+   "authRefreshFlow": "401 dẫn tới rotateSession single-flight (Web Locks liên tab nếu có) gọi POST /api/v1/auth/refresh với credentials include và header x-csrf-token; thành công thì commit session theo generation rồi retry đúng một lần, thất bại thì xoá session và onSessionExpired. Sau reload, status 'restorable' khi còn csrfToken trong localStorage nên restoreSession gọi refresh; tab khác logout thì tab này xoá session ngay.",
+   "evidence": {
+    "file": "apps/web/src/app/providers.tsx",
+    "line": 23,
+    "quote": "staleTime: 30_000,"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/web/src/app/providers.tsx",
+     "line": 25,
+     "quote": "refetchOnWindowFocus: false,"
+    },
+    {
+     "file": "apps/web/src/app/providers.tsx",
+     "line": 28,
+     "quote": "refetchOnReconnect: shouldRefetchOnReconnect,"
+    },
+    {
+     "file": "apps/web/src/app/providers.tsx",
+     "line": 30,
+     "quote": "refetchIntervalInBackground: false,"
+    },
+    {
+     "file": "apps/web/src/shared/api/query-retry-policy.ts",
+     "line": 7,
+     "quote": "React Query retry policy for REST requests"
+    },
+    {
+     "file": "apps/web/src/shared/realtime/socket.ts",
+     "line": 23,
+     "quote": "MỘT socket instance cho cả app"
+    },
+    {
+     "file": "apps/web/src/shared/realtime/use-realtime-connection.ts",
+     "line": 8,
+     "quote": "Transport khỏe thì giảm tần suất reconciliation"
+    },
+    {
+     "file": "apps/web/src/features/friend-chat/api.ts",
+     "line": 103,
+     "quote": "refetchInterval: FRIEND_MESSAGES_REFETCH_INTERVAL_MS,"
+    },
+    {
+     "file": "apps/web/src/features/notification/api.ts",
+     "line": 54,
+     "quote": "refetchInterval: UNREAD_NOTIFICATION_COUNT_REFETCH_INTERVAL_MS,"
+    },
+    {
+     "file": "libs/api-client/src/lib/client.ts",
+     "line": 121,
+     "quote": "Single-flight: N request cùng dính 401 chỉ tạo 1 lần rotation"
+    },
+    {
+     "file": "libs/api-client/src/lib/client.ts",
+     "line": 81,
+     "quote": "const refreshLockName = `litmatch-api-refresh:${new URL(baseUrl).origin}`;"
+    },
+    {
+     "file": "libs/api-client/src/lib/client.ts",
+     "line": 131,
+     "quote": "credentials: 'include',"
+    },
+    {
+     "file": "libs/api-client/src/lib/token-store.ts",
+     "line": 91,
+     "quote": "csrfToken !== null ? 'restorable' : 'unauthenticated';"
+    },
+    {
+     "file": "libs/api-client/src/lib/token-store.ts",
+     "line": 99,
+     "quote": "Tab khác logout — theo ngay, không đợi tự 401."
+    }
+   ]
+  },
+  "admin": {
+   "serverStateCache": {
+    "library": "@tanstack/react-query",
+    "defaults": "staleTime 30000 ms, retry 1, refetchOnWindowFocus false",
+    "perFeatureStaleTime": [
+     {
+      "feature": "dashboard",
+      "staleTime": "30_000",
+      "evidence": {
+       "file": "apps/admin/src/features/dashboard/api.ts",
+       "line": 20,
+       "quote": "staleTime: 30_000,"
+      }
+     },
+     {
+      "feature": "gifts",
+      "staleTime": "5000",
+      "evidence": {
+       "file": "apps/admin/src/features/gifts/api.ts",
+       "line": 22,
+       "quote": "staleTime: 5000,"
+      }
+     },
+     {
+      "feature": "moderation (reports)",
+      "staleTime": "5000",
+      "evidence": {
+       "file": "apps/admin/src/features/moderation/api.ts",
+       "line": 36,
+       "quote": "staleTime: 5000,"
+      }
+     },
+     {
+      "feature": "moderation (videos)",
+      "staleTime": "5000",
+      "evidence": {
+       "file": "apps/admin/src/features/moderation/videos-api.ts",
+       "line": 30,
+       "quote": "staleTime: 5000,"
+      }
+     },
+     {
+      "feature": "rooms",
+      "staleTime": "5000",
+      "evidence": {
+       "file": "apps/admin/src/features/rooms/api.ts",
+       "line": 32,
+       "quote": "staleTime: 5000,"
+      }
+     },
+     {
+      "feature": "users",
+      "staleTime": "5000",
+      "evidence": {
+       "file": "apps/admin/src/features/users/api.ts",
+       "line": 41,
+       "quote": "staleTime: 5000,"
+      }
+     },
+     {
+      "feature": "capabilities runtime (shared)",
+      "staleTime": "Infinity",
+      "evidence": {
+       "file": "apps/admin/src/shared/capabilities/api.ts",
+       "line": 32,
+       "quote": "staleTime: Infinity,"
+      }
+     }
+    ]
+   },
+   "browserStorage": [
+    {
+     "kind": "localStorage",
+     "key": "litmatch-admin.csrf-token",
+     "purpose": "Persist csrfToken như web (qua browserCsrfTokenStorage).",
+     "evidence": {
+      "file": "apps/admin/src/shared/api/client.ts",
+      "line": 11,
+      "quote": "const CSRF_TOKEN_STORAGE_KEY = 'litmatch-admin.csrf-token';"
+     }
+    },
+    {
+     "kind": "localStorage",
+     "key": "litmatch-admin-theme",
+     "purpose": "Lựa chọn giao diện.",
+     "evidence": {
+      "file": "apps/admin/src/shared/lib/theme-store.ts",
+      "line": 5,
+      "quote": "export const THEME_STORAGE_KEY = 'litmatch-admin-theme';"
+     }
+    },
+    {
+     "kind": "sessionStorage",
+     "key": "litmatch-admin-report-filters",
+     "purpose": "Bộ lọc báo cáo đã lưu trong phiên tab.",
+     "evidence": {
+      "file": "apps/admin/src/features/moderation/components/reports-panel.tsx",
+      "line": 34,
+      "quote": "const SAVED_FILTERS_KEY = 'litmatch-admin-report-filters';"
+     }
+    }
+   ],
+   "cookies": [
+    {
+     "name": "litmatch-admin.locale",
+     "purpose": "Ngôn ngữ giao diện admin.",
+     "attributes": "Path=/; Max-Age=31536000; SameSite=Lax; JS-set (không HttpOnly)",
+     "evidence": {
+      "file": "apps/admin/src/shared/i18n/locale-store.ts",
+      "line": 28,
+      "quote": "Path=/; Max-Age=31536000; SameSite=Lax"
+     }
+    },
+    {
+     "name": "refresh_token, csrf_token (do core-api set)",
+     "purpose": "Cùng cơ chế với web.",
+     "attributes": "httpOnly; Path=/api/v1/auth",
+     "evidence": {
+      "file": "apps/core-api/src/modules/auth/auth.cookies.ts",
+      "line": 60,
+      "quote": "res.cookie(CSRF_COOKIE_NAME, input.csrfToken, options);"
+     }
+    }
+   ],
+   "realtimeHandling": "Không thấy kết nối realtime trong admin (xem limits); dữ liệu quản trị stale sau 5 s và được invalidate sau mutation.",
+   "authRefreshFlow": "Dùng chung createApiClient và createTokenStore của libs/api-client: 401 thì refresh single-flight rồi retry một lần; csrfToken ở localStorage litmatch-admin.csrf-token.",
+   "evidence": {
+    "file": "apps/admin/src/app/providers.tsx",
+    "line": 13,
+    "quote": "staleTime: 30_000,"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/admin/src/shared/api/client.ts",
+     "line": 13,
+     "quote": "export const tokenStore = createTokenStore("
+    }
+   ]
+  }
+ },
+ "httpAndEdgeCaching": [
+  {
+   "layer": "core-api Express",
+   "rule": "Chỉ bật helmet() và CORS (origin theo CORS_ORIGINS, credentials true); mã ứng dụng không đặt Cache-Control/ETag tuỳ chỉnh.",
+   "evidence": {
+    "file": "apps/core-api/src/main.ts",
+    "line": 65,
+    "quote": "app.use(helmet());"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/main.ts",
+     "line": 76,
+     "quote": "credentials: true,"
+    }
+   ]
+  },
+  {
+   "layer": "Presigned upload URL (R2/S3)",
+   "rule": "URL upload hết hạn sau MEDIA_UPLOAD_URL_TTL_SECONDS (mặc định 900 s, khoảng 60-604800); đây là TTL của URL, không phải cache.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/media/ports/s3-image-storage.provider.ts",
+    "line": 108,
+    "quote": "{ expiresIn: this.uploadUrlTtlSeconds },"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 347,
+     "quote": "MEDIA_UPLOAD_URL_TTL_SECONDS: Joi.number()"
+    },
+    {
+     "file": "apps/core-api/src/config/env.validation.ts",
+     "line": 351,
+     "quote": ".default(900),"
+    }
+   ]
+  }
+ ],
+ "cacheInvalidationRules": [
+  {
+   "what": "Server state web (TanStack Query)",
+   "rule": "Mutation hook gọi invalidateQueries/setQueryData/removeQueries theo key factory của feature; ví dụ mua avatar invalidate avatarKeys.myItems và ['wallet','me'], cập nhật profile invalidate currentUserKey.",
+   "evidence": {
+    "file": "apps/web/src/features/avatar/api.ts",
+    "line": 63,
+    "quote": "queryKey: avatarKeys.myItems"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/web/src/features/profile/api.ts",
+     "line": 191,
+     "quote": "queryKey: currentUserKey"
+    },
+    {
+     "file": "apps/web/src/features/wallet/api.ts",
+     "line": 106,
+     "quote": "queryKey: walletKeys.wallet"
+    }
+   ]
+  },
+  {
+   "what": "Query staleTime Infinity (số dư ví, current user, capabilities)",
+   "rule": "Không tự làm mới theo thời gian; chỉ đổi khi mutation invalidate hoặc khi session bị xoá.",
+   "evidence": {
+    "file": "apps/web/src/features/wallet/api.ts",
+    "line": 37,
+    "quote": "staleTime: Infinity,"
+   },
+   "moreEvidence": [
+    {
+     "file": "apps/web/src/shared/auth/use-current-user.ts",
+     "line": 25,
+     "quote": "staleTime: Infinity,"
+    }
+   ]
+  },
+  {
+   "what": "Toàn bộ cache khi đăng xuất hoặc hết phiên (web)",
+   "rule": "Khi TokenStore chuyển sang unauthenticated thì queryClient.clear() và reset analytics user; tab khác logout cũng kéo tab này về unauthenticated.",
+   "evidence": {
+    "file": "apps/web/src/app/providers.tsx",
+    "line": 43,
+    "quote": "queryClient.clear();"
+   },
+   "moreEvidence": [
+    {
+     "file": "libs/api-client/src/lib/token-store.ts",
+     "line": 99,
+     "quote": "Tab khác logout — theo ngay, không đợi tự 401."
+    }
+   ]
+  },
+  {
+   "what": "State nền sau khi socket mất rồi nối lại",
+   "rule": "Socket chỉ là kênh delta; sau reconnect onReconnected refetch state nền qua REST, REST là reconciliation backstop.",
+   "evidence": {
+    "file": "apps/web/src/shared/realtime/socket.ts",
+    "line": 23,
+    "quote": "MỘT socket instance cho cả app"
+   }
+  },
+  {
+   "what": "Access token đã phát",
+   "rule": "Không có denylist; hết hiệu lực theo JWT_ACCESS_TTL_SECONDS (mặc định 900 s); thu hồi phiên chỉ chặn việc xin token mới ở refresh.",
+   "evidence": {
+    "file": "apps/core-api/src/common/guards/jwt-auth.guard.ts",
+    "line": 22,
+    "quote": "không query DB mỗi request"
+   }
+  },
+  {
+   "what": "Presence online",
+   "rule": "Không có thao tác xoá chủ động ngoài release lease; core-api dọn member quá hạn bằng ZREMRANGEBYSCORE ngay lúc đọc.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/user/redis/redis-presence-reader.adapter.ts",
+    "line": 15,
+    "quote": "await this.redis.zremrangebyscore(key, '-inf', Date.now());"
+   }
+  },
+  {
+   "what": "Bộ đếm rate limit và throttle trong Redis",
+   "rule": "Hết hạn tự nhiên theo TTL cửa sổ; throttle hits được rút còn blockDuration khi vượt limit; refund slot rate-limit có Lua nhưng chưa có caller.",
+   "evidence": {
+    "file": "apps/core-api/src/common/throttle/redis-throttler-storage.ts",
+    "line": 44,
+    "quote": "redis.call('PEXPIRE', KEYS[1], ARGV[3])"
+   }
+  },
+  {
+   "what": "Phần tử trong queue ghép đôi Redis",
+   "rule": "Bị lấy ra bằng ZPOPMIN khi ghép, ZREM khi huỷ/hết hạn; ticket verify fail được ZADD NX lại với score gốc.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/matching/jobs/matcher-worker.service.ts",
+    "line": 360,
+    "quote": "score gốc từ ZPOPMIN"
+   }
+  },
+  {
+   "what": "Wallet snapshot",
+   "rule": "Không có cache TTL; snapshot được ledger cập nhật cùng transaction và rebuild bằng LedgerService.rebuildWallet() khi lệch.",
+   "evidence": {
+    "file": "apps/core-api/src/modules/economy/services/ledger.service.ts",
+    "line": 277,
+    "quote": "async rebuildWallet(userId: string): Promise<Wallet> {"
+   }
+  }
+ ]
+}

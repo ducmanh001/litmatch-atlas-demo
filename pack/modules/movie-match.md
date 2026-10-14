@@ -26,7 +26,7 @@ Sở hữu phiên xem chung 2 người (friend mode: 2 bạn tự chọn URL You
 - error codes: ../errors/moviematcherrors.md
 - flows involving it: [movie-match-anon-chat-finish-reactions](../flows/movie-match-anon-chat-finish-reactions.md), [movie-match-anonymous](../flows/movie-match-anonymous.md), [movie-match-friend-session](../flows/movie-match-friend-session.md)
 
-## Linked issues (heuristic, public subset)
+## Linked issues (heuristic)
 
 - P094 [open] Giới hạn đã biết: advisory lock Palm/Movie Match, outbox chưa có consumer/retention
 

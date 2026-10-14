@@ -87,7 +87,7 @@ env vars read by the module(s): `DISCOVERY_GUEST_VISIBLE`, `DISCOVERY_AGE_BUCKET
 - e2e files that call these endpoints: none
 - FE specs: apps/web/src/app/(app)/profile/edit/page.spec.tsx, apps/web/src/features/avatar/components/avatar-builder.spec.tsx, apps/web/src/features/profile/components/follow-list-view.spec.tsx, apps/web/src/features/profile/components/profile-stats.spec.tsx, apps/web/src/features/profile/components/profile-view.spec.tsx, apps/web/src/features/profile/components/public-profile-view.spec.tsx, apps/web/src/features/profile/update-profile-schema.spec.ts, apps/web/src/app/(app)/discovery/page.spec.tsx, apps/web/src/features/discovery/components/discovery-detail-sheet.spec.tsx, apps/web/src/features/notification/api.spec.ts, apps/web/src/features/notification/components/notification-bell.spec.tsx, apps/web/src/features/notification/notification-copy.spec.ts
 
-## 10. Known issues (public subset of the ledger)
+## 10. Known issues (linked from the ledger)
 
 none linked
 

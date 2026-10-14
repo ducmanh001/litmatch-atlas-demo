@@ -147,7 +147,7 @@ Realtime events the frontend listens to for this feature:
 
 ## 5. Data
 
-- tables owned by the module(s): `call_sessions`, `conversation_member_states`, `conversation_streaks`, `conversations`, `friendships`, `gift_events`, `gifts`, `guest_match_quotas`, `match_daily_quotas`, `match_invites`, `match_sessions`, `match_tickets`, `messages`, `mini_game_active_participants`, `mini_game_sessions`, `movie_match_queue_entries`, `movie_session_active_participants`, `movie_session_messages`, `movie_sessions`, `party_room_comments`, `party_room_members`, `party_rooms`, `profile_chat_contacts`, `profile_follows`, `soul_chat_messages`, `soul_match_ratings`, `voice_match_reactions` (see ../db/signaling-gateway.md, ../db/soul-match.md, ../db/matching.md, ../db/calling.md, ../db/friend.md, ../db/party-room.md, ../db/gift.md, ../db/movie-match.md, ../db/mini-game.md)
+- tables owned by the module(s): `call_sessions`, `conversation_member_states`, `conversation_streaks`, `conversations`, `friendships`, `gift_events`, `gifts`, `guest_match_quotas`, `match_daily_quotas`, `match_invites`, `match_sessions`, `match_tickets`, `messages`, `mini_game_active_participants`, `mini_game_sessions`, `movie_match_queue_entries`, `movie_session_active_participants`, `movie_session_messages`, `movie_sessions`, `party_room_comments`, `party_room_members`, `party_rooms`, `profile_chat_contacts`, `profile_follows`, `soul_chat_messages`, `soul_match_ratings`, `voice_match_reactions` (see ../db/calling.md, ../db/friend.md, ../db/gift.md, ../db/matching.md, ../db/mini-game.md, ../db/movie-match.md, ../db/party-room.md, ../db/soul-match.md)
 - status vocabularies enforced by CHECK:
   - call_sessions: voice_match | friend
   - call_sessions: completed | free_limit | insufficient_balance | pending_timeout
@@ -220,9 +220,10 @@ env vars read by the module(s): `CALLING_FREE_CALL_SECONDS`, `CALLING_TOKEN_TTL_
 - e2e files that call these endpoints: apps/core-api-e2e/src/core-api/livekit-webhook-content-type.spec.ts, apps/web/e2e/login-and-join-matching-queue.spec.ts
 - FE specs: apps/web/src/features/friend-chat/api.spec.ts, apps/web/src/features/friend-chat/components/conversation-inbox.spec.tsx, apps/web/src/features/friend-chat/components/conversation-thread.spec.tsx, apps/web/src/features/friend-chat/components/friends-directory.spec.tsx, apps/web/src/features/friend-chat/components/message-list.spec.tsx, apps/web/src/features/friend-chat/send-message-schema.spec.ts, apps/web/src/features/movie-match/anon-api.spec.ts, apps/web/src/features/movie-match/api.spec.ts, apps/web/src/features/movie-match/components/anon-match-view.spec.tsx, apps/web/src/features/movie-match/components/friend-picker.spec.tsx, apps/web/src/features/movie-match/components/movie-session-view.spec.tsx, apps/web/src/features/movie-match/youtube-url.spec.ts
 
-## 10. Known issues (public subset of the ledger)
+## 10. Known issues (linked from the ledger)
 
 - P071 [fixed] Cổng gọi điện có thể bypass sau khi block (bắt được khi tự review)
+- P065 [open] Production chạy bản cũ: route profile 404, thông báo Facebook cũ
 - P006 [fixed] Swagger thiếu cursor pagination → client sinh kiểu never
 - P090 [fixed] Huỷ ván mini-game ghi đè ván đã resolved
 - P094 [open] Giới hạn đã biết: advisory lock Palm/Movie Match, outbox chưa có consumer/retention
@@ -231,6 +232,5 @@ env vars read by the module(s): `CALLING_FREE_CALL_SECONDS`, `CALLING_TOKEN_TTL_
 - P038 [fixed] Windows: Jest không chạy (thiếu VC++ runtime, resolver native)
 - P039 [fixed] Pre-push trên Windows đỏ giả do giả định POSIX / công cụ Linux-only
 - P041 [fixed] Timeout cứng quá chặt / chạy song song làm test flaky
-- P043 [fixed] Nx cache bật cho test có state → có thể trả kết quả cũ
 
 See ../issues/index.md.
